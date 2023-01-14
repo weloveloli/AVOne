@@ -1,0 +1,5 @@
+[msbuild]
+project = "src.sln"
+[github]
+user = "weloveloli"
+repo = "AVOne"

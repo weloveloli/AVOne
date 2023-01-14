@@ -1,2 +1,2 @@
-# AVOne.Core
-Core lib for AVOne
+# AVOne
+AVOne

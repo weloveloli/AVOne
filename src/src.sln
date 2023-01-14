@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AVOne.Core", "AVOne.Core\AVOne.Core.csproj", "{ADA56654-5005-43B1-B101-B26213DC9AB4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "解决方案项", "解决方案项", "{4F91797C-217C-4156-B5AA-E83841B2D630}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		common.props = common.props
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ADA56654-5005-43B1-B101-B26213DC9AB4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADA56654-5005-43B1-B101-B26213DC9AB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADA56654-5005-43B1-B101-B26213DC9AB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADA56654-5005-43B1-B101-B26213DC9AB4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {69A36C94-E8E0-45BA-8466-5D04300F3F27}
+	EndGlobalSection
+EndGlobal

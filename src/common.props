@@ -1,0 +1,40 @@
+<Project>
+<PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Authors>Weloveloli</Authors>
+    <LangVersion>11</LangVersion>
+    <Nullable>enable</Nullable>
+    <Company>Weloveloli</Company>
+    <Product>AVOne</Product>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+<PropertyGroup Label="Common NuGet Properties">
+    <Copyright>Copyright (c) 2023 Weloveloli</Copyright>   
+    <PackageIcon>logo.jpg</PackageIcon>
+    <PackageTags>AVOne</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <PackageLicenseExpression>apache-2.0</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/weloveloli/AVOne</PackageProjectUrl>
+</PropertyGroup>
+
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)/../img/logo.jpg" Visible="false" Pack="true" PackagePath="" />
+    <None Include="$(MSBuildThisFileDirectory)/../README.md" Visible="false" Pack="true" PackagePath="" />
+    <None Include="$(MSBuildThisFileDirectory)/../LICENSE" Visible="false" Pack="true" PackagePath="" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+    <PackageReference Include="MinVer" Version="3.1.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+    <Target Name="PatchVersion" AfterTargets="MinVer">
+    <PropertyGroup>
+      <!--The minor version is like a major version because Major is 0, need to remove this when will be >= 1.0-->
+      <AssemblyVersion>$(MinVerMajor).$(MinVerMinor).0.0</AssemblyVersion>
+    </PropertyGroup>
+  </Target>
+</Project>
