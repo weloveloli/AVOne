@@ -1,13 +1,10 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // Licensed under the Apache V2.0 License.
 
-#nullable disable
-
-namespace AVOne.Core.Models
+namespace AVOne.Models.Info
 {
-    using System;
     using System.Text.Json.Serialization;
-    using AVOne.Core.Enum;
+    using AVOne.Enum;
 
     public class ItemImageInfo
     {

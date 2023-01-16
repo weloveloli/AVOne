@@ -4,28 +4,23 @@
 namespace AVOne.Enum
 {
     /// <summary>
-    /// Enum VideoType.
+    /// Type of audiovisual media.
     /// </summary>
-    public enum VideoType
+    public enum MediaType
     {
         /// <summary>
-        /// The video file.
+        /// The audio.
         /// </summary>
-        VideoFile,
+        Audio = 0,
 
         /// <summary>
-        /// The iso.
+        /// The photo.
         /// </summary>
-        Iso,
+        Photo = 1,
 
         /// <summary>
-        /// The DVD.
+        /// The video.
         /// </summary>
-        Dvd,
-
-        /// <summary>
-        /// The blu ray.
-        /// </summary>
-        BluRay
+        Video = 2
     }
 }

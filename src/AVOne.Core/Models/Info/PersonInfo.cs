@@ -1,11 +1,11 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // Licensed under the Apache V2.0 License.
 
-namespace AVOne.Core.Models
+namespace AVOne.Models.Info
 {
     using System;
     using System.Collections.Generic;
-    using AVOne.Core.Abstraction;
+    using AVOne.Abstraction;
 
     /// <summary>
     /// This is a small Person stub that is attached to BaseItems.

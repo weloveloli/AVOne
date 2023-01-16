@@ -1,10 +1,12 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // Licensed under the Apache V2.0 License.
 
-namespace AVOne.Core.Entity
+namespace AVOne.Entities
 {
+    using System;
     using System.Text.Json.Serialization;
-    using AVOne.Core.Abstraction;
+    using AVOne.Abstraction;
+    using AVOne.Models.Info;
 
     public abstract class BaseItem : IHasProviderIds, IHasLookupInfo<ItemLookupInfo>, IEquatable<BaseItem>
     {
@@ -13,28 +15,28 @@ namespace AVOne.Core.Entity
         /// </summary>
         /// <value>The provider ids.</value>
         [JsonIgnore]
-        public Dictionary<string, string>? ProviderIds { get; set; }
+        public Dictionary<string, string> ProviderIds { get; set; }
 
         /// <summary>
         /// Gets or sets the name.
         /// </summary>
         /// <value>The name.</value>
         [JsonIgnore]
-        public virtual string? Name { get; set; }
+        public virtual string Name { get; set; }
 
         /// <summary>
         /// Gets or sets the OriginalTitle.
         /// </summary>
         /// <value>The OriginalTitle.</value>
         [JsonIgnore]
-        public string? OriginalTitle { get; set; }
+        public string OriginalTitle { get; set; }
 
         /// <summary>
         /// Gets or sets the path.
         /// </summary>
         /// <value>The path.</value>
         [JsonIgnore]
-        public virtual string? Path { get; set; }
+        public virtual string Path { get; set; }
         /// <summary>
         /// Gets or sets the id.
         /// </summary>

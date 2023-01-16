@@ -1,11 +1,11 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // Licensed under the Apache V2.0 License.
 
-namespace AVOne.Core.Entity
+namespace AVOne.Entities
 {
     using System.Text.Json.Serialization;
-    using AVOne.Core.Enum;
-    using AVOne.Core.Models;
+    using AVOne.Enum;
+    using AVOne.Models.Info;
 
     public class Video : BaseItem
     {

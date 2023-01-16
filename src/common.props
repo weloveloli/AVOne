@@ -4,7 +4,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Authors>Weloveloli</Authors>
     <LangVersion>11</LangVersion>
-    <Nullable>enable</Nullable>
+    <Nullable>disable</Nullable>
     <Company>Weloveloli</Company>
     <Product>AVOne</Product>
     <IsPackable>false</IsPackable>

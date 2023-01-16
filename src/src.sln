@@ -11,6 +11,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "解决方案项", "解决�
 		common.props = common.props
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AVOne.Tool", "AVOne.Tool\AVOne.Tool.csproj", "{01919D4A-184C-4CD0-A800-0878124E7B4B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AVOne.Naming", "AVOne.Naming\AVOne.Naming.csproj", "{5EA02111-C16C-45DA-8DA8-F56FF8C0232E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{ADA56654-5005-43B1-B101-B26213DC9AB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ADA56654-5005-43B1-B101-B26213DC9AB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ADA56654-5005-43B1-B101-B26213DC9AB4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01919D4A-184C-4CD0-A800-0878124E7B4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01919D4A-184C-4CD0-A800-0878124E7B4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01919D4A-184C-4CD0-A800-0878124E7B4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01919D4A-184C-4CD0-A800-0878124E7B4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5EA02111-C16C-45DA-8DA8-F56FF8C0232E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5EA02111-C16C-45DA-8DA8-F56FF8C0232E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5EA02111-C16C-45DA-8DA8-F56FF8C0232E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5EA02111-C16C-45DA-8DA8-F56FF8C0232E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
