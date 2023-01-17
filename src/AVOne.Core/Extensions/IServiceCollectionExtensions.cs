@@ -5,7 +5,7 @@
 
 namespace Microsoft.Extensions.DependencyInjection.Extensions
 {
-    using AVOne.Abstraction;
+    using AVOne.Providers;
     using Microsoft.Extensions.DependencyInjection;
 
     public static class IServiceCollectionExtensions

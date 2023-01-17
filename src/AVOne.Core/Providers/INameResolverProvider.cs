@@ -5,7 +5,6 @@
 
 namespace AVOne.Providers
 {
-    using AVOne.Abstraction;
     using AVOne.Models.Info;
 
     public interface INameResolverProvider : IProvider
