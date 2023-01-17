@@ -1,7 +1,9 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // Licensed under the Apache V2.0 License.
 
-namespace AVOne.Entities
+#nullable disable
+
+namespace AVOne.Models.Item
 {
     using System.Text.Json.Serialization;
     using AVOne.Enum;
@@ -39,23 +41,6 @@ namespace AVOne.Entities
         /// <value>The official rating.</value>
         [JsonIgnore]
         public string OfficialRating { get; set; }
-
-        [JsonIgnore]
-        public int InheritedParentalRatingValue { get; set; }
-
-        /// <summary>
-        /// Gets or sets the critic rating.
-        /// </summary>
-        /// <value>The critic rating.</value>
-        [JsonIgnore]
-        public float? CriticRating { get; set; }
-
-        /// <summary>
-        /// Gets or sets the custom rating.
-        /// </summary>
-        /// <value>The custom rating.</value>
-        [JsonIgnore]
-        public string CustomRating { get; set; }
 
         /// <summary>
         /// Gets or sets the overview.

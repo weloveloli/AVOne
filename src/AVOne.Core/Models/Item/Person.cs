@@ -3,9 +3,12 @@
 
 #nullable disable
 
-namespace AVOne.Models.Info
+namespace AVOne.Models.Item
 {
-    public class MovieInfo : ItemLookupInfo
+    using AVOne.Abstraction;
+    using AVOne.Models.Info;
+
+    public class Person : BaseItem
     {
     }
 }

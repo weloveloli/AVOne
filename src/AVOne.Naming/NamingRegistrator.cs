@@ -10,7 +10,6 @@ namespace AVOne.Naming
 
     public class NamingRegistrator : IServiceRegistrator
     {
-
         public void RegisterServices(IServiceCollection serviceCollection)
         {
             serviceCollection.AddProvider<INameResolverProvider, JellyfinNameResolveProvider>();

@@ -1,12 +1,15 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // Licensed under the Apache V2.0 License.
 
+#nullable disable
+
 namespace AVOne.Providers
 {
     using System.Threading;
     using System.Threading.Tasks;
-    using AVOne.Entities;
+    using AVOne.IO;
     using AVOne.Models.Info;
+    using AVOne.Models.Item;
     using AVOne.Models.Result;
 
     public interface ILocalMetadataProvider : IMetadataProvider

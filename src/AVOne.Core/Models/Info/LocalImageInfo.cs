@@ -1,10 +1,12 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // Licensed under the Apache V2.0 License.
 
+#nullable disable
+
 namespace AVOne.Models.Info
 {
     using AVOne.Enum;
-    using AVOne.Models.IO;
+    using AVOne.IO;
 
     public class LocalImageInfo
     {
