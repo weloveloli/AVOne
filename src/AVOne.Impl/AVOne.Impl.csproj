@@ -5,6 +5,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Jellyfin.Naming" Version="10.8.4" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\AVOne.Core\AVOne.Core.csproj" />
   </ItemGroup>
 

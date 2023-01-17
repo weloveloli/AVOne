@@ -5,11 +5,11 @@ namespace AVOne.Providers
 {
     public interface INamingOptionProvider : IProvider
     {
-        INamingOption GetNamingOption();
+        INamingOptions GetNamingOption();
     }
 
-    public interface INamingOption
+    public interface INamingOptions
     {
-
+        string[] VideoFileExtensions { get; }
     }
 }
