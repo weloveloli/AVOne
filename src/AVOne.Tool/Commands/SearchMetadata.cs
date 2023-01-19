@@ -4,7 +4,6 @@
 namespace AVOne.Tool.Commands
 {
     using System;
-    using AVOne.Abstraction;
     using AVOne.Tool.Resources;
     using CommandLine;
     using CommandLine.Text;
@@ -34,10 +33,8 @@ namespace AVOne.Tool.Commands
         {
             var client = provider.GetService<HttpClient>();
             var logger = provider.GetService<ILogger<SearchMetadata>>();
-            logger.LogDebug($"client null is {client is null}");
-            logger.LogDebug($"logger null is {logger is null}");
-
-
+            logger?.LogDebug($"client null is {client is null}");
+            logger?.LogDebug($"logger null is {logger is null}");
             Thread.Sleep(TimeSpan.FromSeconds(30));
             return Task.FromResult(0);
         }

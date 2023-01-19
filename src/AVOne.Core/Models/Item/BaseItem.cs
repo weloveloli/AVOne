@@ -7,8 +7,9 @@ namespace AVOne.Models.Item
 {
     using System.Text.Json.Serialization;
     using AVOne.Abstraction;
+    using AVOne.Models.Info;
 
-    public abstract class BaseItem : IHasProviderIds
+    public abstract class BaseItem : IHasProviderIds, IHasLookupInfo<ItemLookupInfo>
     {
         /// <summary>
         /// Gets or sets the provider ids.
@@ -37,5 +38,7 @@ namespace AVOne.Models.Item
         /// <value>The path.</value>
         [JsonIgnore]
         public virtual string Path { get; set; }
+
+        public abstract ItemLookupInfo GetLookupInfo();
     }
 }

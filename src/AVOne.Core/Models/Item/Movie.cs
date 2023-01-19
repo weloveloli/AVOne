@@ -5,8 +5,14 @@
 
 namespace AVOne.Models.Item
 {
-    public class Movie : Video
-    {
+    using AVOne.Abstraction;
+    using AVOne.Models.Info;
 
+    public class Movie : Video, IHasLookupInfo<MovieInfo>
+    {
+        MovieInfo IHasLookupInfo<MovieInfo>.GetLookupInfo()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

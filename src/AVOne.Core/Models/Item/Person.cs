@@ -10,5 +10,9 @@ namespace AVOne.Models.Item
 
     public class Person : BaseItem
     {
+        public override ItemLookupInfo GetLookupInfo()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

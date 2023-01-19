@@ -5,6 +5,8 @@ namespace AVOne.Impl.Constants
 {
     public class OfficialProviderNames
     {
+        public const string Official = "Official";
         public const string ProviderJellifin = "Jellyfin";
+        public const string MetaTube = "MetaTube";
     }
 }

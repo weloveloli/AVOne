@@ -1,6 +1,6 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // Licensed under the Apache V2.0 License.
-
+#nullable disable
 namespace AVOne.Impl.IO
 {
     using System.Collections.Concurrent;
@@ -42,7 +42,7 @@ namespace AVOne.Impl.IO
             return list;
         }
 
-        public FileSystemMetadata? GetFile(string path)
+        public FileSystemMetadata GetFile(string path)
         {
             if (!_fileCache.TryGetValue(path, out var result))
             {
