@@ -17,6 +17,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AVOne.Naming", "AVOne.Namin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AVOne.Impl", "AVOne.Impl\AVOne.Impl.csproj", "{770D472A-98DF-484C-9BE9-1BB408CBED7A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{6D61BD88-2E94-4CBC-B5A3-0B92A568DEE4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AVOne.Impl.Test", "Test\AVOne.Impl.Test\AVOne.Impl.Test.csproj", "{4B75F868-E791-43C9-AE32-68E592153CB9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,9 +43,16 @@ Global
 		{770D472A-98DF-484C-9BE9-1BB408CBED7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{770D472A-98DF-484C-9BE9-1BB408CBED7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{770D472A-98DF-484C-9BE9-1BB408CBED7A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B75F868-E791-43C9-AE32-68E592153CB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B75F868-E791-43C9-AE32-68E592153CB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B75F868-E791-43C9-AE32-68E592153CB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B75F868-E791-43C9-AE32-68E592153CB9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4B75F868-E791-43C9-AE32-68E592153CB9} = {6D61BD88-2E94-4CBC-B5A3-0B92A568DEE4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {69A36C94-E8E0-45BA-8466-5D04300F3F27}
