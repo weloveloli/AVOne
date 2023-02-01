@@ -3,6 +3,8 @@
 #nullable disable
 namespace AVOne.Configuration
 {
+    using AVOne.Constants;
+
     public class IOfficialProvidersConfiguration
     {
         public MetaTubeConfiguration MetaTube { get; set; }
@@ -10,10 +12,10 @@ namespace AVOne.Configuration
 
     public class MetaTubeConfiguration
     {
-        public string Server { get; set; }
-        public string DefaultImageQuality { get; set; }
-        public double PrimaryImageRatio { get; set; }
-        public string DefaultUserAgent { get; set; }
-        public string Token { get; set; }
+        public string Server { get; set; } = "localhost";
+        public int DefaultImageQuality { get; set; } = -1;
+        public double PrimaryImageRatio { get; set; } = 90;
+        public string DefaultUserAgent => $"AVOne/{AVOneConstants.AVOneVersion}";
+        public string Token { get; set; } = string.Empty;
     }
 }

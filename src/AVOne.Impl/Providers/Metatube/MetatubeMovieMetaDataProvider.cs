@@ -1,7 +1,7 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // Licensed under the Apache V2.0 License.
 
-namespace AVOne.Impl.Providers.Metadata
+namespace AVOne.Impl.Providers.Metatube
 {
     using System.Collections.Generic;
     using System.Threading;
@@ -9,19 +9,18 @@ namespace AVOne.Impl.Providers.Metadata
     using AVOne.Configuration;
     using AVOne.Constants;
     using AVOne.Impl.Constants;
-    using AVOne.Impl.Providers.Metadata.Metatube;
-    using AVOne.Models.Item;
     using AVOne.Models.Result;
     using AVOne.Providers;
-    using MovieInfo = Models.Info.MovieInfo;
+    using MovieInfo = AVOne.Models.Info.MovieInfo;
+    using Movie = AVOne.Models.Item.Movie;
 
     public class MetatubeMovieMetaDataProvider : IRemoteMetadataProvider<Movie, MovieInfo>
     {
-        private readonly ApiClient _client;
+        private readonly MetatubeApiClient _client;
 
         public MetatubeMovieMetaDataProvider(IOfficialProvidersConfiguration officialProvidersConfiguration, IHttpClientFactory httpClientFactory)
         {
-            this._client = new ApiClient(httpClientFactory.CreateClient(HttpClientNames.MetatubeClient), officialProvidersConfiguration.MetaTube);
+            _client = new MetatubeApiClient(httpClientFactory.CreateClient(HttpClientNames.MetatubeClient), officialProvidersConfiguration.MetaTube);
         }
         public string Name => OfficialProviderNames.MetaTube;
 

@@ -13,13 +13,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "解决方案项", "解决�
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AVOne.Tool", "AVOne.Tool\AVOne.Tool.csproj", "{01919D4A-184C-4CD0-A800-0878124E7B4B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AVOne.Naming", "AVOne.Naming\AVOne.Naming.csproj", "{5EA02111-C16C-45DA-8DA8-F56FF8C0232E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AVOne.Impl", "AVOne.Impl\AVOne.Impl.csproj", "{770D472A-98DF-484C-9BE9-1BB408CBED7A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AVOne.Impl", "AVOne.Impl\AVOne.Impl.csproj", "{770D472A-98DF-484C-9BE9-1BB408CBED7A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{6D61BD88-2E94-4CBC-B5A3-0B92A568DEE4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AVOne.Impl.Test", "Test\AVOne.Impl.Test\AVOne.Impl.Test.csproj", "{4B75F868-E791-43C9-AE32-68E592153CB9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AVOne.Impl.Test", "Test\AVOne.Impl.Test\AVOne.Impl.Test.csproj", "{4B75F868-E791-43C9-AE32-68E592153CB9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +33,6 @@ Global
 		{01919D4A-184C-4CD0-A800-0878124E7B4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{01919D4A-184C-4CD0-A800-0878124E7B4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{01919D4A-184C-4CD0-A800-0878124E7B4B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5EA02111-C16C-45DA-8DA8-F56FF8C0232E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5EA02111-C16C-45DA-8DA8-F56FF8C0232E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5EA02111-C16C-45DA-8DA8-F56FF8C0232E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5EA02111-C16C-45DA-8DA8-F56FF8C0232E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{770D472A-98DF-484C-9BE9-1BB408CBED7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{770D472A-98DF-484C-9BE9-1BB408CBED7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{770D472A-98DF-484C-9BE9-1BB408CBED7A}.Release|Any CPU.ActiveCfg = Release|Any CPU

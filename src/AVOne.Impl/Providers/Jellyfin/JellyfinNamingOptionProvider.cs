@@ -1,7 +1,7 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // Licensed under the Apache V2.0 License.
 
-namespace AVOne.Impl.Providers.Naming
+namespace AVOne.Impl.Providers.Jellyfin
 {
     using System.Text.RegularExpressions;
     using AVOne.Enum;
@@ -15,12 +15,12 @@ namespace AVOne.Impl.Providers.Naming
         private readonly INamingOptions _namingOptions;
         public JellyfinNamingOptionProvider()
         {
-            this._namingOptions = new JellyfinNamingOptions();
+            _namingOptions = new JellyfinNamingOptions();
         }
 
-        public string Name => OfficialProviderNames.ProviderJellifin;
+        public string Name => OfficialProviderNames.Jellifin;
 
-        public INamingOptions GetNamingOption() => this._namingOptions;
+        public INamingOptions GetNamingOption() => _namingOptions;
     }
 
     internal class JellyfinNamingOptions : INamingOptions
@@ -32,13 +32,13 @@ namespace AVOne.Impl.Providers.Naming
 
         public JellyfinNamingOptions()
         {
-            this._options = new Emby.Naming.Common.NamingOptions();
-            this._episodeExpressions = this._options.EpisodeExpressions
+            _options = new Emby.Naming.Common.NamingOptions();
+            _episodeExpressions = _options.EpisodeExpressions
                 .Select((e) => new EpisodeExpression(e.Expression, e.IsByDate)).ToArray();
-            this._multipleEpisodeExpressions = _options.MultipleEpisodeExpressions
+            _multipleEpisodeExpressions = _options.MultipleEpisodeExpressions
                 .Select((e) => new EpisodeExpression(e.Expression, e.IsByDate)).ToArray();
-            this._videoExtraRules = _options.VideoExtraRules
-                .Select((e) => new ExtraRule((ExtraType)e.ExtraType, (ExtraRuleType)e.RuleType,e.Token, (MediaType)e.MediaType)).ToArray();
+            _videoExtraRules = _options.VideoExtraRules
+                .Select((e) => new ExtraRule((ExtraType)e.ExtraType, (ExtraRuleType)e.RuleType, e.Token, (MediaType)e.MediaType)).ToArray();
         }
 
         /// <summary>

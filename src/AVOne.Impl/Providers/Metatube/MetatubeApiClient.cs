@@ -1,7 +1,8 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // Licensed under the Apache V2.0 License.
 #nullable disable
-namespace AVOne.Impl.Providers.Metadata.Metatube
+
+namespace AVOne.Impl.Providers.Metatube
 {
 
     using System.Collections.Specialized;
@@ -9,12 +10,13 @@ namespace AVOne.Impl.Providers.Metadata.Metatube
     using System.Net.Http.Json;
     using System.Web;
     using AVOne.Configuration;
+    using AVOne.Impl.Providers.Metatube.Models;
 
-    public class ApiClient
+    public class MetatubeApiClient
     {
         private readonly HttpClient _httpClient;
         private readonly MetaTubeConfiguration _metaTubeConfiguration;
-        public ApiClient(HttpClient httpClient, MetaTubeConfiguration metaTubeConfiguration)
+        public MetatubeApiClient(HttpClient httpClient, MetaTubeConfiguration metaTubeConfiguration)
         {
             _httpClient = httpClient;
             _metaTubeConfiguration = metaTubeConfiguration;
@@ -52,7 +54,7 @@ namespace AVOne.Impl.Providers.Metadata.Metatube
             { "pos", position.ToString("R") },
             { "auto", auto.ToString() },
             { "badge", badge },
-            { "quality", _metaTubeConfiguration.DefaultImageQuality }
+            { "quality", _metaTubeConfiguration.DefaultImageQuality.ToString() }
         });
         }
 

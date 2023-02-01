@@ -2,9 +2,12 @@
 // Licensed under the Apache V2.0 License.
 #nullable disable
 
-namespace AVOne.Impl.Providers.Metadata.Metatube
+using AVOne;
+
+namespace AVOne.Impl.Providers.Metatube.Models
 {
     using System.Text.Json.Serialization;
+
     public class ActorSearchResult : ProviderInfo
     {
         [JsonPropertyName("images")]
