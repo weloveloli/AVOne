@@ -4,11 +4,12 @@
 namespace AVOne.Impl.Providers.Official
 {
     using System.Text.RegularExpressions;
+    using AVOne.Enum;
     using AVOne.Extensions;
     using AVOne.Impl.Constants;
     using AVOne.Providers;
 
-    public class OfficialMovieNameParserProvider : IMovieNameParserProvider
+    public class OfficialMovieNameParserProvider : IPornMovieNameParserProvider
     {
         public int Order => -1;
 
@@ -58,8 +59,10 @@ namespace AVOne.Impl.Providers.Official
         private static RegexOptions options = RegexOptions.IgnoreCase | RegexOptions.Compiled;
 
         private static Func<string, MovieId>[] funcs = new Func<string, MovieId>[] {
-            Carib,Heyzo,
-            FC2,Musume,
+            Carib,
+            Heyzo,
+            FC2,
+            Musume,
             OnlyNumber
         };
 
@@ -81,9 +84,9 @@ namespace AVOne.Impl.Providers.Official
                 if (m.Success)
                     return new MovieId()
                     {
-                        matcher = nameof(Musume),
-                        type = MovieIdType.suren,
-                        id = m.Groups["id"].Value.Replace("_", "-")
+                        Matcher = nameof(Musume),
+                        Type = MovieIdCategory.suren,
+                        Id = m.Groups["id"].Value.Replace("_", "-")
                     };
             }
             return null;
@@ -102,9 +105,9 @@ namespace AVOne.Impl.Providers.Official
                 if (m.Success)
                     return new MovieId()
                     {
-                        matcher = nameof(Carib),
-                        type = MovieIdType.uncensored,
-                        id = m.Groups["id"].Value.Replace("-", "_")
+                        Matcher = nameof(Carib),
+                        Type = MovieIdCategory.Uncensor,
+                        Id = m.Groups["id"].Value.Replace("-", "_")
                     };
             }
             return null;
@@ -117,12 +120,12 @@ namespace AVOne.Impl.Providers.Official
             var m = regexHeyzo.Match(name);
             if (m.Success == false)
                 return null;
-            var id = $"heyzo-{m.Groups["id"]}";
+            var id = $"HEYZO-{m.Groups["id"]}";
             return new MovieId()
             {
-                matcher = nameof(Heyzo),
-                id = id,
-                type = MovieIdType.uncensored
+                Matcher = nameof(Heyzo),
+                Id = id,
+                Type = MovieIdCategory.Uncensor
             };
         }
 
@@ -133,12 +136,12 @@ namespace AVOne.Impl.Providers.Official
             var m = regexFC2.Match(name);
             if (m.Success == false)
                 return null;
-            var id = $"fc2-ppv-{m.Groups["id"]}";
+            var id = $"FC2-{m.Groups["id"]}";
             return new MovieId()
             {
-                id = id,
-                matcher = nameof(FC2),
-                type = MovieIdType.suren
+                Id = id,
+                Matcher = nameof(FC2),
+                Type = MovieIdCategory.Amateur
             };
         }
 
@@ -152,8 +155,8 @@ namespace AVOne.Impl.Providers.Official
             var id = m.Groups["id"].Value;
             return new MovieId()
             {
-                matcher = nameof(OnlyNumber),
-                id = id
+                Matcher = nameof(OnlyNumber),
+                Id = id
             };
         }
     }

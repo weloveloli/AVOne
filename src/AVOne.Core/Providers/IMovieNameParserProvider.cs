@@ -1,10 +1,12 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // Licensed under the Apache V2.0 License.
+#nullable disable
 
 namespace AVOne.Providers
 {
+    using AVOne.Enum;
 
-    public interface IMovieNameParserProvider : IOrderProvider
+    public interface IPornMovieNameParserProvider : IOrderProvider
     {
         public MovieId Parse(string movieName);
     }
@@ -17,57 +19,46 @@ namespace AVOne.Providers
         /// <summary>
         /// 类型
         /// </summary>
-        public MovieIdType type { get; set; }
+        public MovieIdCategory Type { get; set; }
 
         /// <summary>
         /// 解析到的id
         /// </summary>
-        public string id { get; set; }
+        public string Id
+        {
+            get { return _id; }
+            set { _id = value; }
+        }
+        private string _id;
 
         /// <summary>
         /// 文件名
         /// </summary>
-        public string file { get; set; }
+        public string FileName { get; set; }
 
         /// <summary>
         /// 匹配器
         /// </summary>
-        public string matcher { get; set; }
+        public string Matcher { get; set; }
 
         /// <summary>
         /// 转换为字符串
         /// </summary>
         /// <returns></returns>
-        public override string ToString() => id;
+        public override string ToString() => Id;
 
         /// <summary>
         /// 转换
         /// </summary>
         /// <param name="id"></param>
         public static implicit operator MovieId(string id)
-            => new MovieId() { id = id };
+            => new MovieId() { Id = id };
 
         /// <summary>
         /// 转换
         /// </summary>
         /// <param name="id"></param>
         public static implicit operator string(MovieId id)
-            => id?.id;
-
-    }
-
-    /// <summary>
-    /// 类型
-    /// </summary>
-    public enum MovieIdType
-    {
-        /// <summary>
-        /// 不确定
-        /// </summary>
-        none,
-
-        censored,
-        uncensored,
-        suren
+            => id?.Id;
     }
 }
