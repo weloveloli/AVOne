@@ -19,5 +19,23 @@ namespace AVOne.Impl.Test
 
             Assert.Equal(expectedId, id.Id);
         }
+
+        [Theory]
+        [InlineData("FC2PPV-3068336", "FC2-3068336")]
+        [InlineData("FC2-PPV-3068336", "FC2-3068336")]
+        [InlineData("FC2-3068336", "FC2-3068336")]
+        [InlineData("FC2-3068336 sdsdsdsds", "FC2-3068336")]
+        [InlineData("sdsdsdsds FC2-3068336", "FC2-3068336")]
+        public void TestOfficialMovieNameParserV2Provider(string name, string expectedId)
+        {
+            var provider = new OfficialMovieNameParserV2Provider(new TestApplicationConfigs
+            {
+
+            });
+
+            var id = provider.Parse(name);
+            Assert.NotNull(id);
+            Assert.Equal(expectedId, id.Id);
+        }
     }
 }

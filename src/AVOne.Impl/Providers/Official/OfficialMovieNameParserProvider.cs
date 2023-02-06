@@ -85,7 +85,7 @@ namespace AVOne.Impl.Providers.Official
                     return new MovieId()
                     {
                         Matcher = nameof(Musume),
-                        Type = MovieIdCategory.suren,
+                        Type = MovieIdCategory.Amateur,
                         Id = m.Groups["id"].Value.Replace("_", "-")
                     };
             }
