@@ -9,14 +9,16 @@ namespace AVOne.Impl.Providers.Official
     using AVOne.Impl.Constants;
     using AVOne.Providers;
 
+    [Obsolete("This class is not used any more", false)]
     public class OfficialMovieNameParserProvider : IPornMovieNameParserProvider
     {
         public int Order => -1;
 
         public string Name => OfficialProviderNames.Official;
 
-        public MovieId Parse(string movieName)
+        public MovieId Parse(string filepath)
         {
+            string movieName = Path.GetFileName(filepath);
             movieName = movieName.Replace("_", "-").Replace(" ", "-").Replace(".", "-");
 
             var m = p1080p.Match(movieName);
@@ -84,8 +86,7 @@ namespace AVOne.Impl.Providers.Official
                 if (m.Success)
                     return new MovieId()
                     {
-                        Matcher = nameof(Musume),
-                        Type = MovieIdCategory.Amateur,
+                        Category = MovieIdCategory.Amateur,
                         Id = m.Groups["id"].Value.Replace("_", "-")
                     };
             }
@@ -105,8 +106,7 @@ namespace AVOne.Impl.Providers.Official
                 if (m.Success)
                     return new MovieId()
                     {
-                        Matcher = nameof(Carib),
-                        Type = MovieIdCategory.Uncensor,
+                        Category = MovieIdCategory.Uncensor,
                         Id = m.Groups["id"].Value.Replace("-", "_")
                     };
             }
@@ -120,12 +120,12 @@ namespace AVOne.Impl.Providers.Official
             var m = regexHeyzo.Match(name);
             if (m.Success == false)
                 return null;
-            var id = $"HEYZO-{m.Groups["id"]}";
+            var id = $"Heyzo-{m.Groups["id"]}";
             return new MovieId()
             {
-                Matcher = nameof(Heyzo),
+
                 Id = id,
-                Type = MovieIdCategory.Uncensor
+                Category = MovieIdCategory.Uncensor
             };
         }
 
@@ -140,8 +140,7 @@ namespace AVOne.Impl.Providers.Official
             return new MovieId()
             {
                 Id = id,
-                Matcher = nameof(FC2),
-                Type = MovieIdCategory.Amateur
+                Category = MovieIdCategory.Amateur
             };
         }
 
@@ -155,7 +154,6 @@ namespace AVOne.Impl.Providers.Official
             var id = m.Groups["id"].Value;
             return new MovieId()
             {
-                Matcher = nameof(OnlyNumber),
                 Id = id
             };
         }

@@ -8,7 +8,7 @@ namespace AVOne.Providers
 
     public interface IPornMovieNameParserProvider : IOrderProvider
     {
-        public MovieId Parse(string movieName);
+        public MovieId Parse(string filePath);
     }
 
     /// <summary>
@@ -19,7 +19,23 @@ namespace AVOne.Providers
         /// <summary>
         /// 类型
         /// </summary>
-        public MovieIdCategory Type { get; set; }
+        public MovieIdCategory Category { get; set; }
+
+        /// <summary>
+        /// Gets or sets the flags.
+        /// </summary>
+        /// <value>
+        /// The flags.
+        /// </value>
+        public PornMovieFlags Flags { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this <see cref="MovieId"/> is valid.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if valid; otherwise, <c>false</c>.
+        /// </value>
+        public bool Valid { get; set; } = true;
 
         /// <summary>
         /// 解析到的id
@@ -35,11 +51,6 @@ namespace AVOne.Providers
         /// 文件名
         /// </summary>
         public string FileName { get; set; }
-
-        /// <summary>
-        /// 匹配器
-        /// </summary>
-        public string Matcher { get; set; }
 
         /// <summary>
         /// 转换为字符串
@@ -60,5 +71,8 @@ namespace AVOne.Providers
         /// <param name="id"></param>
         public static implicit operator string(MovieId id)
             => id?.Id;
+
+
+        public static MovieId Empty(string name) => new() { Valid = false, Category = MovieIdCategory.None, Id = string.Empty, FileName = name, Flags = PornMovieFlags.None};
     }
 }

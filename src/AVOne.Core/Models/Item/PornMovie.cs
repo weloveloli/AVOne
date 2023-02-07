@@ -4,14 +4,11 @@
 namespace AVOne.Models.Item
 {
     using AVOne.Abstraction;
-    using AVOne.Enum;
     using AVOne.Models.Info;
     using AVOne.Providers;
 
     public class PornMovie : Video, IHasLookupInfo<MovieInfo>
     {
-        public PornMovieFlags Flags { get; set; }
-
         public MovieId MovieId { get; set; }
 
         MovieInfo IHasLookupInfo<MovieInfo>.GetLookupInfo()

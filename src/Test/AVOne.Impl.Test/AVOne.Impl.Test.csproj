@@ -26,4 +26,13 @@
     <ProjectReference Include="..\..\AVOne.Impl\AVOne.Impl.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="files\testconfig.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="files\TextMovieIds.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

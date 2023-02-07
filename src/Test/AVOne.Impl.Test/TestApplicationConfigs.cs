@@ -7,6 +7,6 @@ namespace AVOne.Impl.Test
 
     public class TestApplicationConfigs : IApplicationConfigs
     {
-        public string[] IgnorePatterns { get; set; }
+        public MovieID MovieID { get ; set ; }
     }
 }
