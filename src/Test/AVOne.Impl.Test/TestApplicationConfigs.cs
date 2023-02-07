@@ -7,6 +7,12 @@ namespace AVOne.Impl.Test
 
     public class TestApplicationConfigs : IApplicationConfigs
     {
+        public TestApplicationConfigs()
+        {
+            MovieID = new MovieID();
+            File = new FileConfig();
+        }
         public MovieID MovieID { get ; set ; }
+        public FileConfig File { get; set; }
     }
 }

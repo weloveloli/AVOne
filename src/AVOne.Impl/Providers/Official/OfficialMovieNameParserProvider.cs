@@ -21,7 +21,7 @@ namespace AVOne.Impl.Providers.Official
             string movieName = Path.GetFileName(filepath);
             movieName = movieName.Replace("_", "-").Replace(" ", "-").Replace(".", "-");
 
-            var m = p1080p.Match(movieName);
+            var m = s_p1080p.Match(movieName);
             while (m.Success)
             {
                 movieName = movieName.Replace(m.Groups["p"].Value, "");
@@ -55,12 +55,12 @@ namespace AVOne.Impl.Providers.Official
             if (m.Success && m.Groups["id"].Value.Length >= 4)
                 return m.Groups["id"].Value;
 
-            return null;
+            return MovieId.Empty(filepath);
         }
 
-        private static RegexOptions options = RegexOptions.IgnoreCase | RegexOptions.Compiled;
+        private static readonly RegexOptions options = RegexOptions.IgnoreCase | RegexOptions.Compiled;
 
-        private static Func<string, MovieId>[] funcs = new Func<string, MovieId>[] {
+        private static readonly Func<string, MovieId?>[] funcs = new Func<string, MovieId?>[] {
             Carib,
             Heyzo,
             FC2,
@@ -71,14 +71,14 @@ namespace AVOne.Impl.Providers.Official
         /// <summary>
         /// 移除视频编码 1080p,720p 2k 之类的
         /// </summary>
-        private static Regex p1080p = new Regex(@"(^|[^\d])(?<p>[\d]{3,5}p|[\d]{1,2}k)($|[^a-z])", options);
+        private static readonly Regex s_p1080p = new Regex(@"(^|[^\d])(?<p>[\d]{3,5}p|[\d]{1,2}k)($|[^a-z])", options);
 
-        private static Regex[] regexMusume = new Regex[] {
+        private static readonly Regex[] regexMusume = new Regex[] {
             new Regex(@"(?<id>[\d]{4,8}-[\d]{1,6})-(10mu)",options),
             new Regex(@"(10Musume)-(?<id>[\d]{4,8}-[\d]{1,6})",options)
         };
 
-        private static MovieId Musume(string name)
+        private static MovieId? Musume(string name)
         {
             foreach (var regex in regexMusume)
             {
@@ -93,12 +93,12 @@ namespace AVOne.Impl.Providers.Official
             return null;
         }
 
-        private static Regex[] regexCarib = new Regex[] {
+        private static readonly Regex[] regexCarib = new Regex[] {
             new Regex(@"(?<id>[\d]{4,8}-[\d]{1,6})-(1pon|carib|paco|mura)",options),
             new Regex(@"(1Pondo|Caribbean|Pacopacomama|muramura)-(?<id>[\d]{4,8}-[\d]{1,8})($|[^\d])",options)
         };
 
-        private static MovieId Carib(string name)
+        private static MovieId? Carib(string name)
         {
             foreach (var regex in regexCarib)
             {
@@ -113,9 +113,9 @@ namespace AVOne.Impl.Providers.Official
             return null;
         }
 
-        private static Regex regexHeyzo = new Regex(@"Heyzo(|-| |.com)(HD-|)(?<id>[\d]{2,8})($|[^\d])", options);
+        private static readonly Regex regexHeyzo = new Regex(@"Heyzo(|-| |.com)(HD-|)(?<id>[\d]{2,8})($|[^\d])", options);
 
-        private static MovieId Heyzo(string name)
+        private static MovieId? Heyzo(string name)
         {
             var m = regexHeyzo.Match(name);
             if (m.Success == false)
@@ -129,9 +129,9 @@ namespace AVOne.Impl.Providers.Official
             };
         }
 
-        private static Regex regexFC2 = new Regex(@"FC2-*(PPV|)[^\d]{1,3}(?<id>[\d]{2,10})($|[^\d])", options);
+        private static readonly Regex regexFC2 = new Regex(@"FC2-*(PPV|)[^\d]{1,3}(?<id>[\d]{2,10})($|[^\d])", options);
 
-        public static MovieId FC2(string name)
+        public static MovieId? FC2(string name)
         {
             var m = regexFC2.Match(name);
             if (m.Success == false)
@@ -144,9 +144,9 @@ namespace AVOne.Impl.Providers.Official
             };
         }
 
-        private static Regex regexNumber = new Regex(@"(?<id>[\d]{6,8}-[\d]{1,6})", options);
+        private static readonly Regex regexNumber = new Regex(@"(?<id>[\d]{6,8}-[\d]{1,6})", options);
 
-        private static MovieId OnlyNumber(string name)
+        private static MovieId? OnlyNumber(string name)
         {
             var m = regexNumber.Match(name);
             if (m.Success == false)

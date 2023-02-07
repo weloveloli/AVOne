@@ -29,8 +29,13 @@
             return result;
         }
 
-        public static string TrimEnd(this string target, params string[] trimStrings)
+        public static string TrimEnd(this string target, params string[]? trimStrings)
         {
+            if (string.IsNullOrWhiteSpace(target))
+            {
+                throw new ArgumentException($"{nameof(target)} can not be null or blank.", nameof(target));
+            }
+
             trimStrings = trimStrings?.Where(o => string.IsNullOrEmpty(o) == false).Distinct().ToArray();
             if (trimStrings?.Any() != true)
                 return target;

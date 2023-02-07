@@ -11,9 +11,8 @@ namespace AVOne.Configuration
     }
     public class FileConfig
     {
-        public string scan_dir { get; set; }
         public string media_ext { get; set; } = "3gp;avi;f4v;flv;iso;m2ts;m4v;mkv;mov;mp4;mpeg;rm;rmvb;ts;vob;webm;wmv";
-        public string ignore_folder { get; set; } = "#整理完成;不要扫描";
+        public string ignore_folder { get; set; } = "cleaned";
     }
 
     public interface IApplicationConfigs
