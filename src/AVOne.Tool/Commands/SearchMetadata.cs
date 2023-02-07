@@ -7,7 +7,6 @@ namespace AVOne.Tool.Commands
     using AVOne.Tool.Resources;
     using CommandLine;
     using CommandLine.Text;
-    using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
 
     [Verb("searchmetadata", false, new string[] { "sm" }, HelpText = "HelpTextVerbSearchMetadata", ResourceType = typeof(Resource))]
@@ -29,10 +28,10 @@ namespace AVOne.Tool.Commands
             }
         }
 
-        public override Task<int> ExecuteAsync(IServiceProvider provider, CancellationToken token)
+        public override Task<int> ExecuteAsync(ConsoleAppHost provider, CancellationToken token)
         {
-            var client = provider.GetService<HttpClient>();
-            var logger = provider.GetService<ILogger<SearchMetadata>>();
+            var client = provider.Resolve<HttpClient>();
+            var logger = provider.Resolve<ILogger<SearchMetadata>>();
             logger?.LogDebug($"client null is {client is null}");
             logger?.LogDebug($"logger null is {logger is null}");
             Thread.Sleep(TimeSpan.FromSeconds(30));

@@ -16,11 +16,11 @@ namespace AVOne.Tool.Commands
         [Value(0, Required = true, HelpText = "HelpTextDirectory", ResourceType = typeof(Resource))]
         public string? Dir { get; set; }
 
-        public override Task<int> ExecuteAsync(IServiceProvider provider, CancellationToken token)
+        public override Task<int> ExecuteAsync(ConsoleAppHost provider, CancellationToken token)
         {
-            if (Directory.Exists(this.Dir))
+            if (Directory.Exists(Dir))
             {
-                Console.Error.WriteLine(Resource.ErrorDirectoryNotExists,Dir);
+                Console.Error.WriteLine(Resource.ErrorDirectoryNotExists, Dir);
                 return Task.FromResult(1);
             }
 

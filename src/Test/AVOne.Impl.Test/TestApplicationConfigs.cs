@@ -11,8 +11,10 @@ namespace AVOne.Impl.Test
         {
             MovieID = new MovieID();
             File = new FileConfig();
+            MetadataOptions = Array.Empty<MetadataOptions>();
         }
         public MovieID MovieID { get ; set ; }
         public FileConfig File { get; set; }
+        public MetadataOptions[] MetadataOptions { get; set; }
     }
 }

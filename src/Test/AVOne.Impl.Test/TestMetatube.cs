@@ -3,6 +3,7 @@
 
 namespace AVOne.Impl.Test
 {
+    using AVOne.Configuration;
     using AVOne.Impl.Providers.Metatube;
     using Xunit;
 
@@ -13,7 +14,7 @@ namespace AVOne.Impl.Test
         {
             var metaTubeServerUrl = Environment.GetEnvironmentVariable("MetaTubeServerUrl");
             Skip.IfNot(!string.IsNullOrEmpty(metaTubeServerUrl));
-            var client = new MetatubeApiClient(new HttpClient(), new Configuration.MetaTubeConfiguration
+            var client = new MetatubeApiClient(new HttpClient(), new MetaTubeConfiguration
             {
                 Server = metaTubeServerUrl,
             });

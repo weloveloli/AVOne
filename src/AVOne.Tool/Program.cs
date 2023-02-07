@@ -28,7 +28,7 @@ namespace AVOne.Tool
         /// </summary>
         public const string LoggingConfigFileSystem = "logging.json";
 
-        private static readonly CancellationTokenSource _tokenSource = new CancellationTokenSource();
+        private static readonly CancellationTokenSource _tokenSource = new();
 
         private static readonly ILoggerFactory _loggerFactory = new SerilogLoggerFactory();
 
@@ -45,19 +45,22 @@ namespace AVOne.Tool
             {
                 if (parsed.Value is BaseOptions option)
                 {
-                    return await ExecuteCmd(option).ConfigureAwait(false);
+                    var appPaths = ConsoleApplicationPaths.CreateConsoleApplicationPaths(option);
+                    var host = await CreateHost(option, appPaths);
+                    return await host.ExecuteCmd().ConfigureAwait(false);
                 }
             }
 
             return 1;
         }
 
-        private static async Task<int> ExecuteCmd(BaseOptions option)
+        private static async Task<ConsoleAppHost> CreateHost(BaseOptions option, ConsoleApplicationPaths appPaths)
         {
             // Log all uncaught exceptions to std error
-            static void UnhandledExceptionToConsole(object sender, UnhandledExceptionEventArgs e) =>
+            static void UnhandledExceptionToConsole(object sender, UnhandledExceptionEventArgs e)
+            {
                 Console.Error.WriteLine("Unhandled Exception\n" + e.ExceptionObject.ToString());
-            var appPaths = ConsoleApplicationPaths.CreateConsoleApplicationPaths(option);
+            }
 
             // $AVONETOOL_LOG_DIR needs to be set for the logger configuration manager
             Environment.SetEnvironmentVariable("AVONETOOL_LOG_DIR", appPaths.LogDirectoryPath);
@@ -75,7 +78,7 @@ namespace AVOne.Tool
             var collection = new ServiceCollection();
             collection.TryAdd(ServiceDescriptor.Singleton(_loggerFactory));
             collection.TryAdd(ServiceDescriptor.Singleton(typeof(ILogger<>), typeof(Logger<>)));
-            collection.AddHttpClient();
+            _ = collection.AddHttpClient();
             var serviceProvider = collection.BuildServiceProvider();
 
             // Intercept Ctrl+C and Ctrl+Break
@@ -104,7 +107,7 @@ namespace AVOne.Tool
                 Environment.ExitCode = 128 + 15;
                 Shutdown();
             };
-            return await option.ExecuteAsync(serviceProvider, _tokenSource.Token).ConfigureAwait(false);
+            return new ConsoleAppHost(option, _loggerFactory, _tokenSource, appPaths);
         }
 
         private static IConfiguration CreateAppConfiguration(BaseOptions commandLineOpts, ConsoleApplicationPaths appPaths)
@@ -119,7 +122,7 @@ namespace AVOne.Tool
                     .Build();
         }
 
-        static async Task InitLoggingConfigFile(ConsoleApplicationPaths appPaths)
+        private static async Task InitLoggingConfigFile(ConsoleApplicationPaths appPaths)
         {
             // Do nothing if the config file already exists
             var configPath = Path.Combine(appPaths.ConfigurationDirectoryPath, "logging.default.json");

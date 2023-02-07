@@ -3,11 +3,18 @@
 
 namespace AVOne.Tool.Commands
 {
+    using System;
+    using System.Threading;
+    using System.Threading.Tasks;
     using AVOne.Tool.Resources;
     using CommandLine;
 
-    [Verb("scan", false, new string[] { "scan" }, HelpText = "HelpTextVerbOrganize", ResourceType = typeof(Resource))]
-    public class Scan
+    [Verb("scan", false, new string[] { "scan" }, HelpText = "HelpTextVerbScan", ResourceType = typeof(Resource))]
+    internal class Scan : BaseOptions
     {
+        public override Task<int> ExecuteAsync(ConsoleAppHost provider, CancellationToken token)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

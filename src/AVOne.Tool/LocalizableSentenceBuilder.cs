@@ -6,9 +6,9 @@ namespace AVOne.Tool
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using CommandLine.Text;
-    using CommandLine;
     using AVOne.Tool.Resources;
+    using CommandLine;
+    using CommandLine.Text;
 
     public class LocalizableSentenceBuilder : SentenceBuilder
     {
@@ -58,17 +58,17 @@ namespace AVOne.Tool
                         case ErrorType.UnknownOptionError:
                             return string.Format(Resource.SentenceUnknownOptionError, ((UnknownOptionError)error).Token);
                         case ErrorType.MissingRequiredOptionError:
-                            var errMisssing = ((MissingRequiredOptionError)error);
+                            var errMisssing = (MissingRequiredOptionError)error;
                             return errMisssing.NameInfo.Equals(NameInfo.EmptyName)
                                        ? Resource.SentenceMissingRequiredOptionError
                                        : string.Format(Resource.SentenceMissingRequiredOptionError, errMisssing.NameInfo.NameText);
                         case ErrorType.BadFormatConversionError:
-                            var badFormat = ((BadFormatConversionError)error);
+                            var badFormat = (BadFormatConversionError)error;
                             return badFormat.NameInfo.Equals(NameInfo.EmptyName)
                                        ? Resource.SentenceBadFormatConversionErrorValue
                                        : string.Format(Resource.SentenceBadFormatConversionErrorOption, badFormat.NameInfo.NameText);
                         case ErrorType.SequenceOutOfRangeError:
-                            var seqOutRange = ((SequenceOutOfRangeError)error);
+                            var seqOutRange = (SequenceOutOfRangeError)error;
                             return seqOutRange.NameInfo.Equals(NameInfo.EmptyName)
                                        ? Resource.SentenceSequenceOutOfRangeErrorValue
                                        : string.Format(Resource.SentenceSequenceOutOfRangeErrorOption,
@@ -115,7 +115,7 @@ namespace AVOne.Tool
                             //TODO: Pluralize by namesCount
                             return
                                 string.Format(Resource.SentenceMutuallyExclusiveSetErrors,
-                                    names.Substring(0, names.Length - 2), incompat.Substring(0, incompat.Length - 2));
+                                    names[..^2], incompat[..^2]);
                         }).ToArray();
                     return string.Join(Environment.NewLine, msgs);
                 };

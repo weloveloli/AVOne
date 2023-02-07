@@ -115,6 +115,24 @@ namespace AVOne.Tool.Resources {
         }
         
         /// <summary>
+        ///   查找类似 Scan &amp; organize files under specific folder.  的本地化字符串。
+        /// </summary>
+        public static string HelpTextVerbOrganize {
+            get {
+                return ResourceManager.GetString("HelpTextVerbOrganize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Scan files under specific folder and preview the organize result. 的本地化字符串。
+        /// </summary>
+        public static string HelpTextVerbScan {
+            get {
+                return ResourceManager.GetString("HelpTextVerbScan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Search metadata by filename. 的本地化字符串。
         /// </summary>
         public static string HelpTextVerbSearchMetadata {

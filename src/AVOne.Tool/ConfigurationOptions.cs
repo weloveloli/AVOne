@@ -1,4 +1,7 @@
-﻿namespace AVOne.Tool
+﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
+// Licensed under the Apache V2.0 License.
+
+namespace AVOne.Tool
 {
     using System.Collections.Generic;
 
@@ -25,7 +28,7 @@
         /// <summary>
         /// Gets a new copy of the default configuration options.
         /// </summary>
-        public static Dictionary<string, string?> DefaultConfiguration => new Dictionary<string, string?>
+        public static Dictionary<string, string?> DefaultConfiguration => new()
         {
             { FfmpegProbeSizeKey, "1G" },
             { FfmpegAnalyzeDurationKey, "200M" }

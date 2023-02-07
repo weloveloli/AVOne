@@ -15,11 +15,42 @@ namespace AVOne.Configuration
         public string ignore_folder { get; set; } = "cleaned";
     }
 
+    /// <summary>
+    /// Class MetadataOptions.
+    /// </summary>
+    public class MetadataOptions
+    {
+        public MetadataOptions()
+        {
+            DisabledMetadataSavers = Array.Empty<string>();
+            LocalMetadataReaderOrder = Array.Empty<string>();
+            DisabledMetadataFetchers = Array.Empty<string>();
+            MetadataFetcherOrder = Array.Empty<string>();
+            DisabledImageFetchers = Array.Empty<string>();
+            ImageFetcherOrder = Array.Empty<string>();
+        }
+
+        public string ItemType { get; set; }
+
+        public string[] DisabledMetadataSavers { get; set; }
+
+        public string[] LocalMetadataReaderOrder { get; set; }
+
+        public string[] DisabledMetadataFetchers { get; set; }
+
+        public string[] MetadataFetcherOrder { get; set; }
+
+        public string[] DisabledImageFetchers { get; set; }
+
+        public string[] ImageFetcherOrder { get; set; }
+    }
+
     public interface IApplicationConfigs
     {
-        public MovieID MovieID { get; set; }
+        public MovieID MovieID { get; }
 
-        public FileConfig File { get; set; }
+        public FileConfig File { get; }
 
+        public MetadataOptions[] MetadataOptions { get; }
     }
 }

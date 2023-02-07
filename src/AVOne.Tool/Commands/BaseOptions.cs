@@ -3,11 +3,12 @@
 
 namespace AVOne.Tool.Commands
 {
-    using AVOne.Abstraction;
+    using AVOne.Configuration;
     using AVOne.Tool.Resources;
     using CommandLine;
+    using Microsoft.Extensions.DependencyInjection;
 
-    internal abstract class BaseOptions
+    internal abstract class BaseOptions : IStartupOptions
     {
         /// <summary>
         /// Gets or sets the path to the data directory.
@@ -22,7 +23,12 @@ namespace AVOne.Tool.Commands
             ResourceType = typeof(Resource))]
         public string? FFmpegPath { get; set; }
 
-        public abstract Task<int> ExecuteAsync(IServiceProvider provider, CancellationToken token);
+        public virtual void InitService(IServiceCollection collection)
+        {
+
+        }
+
+        public abstract Task<int> ExecuteAsync(ConsoleAppHost host, CancellationToken token);
 
         /// <summary>
         /// Gets the command line options as a dictionary that can be used in the .NET configuration system.

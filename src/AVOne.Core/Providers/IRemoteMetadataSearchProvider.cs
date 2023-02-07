@@ -8,7 +8,7 @@ namespace AVOne.Providers
     using AVOne.Models.Info;
     using AVOne.Models.Result;
 
-    public interface IRemoteMetadataSearchProvider
+    public interface IRemoteMetadataSearchProvider : IRemoteMetadataProvider
     {
     }
 

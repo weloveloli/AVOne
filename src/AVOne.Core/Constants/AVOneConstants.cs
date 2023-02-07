@@ -5,7 +5,19 @@ namespace AVOne.Constants
 {
     public static class AVOneConstants
     {
-        public static readonly string AVOneVersion = System.Diagnostics.FileVersionInfo.GetVersionInfo(typeof(AVOneConstants).Assembly.Location).FileVersion ?? "0.0.1";
+        /// <summary>
+        /// The default copy to buffer size.
+        /// </summary>
+        public const int CopyToBufferSize = 81920;
 
+        /// <summary>
+        /// The default file stream buffer size.
+        /// </summary>
+        public const int FileStreamBufferSize = 4096;
+
+        /// <summary>
+        /// The default <see cref="StreamWriter" /> buffer size.
+        /// </summary>
+        public const int StreamWriterBufferSize = 1024;
     }
 }

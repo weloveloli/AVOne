@@ -135,6 +135,12 @@
   <data name="HelpTextFileName" xml:space="preserve">
     <value>filename</value>
   </data>
+  <data name="HelpTextVerbOrganize" xml:space="preserve">
+    <value>Scan &amp; organize files under specific folder. </value>
+  </data>
+  <data name="HelpTextVerbScan" xml:space="preserve">
+    <value>Scan files under specific folder and preview the organize result.</value>
+  </data>
   <data name="HelpTextVerbSearchMetadata" xml:space="preserve">
     <value>Search metadata by filename.</value>
   </data>

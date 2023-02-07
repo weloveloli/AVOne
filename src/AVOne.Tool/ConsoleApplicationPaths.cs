@@ -3,14 +3,11 @@
 
 namespace AVOne.Tool
 {
-    using System.Net;
+    using AVOne.Configuration;
     using AVOne.Tool.Commands;
 
-    internal class ConsoleApplicationPaths
+    internal class ConsoleApplicationPaths : IApplicationPaths
     {
-
-        private readonly string _dataPath;
-
         public ConsoleApplicationPaths(
             string programDataPath,
             string logDirectoryPath,
@@ -21,7 +18,7 @@ namespace AVOne.Tool
             LogDirectoryPath = logDirectoryPath;
             ConfigurationDirectoryPath = configurationDirectoryPath;
             CachePath = cacheDirectoryPath;
-            _dataPath = Directory.CreateDirectory(Path.Combine(ProgramDataPath, "data")).FullName;
+            DataPath = Directory.CreateDirectory(Path.Combine(ProgramDataPath, "data")).FullName;
         }
         /// <summary>
         /// Gets the path to the program data folder.
@@ -33,10 +30,46 @@ namespace AVOne.Tool
         public string CachePath { get; private set; }
 
         /// <summary>
+        /// Gets the path to the system folder.
+        /// </summary>
+        /// <value>The path to the system folder.</value>
+        public string ProgramSystemPath { get; } = AppContext.BaseDirectory;
+
+        /// <summary>
         /// Gets the folder path to the data directory.
         /// </summary>
         /// <value>The data directory.</value>
-        public string DataPath => _dataPath;
+        public string DataPath { get; }
+
+        /// <summary>
+        /// Gets the image cache path.
+        /// </summary>
+        /// <value>The image cache path.</value>
+        public string ImageCachePath => Path.Combine(CachePath, "images");
+
+        /// <summary>
+        /// Gets the path to the plugin directory.
+        /// </summary>
+        /// <value>The plugins path.</value>
+        public string PluginsPath => Path.Combine(ProgramDataPath, "plugins");
+
+        /// <summary>
+        /// Gets the path to the plugin configurations directory.
+        /// </summary>
+        /// <value>The plugin configurations path.</value>
+        public string PluginConfigurationsPath => Path.Combine(PluginsPath, "configurations");
+
+        /// <summary>
+        /// Gets the folder path to the temp directory within the cache folder.
+        /// </summary>
+        /// <value>The temp directory.</value>
+        public string TempDirectory => Path.Combine(CachePath, "temp");
+
+        /// <summary>
+        /// Gets the path to the system configuration file.
+        /// </summary>
+        /// <value>The system configuration file path.</value>
+        public string SystemConfigurationFilePath => Path.Combine(ConfigurationDirectoryPath, "console.xml");
 
         public static ConsoleApplicationPaths CreateConsoleApplicationPaths(BaseOptions options)
         {
@@ -90,7 +123,6 @@ namespace AVOne.Tool
                 }
             }
 
-
             // cacheDir
             // IF $AVONETOOL_CACHE_DIR
             // ELSE IF windows, use <datadir>/cache
@@ -136,7 +168,6 @@ namespace AVOne.Tool
                 logDir = Path.Combine(dataDir, "log");
             }
 
-
             // Normalize paths. Only possible with GetFullPath for now - https://github.com/dotnet/runtime/issues/2162
             dataDir = Path.GetFullPath(dataDir);
             logDir = Path.GetFullPath(logDir);
@@ -146,10 +177,10 @@ namespace AVOne.Tool
             // Ensure the main folders exist before we continue
             try
             {
-                Directory.CreateDirectory(dataDir);
-                Directory.CreateDirectory(logDir);
-                Directory.CreateDirectory(configDir);
-                Directory.CreateDirectory(cacheDir);
+                _ = Directory.CreateDirectory(dataDir);
+                _ = Directory.CreateDirectory(logDir);
+                _ = Directory.CreateDirectory(configDir);
+                _ = Directory.CreateDirectory(cacheDir);
             }
             catch (IOException ex)
             {
@@ -160,6 +191,5 @@ namespace AVOne.Tool
 
             return new ConsoleApplicationPaths(dataDir, logDir, configDir, cacheDir);
         }
-
     }
 }
