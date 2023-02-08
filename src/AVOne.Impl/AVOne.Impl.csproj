@@ -10,8 +10,5 @@
   <ItemGroup>
     <ProjectReference Include="..\AVOne.Core\AVOne.Core.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Providers\Base\" />
-  </ItemGroup>
 
 </Project>

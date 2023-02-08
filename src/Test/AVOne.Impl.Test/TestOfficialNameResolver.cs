@@ -10,19 +10,6 @@ namespace AVOne.Impl.Test
     public class TestOfficialNameResolver
     {
         [Theory]
-        [InlineData("abc_88", "abc-88")]
-        [InlineData("abc-88-C", "abc-88")]
-        [InlineData("FC2PPV-3068336", "FC2-3068336")]
-        public void TestNameResolver(string name, string expectedId)
-        {
-            var provider = new OfficialMovieNameParserProvider();
-
-            var id = provider.Parse(name);
-
-            Assert.Equal(expectedId, id.Id);
-        }
-
-        [Theory]
         [InlineData("FC2PPV-3068336", "FC2-3068336", PornMovieFlags.Uncensored, MovieIdCategory.Amateur)]
         [InlineData("FC2-PPV-3068336", "FC2-3068336", PornMovieFlags.Uncensored, MovieIdCategory.Amateur)]
         [InlineData("FC2-3068336", "FC2-3068336", PornMovieFlags.Uncensored, MovieIdCategory.Amateur)]

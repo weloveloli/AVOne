@@ -39,6 +39,25 @@ namespace AVOne.Models.Item
         [JsonIgnore]
         public virtual string Path { get; set; }
 
+        public DateTime DateLastSaved { get; set; }
+
+        /// <summary>
+        /// Gets or sets the date created.
+        /// </summary>
+        /// <value>The date created.</value>
+        [JsonIgnore]
+        public DateTime DateCreated { get; set; }
+
+        /// <summary>
+        /// Gets or sets the date modified.
+        /// </summary>
+        /// <value>The date modified.</value>
+        [JsonIgnore]
+        public DateTime DateModified { get; set; }
+
+        [JsonIgnore]
+        public string Tagline { get; set; }
+
         public abstract ItemLookupInfo GetLookupInfo();
     }
 }
