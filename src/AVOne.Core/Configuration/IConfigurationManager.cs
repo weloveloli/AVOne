@@ -14,8 +14,14 @@ namespace AVOne.Configuration
         /// Gets the application paths.
         /// </summary>
         /// <value>The application paths.</value>
-        IApplicationPaths CommonApplicationPaths { get; }
+        IApplicationPaths ApplicationPaths { get; }
 
-        IApplicationConfigs Configuration {get; }
+        /// <summary>
+        /// Gets the common configuration.
+        /// </summary>
+        /// <value>
+        /// The common configuration.
+        /// </value>
+        BaseApplicationConfiguration CommonConfiguration {get; }
     }
 }

@@ -9,10 +9,9 @@ namespace AVOne.Impl.Providers
     using AVOne.Providers;
     using Microsoft.Extensions.Logging;
 
-    public class ProviderManager
+    public class ProviderManager : IProviderManager
     {
         private IImageProvider[] ImageProviders { get; set; }
-
         private IMetadataProvider[] _metadataProviders = Array.Empty<IMetadataProvider>();
         private INamingOptionProvider[] _namingOptionProviders = Array.Empty<INamingOptionProvider>();
         private readonly ILogger<ProviderManager> _logger;
@@ -22,6 +21,7 @@ namespace AVOne.Impl.Providers
         {
             this._logger = logger;
             _configurationManager = configurationManager;
+            ImageProviders = Array.Empty<IImageProvider>();
         }
 
         /// <inheritdoc/>
@@ -54,7 +54,7 @@ namespace AVOne.Impl.Providers
         {
             var type = item.GetType().Name;
 
-            return _configurationManager.Configuration.MetadataOptions
+            return _configurationManager.CommonConfiguration.MetadataOptions
                 .FirstOrDefault(i => string.Equals(i.ItemType, type, StringComparison.OrdinalIgnoreCase)) ??
                 new MetadataOptions();
         }
@@ -68,6 +68,7 @@ namespace AVOne.Impl.Providers
             return _metadataProviders.OfType<IMetadataProvider<T>>()
                 .OrderBy(GetDefaultOrder);
         }
+
         private int GetDefaultOrder(IMetadataProvider provider)
         {
             if (provider is IHasOrder hasOrder)

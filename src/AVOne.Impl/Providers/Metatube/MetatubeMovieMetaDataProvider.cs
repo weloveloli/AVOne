@@ -11,10 +11,10 @@ namespace AVOne.Impl.Providers.Metatube
     using AVOne.Impl.Constants;
     using AVOne.Models.Result;
     using AVOne.Providers;
-    using MovieInfo = AVOne.Models.Info.MovieInfo;
+    using PornMovieInfo = AVOne.Models.Info.PornMovieInfo;
     using PornMovie = AVOne.Models.Item.PornMovie;
 
-    public class MetatubeMovieMetaDataProvider : IRemoteMetadataProvider<PornMovie, MovieInfo>
+    public class MetatubeMovieMetaDataProvider : IRemoteMetadataProvider<PornMovie, PornMovieInfo>
     {
         private readonly MetatubeApiClient _client;
 
@@ -24,12 +24,12 @@ namespace AVOne.Impl.Providers.Metatube
         }
         public string Name => OfficialProviderNames.MetaTube;
 
-        public Task<MetadataResult<PornMovie>> GetMetadata(MovieInfo info, CancellationToken cancellationToken)
+        public Task<MetadataResult<PornMovie>> GetMetadata(PornMovieInfo info, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<RemoteMetadataSearchResult>> GetSearchResults(MovieInfo searchInfo, CancellationToken cancellationToken)
+        public Task<IEnumerable<RemoteMetadataSearchResult>> GetSearchResults(PornMovieInfo searchInfo, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }

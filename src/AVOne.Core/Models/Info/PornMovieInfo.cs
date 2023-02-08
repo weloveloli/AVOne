@@ -1,20 +1,13 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // Licensed under the Apache V2.0 License.
+
 #nullable disable
 
-namespace AVOne.Providers
+namespace AVOne.Models.Info
 {
     using AVOne.Enum;
 
-    public interface IPornMovieNameParserProvider : IOrderProvider
-    {
-        public MovieId Parse(string filePath);
-    }
-
-    /// <summary>
-    /// 番号
-    /// </summary>
-    public class MovieId
+    public class PornMovieInfo : ItemLookupInfo
     {
         /// <summary>
         /// 类型
@@ -62,17 +55,16 @@ namespace AVOne.Providers
         /// 转换
         /// </summary>
         /// <param name="id"></param>
-        public static implicit operator MovieId(string id)
-            => new MovieId() { Id = id };
+        public static implicit operator PornMovieInfo(string id)
+            => new PornMovieInfo() { Id = id };
 
         /// <summary>
         /// 转换
         /// </summary>
         /// <param name="id"></param>
-        public static implicit operator string(MovieId id)
+        public static implicit operator string(PornMovieInfo id)
             => id?.Id;
 
-
-        public static MovieId Empty(string name) => new() { Valid = false, Category = MovieIdCategory.None, Id = string.Empty, FileName = name, Flags = PornMovieFlags.None};
+        public static PornMovieInfo Empty(string name) => new() { Valid = false, Category = MovieIdCategory.None, Id = string.Empty, FileName = name, Flags = PornMovieFlags.None };
     }
 }

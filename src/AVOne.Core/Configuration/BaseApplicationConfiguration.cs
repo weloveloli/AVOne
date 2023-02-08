@@ -1,5 +1,6 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // Licensed under the Apache V2.0 License.
+#nullable disable
 
 namespace AVOne.Configuration
 {
@@ -45,12 +46,18 @@ namespace AVOne.Configuration
         public string[] ImageFetcherOrder { get; set; }
     }
 
-    public interface IApplicationConfigs
+    public class BaseApplicationConfiguration
     {
-        public MovieID MovieID { get; }
+        public BaseApplicationConfiguration()
+        {
+            MovieID = new MovieID();
+            File = new FileConfig();
+            MetadataOptions = Array.Empty<MetadataOptions>();
+        }
+        public MovieID MovieID { get; set; }
 
-        public FileConfig File { get; }
+        public FileConfig File { get; set; }
 
-        public MetadataOptions[] MetadataOptions { get; }
+        public MetadataOptions[] MetadataOptions { get; set; }
     }
 }

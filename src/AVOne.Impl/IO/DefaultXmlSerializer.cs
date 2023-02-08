@@ -1,4 +1,7 @@
-﻿namespace AVOne.Impl.IO
+﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
+// Licensed under the Apache V2.0 License.
+
+namespace AVOne.Impl.IO
 {
     using System.Collections.Concurrent;
     using System.Xml;
@@ -39,13 +42,13 @@
         /// <param name="type">The type.</param>
         /// <param name="stream">The stream.</param>
         /// <returns>System.Object.</returns>
-        public object? DeserializeFromStream(Type type, Stream stream)
+        public object DeserializeFromStream(Type type, Stream stream)
         {
-            using (var reader = XmlReader.Create(stream))
-            {
-                var netSerializer = GetSerializer(type);
-                return netSerializer.Deserialize(reader);
-            }
+            using var reader = XmlReader.Create(stream);
+            var netSerializer = GetSerializer(type);
+#pragma warning disable CS8603 // Possible null reference return.
+            return netSerializer.Deserialize(reader);
+#pragma warning restore CS8603 // Possible null reference return.
         }
 
         /// <summary>
@@ -55,12 +58,10 @@
         /// <param name="stream">The stream.</param>
         public void SerializeToStream(object obj, Stream stream)
         {
-            using (var writer = new StreamWriter(stream, null, AVOneConstants.StreamWriterBufferSize, true))
-            using (var textWriter = new XmlTextWriter(writer))
-            {
-                textWriter.Formatting = Formatting.Indented;
-                SerializeToWriter(obj, textWriter);
-            }
+            using var writer = new StreamWriter(stream, null, AVOneConstants.StreamWriterBufferSize, true);
+            using var textWriter = new XmlTextWriter(writer);
+            textWriter.Formatting = Formatting.Indented;
+            SerializeToWriter(obj, textWriter);
         }
 
         /// <summary>
@@ -70,10 +71,8 @@
         /// <param name="file">The file.</param>
         public void SerializeToFile(object obj, string file)
         {
-            using (var stream = new FileStream(file, FileMode.Create, FileAccess.Write))
-            {
-                SerializeToStream(obj, stream);
-            }
+            using var stream = new FileStream(file, FileMode.Create, FileAccess.Write);
+            SerializeToStream(obj, stream);
         }
 
         /// <summary>
@@ -82,12 +81,10 @@
         /// <param name="type">The type.</param>
         /// <param name="file">The file.</param>
         /// <returns>System.Object.</returns>
-        public object? DeserializeFromFile(Type type, string file)
+        public object DeserializeFromFile(Type type, string file)
         {
-            using (var stream = File.OpenRead(file))
-            {
-                return DeserializeFromStream(type, stream);
-            }
+            using var stream = File.OpenRead(file);
+            return DeserializeFromStream(type, stream);
         }
 
         /// <summary>
@@ -96,12 +93,10 @@
         /// <param name="type">The type.</param>
         /// <param name="buffer">The buffer.</param>
         /// <returns>System.Object.</returns>
-        public object? DeserializeFromBytes(Type type, byte[] buffer)
+        public object DeserializeFromBytes(Type type, byte[] buffer)
         {
-            using (var stream = new MemoryStream(buffer, 0, buffer.Length, false, true))
-            {
-                return DeserializeFromStream(type, stream);
-            }
+            using var stream = new MemoryStream(buffer, 0, buffer.Length, false, true);
+            return DeserializeFromStream(type, stream);
         }
     }
 }

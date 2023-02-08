@@ -5,6 +5,7 @@ namespace AVOne.Tool
 {
     using System.Text;
     using AVOne.Tool.Commands;
+    using AVOne.Tool.Configuration;
     using CommandLine;
     using CommandLine.Text;
     using Microsoft.Extensions.Configuration;

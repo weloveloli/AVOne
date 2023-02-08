@@ -4,16 +4,22 @@
 namespace AVOne.Impl.Providers.Official
 {
     using System.Text.RegularExpressions;
+    using System.Threading;
+    using System.Threading.Tasks;
     using AVOne.Configuration;
     using AVOne.Enum;
     using AVOne.Impl.Constants;
+    using AVOne.IO;
+    using AVOne.Models.Info;
+    using AVOne.Models.Item;
+    using AVOne.Models.Result;
     using AVOne.Providers;
 
     /// <summary>
-    /// 从给定的文件路径中提取番号
+    /// 从给定的文件路径中提取番号和相关信息
     /// </summary>
-    /// <seealso cref="AVOne.Providers.IPornMovieNameParserProvider" />
-    public class OfficialMovieNameParserV2Provider : IPornMovieNameParserProvider
+    /// <seealso cref="ILocalMetadataProvider" />
+    public class OfficialLocalMetadataProvider : ILocalMetadataProvider<PornMovie>
     {
         private readonly Regex ignore_pattern;
 
@@ -21,7 +27,7 @@ namespace AVOne.Impl.Providers.Official
 
         public string Name => OfficialProviderNames.Official;
 
-        public OfficialMovieNameParserV2Provider(IApplicationConfigs cfg)
+        public OfficialLocalMetadataProvider(BaseApplicationConfiguration cfg)
         {
             var words = cfg.MovieID.ignore_whole_word.Replace(" ", "").Split(';');
             var regexes = cfg.MovieID.ignore_regex.Split(';');
@@ -33,16 +39,16 @@ namespace AVOne.Impl.Providers.Official
             this.ignore_pattern = new Regex(patternStr, RegexOptions.IgnoreCase | RegexOptions.Singleline);
         }
 
-        public MovieId Parse(string filepath)
+        public PornMovieInfo Parse(string filepath)
         {
             var id = this.GetId(filepath, out var category, out var flags);
             if (string.IsNullOrEmpty(id))
             {
-                return MovieId.Empty(filepath);
+                return PornMovieInfo.Empty(filepath);
             }
             else
             {
-                return new MovieId
+                return new PornMovieInfo
                 {
                     FileName = filepath,
                     Id = id,
@@ -131,7 +137,7 @@ namespace AVOne.Impl.Providers.Official
 
             }
 
-            // Try to match east heat n, k series
+            // Try to match Tokyo-hot n, k series
             match = Regex.Match(filename, @"(n\d{4}|k\d{4})", RegexOptions.IgnoreCase);
             if (match.Success)
             {
@@ -183,5 +189,16 @@ namespace AVOne.Impl.Providers.Official
             return flags;
         }
 
+        public Task<MetadataResult<PornMovie>> GetMetadata(ItemInfo info, IDirectoryService directoryService, CancellationToken cancellationToken)
+        {
+            return Task.Run(() =>
+            {
+                var result = new MetadataResult<PornMovie>()
+                {
+
+                };
+                return result;
+            });
+        }
     }
 }

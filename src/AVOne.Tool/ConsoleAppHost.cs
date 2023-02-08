@@ -1,5 +1,6 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // Licensed under the Apache V2.0 License.
+#nullable disable
 
 namespace AVOne.Tool
 {
@@ -11,22 +12,32 @@ namespace AVOne.Tool
     using AVOne.Abstraction;
     using AVOne.Configuration;
     using AVOne.Impl.Constants;
+    using AVOne.Impl.IO;
+    using AVOne.Impl.Providers;
+    using AVOne.IO;
+    using AVOne.Providers;
     using AVOne.Tool.Commands;
+    using AVOne.Tool.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;
     using Microsoft.Extensions.Logging;
 
     internal class ConsoleAppHost : IApplicationHost, IAsyncDisposable, IDisposable
     {
-        private readonly BaseOptions option;
+        private readonly BaseOptions _option;
         private readonly CancellationTokenSource _tokenSource;
-        private readonly ConsoleApplicationPaths appPaths;
+        private readonly ConsoleApplicationPaths _appPaths;
         private bool _disposed = false;
         private List<Type> _creatingInstances;
         /// <summary>
         /// The disposable parts.
         /// </summary>
         private readonly ConcurrentDictionary<IDisposable, byte> _disposableParts = new();
+
+        private readonly IXmlSerializer _xmlSerializer;
+
+        private readonly IFileSystem _fileSystem;
+
         public Version ApplicationVersion { get; }
 
         /// <summary>
@@ -34,7 +45,9 @@ namespace AVOne.Tool
         /// </summary>
         public IServiceProvider ServiceProvider { get; set; }
 
-        public ConsoleApplicationPaths AppPaths => appPaths;
+        public ConsoleApplicationPaths AppPaths => _appPaths;
+
+        public ConsoleConfigurationManager ConfigurationManager { get; }
 
         /// <summary>
         /// Gets the logger.
@@ -54,17 +67,20 @@ namespace AVOne.Tool
 
         public ConsoleAppHost(BaseOptions option, ILoggerFactory loggerFactory, CancellationTokenSource tokenSource, ConsoleApplicationPaths path)
         {
-            this.option = option;
+            this._option = option;
             LoggerFactory = loggerFactory;
             _tokenSource = tokenSource;
             ApplicationVersion = typeof(ConsoleAppHost).Assembly.GetName().Version;
-            appPaths = path;
+            _appPaths = path;
             Logger = loggerFactory.CreateLogger<ConsoleAppHost>();
+            _fileSystem = new ManagedFileSystem(LoggerFactory.CreateLogger<ManagedFileSystem>(), path);
+            _xmlSerializer = new DefaultXmlSerializer();
+            ConfigurationManager = new ConsoleConfigurationManager(path,loggerFactory, _xmlSerializer, _fileSystem);
         }
 
         public async Task<int> ExecuteCmd()
         {
-            return await option.ExecuteAsync(this, _tokenSource.Token).ConfigureAwait(false);
+            return await _option.ExecuteAsync(this, _tokenSource.Token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -84,6 +100,15 @@ namespace AVOne.Tool
             _ = serviceCollection.AddHttpClient();
             RegisterServices(serviceCollection);
             ServiceProvider = serviceCollection.BuildServiceProvider();
+            AddParts();
+        }
+
+        private void AddParts()
+        {
+            Resolve<IProviderManager>().AddParts(
+                GetExports<IImageProvider>(),
+                GetExports<IMetadataProvider>(),
+                GetExports<INamingOptionProvider>());
         }
 
         /// <summary>
@@ -92,10 +117,15 @@ namespace AVOne.Tool
         /// <param name="serviceCollection">Instance of the <see cref="IServiceCollection"/> interface.</param>
         protected void RegisterServices(IServiceCollection serviceCollection)
         {
-            option.InitService(serviceCollection);
+            _option.InitService(serviceCollection);
             serviceCollection.AddMemoryCache();
             serviceCollection.AddSingleton<IApplicationHost>(this);
-            serviceCollection.AddSingleton<IStartupOptions>(this.option);
+            serviceCollection.AddSingleton<IStartupOptions>(this._option);
+            serviceCollection.AddSingleton<IApplicationPaths>(AppPaths);
+            serviceCollection.AddSingleton(this._xmlSerializer);
+            serviceCollection.AddSingleton(this._fileSystem);
+            serviceCollection.AddSingleton<IConfigurationManager>(ConfigurationManager);
+            serviceCollection.AddSingleton<IProviderManager, ProviderManager>();
         }
 
         /// <summary>
@@ -158,10 +188,24 @@ namespace AVOne.Tool
             return parts;
         }
 
-
         public IReadOnlyCollection<T> GetExports<T>(CreationDelegateFactory defaultFunc, bool manageLifetime)
         {
-            throw new NotImplementedException();
+            // Convert to list so this isn't executed for each iteration
+            var parts = GetExportTypes<T>()
+                .Select(i => defaultFunc(i))
+                .Where(i => i != null)
+                .Cast<T>()
+                .ToList();
+
+            if (manageLifetime)
+            {
+                foreach (var part in parts.OfType<IDisposable>())
+                {
+                    _disposableParts.TryAdd(part, byte.MinValue);
+                }
+            }
+
+            return parts;
         }
 
         public IEnumerable<Type> GetExportTypes<T>()
@@ -178,10 +222,12 @@ namespace AVOne.Tool
             }
         }
 
-        public T Resolve<T>()
-        {
-            throw new NotImplementedException();
-        }
+        /// <summary>
+        /// Resolves this instance.
+        /// </summary>
+        /// <typeparam name="T">The type.</typeparam>
+        /// <returns>``0.</returns>
+        public T Resolve<T>() => ServiceProvider.GetService<T>();
 
         public Task Shutdown()
         {
@@ -235,7 +281,6 @@ namespace AVOne.Tool
             Dispose(true);
             GC.SuppressFinalize(this);
         }
-
 
         /// <summary>
         /// Releases unmanaged and - optionally - managed resources.
@@ -293,29 +338,32 @@ namespace AVOne.Tool
         /// <returns>A ValueTask.</returns>
         protected virtual async ValueTask DisposeAsyncCore()
         {
-            var type = GetType();
-
-            Logger.LogInformation("Disposing {Type}", type.Name);
-
-            foreach (var (part, _) in _disposableParts)
+            await Task.Run(() =>
             {
-                var partType = part.GetType();
-                if (partType == type)
-                {
-                    continue;
-                }
+                var type = GetType();
 
-                Logger.LogInformation("Disposing {Type}", partType.Name);
+                Logger.LogInformation("Disposing {Type}", type.Name);
 
-                try
+                foreach (var (part, _) in _disposableParts)
                 {
-                    part.Dispose();
+                    var partType = part.GetType();
+                    if (partType == type)
+                    {
+                        continue;
+                    }
+
+                    Logger.LogInformation("Disposing {Type}", partType.Name);
+
+                    try
+                    {
+                        part.Dispose();
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogError(ex, "Error disposing {Type}", partType.Name);
+                    }
                 }
-                catch (Exception ex)
-                {
-                    Logger.LogError(ex, "Error disposing {Type}", partType.Name);
-                }
-            }
+            });
         }
     }
 }

@@ -9,18 +9,18 @@ namespace AVOne.Impl.Test
 
     public class TestOfficialNameResolver
     {
-        //[Theory]
-        //[InlineData("abc_88", "abc-88")]
-        //[InlineData("abc-88-C", "abc-88")]
-        //[InlineData("FC2PPV-3068336", "FC2-3068336")]
-        //public void TestNameResolver(string name, string expectedId)
-        //{
-        //    var provider = new OfficialMovieNameParserProvider();
+        [Theory]
+        [InlineData("abc_88", "abc-88")]
+        [InlineData("abc-88-C", "abc-88")]
+        [InlineData("FC2PPV-3068336", "FC2-3068336")]
+        public void TestNameResolver(string name, string expectedId)
+        {
+            var provider = new OfficialMovieNameParserProvider();
 
-        //    var id = provider.Parse(name);
+            var id = provider.Parse(name);
 
-        //    Assert.Equal(expectedId, id.Id);
-        //}
+            Assert.Equal(expectedId, id.Id);
+        }
 
         [Theory]
         [InlineData("FC2PPV-3068336", "FC2-3068336", PornMovieFlags.Uncensored, MovieIdCategory.Amateur)]
@@ -32,7 +32,7 @@ namespace AVOne.Impl.Test
         public void TestOfficialMovieNameParserV2Provider(string name, string expectedId, PornMovieFlags flags, MovieIdCategory movieIdCategory)
         {
             var json = File.ReadAllText(Path.Combine("files", "testconfig.json"));
-            var provider = new OfficialMovieNameParserV2Provider(JsonConvert.DeserializeObject<TestApplicationConfigs>(json));
+            var provider = new OfficialLocalMetadataProvider(JsonConvert.DeserializeObject<TestApplicationConfigs>(json));
             var id = provider.Parse(name);
             Assert.NotNull(id);
             Assert.Equal(expectedId, id.Id);
@@ -45,7 +45,7 @@ namespace AVOne.Impl.Test
         public void TestOfficialMovieNameParserV2ProviderIds()
         {
             var json = File.ReadAllText(Path.Combine("files", "testconfig.json"));
-            var provider = new OfficialMovieNameParserV2Provider(JsonConvert.DeserializeObject<TestApplicationConfigs>(json));
+            var provider = new OfficialLocalMetadataProvider(JsonConvert.DeserializeObject<TestApplicationConfigs>(json));
             var lines = File.ReadAllLines(Path.Combine("files", "TextMovieIds.txt"));
             foreach (var line in lines)
             {

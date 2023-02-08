@@ -3,7 +3,7 @@
 
 namespace AVOne.Constants
 {
-    public static class AVOneConstants
+    public class AVOneConstants
     {
         /// <summary>
         /// The default copy to buffer size.

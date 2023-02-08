@@ -5,15 +5,11 @@ namespace AVOne.Models.Item
 {
     using AVOne.Abstraction;
     using AVOne.Models.Info;
-    using AVOne.Providers;
 
-    public class PornMovie : Video, IHasLookupInfo<MovieInfo>
+    public class PornMovie : Video, IHasLookupInfo<PornMovieInfo>
     {
-        public MovieId? MovieId { get; set; }
+        public PornMovieInfo PornMovieInfo { get; set; }
 
-        MovieInfo IHasLookupInfo<MovieInfo>.GetLookupInfo()
-        {
-            throw new NotImplementedException();
-        }
+        PornMovieInfo IHasLookupInfo<PornMovieInfo>.GetLookupInfo() => PornMovieInfo;
     }
 }
