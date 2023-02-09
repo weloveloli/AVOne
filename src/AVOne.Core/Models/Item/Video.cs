@@ -5,7 +5,6 @@
 
 namespace AVOne.Models.Item
 {
-    using System.Text.Json.Serialization;
     using AVOne.Enum;
     using AVOne.Models.Info;
 
