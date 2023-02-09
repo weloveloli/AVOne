@@ -9,6 +9,7 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
     using AVOne.Models.Item;
     using AVOne.Models.Result;
     using AVOne.Providers;
+    using MediaBrowser.XbmcMetadata.Savers;
     using Microsoft.Extensions.Logging;
 
     public abstract class BaseVideoNfoProvider<T> : BaseNfoProvider<T>
@@ -52,7 +53,7 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
         protected override FileSystemMetadata? GetXmlFile(ItemInfo info, IDirectoryService directoryService)
         {
 
-            return MovieNfoSaver.GetMovieSavePaths(info)
+            return JellyfinMovieNfoSaver.GetMovieSavePaths(info)
                 .Select(directoryService.GetFile)
                 .FirstOrDefault(i => i != null);
         }

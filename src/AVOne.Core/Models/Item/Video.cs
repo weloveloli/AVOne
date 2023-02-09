@@ -49,9 +49,6 @@ namespace AVOne.Models.Item
 
         public string[] AdditionalParts { get; set; }
 
-        [JsonIgnore]
-        public virtual ItemImageInfo[] ImageInfos { get; set; }
-
         public override ItemLookupInfo GetLookupInfo()
         {
             throw new NotImplementedException();

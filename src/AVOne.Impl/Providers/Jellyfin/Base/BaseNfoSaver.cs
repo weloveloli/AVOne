@@ -5,26 +5,22 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
 {
     using System.Globalization;
     using System.Text;
-    using System.Text.RegularExpressions;
     using System.Xml;
     using AVOne.Configuration;
     using AVOne.Extensions;
     using AVOne.IO;
     using AVOne.Enum;
     using AVOne.Models.Item;
-    using AVOne.Providers;
     using Microsoft.Extensions.Logging;
     using AVOne.Constants;
     using AVOne.Models.Info;
+    using AVOne.Providers;
 
-    public abstract class BaseNfoSaver : IMetadataFileSaverProvider
+    public abstract class BaseJellifinNfoSaver : IMetadataFileSaverProvider
     {
         public const string DateAddedFormat = "yyyy-MM-dd HH:mm:ss";
 
         public const string YouTubeWatchUrl = "https://www.youtube.com/watch?v=";
-
-        // filters control characters but allows only properly-formed surrogate sequences
-        private const string _invalidXMLCharsRegex = @"(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F\uFEFF\uFFFE\uFFFF]";
 
         private static readonly HashSet<string> _commonTags = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
@@ -92,10 +88,10 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
             "countrycode"
         };
 
-        protected BaseNfoSaver(
+        protected BaseJellifinNfoSaver(
             IFileSystem fileSystem,
             IConfigurationManager configurationManager,
-            ILogger<BaseNfoSaver> logger)
+            ILogger<BaseJellifinNfoSaver> logger)
         {
             Logger = logger;
             ConfigurationManager = configurationManager;
@@ -106,12 +102,14 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
 
         protected IConfigurationManager ConfigurationManager { get; }
 
-        protected ILogger<BaseNfoSaver> Logger { get; }
+        protected ILogger<BaseJellifinNfoSaver> Logger { get; }
 
         /// <inheritdoc />
         public string Name => SaverName;
 
         public static string SaverName => "Nfo";
+
+        public abstract int Order { get; }
 
         /// <inheritdoc />
         public string GetSavePath(BaseItem item)
@@ -187,18 +185,6 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
             }
         }
 
-        private void SetHidden(string path, bool hidden)
-        {
-            try
-            {
-                FileSystem.SetHidden(path, hidden);
-            }
-            catch (IOException ex)
-            {
-                Logger.LogError(ex, "Error setting hidden attribute on {Path}", path);
-            }
-        }
-
         private void Save(BaseItem item, Stream stream, string xmlPath)
         {
             var settings = new XmlWriterSettings
@@ -220,7 +206,7 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
 
                 if (baseItem != null)
                 {
-                    AddCommonNodes(baseItem, writer, ConfigurationManager);
+                    AddCommonNodes(baseItem, writer);
                 }
 
                 WriteCustomElements(item, writer);
@@ -255,8 +241,7 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
         /// </summary>
         private void AddCommonNodes(
             BaseItem item,
-            XmlWriter writer,
-            IConfigurationManager config)
+            XmlWriter writer)
         {
             var writtenProviderIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
@@ -264,10 +249,7 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
                 .StripHtml()
                 .Replace("&quot;", "'", StringComparison.Ordinal);
 
-            var options = config.GetNfoConfiguration();
-
-
-            writer.WriteElementString("plot", overview);        
+            writer.WriteElementString("plot", overview);
 
             if (item is not Video)
             {
@@ -278,7 +260,6 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
             {
                 writer.WriteElementString("customrating", item.CustomRating);
             }
-
 
             writer.WriteElementString("dateadded", item.DateCreated.ToString(DateAddedFormat, CultureInfo.InvariantCulture));
 
@@ -351,7 +332,7 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
             if (!string.IsNullOrEmpty(item.PreferredMetadataCountryCode))
             {
                 writer.WriteElementString("countrycode", item.PreferredMetadataCountryCode);
-            }           
+            }
 
             if (item.CriticRating.HasValue)
             {
@@ -394,9 +375,7 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
 
             foreach (var tag in item.Tags)
             {
-
-               writer.WriteElementString("tag", tag);
-
+                writer.WriteElementString("tag", tag);
             }
 
             if (item.ProviderIds != null)
@@ -427,12 +406,7 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
                 }
             }
 
-            if (options.SaveImagePathsInNfo)
-            {
-                AddImages(item, writer);
-            }
-
-            AddActors(people, writer, options.SaveImagePathsInNfo);
+            AddActors(people, writer);
         }
 
         /// <summary>
@@ -446,26 +420,7 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
             return url.Replace(YouTubeWatchUrl, "plugin://plugin.video.youtube/?action=play_video&videoid=", StringComparison.OrdinalIgnoreCase);
         }
 
-        private void AddImages(BaseItem item, XmlWriter writer)
-        {
-            writer.WriteStartElement("art");
-
-            var image = item.GetImageInfo(ImageType.Primary, 0);
-
-            if (image != null)
-            {
-                writer.WriteElementString("poster", GetImagePathToSave(image));
-            }
-
-            foreach (var backdrop in item.GetImages(ImageType.Backdrop))
-            {
-                writer.WriteElementString("fanart", GetImagePathToSave(backdrop));
-            }
-
-            writer.WriteEndElement();
-        }
-
-        private void AddActors(List<PersonInfo> people, XmlWriter writer, ILibraryManager libraryManager, bool saveImagePath)
+        private void AddActors(List<PersonInfo> people, XmlWriter writer)
         {
             foreach (var person in people)
             {
@@ -498,33 +453,15 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
                         person.SortOrder.Value.ToString(CultureInfo.InvariantCulture));
                 }
 
-                if (saveImagePath)
-                {
-                    var personEntity = libraryManager.GetPerson(person.Name);
-                    var image = personEntity.GetImageInfo(ImageType.Primary, 0);
-
-                    if (image != null)
-                    {
-                        writer.WriteElementString(
-                            "thumb",
-                            GetImagePathToSave(image, libraryManager));
-                    }
-                }
-
                 writer.WriteEndElement();
             }
-        }
-
-        private string GetImagePathToSave(ItemImageInfo image)
-        {
-             return image.Path;
         }
 
         private bool IsPersonType(PersonInfo person, string type)
             => string.Equals(person.Type, type, StringComparison.OrdinalIgnoreCase)
                 || string.Equals(person.Role, type, StringComparison.OrdinalIgnoreCase);
 
-        private void AddCustomTags(string path, IReadOnlyCollection<string> xmlTagsUsed, XmlWriter writer, ILogger<BaseNfoSaver> logger)
+        private void AddCustomTags(string path, IReadOnlyCollection<string> xmlTagsUsed, XmlWriter writer, ILogger<BaseJellifinNfoSaver> logger)
         {
             var settings = new XmlReaderSettings()
             {

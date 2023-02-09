@@ -18,10 +18,12 @@ namespace MediaBrowser.XbmcMetadata.Savers
     /// <summary>
     /// Nfo saver for movies.
     /// </summary>
-    public class MovieNfoSaver : BaseNfoSaver
+    public class JellyfinMovieNfoSaver : BaseJellifinNfoSaver
     {
+        public override int Order => -1;
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="MovieNfoSaver"/> class.
+        /// Initializes a new instance of the <see cref="JellyfinMovieNfoSaver"/> class.
         /// </summary>
         /// <param name="fileSystem">The file system.</param>
         /// <param name="configurationManager">the server configuration manager.</param>
@@ -29,10 +31,10 @@ namespace MediaBrowser.XbmcMetadata.Savers
         /// <param name="userManager">The user manager.</param>
         /// <param name="userDataManager">The user data manager.</param>
         /// <param name="logger">The logger.</param>
-        public MovieNfoSaver(
+        public JellyfinMovieNfoSaver(
             IFileSystem fileSystem,
             IConfigurationManager configurationManager,
-            ILogger<MovieNfoSaver> logger)
+            ILogger<JellyfinMovieNfoSaver> logger)
             : base(fileSystem, configurationManager, logger)
         {
         }

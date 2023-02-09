@@ -172,7 +172,8 @@ namespace AVOne.Models.Item
         /// <value>The run time ticks.</value>
         [JsonIgnore]
         public long? RunTimeTicks { get; set; }
-
+        [JsonIgnore]
+        public virtual ItemImageInfo[] ImageInfos { get; set; }
         public List<PersonInfo> People { get; set; }
 
         public void AddPerson(PersonInfo p)

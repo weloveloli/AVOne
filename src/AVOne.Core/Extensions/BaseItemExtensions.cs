@@ -10,7 +10,6 @@ namespace AVOne.Extensions
 
     public static class BaseItemExtensions
     {
-
         /// <summary>
         /// Adds a studio to the item.
         /// </summary>
@@ -129,7 +128,9 @@ namespace AVOne.Extensions
         /// <returns>System.String.</returns>
         /// <exception cref="ArgumentNullException">Item is null.</exception>
         public static string GetImagePath(this BaseItem item, ImageType imageType, int imageIndex)
+#pragma warning disable CS8603 // Possible null reference return.
             => GetImageInfo(item, imageType, imageIndex)?.Path;
+#pragma warning restore CS8603 // Possible null reference return.
 
         /// <summary>
         /// Gets the image information.
@@ -141,11 +142,33 @@ namespace AVOne.Extensions
         {
             if (imageType == ImageType.Chapter)
             {
+#pragma warning disable CS8603 // Possible null reference return.
                 return null;
+#pragma warning restore CS8603 // Possible null reference return.
             }
 
-            return GetImages(imageType)
+#pragma warning disable CS8603 // Possible null reference return.
+            return GetImages(item, imageType)
                 .ElementAtOrDefault(imageIndex);
+#pragma warning restore CS8603 // Possible null reference return.
+        }
+
+        public static IEnumerable<ItemImageInfo> GetImages(this BaseItem item, ImageType imageType)
+        {
+            if (imageType == ImageType.Chapter)
+            {
+                throw new ArgumentException("No image info for chapter images");
+            }
+
+            // Yield return is more performant than LINQ Where on an Array
+            for (var i = 0; i < item.ImageInfos.Length; i++)
+            {
+                var imageInfo = item.ImageInfos[i];
+                if (imageInfo.Type == imageType)
+                {
+                    yield return imageInfo;
+                }
+            }
         }
     }
 }
