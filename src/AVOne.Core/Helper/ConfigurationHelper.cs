@@ -48,13 +48,11 @@ namespace AVOne.Helper
             {
                 var directory = Path.GetDirectoryName(path) ?? throw new ArgumentException($"Provided path ({path}) is not valid.", nameof(path));
 
-                Directory.CreateDirectory(directory);
+                _ = Directory.CreateDirectory(directory);
 
                 // Save it after load in case we got new items
-                using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None))
-                {
-                    fs.Write(newBytes);
-                }
+                using var fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
+                fs.Write(newBytes);
             }
 
             return configuration;

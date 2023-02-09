@@ -1,13 +1,12 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // Licensed under the Apache V2.0 License.
 
-namespace MediaBrowser.Controller.Library
+namespace AVOne.Providers
 {
     using System.Threading;
     using System.Threading.Tasks;
     using AVOne.Enum;
     using AVOne.Models.Item;
-    using AVOne.Providers;
 
     /// <summary>
     /// Interface IMetadataSaver.

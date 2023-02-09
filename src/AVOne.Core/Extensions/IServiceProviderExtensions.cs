@@ -1,11 +1,13 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // Licensed under the Apache V2.0 License.
 
+namespace AVOne.Extensions
+{
 #nullable disable
 
-namespace Microsoft.Extensions.DependencyInjection.Extensions
-{
+    using AVOne.Extensions;
     using AVOne.Providers;
+    using Microsoft.Extensions.DependencyInjection;
 
     public static class IServiceProviderExtensions
     {

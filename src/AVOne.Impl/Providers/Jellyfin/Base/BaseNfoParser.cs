@@ -1,6 +1,9 @@
-﻿#pragma warning disable CS1591
+﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
+// Licensed under the Apache V2.0 License.
 
-namespace AVOne.Impl.Providers.Jellyfin.Parsers
+#pragma warning disable CS1591
+
+namespace AVOne.Impl.Providers.Jellyfin.Base
 {
     using System.Globalization;
     using System.Text;
@@ -8,17 +11,18 @@ namespace AVOne.Impl.Providers.Jellyfin.Parsers
     using AVOne.Configuration;
     using AVOne.Constants;
     using AVOne.Enum;
+    using AVOne.Extensions;
     using AVOne.IO;
     using AVOne.Models.Info;
     using AVOne.Models.Item;
     using AVOne.Models.Result;
     using AVOne.Providers;
-    using MediaBrowser.Common.Providers;
     using Microsoft.Extensions.Logging;
 
     public class BaseNfoParser<T>
             where T : BaseItem
     {
+        public const string YouTubeWatchUrl = "https://www.youtube.com/watch?v=";
         private readonly IConfigurationManager _config;
         private readonly IDirectoryService _directoryService;
         private Dictionary<string, string> _validProviderIds;
@@ -162,9 +166,6 @@ namespace AVOne.Impl.Providers.Jellyfin.Parsers
         protected virtual void FetchDataFromXmlNode(XmlReader reader, MetadataResult<T> itemResult)
         {
             var item = itemResult.Item;
-
-            var nfoConfiguration = _config.GetNfoConfiguration();
-
             switch (reader.Name)
             {
                 // DateCreated
@@ -259,75 +260,11 @@ namespace AVOne.Impl.Providers.Jellyfin.Parsers
                         break;
                     }
 
-                case "watched":
-                    {
-                        var val = reader.ReadElementContentAsBoolean();
-
-                        if (userData != null)
-                        {
-                            userData.Played = val;
-                        }
-
-                        break;
-                    }
-
-                case "playcount":
-                    {
-                        var val = reader.ReadElementContentAsString();
-                        if (!string.IsNullOrWhiteSpace(val) && userData != null)
-                        {
-                            if (int.TryParse(val, NumberStyles.Integer, CultureInfo.InvariantCulture, out var count))
-                            {
-                                userData.PlayCount = count;
-                            }
-                        }
-
-                        break;
-                    }
-
-                case "lastplayed":
-                    {
-                        var val = reader.ReadElementContentAsString();
-                        if (!string.IsNullOrWhiteSpace(val) && userData != null)
-                        {
-                            if (DateTime.TryParse(val, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal, out var added))
-                            {
-                                userData.LastPlayedDate = added;
-                            }
-                            else
-                            {
-                                Logger.LogWarning("Invalid lastplayed value found: {Value}", val);
-                            }
-                        }
-
-                        break;
-                    }
-
                 case "countrycode":
                     {
                         var val = reader.ReadElementContentAsString();
 
                         item.PreferredMetadataCountryCode = val;
-
-                        break;
-                    }
-
-                case "lockedfields":
-                    {
-                        var val = reader.ReadElementContentAsString();
-
-                        if (!string.IsNullOrWhiteSpace(val))
-                        {
-                            item.LockedFields = val.Split('|').Select(i =>
-                            {
-                                if (Enum.TryParse(i, true, out MetadataField field))
-                                {
-                                    return (MetadataField?)field;
-                                }
-
-                                return null;
-                            }).OfType<MetadataField>().ToArray();
-                        }
 
                         break;
                     }
@@ -370,33 +307,6 @@ namespace AVOne.Impl.Providers.Jellyfin.Parsers
                         if (!string.IsNullOrWhiteSpace(val))
                         {
                             item.CustomRating = val;
-                        }
-
-                        break;
-                    }
-
-                case "runtime":
-                    {
-                        var text = reader.ReadElementContentAsString();
-
-                        if (!string.IsNullOrWhiteSpace(text))
-                        {
-                            if (int.TryParse(text.AsSpan().LeftPart(' '), NumberStyles.Integer, CultureInfo.InvariantCulture, out var runtime))
-                            {
-                                item.RunTimeTicks = TimeSpan.FromMinutes(runtime).Ticks;
-                            }
-                        }
-
-                        break;
-                    }
-
-                case "lockdata":
-                    {
-                        var val = reader.ReadElementContentAsString();
-
-                        if (!string.IsNullOrWhiteSpace(val))
-                        {
-                            item.IsLocked = string.Equals("true", val, StringComparison.OrdinalIgnoreCase);
                         }
 
                         break;
@@ -497,25 +407,9 @@ namespace AVOne.Impl.Providers.Jellyfin.Parsers
 
                         if (!string.IsNullOrWhiteSpace(val))
                         {
-                            val = val.Replace("plugin://plugin.video.youtube/?action=play_video&videoid=", BaseNfoSaver.YouTubeWatchUrl, StringComparison.OrdinalIgnoreCase);
+                            val = val.Replace("plugin://plugin.video.youtube/?action=play_video&videoid=", YouTubeWatchUrl, StringComparison.OrdinalIgnoreCase);
 
                             item.AddTrailerUrl(val);
-                        }
-
-                        break;
-                    }
-
-                case "displayorder":
-                    {
-                        var val = reader.ReadElementContentAsString();
-
-                        var hasDisplayOrder = item as IHasDisplayOrder;
-                        if (hasDisplayOrder != null)
-                        {
-                            if (!string.IsNullOrWhiteSpace(val))
-                            {
-                                hasDisplayOrder.DisplayOrder = val;
-                            }
                         }
 
                         break;
@@ -572,7 +466,7 @@ namespace AVOne.Impl.Providers.Jellyfin.Parsers
                 case "premiered":
                 case "releasedate":
                     {
-                        var formatString = nfoConfiguration.ReleaseDateFormat;
+                        var formatString = "yyyy-MM-dd";
 
                         var val = reader.ReadElementContentAsString();
 
@@ -590,7 +484,7 @@ namespace AVOne.Impl.Providers.Jellyfin.Parsers
 
                 case "enddate":
                     {
-                        var formatString = nfoConfiguration.ReleaseDateFormat;
+                        var formatString = "yyyy-MM-dd";
 
                         var val = reader.ReadElementContentAsString();
 
@@ -696,7 +590,7 @@ namespace AVOne.Impl.Providers.Jellyfin.Parsers
                     }
 
                 default:
-                    string readerName = reader.Name;
+                    var readerName = reader.Name;
                     if (_validProviderIds.TryGetValue(readerName, out var providerIdValue))
                     {
                         var id = reader.ReadElementContentAsString();
@@ -889,51 +783,6 @@ namespace AVOne.Impl.Providers.Jellyfin.Parsers
                 {
                     switch (reader.Name)
                     {
-                        case "format3d":
-                            {
-                                var val = reader.ReadElementContentAsString();
-
-                                var video = item as Video;
-
-                                if (video != null)
-                                {
-                                    if (string.Equals("HSBS", val, StringComparison.OrdinalIgnoreCase))
-                                    {
-                                        video.Video3DFormat = Video3DFormat.HalfSideBySide;
-                                    }
-                                    else if (string.Equals("HTAB", val, StringComparison.OrdinalIgnoreCase))
-                                    {
-                                        video.Video3DFormat = Video3DFormat.HalfTopAndBottom;
-                                    }
-                                    else if (string.Equals("FTAB", val, StringComparison.OrdinalIgnoreCase))
-                                    {
-                                        video.Video3DFormat = Video3DFormat.FullTopAndBottom;
-                                    }
-                                    else if (string.Equals("FSBS", val, StringComparison.OrdinalIgnoreCase))
-                                    {
-                                        video.Video3DFormat = Video3DFormat.FullSideBySide;
-                                    }
-                                    else if (string.Equals("MVC", val, StringComparison.OrdinalIgnoreCase))
-                                    {
-                                        video.Video3DFormat = Video3DFormat.MVC;
-                                    }
-                                }
-
-                                break;
-                            }
-
-                        case "aspect":
-                            {
-                                var val = reader.ReadElementContentAsString();
-
-                                if (item is Video video)
-                                {
-                                    video.AspectRatio = val;
-                                }
-
-                                break;
-                            }
-
                         case "width":
                             {
                                 var val = reader.ReadElementContentAsInt();

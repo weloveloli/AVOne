@@ -28,5 +28,11 @@ namespace AVOne.Models.Info
         public string Path { get; set; }
 
         public VideoType VideoType { get; set; }
+
+        public string ContainingFolderPath { get; set; }
+
+        public bool IsInMixedFolder { get; set; }
+
+        public bool IsPlaceHolder { get; set; }
     }
 }

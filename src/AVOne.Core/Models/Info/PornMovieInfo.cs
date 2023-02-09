@@ -33,12 +33,7 @@ namespace AVOne.Models.Info
         /// <summary>
         /// 解析到的id
         /// </summary>
-        public string Id
-        {
-            get { return _id; }
-            set { _id = value; }
-        }
-        private string _id;
+        public string Id { get; set; }
 
         /// <summary>
         /// 文件名
@@ -56,7 +51,7 @@ namespace AVOne.Models.Info
         /// </summary>
         /// <param name="id"></param>
         public static implicit operator PornMovieInfo(string id)
-            => new PornMovieInfo() { Id = id };
+            => new() { Id = id };
 
         /// <summary>
         /// 转换

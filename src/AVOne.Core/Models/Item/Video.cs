@@ -36,41 +36,6 @@ namespace AVOne.Models.Item
         public virtual bool IsHD => Height >= 720;
 
         /// <summary>
-        /// Gets or sets the official rating.
-        /// </summary>
-        /// <value>The official rating.</value>
-        [JsonIgnore]
-        public string OfficialRating { get; set; }
-
-        /// <summary>
-        /// Gets or sets the overview.
-        /// </summary>
-        /// <value>The overview.</value>
-        [JsonIgnore]
-        public string Overview { get; set; }
-
-        /// <summary>
-        /// Gets or sets the studios.
-        /// </summary>
-        /// <value>The studios.</value>
-        [JsonIgnore]
-        public string[] Studios { get; set; }
-
-        /// <summary>
-        /// Gets or sets the genres.
-        /// </summary>
-        /// <value>The genres.</value>
-        [JsonIgnore]
-        public string[] Genres { get; set; }
-
-        /// <summary>
-        /// Gets or sets the tags.
-        /// </summary>
-        /// <value>The tags.</value>
-        [JsonIgnore]
-        public string[] Tags { get; set; }
-
-        /// <summary>
         /// Gets or sets the subtitle paths.
         /// </summary>
         /// <value>The subtitle paths.</value>

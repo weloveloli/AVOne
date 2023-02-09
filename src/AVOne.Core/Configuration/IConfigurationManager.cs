@@ -22,6 +22,6 @@ namespace AVOne.Configuration
         /// <value>
         /// The common configuration.
         /// </value>
-        BaseApplicationConfiguration CommonConfiguration {get; }
+        BaseApplicationConfiguration CommonConfiguration { get; }
     }
 }

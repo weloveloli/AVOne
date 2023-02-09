@@ -9,10 +9,7 @@ namespace AVOne.Extensions
     {
         public static bool IsNullOrEmpty<T>(this T[] array) where T : class
         {
-            if (array == null || array.Length == 0)
-                return true;
-            else
-                return array.All(item => item == null);
+            return array == null || array.Length == 0 || array.All(item => item == null);
         }
     }
 }

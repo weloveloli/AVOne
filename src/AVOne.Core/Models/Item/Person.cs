@@ -5,7 +5,6 @@
 
 namespace AVOne.Models.Item
 {
-    using AVOne.Abstraction;
     using AVOne.Models.Info;
 
     public class Person : BaseItem

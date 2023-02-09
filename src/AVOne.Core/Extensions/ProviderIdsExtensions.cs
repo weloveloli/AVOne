@@ -5,9 +5,6 @@ namespace AVOne.Extensions
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
     using AVOne.Abstraction;
 
     /// <summary>
@@ -31,7 +28,7 @@ namespace AVOne.Extensions
             // If it's null remove the key from the dictionary
             if (string.IsNullOrEmpty(value))
             {
-                instance.ProviderIds?.Remove(name);
+                _ = (instance.ProviderIds?.Remove(name));
             }
             else
             {

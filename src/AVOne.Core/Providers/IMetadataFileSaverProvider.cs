@@ -1,9 +1,10 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // Licensed under the Apache V2.0 License.
 
-namespace MediaBrowser.Controller.Library
+namespace AVOne.Providers
 {
     using AVOne.Models.Item;
+
     public interface IMetadataFileSaverProvider : IMetadataSaverProvider
     {
         /// <summary>

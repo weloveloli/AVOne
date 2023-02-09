@@ -8,7 +8,7 @@ namespace AVOne.Models.Item
 
     public class PornMovie : Video, IHasLookupInfo<PornMovieInfo>
     {
-        public PornMovieInfo PornMovieInfo { get; set; }
+        public PornMovieInfo? PornMovieInfo { get; set; }
 
         PornMovieInfo IHasLookupInfo<PornMovieInfo>.GetLookupInfo() => PornMovieInfo;
     }

@@ -5,11 +5,34 @@
 
 namespace AVOne.Models.Result
 {
-    using AVOne.Models.Info;
+    using AVOne.Enum;
     using AVOne.Helper;
+    using AVOne.Models.Info;
 
     public class MetadataResult<T>
     {
+        // Images aren't always used so the allocation is a waste a lot of the time
+        private List<LocalImageInfo> _images;
+        private List<(string Url, ImageType Type)> _remoteImages;
+
+        public MetadataResult()
+        {
+            ResultLanguage = "en";
+        }
+
+        public List<LocalImageInfo> Images
+        {
+            get => _images ??= new List<LocalImageInfo>();
+            set => _images = value;
+        }
+
+        public List<(string Url, ImageType Type)> RemoteImages
+        {
+            get => _remoteImages ??= new List<(string Url, ImageType Type)>();
+            set => _remoteImages = value;
+        }
+        public string ResultLanguage { get; set; }
+
         public bool HasMetadata { get; set; }
 
         public T Item { get; set; }

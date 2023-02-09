@@ -1,4 +1,5 @@
-﻿
+﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
+// Licensed under the Apache V2.0 License.
 
 namespace AVOne.Impl.Providers.Jellyfin.Base
 {
@@ -35,26 +36,22 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
         /// <inheritdoc />
         protected override void Fetch(MetadataResult<T> result, string path, CancellationToken cancellationToken)
         {
-            var tmpItem = new MetadataResult<Video>
+            var tmpItem = new MetadataResult<T>
             {
                 Item = result.Item
             };
-            new MovieNfoParser(_logger, _config, _providerManager, _userManager, _userDataManager, _directoryService).Fetch(tmpItem, path, cancellationToken);
+            new BaseNfoParser<T>(_logger, _config, _providerManager, _directoryService).Fetch(tmpItem, path, cancellationToken);
 
             result.Item = (T)tmpItem.Item;
             result.People = tmpItem.People;
             result.Images = tmpItem.Images;
             result.RemoteImages = tmpItem.RemoteImages;
-
-            if (tmpItem.UserDataList != null)
-            {
-                result.UserDataList = tmpItem.UserDataList;
-            }
         }
 
         /// <inheritdoc />
         protected override FileSystemMetadata? GetXmlFile(ItemInfo info, IDirectoryService directoryService)
         {
+
             return MovieNfoSaver.GetMovieSavePaths(info)
                 .Select(directoryService.GetFile)
                 .FirstOrDefault(i => i != null);
