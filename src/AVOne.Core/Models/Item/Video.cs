@@ -48,6 +48,7 @@ namespace AVOne.Models.Item
         public bool HasSubtitles { get; set; }
 
         public string[] AdditionalParts { get; set; }
+        public string CollectionName { get; set; }
 
         public override ItemLookupInfo GetLookupInfo()
         {

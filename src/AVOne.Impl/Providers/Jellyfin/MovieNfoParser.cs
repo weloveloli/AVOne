@@ -1,7 +1,13 @@
 ﻿namespace AVOne.Impl.Providers.Jellyfin
 {
+    using System.Xml;
+    using AVOne.Configuration;
     using AVOne.Impl.Providers.Jellyfin.Base;
+    using AVOne.IO;
     using AVOne.Models.Item;
+    using AVOne.Models.Result;
+    using AVOne.Providers;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Nfo parser for movies.
@@ -21,10 +27,8 @@
             ILogger logger,
             IConfigurationManager config,
             IProviderManager providerManager,
-            IUserManager userManager,
-            IUserDataManager userDataManager,
             IDirectoryService directoryService)
-            : base(logger, config, providerManager, userManager, userDataManager, directoryService)
+            : base(logger, config, providerManager, directoryService)
         {
         }
 
@@ -35,107 +39,9 @@
         protected override void FetchDataFromXmlNode(XmlReader reader, MetadataResult<Video> itemResult)
         {
             var item = itemResult.Item;
-
-            switch (reader.Name)
-            {
-                case "id":
-                    {
-                        // get ids from attributes
-                        string? imdbId = reader.GetAttribute("IMDB");
-                        string? tmdbId = reader.GetAttribute("TMDB");
-
-                        // read id from content
-                        var contentId = reader.ReadElementContentAsString();
-                        if (contentId.Contains("tt", StringComparison.Ordinal) && string.IsNullOrEmpty(imdbId))
-                        {
-                            imdbId = contentId;
-                        }
-                        else if (string.IsNullOrEmpty(tmdbId))
-                        {
-                            tmdbId = contentId;
-                        }
-
-                        if (!string.IsNullOrWhiteSpace(imdbId))
-                        {
-                            item.SetProviderId(MetadataProvider.Imdb, imdbId);
-                        }
-
-                        if (!string.IsNullOrWhiteSpace(tmdbId))
-                        {
-                            item.SetProviderId(MetadataProvider.Tmdb, tmdbId);
-                        }
-
-                        break;
-                    }
-
-                case "set":
-                    {
-                        var movie = item as Movie;
-
-                        var tmdbcolid = reader.GetAttribute("tmdbcolid");
-                        if (!string.IsNullOrWhiteSpace(tmdbcolid) && movie != null)
-                        {
-                            movie.SetProviderId(MetadataProvider.TmdbCollection, tmdbcolid);
-                        }
-
-                        var val = reader.ReadInnerXml();
-
-                        if (!string.IsNullOrWhiteSpace(val) && movie != null)
-                        {
-                            // TODO Handle this better later
-                            if (!val.Contains('<', StringComparison.Ordinal))
-                            {
-                                movie.CollectionName = val;
-                            }
-                            else
-                            {
-                                try
-                                {
-                                    ParseSetXml(val, movie);
-                                }
-                                catch (Exception ex)
-                                {
-                                    Logger.LogError(ex, "Error parsing set node");
-                                }
-                            }
-                        }
-
-                        break;
-                    }
-
-                case "artist":
-                    {
-                        var val = reader.ReadElementContentAsString();
-
-                        if (!string.IsNullOrWhiteSpace(val) && item is MusicVideo movie)
-                        {
-                            var list = movie.Artists.ToList();
-                            list.Add(val);
-                            movie.Artists = list.ToArray();
-                        }
-
-                        break;
-                    }
-
-                case "album":
-                    {
-                        var val = reader.ReadElementContentAsString();
-
-                        if (!string.IsNullOrWhiteSpace(val) && item is MusicVideo movie)
-                        {
-                            movie.Album = val;
-                        }
-
-                        break;
-                    }
-
-                default:
-                    base.FetchDataFromXmlNode(reader, itemResult);
-                    break;
-            }
         }
 
-        private void ParseSetXml(string xml, Movie movie)
+        private void ParseSetXml(string xml, Video video)
         {
             // These are not going to be valid xml so no sense in causing the provider to fail and spamming the log with exceptions
             try
@@ -154,7 +60,7 @@
                             switch (reader.Name)
                             {
                                 case "name":
-                                    movie.CollectionName = reader.ReadElementContentAsString();
+                                    video.CollectionName = reader.ReadElementContentAsString();
                                     break;
                                 default:
                                     reader.Skip();
