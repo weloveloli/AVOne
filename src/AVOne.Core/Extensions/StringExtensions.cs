@@ -90,10 +90,8 @@ namespace AVOne.Extensions
         public static Guid GetMD5(this string str)
         {
 #pragma warning disable CA5351
-            using (var provider = MD5.Create())
-            {
-                return new Guid(provider.ComputeHash(Encoding.Unicode.GetBytes(str)));
-            }
+            using var provider = MD5.Create();
+            return new Guid(provider.ComputeHash(Encoding.Unicode.GetBytes(str)));
 
 #pragma warning restore CA5351
         }

@@ -26,18 +26,16 @@ namespace AVOne.Impl.Providers.Jellyfin
     internal class JellyfinNamingOptions : INamingOptions
     {
         private readonly Emby.Naming.Common.NamingOptions _options;
-        private readonly EpisodeExpression[] _episodeExpressions;
         private readonly EpisodeExpression[] _multipleEpisodeExpressions;
-        private readonly ExtraRule[] _videoExtraRules;
 
         public JellyfinNamingOptions()
         {
             _options = new Emby.Naming.Common.NamingOptions();
-            _episodeExpressions = _options.EpisodeExpressions
+            EpisodeExpzressions = _options.EpisodeExpressions
                 .Select((e) => new EpisodeExpression(e.Expression, e.IsByDate)).ToArray();
             _multipleEpisodeExpressions = _options.MultipleEpisodeExpressions
                 .Select((e) => new EpisodeExpression(e.Expression, e.IsByDate)).ToArray();
-            _videoExtraRules = _options.VideoExtraRules
+            VideoExtraRules = _options.VideoExtraRules
                 .Select((e) => new ExtraRule((ExtraType)e.ExtraType, (ExtraRuleType)e.RuleType, e.Token, (MediaType)e.MediaType)).ToArray();
         }
 
@@ -64,7 +62,7 @@ namespace AVOne.Impl.Providers.Jellyfin
         /// <summary>
         /// Gets or sets list of episode regular expressions.
         /// </summary>
-        public EpisodeExpression[] EpisodeExpzressions => _episodeExpressions;
+        public EpisodeExpression[] EpisodeExpzressions { get; }
 
         /// <summary>
         /// Gets or sets list of multi-episode regular expressions.
@@ -84,6 +82,6 @@ namespace AVOne.Impl.Providers.Jellyfin
         /// <summary>
         /// Gets or sets list of extra rules for videos.
         /// </summary>
-        public ExtraRule[] VideoExtraRules => _videoExtraRules;
+        public ExtraRule[] VideoExtraRules { get; }
     }
 }

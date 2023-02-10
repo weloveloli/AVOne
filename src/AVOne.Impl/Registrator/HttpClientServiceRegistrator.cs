@@ -4,7 +4,6 @@
 namespace AVOne.Impl.Registrator
 {
     using AVOne.Abstraction;
-    using AVOne.Constants;
     using AVOne.Impl.Providers.Metatube;
     using Microsoft.Extensions.DependencyInjection;
 
@@ -12,7 +11,7 @@ namespace AVOne.Impl.Registrator
     {
         public void RegisterServices(IServiceCollection serviceCollection)
         {
-            serviceCollection
+            _ = serviceCollection
                 .AddHttpClient<MetatubeApiClient>()
                 .ConfigureHttpMessageHandlerBuilder(sp => new SocketsHttpHandler
                 {

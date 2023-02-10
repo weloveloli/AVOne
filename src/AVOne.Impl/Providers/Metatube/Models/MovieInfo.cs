@@ -1,10 +1,8 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // Licensed under the Apache V2.0 License.
-#nullable disable
-using AVOne;
-
 namespace AVOne.Impl.Providers.Metatube.Models
 {
+#nullable disable
     using System.Text.Json.Serialization;
 
     public class MovieInfo : MovieSearchResult

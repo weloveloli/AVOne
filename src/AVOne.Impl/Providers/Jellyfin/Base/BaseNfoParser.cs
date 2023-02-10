@@ -1,7 +1,6 @@
-﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
+﻿
+// Copyright (c) 2023 Weloveloli. All rights reserved.
 // Licensed under the Apache V2.0 License.
-
-#pragma warning disable CS1591
 
 namespace AVOne.Impl.Providers.Jellyfin.Base
 {
@@ -78,11 +77,13 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
                 throw new ArgumentException("The metadata filepath was empty.", nameof(metadataFile));
             }
 
-            _validProviderIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            // Additional Mappings
-            _validProviderIds.Add("collectionnumber", "TmdbCollection");
-            _validProviderIds.Add("tmdbcolid", "TmdbCollection");
-            _validProviderIds.Add("imdb_id", "Imdb");
+            _validProviderIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                // Additional Mappings
+                { "collectionnumber", "TmdbCollection" },
+                { "tmdbcolid", "TmdbCollection" },
+                { "imdb_id", "Imdb" }
+            };
 
             Fetch(item, metadataFile, GetXmlReaderSettings(), cancellationToken);
         }
@@ -98,28 +99,26 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
         {
             if (!SupportsUrlAfterClosingXmlTag)
             {
-                using (var fileStream = File.OpenRead(metadataFile))
-                using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
-                using (var reader = XmlReader.Create(streamReader, settings))
+                using var fileStream = File.OpenRead(metadataFile);
+                using var streamReader = new StreamReader(fileStream, Encoding.UTF8);
+                using var reader = XmlReader.Create(streamReader, settings);
+                item.ResetPeople();
+
+                _ = reader.MoveToContent();
+                _ = reader.Read();
+
+                // Loop through each element
+                while (!reader.EOF && reader.ReadState == ReadState.Interactive)
                 {
-                    item.ResetPeople();
+                    cancellationToken.ThrowIfCancellationRequested();
 
-                    reader.MoveToContent();
-                    reader.Read();
-
-                    // Loop through each element
-                    while (!reader.EOF && reader.ReadState == ReadState.Interactive)
+                    if (reader.NodeType == XmlNodeType.Element)
                     {
-                        cancellationToken.ThrowIfCancellationRequested();
-
-                        if (reader.NodeType == XmlNodeType.Element)
-                        {
-                            FetchDataFromXmlNode(reader, item);
-                        }
-                        else
-                        {
-                            reader.Read();
-                        }
+                        FetchDataFromXmlNode(reader, item);
+                    }
+                    else
+                    {
+                        _ = reader.Read();
                     }
                 }
 
@@ -136,25 +135,23 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
             // These are not going to be valid xml so no sense in causing the provider to fail and spamming the log with exceptions
             try
             {
-                using (var stringReader = new StringReader(xml))
-                using (var reader = XmlReader.Create(stringReader, settings))
+                using var stringReader = new StringReader(xml);
+                using var reader = XmlReader.Create(stringReader, settings);
+                _ = reader.MoveToContent();
+                _ = reader.Read();
+
+                // Loop through each element
+                while (!reader.EOF && reader.ReadState == ReadState.Interactive)
                 {
-                    reader.MoveToContent();
-                    reader.Read();
+                    cancellationToken.ThrowIfCancellationRequested();
 
-                    // Loop through each element
-                    while (!reader.EOF && reader.ReadState == ReadState.Interactive)
+                    if (reader.NodeType == XmlNodeType.Element)
                     {
-                        cancellationToken.ThrowIfCancellationRequested();
-
-                        if (reader.NodeType == XmlNodeType.Element)
-                        {
-                            FetchDataFromXmlNode(reader, item);
-                        }
-                        else
-                        {
-                            reader.Read();
-                        }
+                        FetchDataFromXmlNode(reader, item);
+                    }
+                    else
+                    {
+                        _ = reader.Read();
                     }
                 }
             }
@@ -383,19 +380,17 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
                     {
                         if (!reader.IsEmptyElement)
                         {
-                            using (var subtree = reader.ReadSubtree())
-                            {
-                                var person = GetPersonFromXmlNode(subtree);
+                            using var subtree = reader.ReadSubtree();
+                            var person = GetPersonFromXmlNode(subtree);
 
-                                if (!string.IsNullOrWhiteSpace(person.Name))
-                                {
-                                    itemResult.AddPerson(person);
-                                }
+                            if (!string.IsNullOrWhiteSpace(person.Name))
+                            {
+                                itemResult.AddPerson(person);
                             }
                         }
                         else
                         {
-                            reader.Read();
+                            _ = reader.Read();
                         }
 
                         break;
@@ -455,7 +450,7 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
                         }
                         else
                         {
-                            reader.Read();
+                            _ = reader.Read();
                         }
 
                         break;
@@ -534,14 +529,12 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
                     {
                         if (!reader.IsEmptyElement)
                         {
-                            using (var subtree = reader.ReadSubtree())
-                            {
-                                FetchFromFileInfoNode(subtree, item);
-                            }
+                            using var subtree = reader.ReadSubtree();
+                            FetchFromFileInfoNode(subtree, item);
                         }
                         else
                         {
-                            reader.Read();
+                            _ = reader.Read();
                         }
 
                         break;
@@ -551,7 +544,7 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
                     {
                         if (reader.IsEmptyElement)
                         {
-                            reader.Read();
+                            _ = reader.Read();
                             break;
                         }
 
@@ -575,7 +568,7 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
                     {
                         if (reader.IsEmptyElement)
                         {
-                            reader.Read();
+                            _ = reader.Read();
                             break;
                         }
 
@@ -677,8 +670,8 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
 
         private void FetchFromFileInfoNode(XmlReader reader, T item)
         {
-            reader.MoveToContent();
-            reader.Read();
+            _ = reader.MoveToContent();
+            _ = reader.Read();
 
             // Loop through each element
             while (!reader.EOF && reader.ReadState == ReadState.Interactive)
@@ -691,14 +684,12 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
                             {
                                 if (reader.IsEmptyElement)
                                 {
-                                    reader.Read();
+                                    _ = reader.Read();
                                     continue;
                                 }
 
-                                using (var subtree = reader.ReadSubtree())
-                                {
-                                    FetchFromStreamDetailsNode(subtree, item);
-                                }
+                                using var subtree = reader.ReadSubtree();
+                                FetchFromStreamDetailsNode(subtree, item);
 
                                 break;
                             }
@@ -710,15 +701,15 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
                 }
                 else
                 {
-                    reader.Read();
+                    _ = reader.Read();
                 }
             }
         }
 
         private void FetchFromStreamDetailsNode(XmlReader reader, T item)
         {
-            reader.MoveToContent();
-            reader.Read();
+            _ = reader.MoveToContent();
+            _ = reader.Read();
 
             // Loop through each element
             while (!reader.EOF && reader.ReadState == ReadState.Interactive)
@@ -731,14 +722,12 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
                             {
                                 if (reader.IsEmptyElement)
                                 {
-                                    reader.Read();
+                                    _ = reader.Read();
                                     continue;
                                 }
 
-                                using (var subtree = reader.ReadSubtree())
-                                {
-                                    FetchFromVideoNode(subtree, item);
-                                }
+                                using var subtree = reader.ReadSubtree();
+                                FetchFromVideoNode(subtree, item);
 
                                 break;
                             }
@@ -747,14 +736,12 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
                             {
                                 if (reader.IsEmptyElement)
                                 {
-                                    reader.Read();
+                                    _ = reader.Read();
                                     continue;
                                 }
 
-                                using (var subtree = reader.ReadSubtree())
-                                {
-                                    FetchFromSubtitleNode(subtree, item);
-                                }
+                                using var subtree = reader.ReadSubtree();
+                                FetchFromSubtitleNode(subtree, item);
 
                                 break;
                             }
@@ -766,15 +753,15 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
                 }
                 else
                 {
-                    reader.Read();
+                    _ = reader.Read();
                 }
             }
         }
 
         private void FetchFromVideoNode(XmlReader reader, T item)
         {
-            reader.MoveToContent();
-            reader.Read();
+            _ = reader.MoveToContent();
+            _ = reader.Read();
 
             // Loop through each element
             while (!reader.EOF && reader.ReadState == ReadState.Interactive)
@@ -826,15 +813,15 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
                 }
                 else
                 {
-                    reader.Read();
+                    _ = reader.Read();
                 }
             }
         }
 
         private void FetchFromSubtitleNode(XmlReader reader, T item)
         {
-            reader.MoveToContent();
-            reader.Read();
+            _ = reader.MoveToContent();
+            _ = reader.Read();
 
             // Loop through each element
             while (!reader.EOF && reader.ReadState == ReadState.Interactive)
@@ -862,15 +849,15 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
                 }
                 else
                 {
-                    reader.Read();
+                    _ = reader.Read();
                 }
             }
         }
 
         private void FetchFromRatingsNode(XmlReader reader, T item)
         {
-            reader.MoveToContent();
-            reader.Read();
+            _ = reader.MoveToContent();
+            _ = reader.Read();
 
             // Loop through each element
             while (!reader.EOF && reader.ReadState == ReadState.Interactive)
@@ -883,7 +870,7 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
                             {
                                 if (reader.IsEmptyElement)
                                 {
-                                    reader.Read();
+                                    _ = reader.Read();
                                     continue;
                                 }
 
@@ -902,15 +889,15 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
                 }
                 else
                 {
-                    reader.Read();
+                    _ = reader.Read();
                 }
             }
         }
 
         private void FetchFromRatingNode(XmlReader reader, T item, string? ratingName)
         {
-            reader.MoveToContent();
-            reader.Read();
+            _ = reader.MoveToContent();
+            _ = reader.Read();
 
             // Loop through each element
             while (!reader.EOF && reader.ReadState == ReadState.Interactive)
@@ -948,7 +935,7 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
                 }
                 else
                 {
-                    reader.Read();
+                    _ = reader.Read();
                 }
             }
         }
@@ -966,8 +953,8 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
             int? sortOrder = null;
             string? imageUrl = null;
 
-            reader.MoveToContent();
-            reader.Read();
+            _ = reader.MoveToContent();
+            _ = reader.Read();
 
             // Loop through each element
             while (!reader.EOF && reader.ReadState == ReadState.Interactive)
@@ -1050,7 +1037,7 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
                 }
                 else
                 {
-                    reader.Read();
+                    _ = reader.Read();
                 }
             }
 
@@ -1065,7 +1052,7 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
         }
 
         internal XmlReaderSettings GetXmlReaderSettings()
-            => new XmlReaderSettings()
+            => new()
             {
                 ValidationType = ValidationType.None,
                 CheckCharacters = false,

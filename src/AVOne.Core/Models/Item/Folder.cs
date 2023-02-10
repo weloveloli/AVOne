@@ -12,7 +12,6 @@ namespace AVOne.Models.Item
         {
         }
 
-
         /// <summary>
         /// Gets or sets a value indicating whether this instance is root.
         /// </summary>

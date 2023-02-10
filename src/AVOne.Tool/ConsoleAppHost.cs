@@ -26,7 +26,6 @@ namespace AVOne.Tool
     {
         private readonly BaseOptions _option;
         private readonly CancellationTokenSource _tokenSource;
-        private readonly ConsoleApplicationPaths _appPaths;
         private bool _disposed = false;
         private List<Type> _creatingInstances;
         /// <summary>
@@ -45,7 +44,7 @@ namespace AVOne.Tool
         /// </summary>
         public IServiceProvider ServiceProvider { get; set; }
 
-        public ConsoleApplicationPaths AppPaths => _appPaths;
+        public ConsoleApplicationPaths AppPaths { get; }
 
         public ConsoleConfigurationManager ConfigurationManager { get; }
 
@@ -67,15 +66,15 @@ namespace AVOne.Tool
 
         public ConsoleAppHost(BaseOptions option, ILoggerFactory loggerFactory, CancellationTokenSource tokenSource, ConsoleApplicationPaths path)
         {
-            this._option = option;
+            _option = option;
             LoggerFactory = loggerFactory;
             _tokenSource = tokenSource;
             ApplicationVersion = typeof(ConsoleAppHost).Assembly.GetName().Version;
-            _appPaths = path;
+            AppPaths = path;
             Logger = loggerFactory.CreateLogger<ConsoleAppHost>();
             _fileSystem = new ManagedFileSystem(LoggerFactory.CreateLogger<ManagedFileSystem>(), path);
             _xmlSerializer = new DefaultXmlSerializer();
-            ConfigurationManager = new ConsoleConfigurationManager(path,loggerFactory, _xmlSerializer, _fileSystem);
+            ConfigurationManager = new ConsoleConfigurationManager(path, loggerFactory, _xmlSerializer, _fileSystem);
         }
 
         public async Task<int> ExecuteCmd()
@@ -118,14 +117,14 @@ namespace AVOne.Tool
         protected void RegisterServices(IServiceCollection serviceCollection)
         {
             _option.InitService(serviceCollection);
-            serviceCollection.AddMemoryCache();
-            serviceCollection.AddSingleton<IApplicationHost>(this);
-            serviceCollection.AddSingleton<IStartupOptions>(this._option);
-            serviceCollection.AddSingleton<IApplicationPaths>(AppPaths);
-            serviceCollection.AddSingleton(this._xmlSerializer);
-            serviceCollection.AddSingleton(this._fileSystem);
-            serviceCollection.AddSingleton<IConfigurationManager>(ConfigurationManager);
-            serviceCollection.AddSingleton<IProviderManager, ProviderManager>();
+            _ = serviceCollection.AddMemoryCache();
+            _ = serviceCollection.AddSingleton<IApplicationHost>(this);
+            _ = serviceCollection.AddSingleton<IStartupOptions>(_option);
+            _ = serviceCollection.AddSingleton<IApplicationPaths>(AppPaths);
+            _ = serviceCollection.AddSingleton(_xmlSerializer);
+            _ = serviceCollection.AddSingleton(_fileSystem);
+            _ = serviceCollection.AddSingleton<IConfigurationManager>(ConfigurationManager);
+            _ = serviceCollection.AddSingleton<IProviderManager, ProviderManager>();
         }
 
         /// <summary>
@@ -158,7 +157,7 @@ namespace AVOne.Tool
                     continue;
                 }
 
-                foreach (Type type in exportedTypes)
+                foreach (var type in exportedTypes)
                 {
                     if (type.IsClass && !type.IsAbstract && !type.IsInterface && !type.IsGenericType)
                     {
@@ -181,7 +180,7 @@ namespace AVOne.Tool
             {
                 foreach (var part in parts.OfType<IDisposable>())
                 {
-                    _disposableParts.TryAdd(part, byte.MinValue);
+                    _ = _disposableParts.TryAdd(part, byte.MinValue);
                 }
             }
 
@@ -201,7 +200,7 @@ namespace AVOne.Tool
             {
                 foreach (var part in parts.OfType<IDisposable>())
                 {
-                    _disposableParts.TryAdd(part, byte.MinValue);
+                    _ = _disposableParts.TryAdd(part, byte.MinValue);
                 }
             }
 
@@ -271,7 +270,7 @@ namespace AVOne.Tool
             }
             finally
             {
-                _creatingInstances.Remove(type);
+                _ = _creatingInstances.Remove(type);
             }
         }
 

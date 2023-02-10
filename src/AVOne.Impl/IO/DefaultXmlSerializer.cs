@@ -17,7 +17,7 @@ namespace AVOne.Impl.IO
         // Need to cache these
         // http://dotnetcodebox.blogspot.com/2013/01/xmlserializer-class-may-result-in.html
         private static readonly ConcurrentDictionary<string, XmlSerializer> _serializers =
-            new ConcurrentDictionary<string, XmlSerializer>();
+            new();
 
         private static XmlSerializer GetSerializer(Type type)
             => _serializers.GetOrAdd(

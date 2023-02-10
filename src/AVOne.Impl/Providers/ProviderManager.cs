@@ -19,7 +19,7 @@ namespace AVOne.Impl.Providers
 
         public ProviderManager(ILogger<ProviderManager> logger, IConfigurationManager configurationManager)
         {
-            this._logger = logger;
+            _logger = logger;
             _configurationManager = configurationManager;
             ImageProviders = Array.Empty<IImageProvider>();
         }
@@ -71,12 +71,7 @@ namespace AVOne.Impl.Providers
 
         private int GetDefaultOrder(IMetadataProvider provider)
         {
-            if (provider is IHasOrder hasOrder)
-            {
-                return hasOrder.Order;
-            }
-
-            return 0;
+            return provider is IHasOrder hasOrder ? hasOrder.Order : 0;
         }
     }
 }

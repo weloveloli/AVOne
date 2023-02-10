@@ -82,7 +82,7 @@ namespace AVOne.Extensions
         /// <typeparam name="T">The type of the array.</typeparam>
         public static void CopyTo<T>(this IReadOnlyList<T> source, IList<T> destination, int index = 0)
         {
-            for (int i = 0; i < source.Count; i++)
+            for (var i = 0; i < source.Count; i++)
             {
                 destination[index + i] = source[i];
             }

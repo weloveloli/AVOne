@@ -20,7 +20,7 @@ namespace AVOne.Impl.Configuration
         /// <summary>
         /// The _configuration sync lock.
         /// </summary>
-        private readonly object _configurationSyncLock = new object();
+        private readonly object _configurationSyncLock = new();
 
         /// <summary>
         /// Gets the type of the configuration.

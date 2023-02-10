@@ -4,6 +4,7 @@
 namespace AVOne.Tool.Configuration
 {
     using AVOne.Configuration;
+    using AVOne.Impl.Configuration;
 
     internal class ConsoleConfiguration : BaseApplicationConfiguration, IOfficialProvidersConfiguration
     {

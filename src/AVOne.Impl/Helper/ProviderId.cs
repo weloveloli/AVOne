@@ -43,7 +43,11 @@ namespace AVOne.Impl.Helper
                 values.Add(pid.Position.Value.ToString());
             }
 
-            if (pid.Update.HasValue) values.Add((values.Count == 2 ? ":" : string.Empty) + pid.Update);
+            if (pid.Update.HasValue)
+            {
+                values.Add((values.Count == 2 ? ":" : string.Empty) + pid.Update);
+            }
+
             return string.Join(':', values);
         }
 

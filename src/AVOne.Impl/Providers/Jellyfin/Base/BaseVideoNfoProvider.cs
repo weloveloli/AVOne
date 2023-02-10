@@ -4,12 +4,12 @@
 namespace AVOne.Impl.Providers.Jellyfin.Base
 {
     using AVOne.Configuration;
+    using AVOne.Impl.Providers.Jellyfin;
     using AVOne.IO;
     using AVOne.Models.Info;
     using AVOne.Models.Item;
     using AVOne.Models.Result;
     using AVOne.Providers;
-    using MediaBrowser.XbmcMetadata.Savers;
     using Microsoft.Extensions.Logging;
 
     public abstract class BaseVideoNfoProvider<T> : BaseNfoProvider<T>
@@ -43,7 +43,7 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
             };
             new BaseNfoParser<T>(_logger, _config, _providerManager, _directoryService).Fetch(tmpItem, path, cancellationToken);
 
-            result.Item = (T)tmpItem.Item;
+            result.Item = tmpItem.Item;
             result.People = tmpItem.People;
             result.Images = tmpItem.Images;
             result.RemoteImages = tmpItem.RemoteImages;

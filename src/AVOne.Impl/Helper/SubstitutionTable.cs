@@ -20,7 +20,10 @@ namespace AVOne.Impl.Helper
             {
                 var kvp = line.Split('=', 2).Select(s => s.Trim()).ToList();
                 if (string.IsNullOrWhiteSpace(kvp.First()))
+                {
                     continue;
+                }
+
                 dictionary[kvp[0]] = kvp.Count switch
                 {
                     1 => null,
@@ -56,16 +59,22 @@ namespace AVOne.Impl.Helper
             var table = this;
 
             if (table.Any() != true)
+            {
                 return source;
+            }
 
             var target = new List<string>();
 
             foreach (var item in source ?? Enumerable.Empty<string>())
             {
                 if (!table.TryGetValue(item, out var value))
+                {
                     target.Add(item);
+                }
                 else if (!string.IsNullOrWhiteSpace(value))
+                {
                     target.Add(value);
+                }
             }
 
             return target;

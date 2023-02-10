@@ -1,4 +1,7 @@
-﻿namespace AVOne.Impl.Providers.Jellyfin.Base
+﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
+// Licensed under the Apache V2.0 License.
+
+namespace AVOne.Impl.Providers.Jellyfin.Base
 {
     using System.Xml;
     using AVOne.Configuration;
@@ -37,7 +40,7 @@
         /// <inheritdoc />
         protected override void FetchDataFromXmlNode(XmlReader reader, MetadataResult<Video> itemResult)
         {
-            var item = itemResult.Item;
+            _ = itemResult.Item;
         }
     }
 }

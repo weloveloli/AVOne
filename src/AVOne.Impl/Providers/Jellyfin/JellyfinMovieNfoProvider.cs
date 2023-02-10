@@ -16,7 +16,7 @@ namespace AVOne.Impl.Providers.Jellyfin
                                         IFileSystem fileSystem,
                                         IConfigurationManager config,
                                         IProviderManager providerManager,
-                                        IDirectoryService directoryService) 
+                                        IDirectoryService directoryService)
             : base(logger, fileSystem, config, providerManager, directoryService)
         {
         }

@@ -1,8 +1,6 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // Licensed under the Apache V2.0 License.
 
-#nullable disable
-
 namespace AVOne.Models.Info
 {
     using AVOne.Enum;
@@ -16,18 +14,18 @@ namespace AVOne.Models.Info
         /// Gets or sets the name of the provider.
         /// </summary>
         /// <value>The name of the provider.</value>
-        public string ProviderName { get; set; }
+        public string? ProviderName { get; set; }
 
         /// <summary>
         /// Gets or sets the URL.
         /// </summary>
         /// <value>The URL.</value>
-        public string Url { get; set; }
+        public string? Url { get; set; }
 
         /// <summary>
         /// Gets or sets a url used for previewing a smaller version.
         /// </summary>
-        public string ThumbnailUrl { get; set; }
+        public string? ThumbnailUrl { get; set; }
 
         /// <summary>
         /// Gets or sets the height.
@@ -42,9 +40,33 @@ namespace AVOne.Models.Info
         public int? Width { get; set; }
 
         /// <summary>
+        /// Gets or sets the community rating.
+        /// </summary>
+        /// <value>The community rating.</value>
+        public double? CommunityRating { get; set; }
+
+        /// <summary>
+        /// Gets or sets the vote count.
+        /// </summary>
+        /// <value>The vote count.</value>
+        public int? VoteCount { get; set; }
+
+        /// <summary>
+        /// Gets or sets the language.
+        /// </summary>
+        /// <value>The language.</value>
+        public string? Language { get; set; }
+
+        /// <summary>
         /// Gets or sets the type.
         /// </summary>
         /// <value>The type.</value>
         public ImageType Type { get; set; }
+
+        /// <summary>
+        /// Gets or sets the type of the rating.
+        /// </summary>
+        /// <value>The type of the rating.</value>
+        public RatingType RatingType { get; set; }
     }
 }

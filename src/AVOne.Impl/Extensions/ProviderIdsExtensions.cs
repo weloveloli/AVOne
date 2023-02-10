@@ -32,12 +32,7 @@ namespace AVOne.Impl.Extensions
         /// <returns><c>true</c> if a provider id with the given name was found; otherwise <c>false</c>.</returns>
         public static bool HasProviderId(this IHasProviderIds instance, string name)
         {
-            if (instance == null)
-            {
-                throw new ArgumentNullException(nameof(instance));
-            }
-
-            return instance.TryGetProviderId(name, out _);
+            return instance == null ? throw new ArgumentNullException(nameof(instance)) : instance.TryGetProviderId(name, out _);
         }
 
         /// <summary>
@@ -102,7 +97,7 @@ namespace AVOne.Impl.Extensions
         /// <returns>System.String.</returns>
         public static string? GetProviderId(this IHasProviderIds instance, string name)
         {
-            instance.TryGetProviderId(name, out string? id);
+            _ = instance.TryGetProviderId(name, out var id);
             return id;
         }
 
@@ -133,7 +128,7 @@ namespace AVOne.Impl.Extensions
             // If it's null remove the key from the dictionary
             if (string.IsNullOrEmpty(value))
             {
-                instance.ProviderIds?.Remove(name);
+                _ = (instance.ProviderIds?.Remove(name));
             }
             else
             {
@@ -165,11 +160,7 @@ namespace AVOne.Impl.Extensions
 
         public static ProviderId GetPid(this IHasProviderIds instance, string name)
         {
-            if (instance == null)
-            {
-                return ProviderId.Parse(string.Empty);
-            }
-            return ProviderId.Parse(instance.GetProviderId(name) ?? string.Empty);
+            return instance == null ? ProviderId.Parse(string.Empty) : ProviderId.Parse(instance.GetProviderId(name) ?? string.Empty);
         }
 
         public static void SetPid(this IHasProviderIds instance, string name, string provider, string id,
@@ -185,12 +176,9 @@ namespace AVOne.Impl.Extensions
 
         public static string? GetTrailerUrl(this IHasProviderIds instance)
         {
-            if (instance is null)
-            {
-                return null;
-            }
-
-            return !instance.ProviderIds.Any()
+            return instance is null
+                ? null
+                : !instance.ProviderIds.Any()
                 ? string.Empty
                 : HttpUtility.UrlDecode(instance.GetProviderId("TrailerUrl"));
         }
@@ -200,5 +188,4 @@ namespace AVOne.Impl.Extensions
             instance.SetProviderId("TrailerUrl", HttpUtility.UrlEncode(url));
         }
     }
-
 }

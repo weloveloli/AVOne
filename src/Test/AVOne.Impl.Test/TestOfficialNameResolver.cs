@@ -37,13 +37,13 @@ namespace AVOne.Impl.Test
             foreach (var line in lines)
             {
                 var lineTokens = line.Split('\t');
-                if(lineTokens.Length != 2)
+                if (lineTokens.Length != 2)
                 {
                     continue;
                 }
                 var name = lineTokens[0];
                 var expectedId = lineTokens[1];
-                var id = provider.GetId(name,out var _,out var _);
+                var id = provider.GetId(name, out var _, out var _);
                 Assert.NotNull(id);
                 Assert.Equal(expectedId, id);
             }

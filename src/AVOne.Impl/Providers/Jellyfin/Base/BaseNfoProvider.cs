@@ -12,7 +12,7 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
     public abstract class BaseNfoProvider<T> : ILocalMetadataProvider<T>
         where T : BaseItem, new()
     {
-        private IFileSystem _fileSystem;
+        private readonly IFileSystem _fileSystem;
 
         protected BaseNfoProvider(IFileSystem fileSystem)
         {
@@ -63,12 +63,7 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
         {
             var file = GetXmlFile(new ItemInfo(item), directoryService);
 
-            if (file == null)
-            {
-                return false;
-            }
-
-            return file.Exists && _fileSystem.GetLastWriteTimeUtc(file) > item.DateLastSaved;
+            return file != null && file.Exists && _fileSystem.GetLastWriteTimeUtc(file) > item.DateLastSaved;
         }
 
         protected abstract void Fetch(MetadataResult<T> result, string path, CancellationToken cancellationToken);

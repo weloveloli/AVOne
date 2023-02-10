@@ -50,7 +50,7 @@ namespace AVOne.Impl.IO
                 if (file.Exists)
                 {
                     result = file;
-                    _fileCache.TryAdd(path, result);
+                    _ = _fileCache.TryAdd(path, result);
                 }
             }
 
@@ -64,7 +64,7 @@ namespace AVOne.Impl.IO
         {
             if (clearCache)
             {
-                _filePathCache.TryRemove(path, out _);
+                _ = _filePathCache.TryRemove(path, out _);
             }
 
             var filePaths = _filePathCache.GetOrAdd(path, static (p, fileSystem) => fileSystem.GetFilePaths(p).ToList(), _fileSystem);

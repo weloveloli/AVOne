@@ -36,32 +36,27 @@ namespace AVOne.Impl.Providers.Official
             var regexPatterns = string.Join("|", regexes.Select(i => "(" + i + ")"));
             var patternStr = "(" + wordsPattern + ")|" + regexPatterns;
 
-            this.ignore_pattern = new Regex(patternStr, RegexOptions.IgnoreCase | RegexOptions.Singleline);
+            ignore_pattern = new Regex(patternStr, RegexOptions.IgnoreCase | RegexOptions.Singleline);
         }
 
         public PornMovieInfo Parse(string filepath)
         {
-            var id = this.GetId(filepath, out var category, out var flags);
-            if (string.IsNullOrEmpty(id))
-            {
-                return PornMovieInfo.Empty(filepath);
-            }
-            else
-            {
-                return new PornMovieInfo
+            var id = GetId(filepath, out var category, out var flags);
+            return string.IsNullOrEmpty(id)
+                ? PornMovieInfo.Empty(filepath)
+                : new PornMovieInfo
                 {
                     FileName = filepath,
                     Id = id,
                     Category = category,
                     Flags = flags,
                 };
-            }
         }
 
         public string GetId(string filepath, out MovieIdCategory category, out PornMovieFlags flags)
         {
             var filename = Path.GetFileName(filepath);
-            filename = this.ignore_pattern.Replace(filename, string.Empty);
+            filename = ignore_pattern.Replace(filename, string.Empty);
             category = MovieIdCategory.None;
             flags = ReosolveFlagsByName(filename);
             var filename_lc = filename.ToLower();
@@ -134,7 +129,6 @@ namespace AVOne.Impl.Providers.Official
                 {
                     return match.Groups[1].Value;
                 }
-
             }
 
             // Try to match Tokyo-hot n, k series
@@ -170,11 +164,7 @@ namespace AVOne.Impl.Providers.Official
             {
                 var norm = Path.GetFullPath(filepath);
                 var folder = Path.GetDirectoryName(norm)?.Split(Path.DirectorySeparatorChar)[^2];
-                if (string.IsNullOrEmpty(folder))
-                {
-                    return string.Empty;
-                }
-                return GetId(folder, out category, out flags);
+                return string.IsNullOrEmpty(folder) ? string.Empty : GetId(folder, out category, out flags);
             }
             return string.Empty;
         }

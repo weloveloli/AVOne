@@ -4,20 +4,19 @@
 namespace AVOne.Impl.Providers.Metatube
 {
     using System.Collections.Generic;
+    using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
-    using AVOne.Configuration;
+    using AVOne.Constants;
+    using AVOne.Extensions;
+    using AVOne.Impl.Configuration;
+    using AVOne.Impl.Extensions;
+    using AVOne.Impl.Providers.Metatube.Models;
+    using AVOne.Models.Info;
+    using AVOne.Models.Item;
     using AVOne.Models.Result;
     using AVOne.Providers;
     using Microsoft.Extensions.Logging;
-    using System.Net.Http;
-    using AVOne.Models.Item;
-    using AVOne.Models.Info;
-    using AVOne.Impl.Extensions;
-    using AVOne.Impl.Providers.Metatube.Models;
-    using System.Text;
-    using AVOne.Extensions;
-    using AVOne.Constants;
 
     public class MetatubeMovieMetaDataProvider : BaseProvider, IRemoteMetadataProvider<PornMovie, PornMovieInfo>
     {
@@ -41,7 +40,10 @@ namespace AVOne.Impl.Providers.Metatube
             {
                 // Search movies and pick the first result.
                 var firstResult = (await GetSearchResults(info, cancellationToken)).FirstOrDefault();
-                if (firstResult != null) pid = firstResult.GetPid(Name);
+                if (firstResult != null)
+                {
+                    pid = firstResult.GetPid(Name);
+                }
             }
             Logger.Info("Get movie info: {0}", pid.ToString());
             var m = await ApiClient.GetMovieInfoAsync(pid.Provider, pid.Id, cancellationToken);
@@ -51,19 +53,27 @@ namespace AVOne.Impl.Providers.Metatube
 
             // Convert to real actor names.
             if (Configuration.EnableRealActorNames)
+            {
                 await ConvertToRealActorNames(m, cancellationToken);
+            }
 
             // Substitute title.
             if (Configuration.EnableTitleSubstitution)
+            {
                 m.Title = Configuration.GetTitleSubstitutionTable().Substitute(m.Title);
+            }
 
             // Substitute actors.
             if (Configuration.EnableActorSubstitution)
+            {
                 m.Actors = Configuration.GetActorSubstitutionTable().Substitute(m.Actors).ToArray();
+            }
 
             // Substitute genres.
             if (Configuration.EnableGenreSubstitution)
+            {
                 m.Genres = Configuration.GetGenreSubstitutionTable().Substitute(m.Genres).ToArray();
+            }
 
             // Build parameters.
             var parameters = new Dictionary<string, string>
@@ -115,35 +125,49 @@ namespace AVOne.Impl.Providers.Metatube
 
             // Set community rating.
             if (Configuration.EnableRatings)
+            {
                 result.Item.CommunityRating = m.Score > 0 ? (float)Math.Round(m.Score * 2, 1) : null;
+            }
 
             // Add collection.
             if (Configuration.EnableCollections && !string.IsNullOrWhiteSpace(m.Series))
+            {
                 result.Item.CollectionName = m.Series;
+            }
 
             // Add studio.
             if (!string.IsNullOrWhiteSpace(m.Maker))
+            {
                 result.Item.AddStudio(m.Maker);
+            }
 
             // Add tag (series).
             if (!string.IsNullOrWhiteSpace(m.Series))
+            {
                 result.Item.AddTag(m.Series);
+            }
 
             // Add tag (maker).
             if (!string.IsNullOrWhiteSpace(m.Maker))
+            {
                 result.Item.AddTag(m.Maker);
+            }
 
             // Add tag (label).
             if (!string.IsNullOrWhiteSpace(m.Label))
+            {
                 result.Item.AddTag(m.Label);
+            }
 
             // Add director.
             if (Configuration.EnableDirectors && !string.IsNullOrWhiteSpace(m.Director))
+            {
                 result.AddPerson(new PersonInfo
                 {
                     Name = m.Director,
                     Type = PersonType.Director
                 });
+            }
 
             // Add actors.
             foreach (var name in m.Actors ?? Enumerable.Empty<string>())
@@ -189,7 +213,7 @@ namespace AVOne.Impl.Providers.Metatube
             {
                 var filter = Configuration.GetMovieProviderFilter();
                 // Filter out mismatched results.
-                searchResults.RemoveAll(m => !filter.Contains(m.Provider, StringComparer.OrdinalIgnoreCase));
+                _ = searchResults.RemoveAll(m => !filter.Contains(m.Provider, StringComparer.OrdinalIgnoreCase));
                 // Reorder results by stable sort.
                 searchResults = searchResults
                     .OrderBy(m => filter.FindIndex(s => s.Equals(m.Provider, StringComparison.OrdinalIgnoreCase))).ToList();
@@ -219,7 +243,9 @@ namespace AVOne.Impl.Providers.Metatube
                 // Use GFriends as actor image provider.
                 foreach (var actor in (await ApiClient.SearchActorAsync(name, GFriends, false, cancellationToken))
                          .Where(actor => actor.Images?.Any() == true))
+                {
                     return actor.Images.First();
+                }
             }
             catch (Exception e)
             {
@@ -231,7 +257,10 @@ namespace AVOne.Impl.Providers.Metatube
 
         private async Task ConvertToRealActorNames(MovieSearchResult m, CancellationToken cancellationToken)
         {
-            if (!AvWikiSupportedProviderNames.Contains(m.Provider, StringComparer.OrdinalIgnoreCase)) return;
+            if (!AvWikiSupportedProviderNames.Contains(m.Provider, StringComparer.OrdinalIgnoreCase))
+            {
+                return;
+            }
 
             try
             {
@@ -248,7 +277,10 @@ namespace AVOne.Impl.Providers.Metatube
                 else
                 {
                     var firstResult = searchResults.First();
-                    if (firstResult.Actors?.Any() == true) m.Actors = firstResult.Actors;
+                    if (firstResult.Actors?.Any() == true)
+                    {
+                        m.Actors = firstResult.Actors;
+                    }
                 }
             }
             catch (Exception e)
@@ -259,7 +291,9 @@ namespace AVOne.Impl.Providers.Metatube
         private static string RenderTemplate(string template, Dictionary<string, string> parameters)
         {
             if (string.IsNullOrWhiteSpace(template))
+            {
                 return string.Empty;
+            }
 
             var sb = parameters.Where(kvp => template.Contains(kvp.Key))
                 .Aggregate(new StringBuilder(template),

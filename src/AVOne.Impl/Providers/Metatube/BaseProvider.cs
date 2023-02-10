@@ -3,7 +3,7 @@
 
 namespace AVOne.Impl.Providers.Metatube
 {
-    using AVOne.Configuration;
+    using AVOne.Impl.Configuration;
     using AVOne.Impl.Constants;
     using Microsoft.Extensions.Logging;
 

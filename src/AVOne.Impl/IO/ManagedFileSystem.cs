@@ -4,10 +4,10 @@
 namespace AVOne.Impl.IO
 {
     using System.Globalization;
-    using AVOne.Extensions;
-    using Microsoft.Extensions.Logging;
     using AVOne.Configuration;
+    using AVOne.Extensions;
     using AVOne.IO;
+    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Class ManagedFileSystem.
@@ -63,7 +63,7 @@ namespace AVOne.Impl.IO
             // relative path
             if (firstChar == '\\')
             {
-                filePath = filePath.Substring(1);
+                filePath = filePath[1..];
             }
 
             try
@@ -98,23 +98,13 @@ namespace AVOne.Impl.IO
             {
                 var fileInfo = new FileInfo(path);
 
-                if (fileInfo.Exists)
-                {
-                    return GetFileSystemMetadata(fileInfo);
-                }
-
-                return GetFileSystemMetadata(new DirectoryInfo(path));
+                return fileInfo.Exists ? GetFileSystemMetadata(fileInfo) : GetFileSystemMetadata(new DirectoryInfo(path));
             }
             else
             {
                 var fileInfo = new DirectoryInfo(path);
 
-                if (fileInfo.Exists)
-                {
-                    return GetFileSystemMetadata(fileInfo);
-                }
-
-                return GetFileSystemMetadata(new FileInfo(path));
+                return fileInfo.Exists ? GetFileSystemMetadata(fileInfo) : GetFileSystemMetadata(new FileInfo(path));
             }
         }
 
@@ -176,10 +166,8 @@ namespace AVOne.Impl.IO
                     {
                         try
                         {
-                            using (var fileHandle = File.OpenHandle(fileInfo.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                            {
-                                result.Length = RandomAccess.GetLength(fileHandle);
-                            }
+                            using var fileHandle = File.OpenHandle(fileInfo.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                            result.Length = RandomAccess.GetLength(fileHandle);
                         }
                         catch (FileNotFoundException ex)
                         {
@@ -429,7 +417,7 @@ namespace AVOne.Impl.IO
             SetHidden(file1, false);
             SetHidden(file2, false);
 
-            Directory.CreateDirectory(_tempPath);
+            _ = Directory.CreateDirectory(_tempPath);
             File.Copy(file1, temp1, true);
 
             File.Copy(file2, file1, true);
@@ -444,12 +432,9 @@ namespace AVOne.Impl.IO
                 throw new ArgumentNullException(nameof(parentPath));
             }
 
-            if (string.IsNullOrEmpty(path))
-            {
-                throw new ArgumentNullException(nameof(path));
-            }
-
-            return path.Contains(
+            return string.IsNullOrEmpty(path)
+                ? throw new ArgumentNullException(nameof(path))
+                : path.Contains(
                 Path.TrimEndingDirectorySeparator(parentPath) + Path.DirectorySeparatorChar,
                 _isEnvironmentCaseInsensitive ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
         }
@@ -462,12 +447,7 @@ namespace AVOne.Impl.IO
                 throw new ArgumentNullException(nameof(path));
             }
 
-            if (path.EndsWith(":\\", StringComparison.OrdinalIgnoreCase))
-            {
-                return path;
-            }
-
-            return Path.TrimEndingDirectorySeparator(path);
+            return path.EndsWith(":\\", StringComparison.OrdinalIgnoreCase) ? path : Path.TrimEndingDirectorySeparator(path);
         }
 
         /// <inheritdoc />
@@ -482,24 +462,14 @@ namespace AVOne.Impl.IO
         /// <inheritdoc />
         public virtual string GetFileNameWithoutExtension(FileSystemMetadata info)
         {
-            if (info.IsDirectory)
-            {
-                return info.Name;
-            }
-
-            return Path.GetFileNameWithoutExtension(info.FullName);
+            return info.IsDirectory ? info.Name : Path.GetFileNameWithoutExtension(info.FullName);
         }
 
         /// <inheritdoc />
         public virtual bool IsPathFile(string path)
         {
-            if (path.Contains("://", StringComparison.OrdinalIgnoreCase)
-                && !path.StartsWith("file://", StringComparison.OrdinalIgnoreCase))
-            {
-                return false;
-            }
-
-            return true;
+            return !path.Contains("://", StringComparison.OrdinalIgnoreCase)
+                || path.StartsWith("file://", StringComparison.OrdinalIgnoreCase);
         }
 
         /// <inheritdoc />
@@ -558,12 +528,7 @@ namespace AVOne.Impl.IO
                 files = files.Where(i =>
                 {
                     var ext = i.Extension.AsSpan();
-                    if (ext.IsEmpty)
-                    {
-                        return false;
-                    }
-
-                    return extensions.Contains(ext, StringComparison.OrdinalIgnoreCase);
+                    return !ext.IsEmpty && extensions.Contains(ext, StringComparison.OrdinalIgnoreCase);
                 });
             }
 
@@ -615,12 +580,7 @@ namespace AVOne.Impl.IO
                 files = files.Where(i =>
                 {
                     var ext = Path.GetExtension(i.AsSpan());
-                    if (ext.IsEmpty)
-                    {
-                        return false;
-                    }
-
-                    return extensions.Contains(ext, StringComparison.OrdinalIgnoreCase);
+                    return !ext.IsEmpty && extensions.Contains(ext, StringComparison.OrdinalIgnoreCase);
                 });
             }
 

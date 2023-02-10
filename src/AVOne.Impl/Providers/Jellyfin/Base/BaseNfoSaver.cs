@@ -7,14 +7,14 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
     using System.Text;
     using System.Xml;
     using AVOne.Configuration;
+    using AVOne.Constants;
+    using AVOne.Enum;
     using AVOne.Extensions;
     using AVOne.IO;
-    using AVOne.Enum;
-    using AVOne.Models.Item;
-    using Microsoft.Extensions.Logging;
-    using AVOne.Constants;
     using AVOne.Models.Info;
+    using AVOne.Models.Item;
     using AVOne.Providers;
+    using Microsoft.Extensions.Logging;
 
     public abstract class BaseJellifinNfoSaver : IMetadataFileSaverProvider
     {
@@ -22,7 +22,7 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
 
         public const string YouTubeWatchUrl = "https://www.youtube.com/watch?v=";
 
-        private static readonly HashSet<string> _commonTags = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        private static readonly HashSet<string> _commonTags = new(StringComparer.OrdinalIgnoreCase)
         {
             "plot",
             "customrating",
@@ -149,22 +149,20 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
         {
             var path = GetSavePath(item);
 
-            using (var memoryStream = new MemoryStream())
-            {
-                Save(item, memoryStream, path);
+            using var memoryStream = new MemoryStream();
+            Save(item, memoryStream, path);
 
-                memoryStream.Position = 0;
+            memoryStream.Position = 0;
 
-                cancellationToken.ThrowIfCancellationRequested();
+            cancellationToken.ThrowIfCancellationRequested();
 
-                await SaveToFileAsync(memoryStream, path).ConfigureAwait(false);
-            }
+            await SaveToFileAsync(memoryStream, path).ConfigureAwait(false);
         }
 
         private async Task SaveToFileAsync(Stream stream, string path)
         {
             var directory = Path.GetDirectoryName(path) ?? throw new ArgumentException($"Provided path ({path}) is not valid.", nameof(path));
-            Directory.CreateDirectory(directory);
+            _ = Directory.CreateDirectory(directory);
 
             // On Windows, saving the file will fail if the file is hidden or readonly
             FileSystem.SetAttributes(path, false, false);
@@ -194,44 +192,42 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
                 CloseOutput = false
             };
 
-            using (var writer = XmlWriter.Create(stream, settings))
+            using var writer = XmlWriter.Create(stream, settings);
+            var root = GetRootElementName(item);
+
+            writer.WriteStartDocument(true);
+
+            writer.WriteStartElement(root);
+
+            var baseItem = item;
+
+            if (baseItem != null)
             {
-                var root = GetRootElementName(item);
-
-                writer.WriteStartDocument(true);
-
-                writer.WriteStartElement(root);
-
-                var baseItem = item;
-
-                if (baseItem != null)
-                {
-                    AddCommonNodes(baseItem, writer);
-                }
-
-                WriteCustomElements(item, writer);
-
-                var tagsUsed = GetTagsUsed(item).ToList();
-
-                try
-                {
-                    AddCustomTags(xmlPath, tagsUsed, writer, Logger);
-                }
-                catch (FileNotFoundException)
-                {
-                }
-                catch (IOException)
-                {
-                }
-                catch (XmlException ex)
-                {
-                    Logger.LogError(ex, "Error reading existing nfo");
-                }
-
-                writer.WriteEndElement();
-
-                writer.WriteEndDocument();
+                AddCommonNodes(baseItem, writer);
             }
+
+            WriteCustomElements(item, writer);
+
+            var tagsUsed = GetTagsUsed(item).ToList();
+
+            try
+            {
+                AddCustomTags(xmlPath, tagsUsed, writer, Logger);
+            }
+            catch (FileNotFoundException)
+            {
+            }
+            catch (IOException)
+            {
+            }
+            catch (XmlException ex)
+            {
+                Logger.LogError(ex, "Error reading existing nfo");
+            }
+
+            writer.WriteEndElement();
+
+            writer.WriteEndDocument();
         }
 
         protected abstract void WriteCustomElements(BaseItem item, XmlWriter writer);
@@ -389,7 +385,7 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
                         {
                             var tagName = GetTagForProviderKey(providerKey);
                             Logger.LogDebug("Verifying custom provider tagname {0}", tagName);
-                            XmlConvert.VerifyName(tagName);
+                            _ = XmlConvert.VerifyName(tagName);
                             Logger.LogDebug("Saving custom provider tagname {0}", tagName);
 
                             writer.WriteElementString(GetTagForProviderKey(providerKey), providerId);
@@ -471,43 +467,41 @@ namespace AVOne.Impl.Providers.Jellyfin.Base
                 IgnoreComments = true
             };
 
-            using (var fileStream = File.OpenRead(path))
-            using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
-            using (var reader = XmlReader.Create(streamReader, settings))
+            using var fileStream = File.OpenRead(path);
+            using var streamReader = new StreamReader(fileStream, Encoding.UTF8);
+            using var reader = XmlReader.Create(streamReader, settings);
+            try
             {
-                try
-                {
-                    reader.MoveToContent();
-                }
-                catch (Exception ex)
-                {
-                    logger.LogError(ex, "Error reading existing xml tags from {Path}.", path);
-                    return;
-                }
+                _ = reader.MoveToContent();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error reading existing xml tags from {Path}.", path);
+                return;
+            }
 
-                reader.Read();
+            _ = reader.Read();
 
-                // Loop through each element
-                while (!reader.EOF && reader.ReadState == ReadState.Interactive)
+            // Loop through each element
+            while (!reader.EOF && reader.ReadState == ReadState.Interactive)
+            {
+                if (reader.NodeType == XmlNodeType.Element)
                 {
-                    if (reader.NodeType == XmlNodeType.Element)
+                    var name = reader.Name;
+
+                    if (!_commonTags.Contains(name)
+                        && !xmlTagsUsed.Contains(name, StringComparison.OrdinalIgnoreCase))
                     {
-                        var name = reader.Name;
-
-                        if (!_commonTags.Contains(name)
-                            && !xmlTagsUsed.Contains(name, StringComparison.OrdinalIgnoreCase))
-                        {
-                            writer.WriteNode(reader, false);
-                        }
-                        else
-                        {
-                            reader.Skip();
-                        }
+                        writer.WriteNode(reader, false);
                     }
                     else
                     {
-                        reader.Read();
+                        reader.Skip();
                     }
+                }
+                else
+                {
+                    _ = reader.Read();
                 }
             }
         }

@@ -1,7 +1,7 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // Licensed under the Apache V2.0 License.
 
-namespace MediaBrowser.XbmcMetadata.Savers
+namespace AVOne.Impl.Providers.Jellyfin
 {
     using System.Collections.Generic;
     using System.IO;
@@ -82,12 +82,7 @@ namespace MediaBrowser.XbmcMetadata.Savers
             }
 
             // Check parent for null to avoid running this against things like video backdrops
-            if (item is Video video)
-            {
-                return updateType >= ItemUpdateType.ImageUpdate;
-            }
-
-            return false;
+            return item is Video && updateType >= ItemUpdateType.ImageUpdate;
         }
 
         /// <inheritdoc />

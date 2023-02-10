@@ -109,14 +109,7 @@ namespace AVOne.Extensions
 
             if (!current.Contains(name, StringComparison.OrdinalIgnoreCase))
             {
-                if (current.Length == 0)
-                {
-                    item.Tags = new[] { name };
-                }
-                else
-                {
-                    item.Tags = current.Concat(new[] { name }).ToArray();
-                }
+                item.Tags = current.Length == 0 ? (new[] { name }) : current.Concat(new[] { name }).ToArray();
             }
         }
 

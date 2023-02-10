@@ -9,7 +9,7 @@ namespace AVOne.Impl.Providers.Metatube
     using System.Net.Http.Headers;
     using System.Net.Http.Json;
     using System.Web;
-    using AVOne.Configuration;
+    using AVOne.Impl.Configuration;
     using AVOne.Impl.Providers.Metatube.Models;
 
     public class MetatubeApiClient
@@ -33,7 +33,10 @@ namespace AVOne.Impl.Providers.Metatube
         private string ComposeUrl(string path, NameValueCollection nv)
         {
             var query = HttpUtility.ParseQueryString(string.Empty);
-            foreach (string key in nv) query.Add(key, nv.Get(key));
+            foreach (string key in nv)
+            {
+                query.Add(key, nv.Get(key));
+            }
 
             // Build URL
             var uriBuilder = new UriBuilder(_metaTubeConfiguration.Server)
@@ -73,19 +76,6 @@ namespace AVOne.Impl.Providers.Metatube
             { "q", q },
             { "provider", provider },
             { "fallback", fallback.ToString() }
-        });
-        }
-
-        private string ComposeTranslateApiUrl(string path, string q, string from, string to, string engine,
-            NameValueCollection nv = null)
-        {
-            return ComposeUrl(path, new NameValueCollection
-        {
-            { "q", q },
-            { "from", from },
-            { "to", to },
-            { "engine", engine },
-            nv ?? new NameValueCollection()
         });
         }
 
@@ -210,8 +200,10 @@ namespace AVOne.Impl.Providers.Metatube
 
             // Set API Authorization Token.
             if (requireAuth && !string.IsNullOrWhiteSpace(_metaTubeConfiguration.Token))
+            {
                 request.Headers.Authorization =
                     new AuthenticationHeaderValue("Bearer", _metaTubeConfiguration.Token);
+            }
 
             var response = await _httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
@@ -224,13 +216,12 @@ namespace AVOne.Impl.Providers.Metatube
             // EnsureSuccessStatusCode ignoring reason:
             // When the status is unsuccessful, the API response contains error details.
             if (!response.IsSuccessStatusCode && apiResponse.Error != null)
+            {
                 throw new Exception($"API request error: {apiResponse.Error.Code} ({apiResponse.Error.Message})");
+            }
 
             // Note: data field must not be null if there are no errors.
-            if (apiResponse.Data == null)
-                throw new Exception("Response data field is null");
-
-            return apiResponse.Data;
+            return apiResponse.Data == null ? throw new Exception("Response data field is null") : apiResponse.Data;
         }
     }
 }
