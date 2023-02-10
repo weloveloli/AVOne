@@ -12,7 +12,7 @@ namespace AVOne.Tool.Commands
     [Verb("scan", false, new string[] { "scan" }, HelpText = "HelpTextVerbScan", ResourceType = typeof(Resource))]
     internal class Scan : BaseOptions
     {
-        public override Task<int> ExecuteAsync(ConsoleAppHost provider, CancellationToken token)
+        public override Task<int> ExecuteAsync(ConsoleAppHost host, CancellationToken token)
         {
             throw new NotImplementedException();
         }

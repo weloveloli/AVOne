@@ -1,7 +1,7 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // Licensed under the Apache V2.0 License.
 
-namespace AVOne.Impl.Providers.Metatube.Helper
+namespace AVOne.Impl.Helper
 {
     public class ProviderId
     {
@@ -11,17 +11,21 @@ namespace AVOne.Impl.Providers.Metatube.Helper
 
         public double? Position { get; set; }
 
-
-
         public bool? Update { get; set; }
+
+        public ProviderId(string provider, string id)
+        {
+            Provider = provider;
+            Id = id;
+        }
 
         public static ProviderId Parse(string rawPid)
         {
             var values = rawPid?.Split(':');
-            return new ProviderId
+            var provider = values?.Length > 0 ? values[0] : string.Empty;
+            var id = values?.Length > 1 ? values[1] : string.Empty;
+            return new ProviderId(provider, id)
             {
-                Provider = values?.Length > 0 ? values[0] : string.Empty,
-                Id = values?.Length > 1 ? values[1] : string.Empty,
                 Position = values?.Length > 2 ? ToDouble(values[2]) : null,
                 Update = values?.Length > 3 ? ToBool(values[3]) : null
             };
@@ -34,7 +38,11 @@ namespace AVOne.Impl.Providers.Metatube.Helper
         {
             pid.Provider, pid.Id
         };
-            if (pid.Position.HasValue) values.Add(pid.Position.ToString());
+            if (pid.Position.HasValue)
+            {
+                values.Add(pid.Position.Value.ToString());
+            }
+
             if (pid.Update.HasValue) values.Add((values.Count == 2 ? ":" : string.Empty) + pid.Update);
             return string.Join(':', values);
         }
@@ -57,6 +65,8 @@ namespace AVOne.Impl.Providers.Metatube.Helper
                 case "False":
                 case "FALSE":
                     return false;
+                default:
+                    break;
             }
 
             return null;

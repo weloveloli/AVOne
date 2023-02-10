@@ -4,20 +4,19 @@
 namespace AVOne.Impl.Providers.Metatube
 {
     using AVOne.Configuration;
-    using AVOne.Constants;
     using AVOne.Impl.Constants;
     using Microsoft.Extensions.Logging;
 
     public abstract class BaseProvider
     {
         protected readonly ILogger Logger;
-        protected readonly MetatubeApiClient Client;
+        protected readonly MetatubeApiClient ApiClient;
         protected readonly IOfficialProvidersConfiguration OfficialProvidersConfiguration;
 
-        protected BaseProvider(ILogger logger, IOfficialProvidersConfiguration officialProvidersConfiguration, IHttpClientFactory httpClientFactory)
+        protected BaseProvider(ILogger logger, IOfficialProvidersConfiguration officialProvidersConfiguration, MetatubeApiClient metatubeApiClient)
         {
             Logger = logger;
-            Client = new MetatubeApiClient(httpClientFactory.CreateClient(HttpClientNames.MetatubeClient), officialProvidersConfiguration.MetaTube);
+            ApiClient = metatubeApiClient;
             OfficialProvidersConfiguration = officialProvidersConfiguration;
         }
         protected MetaTubeConfiguration Configuration => OfficialProvidersConfiguration.MetaTube;
@@ -29,7 +28,7 @@ namespace AVOne.Impl.Providers.Metatube
         public Task<HttpResponseMessage> GetImageResponse(string url, CancellationToken cancellationToken)
         {
             Logger.LogDebug("GetImageResponse for url: {0}", url);
-            return Client.GetImageResponse(url, cancellationToken);
+            return ApiClient.GetImageResponse(url, cancellationToken);
         }
     }
 }

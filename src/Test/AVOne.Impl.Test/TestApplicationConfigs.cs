@@ -5,7 +5,12 @@ namespace AVOne.Impl.Test
 {
     using AVOne.Configuration;
 
-    public class TestApplicationConfigs : BaseApplicationConfiguration
+    public class TestApplicationConfigs : BaseApplicationConfiguration, IOfficialProvidersConfiguration
     {
+        public TestApplicationConfigs()
+        {
+            MetaTube = new MetaTubeConfiguration();
+        }
+        public MetaTubeConfiguration MetaTube {get; set;}
     }
 }

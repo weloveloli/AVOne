@@ -28,10 +28,10 @@ namespace AVOne.Tool.Commands
             }
         }
 
-        public override Task<int> ExecuteAsync(ConsoleAppHost provider, CancellationToken token)
+        public override Task<int> ExecuteAsync(ConsoleAppHost host, CancellationToken token)
         {
-            var client = provider.Resolve<HttpClient>();
-            var logger = provider.Resolve<ILogger<SearchMetadata>>();
+            var client = host.Resolve<HttpClient>();
+            var logger = host.Resolve<ILogger<SearchMetadata>>();
             logger?.LogDebug($"client null is {client is null}");
             logger?.LogDebug($"logger null is {logger is null}");
             Thread.Sleep(TimeSpan.FromSeconds(30));

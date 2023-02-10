@@ -8,6 +8,5 @@ namespace AVOne.Constants
         public const string HttpClientDefault = "Default";
         public const string HttpClientProxyRequired = "Proxy";
         public const string APIHttpClient = "API";
-        public const string MetatubeClient = "Metatube";
     }
 }

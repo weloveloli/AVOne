@@ -5,6 +5,7 @@ namespace AVOne.Impl.Registrator
 {
     using AVOne.Abstraction;
     using AVOne.Constants;
+    using AVOne.Impl.Providers.Metatube;
     using Microsoft.Extensions.DependencyInjection;
 
     public class HttpClientServiceRegistrator : IServiceRegistrator
@@ -12,7 +13,7 @@ namespace AVOne.Impl.Registrator
         public void RegisterServices(IServiceCollection serviceCollection)
         {
             serviceCollection
-                .AddHttpClient(HttpClientNames.MetatubeClient)
+                .AddHttpClient<MetatubeApiClient>()
                 .ConfigureHttpMessageHandlerBuilder(sp => new SocketsHttpHandler
                 {
                     // Connect Timeout.

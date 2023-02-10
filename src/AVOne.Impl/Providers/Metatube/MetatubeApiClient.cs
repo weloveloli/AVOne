@@ -16,10 +16,10 @@ namespace AVOne.Impl.Providers.Metatube
     {
         private readonly HttpClient _httpClient;
         private readonly MetaTubeConfiguration _metaTubeConfiguration;
-        public MetatubeApiClient(HttpClient httpClient, MetaTubeConfiguration metaTubeConfiguration)
+        public MetatubeApiClient(HttpClient httpClient, IOfficialProvidersConfiguration officialProvidersConfiguration)
         {
             _httpClient = httpClient;
-            _metaTubeConfiguration = metaTubeConfiguration;
+            _metaTubeConfiguration = officialProvidersConfiguration.MetaTube;
         }
 
         private const string ActorInfoApi = "/v1/actors";

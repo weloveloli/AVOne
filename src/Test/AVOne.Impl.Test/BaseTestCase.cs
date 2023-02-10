@@ -8,11 +8,11 @@ namespace AVOne.Impl.Test
 
     public abstract class BaseTestCase
     {
-        protected readonly IFixture _fixture;
+        protected readonly IFixture fixture;
 
         public BaseTestCase()
         {
-            _fixture = new Fixture().Customize(new AutoMoqCustomization());
+            fixture = new Fixture().Customize(new AutoMoqCustomization());
         }
     }
 }
