@@ -176,6 +176,13 @@ namespace AVOne.Models.Item
         public virtual ItemImageInfo[] ImageInfos { get; set; }
         public List<PersonInfo> People { get; set; }
 
+        /// <summary>
+        /// Gets a value indicating whether this instance is folder.
+        /// </summary>
+        /// <value><c>true</c> if this instance is folder; otherwise, <c>false</c>.</value>
+        [JsonIgnore]
+        public virtual bool IsFolder => false;
+
         public void AddPerson(PersonInfo p)
         {
             People ??= new List<PersonInfo>();

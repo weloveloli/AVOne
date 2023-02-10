@@ -7,22 +7,21 @@ namespace AVOne.Impl.Providers.Metatube
     using System.Threading;
     using System.Threading.Tasks;
     using AVOne.Configuration;
-    using AVOne.Constants;
-    using AVOne.Impl.Constants;
     using AVOne.Models.Result;
     using AVOne.Providers;
-    using PornMovieInfo = AVOne.Models.Info.PornMovieInfo;
-    using PornMovie = AVOne.Models.Item.PornMovie;
+    using Microsoft.Extensions.Logging;
+    using System.Net.Http;
+    using AVOne.Models.Item;
+    using AVOne.Models.Info;
 
-    public class MetatubeMovieMetaDataProvider : IRemoteMetadataProvider<PornMovie, PornMovieInfo>
+    public class MetatubeMovieMetaDataProvider : BaseProvider, IRemoteMetadataProvider<PornMovie, PornMovieInfo>
     {
-        private readonly MetatubeApiClient _client;
-
-        public MetatubeMovieMetaDataProvider(IOfficialProvidersConfiguration officialProvidersConfiguration, IHttpClientFactory httpClientFactory)
+        public MetatubeMovieMetaDataProvider(ILoggerFactory loggerFactory,
+                                             IOfficialProvidersConfiguration officialProvidersConfiguration,
+                                             IHttpClientFactory httpClientFactory)
+            : base(loggerFactory, officialProvidersConfiguration, httpClientFactory)
         {
-            _client = new MetatubeApiClient(httpClientFactory.CreateClient(HttpClientNames.MetatubeClient), officialProvidersConfiguration.MetaTube);
         }
-        public string Name => OfficialProviderNames.MetaTube;
 
         public Task<MetadataResult<PornMovie>> GetMetadata(PornMovieInfo info, CancellationToken cancellationToken)
         {
