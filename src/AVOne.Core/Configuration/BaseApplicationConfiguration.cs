@@ -22,6 +22,11 @@ namespace AVOne.Configuration
         public string NameResolveProvider { get; set; }
     }
 
+    public class LibraryOptions
+    {
+
+    }
+
     /// <summary>
     /// Class MetadataOptions.
     /// </summary>
@@ -67,7 +72,16 @@ namespace AVOne.Configuration
 
         public MetadataOptions[] MetadataOptions { get; set; }
 
-
         public ProviderConfig ProviderConfig { get; set; }
+
+        public LibraryOptions Options { get; set; }
+
+        public Tuple<string, string> [] ContentTypes { get; set; } = Array.Empty<Tuple<string, string>>();
+
+        /// <summary>
+        /// Gets or sets a value indicating whether [enable case sensitive item ids].
+        /// </summary>
+        /// <value><c>true</c> if [enable case sensitive item ids]; otherwise, <c>false</c>.</value>
+        public bool EnableCaseSensitiveItemIds { get; set; } = true;
     }
 }

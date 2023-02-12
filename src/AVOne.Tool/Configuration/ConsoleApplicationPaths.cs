@@ -71,6 +71,12 @@ namespace AVOne.Tool.Configuration
         /// <value>The system configuration file path.</value>
         public string SystemConfigurationFilePath => Path.Combine(ConfigurationDirectoryPath, "console.xml");
 
+        public string RootFolderPath => Path.Join(ProgramDataPath, "root");
+
+        public string DefaultInternalMetadataPath => Path.Combine(ProgramDataPath, "metadata");
+
+        public string PeoplePath => Path.Combine(DefaultInternalMetadataPath, "People");
+
         public static ConsoleApplicationPaths CreateConsoleApplicationPaths(BaseOptions options)
         {
             // dataDir

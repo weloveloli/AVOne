@@ -15,6 +15,6 @@ namespace AVOne.Abstraction
         /// <param name="serviceCollection">The service collection.</param>
         void RegisterServices(IServiceCollection serviceCollection);
 
-        void RegisterStatic(IApplicationHost host);
+        void PostBuildService(IApplicationHost host);
     }
 }

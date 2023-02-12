@@ -17,7 +17,7 @@ namespace AVOne.Models.Item
         /// </summary>
         /// <value><c>true</c> if this instance is root; otherwise, <c>false</c>.</value>
         public bool IsRoot { get; set; }
-
+        public virtual bool IsPhysicalRoot => false;
         /// <summary>
         /// Gets a value indicating whether this instance is folder.
         /// </summary>

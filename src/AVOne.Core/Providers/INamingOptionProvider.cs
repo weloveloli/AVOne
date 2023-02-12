@@ -5,6 +5,7 @@ namespace AVOne.Providers
 {
     using System.Text.RegularExpressions;
     using AVOne.Abstraction;
+    using AVOne.Enum;
     using AVOne.Naming;
 
     public interface INamingOptionProvider : IProvider, IHasOrder
@@ -63,5 +64,10 @@ namespace AVOne.Providers
         /// Gets the file stacking rules.
         /// </summary>
         FileStackRule[] VideoFileStackingRules { get; }
+
+        /// <summary>
+        /// Gets or sets the folder name to extra types mapping.
+        /// </summary>
+        public Dictionary<string, ExtraType> AllExtrasTypesFolderNames { get; }
     }
 }

@@ -29,7 +29,7 @@ namespace AVOne.Providers.MetaTube
                 });
         }
 
-        public void RegisterStatic(IApplicationHost host)
+        public void PostBuildService(IApplicationHost host)
         {
 
         }

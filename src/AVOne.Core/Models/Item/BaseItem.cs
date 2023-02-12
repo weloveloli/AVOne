@@ -221,12 +221,26 @@ namespace AVOne.Models.Item
         [JsonIgnore]
         public virtual bool IsTopParent => false;
 
-
         /// <summary>
         /// Gets or sets a value indicating whether this instance is in mixed folder.
         /// </summary>
         /// <value><c>true</c> if this instance is in mixed folder; otherwise, <c>false</c>.</value>
         [JsonIgnore]
         public bool IsInMixedFolder { get; set; }
+
+        /// <summary>
+        /// Gets or sets the id.
+        /// </summary>
+        /// <value>The id.</value>
+        [JsonIgnore]
+        public Guid Id { get; set; }
+
+        [JsonIgnore]
+        public Guid ParentId { get; set; }
+
+        public void SetParent(Folder parent)
+        {
+            ParentId = parent == null ? Guid.Empty : parent.Id;
+        }
     }
 }

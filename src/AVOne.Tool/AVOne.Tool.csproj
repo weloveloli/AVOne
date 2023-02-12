@@ -30,6 +30,9 @@
   <ItemGroup>
     <ProjectReference Include="..\AVOne.Core\AVOne.Core.csproj" />
     <ProjectReference Include="..\AVOne.Impl\AVOne.Impl.csproj" />
+    <ProjectReference Include="..\AVOne.Providers.Jellyfin\AVOne.Providers.Jellyfin.csproj" />
+    <ProjectReference Include="..\AVOne.Providers.MetaTube\AVOne.Providers.MetaTube.csproj" />
+    <ProjectReference Include="..\AVOne.Providers.Official\AVOne.Providers.Official.csproj" />
   </ItemGroup>
 
   <ItemGroup>

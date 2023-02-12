@@ -13,9 +13,14 @@ namespace AVOne.Tool
     using AVOne.Configuration;
     using AVOne.Impl.Constants;
     using AVOne.Impl.IO;
+    using AVOne.Impl.Library;
     using AVOne.Impl.Providers;
     using AVOne.IO;
+    using AVOne.Library;
     using AVOne.Providers;
+    using AVOne.Providers.Jellyfin;
+    using AVOne.Providers.MetaTube;
+    using AVOne.Providers.Official;
     using AVOne.Tool.Commands;
     using AVOne.Tool.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -98,17 +103,10 @@ namespace AVOne.Tool
             serviceCollection.TryAdd(ServiceDescriptor.Singleton(typeof(ILogger<>), typeof(Logger<>)));
             _ = serviceCollection.AddHttpClient();
             RegisterServices(serviceCollection);
+            var registrators = GetExportTypes<IServiceRegistrator>().Select(e => (IServiceRegistrator)Activator.CreateInstance(e)).ToList();
+            registrators.ForEach(e => e.RegisterServices(serviceCollection));
             ServiceProvider = serviceCollection.BuildServiceProvider();
-            AddParts();
-        }
-
-        private void AddParts()
-        {
-            Resolve<IProviderManager>().AddParts(
-                GetExports<IImageProvider>(),
-                GetExports<IMetadataProvider>(),
-                GetExports<INamingOptionProvider>(),
-                GetExports<IVideoResolverProvider>());
+            registrators.ForEach(e => e.PostBuildService(this));
         }
 
         /// <summary>
@@ -125,7 +123,6 @@ namespace AVOne.Tool
             _ = serviceCollection.AddSingleton(_xmlSerializer);
             _ = serviceCollection.AddSingleton(_fileSystem);
             _ = serviceCollection.AddSingleton<IConfigurationManager>(ConfigurationManager);
-            _ = serviceCollection.AddSingleton<IProviderManager, ProviderManager>();
         }
 
         /// <summary>
@@ -136,6 +133,9 @@ namespace AVOne.Tool
         {
             // Include composable parts in the AVOne.Impl assembly
             yield return typeof(OfficialProviderNames).Assembly;
+            yield return typeof(OfficialLocalMetadataProvider).Assembly;
+            yield return typeof(MetaTubeServiceRegistrator).Assembly;
+            yield return typeof(JellyfinNamingOptionProvider).Assembly;
         }
 
         private IEnumerable<Type> GetTypes(IEnumerable<Assembly> assemblies)

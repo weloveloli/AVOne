@@ -3,6 +3,7 @@
 
 namespace AVOne.Providers.Jellyfin
 {
+    using System.Collections.Generic;
     using System.Text.RegularExpressions;
     using AVOne.Enum;
     using AVOne.Impl.Constants;
@@ -38,7 +39,7 @@ namespace AVOne.Providers.Jellyfin
                 .Select((e) => new EpisodeExpression(e.Expression, e.IsByDate)).ToArray();
             VideoExtraRules = _options.VideoExtraRules
                 .Select((e) => new ExtraRule((ExtraType)e.ExtraType, (ExtraRuleType)e.RuleType, e.Token, (MediaType)e.MediaType)).ToArray();
-
+            AllExtrasTypesFolderNames = _options.AllExtrasTypesFolderNames.ToArray().ToDictionary(e => e.Key, e => (ExtraType)(int)e.Value);
             VideoFileStackingRules = new FileStackRule[3]
     {
                 new FileStackRule("^(?<filename>.*?)(?:(?<=[\\]\\)\\}])|[ _.-]+)[\\(\\[]?(?<parttype>cd|dvd|part|pt|dis[ck])[ _.-]*(?<number>[0-9]+)[\\)\\]]?(?:\\.[^.]+)?$", isNumerical: true),
@@ -90,8 +91,9 @@ namespace AVOne.Providers.Jellyfin
         /// <summary>
         /// Gets or sets list of extra rules for videos.
         /// </summary>
-        public ExtraRule[] VideoExtraRules { get; }
+        public ExtraRule[] VideoExtraRules { get; private set; }
 
-        public FileStackRule[] VideoFileStackingRules { get; }
+        public FileStackRule[] VideoFileStackingRules { get; private set; }
+        public Dictionary<string, ExtraType> AllExtrasTypesFolderNames { get; private set; }
     }
 }

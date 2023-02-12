@@ -20,8 +20,6 @@ namespace AVOne.Resolvers
         /// </summary>
         private readonly IApplicationPaths _appPaths;
 
-        private BaseApplicationConfiguration _baseApplicationConfiguration;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ItemResolveArgs" /> class.
         /// </summary>
@@ -222,5 +220,11 @@ namespace AVOne.Resolvers
 
             return false;
         }
+
+        /// <summary>
+        /// Gets a value indicating whether this instance is physical root.
+        /// </summary>
+        /// <value><c>true</c> if this instance is physical root; otherwise, <c>false</c>.</value>
+        public bool IsPhysicalRoot => IsDirectory && BaseItem.FileSystem.AreEqual(Path, _appPaths.RootFolderPath);
     }
 }

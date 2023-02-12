@@ -1,6 +1,7 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // Licensed under the Apache V2.0 License.
 
+#nullable disable
 namespace AVOne.Impl.Resolvers
 {
     using System.Collections.Generic;
@@ -293,7 +294,6 @@ namespace AVOne.Impl.Resolvers
 
             return m.Success;
         }
-
 
         private static bool ContainsFile(IReadOnlyList<VideoInfo> result, FileSystemMetadata file)
         {

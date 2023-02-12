@@ -73,5 +73,19 @@ namespace AVOne.Configuration
         /// </summary>
         /// <value>The temp directory.</value>
         string TempDirectory { get; }
+
+        /// <summary>
+        /// Gets the path to the base root media directory.
+        /// </summary>
+        /// <value>The root folder path.</value>
+        public string RootFolderPath { get; }
+
+        public string DefaultInternalMetadataPath { get; }
+
+        /// <summary>
+        /// Gets the path to the People directory.
+        /// </summary>
+        /// <value>The people path.</value>
+        public string PeoplePath { get; }
     }
 }
