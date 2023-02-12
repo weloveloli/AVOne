@@ -8,8 +8,14 @@ namespace AVOne.Providers
 
     public interface IProviderManager
     {
-        void AddParts(IEnumerable<IImageProvider> imageProviders, IEnumerable<IMetadataProvider> metadataProviders, IEnumerable<INamingOptionProvider> nameOptionProviders);
+        public void AddParts(
+            IEnumerable<IImageProvider> imageProviders,
+            IEnumerable<IMetadataProvider> metadataProviders,
+            IEnumerable<INamingOptionProvider> nameOptionProviders,
+            IEnumerable<IVideoResolverProvider> resolverProviders);
         MetadataOptions GetMetadataOptions(BaseItem item);
         IEnumerable<IMetadataProvider<T>> GetMetadataProviders<T>(BaseItem item) where T : BaseItem;
+        IVideoResolverProvider GetVideoResolverProvider();
+        INamingOptionProvider GetNamingOptionProvider();
     }
 }

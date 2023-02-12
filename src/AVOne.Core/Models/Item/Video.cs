@@ -5,12 +5,13 @@
 
 namespace AVOne.Models.Item
 {
+    using System.Text.Json.Serialization;
     using AVOne.Enum;
     using AVOne.Models.Info;
 
     public class Video : BaseItem
     {
-        protected Video()
+        public Video()
         {
             Tags = Array.Empty<string>();
             Genres = Array.Empty<string>();
@@ -52,6 +53,35 @@ namespace AVOne.Models.Item
         public override ItemLookupInfo GetLookupInfo()
         {
             throw new NotImplementedException();
+        }
+
+        public bool IsPlaceHolder { get; set; }
+
+        public string[] LocalAlternateVersions { get; set; }
+
+        [JsonIgnore]
+        public bool IsStacked => AdditionalParts.Length > 0;
+
+        [JsonIgnore]
+        public override string ContainingFolderPath
+        {
+            get
+            {
+                if (IsStacked)
+                {
+                    return System.IO.Path.GetDirectoryName(Path);
+                }
+
+                if (!IsPlaceHolder)
+                {
+                    if (VideoType == VideoType.BluRay || VideoType == VideoType.Dvd)
+                    {
+                        return Path;
+                    }
+                }
+
+                return base.ContainingFolderPath;
+            }
         }
     }
 }

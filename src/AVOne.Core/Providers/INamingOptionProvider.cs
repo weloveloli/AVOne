@@ -4,9 +4,10 @@
 namespace AVOne.Providers
 {
     using System.Text.RegularExpressions;
+    using AVOne.Abstraction;
     using AVOne.Naming;
 
-    public interface INamingOptionProvider : IProvider
+    public interface INamingOptionProvider : IProvider, IHasOrder
     {
         INamingOptions GetNamingOption();
     }
@@ -57,5 +58,10 @@ namespace AVOne.Providers
         /// Gets or sets list of extra rules for videos.
         /// </summary>
         ExtraRule[] VideoExtraRules { get; }
+
+        /// <summary>
+        /// Gets the file stacking rules.
+        /// </summary>
+        FileStackRule[] VideoFileStackingRules { get; }
     }
 }

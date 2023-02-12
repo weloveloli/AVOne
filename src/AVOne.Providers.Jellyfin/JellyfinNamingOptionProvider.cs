@@ -11,7 +11,6 @@ namespace AVOne.Providers.Jellyfin
 
     public class JellyfinNamingOptionProvider : INamingOptionProvider
     {
-
         private readonly INamingOptions _namingOptions;
         public JellyfinNamingOptionProvider()
         {
@@ -19,6 +18,8 @@ namespace AVOne.Providers.Jellyfin
         }
 
         public string Name => OfficialProviderNames.Jellifin;
+
+        public int Order => int.MaxValue;
 
         public INamingOptions GetNamingOption() => _namingOptions;
     }
@@ -37,6 +38,13 @@ namespace AVOne.Providers.Jellyfin
                 .Select((e) => new EpisodeExpression(e.Expression, e.IsByDate)).ToArray();
             VideoExtraRules = _options.VideoExtraRules
                 .Select((e) => new ExtraRule((ExtraType)e.ExtraType, (ExtraRuleType)e.RuleType, e.Token, (MediaType)e.MediaType)).ToArray();
+
+            VideoFileStackingRules = new FileStackRule[3]
+    {
+                new FileStackRule("^(?<filename>.*?)(?:(?<=[\\]\\)\\}])|[ _.-]+)[\\(\\[]?(?<parttype>cd|dvd|part|pt|dis[ck])[ _.-]*(?<number>[0-9]+)[\\)\\]]?(?:\\.[^.]+)?$", isNumerical: true),
+                new FileStackRule("^(?<filename>.*?)(?:(?<=[\\]\\)\\}])|[ _.-]+)[\\(\\[]?(?<parttype>cd|dvd|part|pt|dis[ck])[ _.-]*(?<number>[a-d])[\\)\\]]?(?:\\.[^.]+)?$", isNumerical: false),
+                new FileStackRule("^(?<filename>.*?)(?:(?<=[\\]\\)\\}])|[ _.-]?)(?<number>[a-d])(?:\\.[^.]+)?$", isNumerical: false)
+    };
         }
 
         /// <summary>
@@ -83,5 +91,7 @@ namespace AVOne.Providers.Jellyfin
         /// Gets or sets list of extra rules for videos.
         /// </summary>
         public ExtraRule[] VideoExtraRules { get; }
+
+        public FileStackRule[] VideoFileStackingRules { get; }
     }
 }

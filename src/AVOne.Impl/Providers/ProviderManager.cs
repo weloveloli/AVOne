@@ -14,25 +14,32 @@ namespace AVOne.Impl.Providers
         private IImageProvider[] ImageProviders { get; set; }
         private IMetadataProvider[] _metadataProviders = Array.Empty<IMetadataProvider>();
         private INamingOptionProvider[] _namingOptionProviders = Array.Empty<INamingOptionProvider>();
+        private IVideoResolverProvider[] _nameResolverProviders = Array.Empty<IVideoResolverProvider>();
         private readonly ILogger<ProviderManager> _logger;
         private readonly IConfigurationManager _configurationManager;
+        private readonly BaseApplicationConfiguration _configuration;
 
         public ProviderManager(ILogger<ProviderManager> logger, IConfigurationManager configurationManager)
         {
             _logger = logger;
             _configurationManager = configurationManager;
+            _configuration = configurationManager.CommonConfiguration;
             ImageProviders = Array.Empty<IImageProvider>();
         }
+
+
 
         /// <inheritdoc/>
         public void AddParts(
             IEnumerable<IImageProvider> imageProviders,
             IEnumerable<IMetadataProvider> metadataProviders,
-            IEnumerable<INamingOptionProvider> nameOptionProviders)
+            IEnumerable<INamingOptionProvider> nameOptionProviders,
+            IEnumerable<IVideoResolverProvider> resolverProviders)
         {
             ImageProviders = imageProviders.ToArray();
             _metadataProviders = metadataProviders.ToArray();
             _namingOptionProviders = nameOptionProviders.ToArray();
+            _nameResolverProviders = resolverProviders.ToArray();
         }
         /// <summary>
         /// Gets the metadata providers for the provided item.
@@ -47,6 +54,16 @@ namespace AVOne.Impl.Providers
             var globalMetadataOptions = GetMetadataOptions(item);
 
             return GetMetadataProvidersInternal<T>(item, globalMetadataOptions, false, false);
+        }
+
+        public IVideoResolverProvider GetVideoResolverProvider()
+        {
+            return this.GetProvider(this._nameResolverProviders, _configuration.ProviderConfig.NameResolveProvider);
+        }
+
+        public INamingOptionProvider GetNamingOptionProvider()
+        {
+            return this.GetProvider(this._namingOptionProviders, _configuration.ProviderConfig.NameOptionProvider);
         }
 
         /// <inheritdoc/>
@@ -69,9 +86,23 @@ namespace AVOne.Impl.Providers
                 .OrderBy(GetDefaultOrder);
         }
 
-        private int GetDefaultOrder(IMetadataProvider provider)
+        private int GetDefaultOrder(IProvider provider)
         {
             return provider is IHasOrder hasOrder ? hasOrder.Order : 0;
+        }
+
+        private T GetProvider<T>(IEnumerable<T> candidates, string name) where T : IProvider
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                return candidates.OfType<T>()
+                .OrderBy(e => GetDefaultOrder(e)).First();
+            }
+            else
+            {
+                return candidates.OfType<T>().Where(e => e.Name == name)
+                .OrderBy(e => GetDefaultOrder(e)).First();
+            }
         }
     }
 }

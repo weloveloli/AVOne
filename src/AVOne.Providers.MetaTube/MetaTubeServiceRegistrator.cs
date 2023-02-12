@@ -28,5 +28,10 @@ namespace AVOne.Providers.MetaTube
                     PooledConnectionIdleTimeout = TimeSpan.FromSeconds(90)
                 });
         }
+
+        public void RegisterStatic(IApplicationHost host)
+        {
+
+        }
     }
 }

@@ -16,6 +16,12 @@ namespace AVOne.Configuration
         public string ignore_folder { get; set; } = "cleaned";
     }
 
+    public class ProviderConfig
+    {
+        public string NameOptionProvider { get; set; }
+        public string NameResolveProvider { get; set; }
+    }
+
     /// <summary>
     /// Class MetadataOptions.
     /// </summary>
@@ -53,11 +59,15 @@ namespace AVOne.Configuration
             MovieID = new MovieID();
             File = new FileConfig();
             MetadataOptions = Array.Empty<MetadataOptions>();
+            ProviderConfig = new ProviderConfig();
         }
         public MovieID MovieID { get; set; }
 
         public FileConfig File { get; set; }
 
         public MetadataOptions[] MetadataOptions { get; set; }
+
+
+        public ProviderConfig ProviderConfig { get; set; }
     }
 }

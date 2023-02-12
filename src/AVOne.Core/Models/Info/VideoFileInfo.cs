@@ -59,6 +59,8 @@ namespace AVOne.Models.Info
             ? System.IO.Path.GetFileNameWithoutExtension(Path.AsSpan())
             : System.IO.Path.GetFileName(Path.AsSpan());
 
+        public int? Year { get; set; }
+
         /// <inheritdoc />
         public override string ToString()
         {

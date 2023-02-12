@@ -7,11 +7,20 @@ namespace AVOne.Models.Item
 {
     using System.Text.Json.Serialization;
     using AVOne.Abstraction;
+    using AVOne.Enum;
     using AVOne.Helper;
+    using AVOne.IO;
     using AVOne.Models.Info;
+    using Microsoft.Extensions.Logging;
 
     public abstract class BaseItem : IHasProviderIds, IHasLookupInfo<ItemLookupInfo>
     {
+        public static IFileSystem FileSystem { get; set; }
+        /// <summary>
+        /// Gets or sets the logger.
+        /// </summary>
+        public static ILogger<BaseItem> Logger { get; set; }
+
         /// <summary>
         /// Gets or sets the provider ids.
         /// </summary>
@@ -183,11 +192,41 @@ namespace AVOne.Models.Item
         [JsonIgnore]
         public virtual bool IsFolder => false;
 
+        [JsonIgnore]
+        public ExtraType? ExtraType { get; set; }
         public void AddPerson(PersonInfo p)
         {
             People ??= new List<PersonInfo>();
 
             PeopleHelper.AddPerson(People, p);
         }
+
+        /// <summary>
+        /// Gets the folder containing the item.
+        /// If the item is a folder, it returns the folder itself.
+        /// </summary>
+        [JsonIgnore]
+        public virtual string ContainingFolderPath
+        {
+            get
+            {
+                if (IsFolder)
+                {
+                    return Path;
+                }
+
+                return System.IO.Path.GetDirectoryName(Path);
+            }
+        }
+        [JsonIgnore]
+        public virtual bool IsTopParent => false;
+
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is in mixed folder.
+        /// </summary>
+        /// <value><c>true</c> if this instance is in mixed folder; otherwise, <c>false</c>.</value>
+        [JsonIgnore]
+        public bool IsInMixedFolder { get; set; }
     }
 }

@@ -107,7 +107,8 @@ namespace AVOne.Tool
             Resolve<IProviderManager>().AddParts(
                 GetExports<IImageProvider>(),
                 GetExports<IMetadataProvider>(),
-                GetExports<INamingOptionProvider>());
+                GetExports<INamingOptionProvider>(),
+                GetExports<IVideoResolverProvider>());
         }
 
         /// <summary>
