@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <Import Project="../common.props" />
+    <PropertyGroup>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\AVOne.Core\AVOne.Core.csproj" />
+        <ProjectReference Include="..\AVOne.Impl\AVOne.Impl.csproj" />
+    </ItemGroup>
+
+</Project>

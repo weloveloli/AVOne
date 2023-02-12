@@ -9,6 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "解决方案项", "解决�
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		common.props = common.props
+		commontest.props = commontest.props
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AVOne.Tool", "AVOne.Tool\AVOne.Tool.csproj", "{01919D4A-184C-4CD0-A800-0878124E7B4B}"
@@ -18,6 +19,20 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{6D61BD88-2E94-4CBC-B5A3-0B92A568DEE4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AVOne.Impl.Test", "Test\AVOne.Impl.Test\AVOne.Impl.Test.csproj", "{4B75F868-E791-43C9-AE32-68E592153CB9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AVOne.Providers.Jellyfin", "AVOne.Providers.Jellyfin\AVOne.Providers.Jellyfin.csproj", "{8085E49D-081A-45E8-8B3F-DD77571DC653}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AVOne.Providers.Official", "AVOne.Providers.Official\AVOne.Providers.Official.csproj", "{0217F8F3-529A-40E0-ACC2-FC74636FE81B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AVOne.Providers.MetaTube", "AVOne.Providers.MetaTube\AVOne.Providers.MetaTube.csproj", "{220D3D3C-B70C-4F55-A594-E594249D963B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AVOne.Providers.Jellyfin.Tests", "Test\AVOne.Providers.Jellyfin.Tests\AVOne.Providers.Jellyfin.Tests.csproj", "{1495839E-F4D0-4D54-A13C-60F1EEDFF9D8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AVOne.Providers.MetaTube.Tests", "Test\AVOne.Providers.MetaTube.Tests\AVOne.Providers.MetaTube.Tests.csproj", "{1D70BB3D-A362-46AE-BFCF-C2035F2739E8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AVOne.Providers.Official.Tests", "Test\AVOne.Providers.Official.Tests\AVOne.Providers.Official.Tests.csproj", "{190D4A84-756F-484C-B1DA-49535F7FAC99}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AVOne.Test.Base", "Test\AVOne.Test.Base\AVOne.Test.Base.csproj", "{909D90AD-A326-4DDD-8392-EB4F374751C5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,12 +56,44 @@ Global
 		{4B75F868-E791-43C9-AE32-68E592153CB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4B75F868-E791-43C9-AE32-68E592153CB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4B75F868-E791-43C9-AE32-68E592153CB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8085E49D-081A-45E8-8B3F-DD77571DC653}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8085E49D-081A-45E8-8B3F-DD77571DC653}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8085E49D-081A-45E8-8B3F-DD77571DC653}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8085E49D-081A-45E8-8B3F-DD77571DC653}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0217F8F3-529A-40E0-ACC2-FC74636FE81B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0217F8F3-529A-40E0-ACC2-FC74636FE81B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0217F8F3-529A-40E0-ACC2-FC74636FE81B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0217F8F3-529A-40E0-ACC2-FC74636FE81B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{220D3D3C-B70C-4F55-A594-E594249D963B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{220D3D3C-B70C-4F55-A594-E594249D963B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{220D3D3C-B70C-4F55-A594-E594249D963B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{220D3D3C-B70C-4F55-A594-E594249D963B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1495839E-F4D0-4D54-A13C-60F1EEDFF9D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1495839E-F4D0-4D54-A13C-60F1EEDFF9D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1495839E-F4D0-4D54-A13C-60F1EEDFF9D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1495839E-F4D0-4D54-A13C-60F1EEDFF9D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D70BB3D-A362-46AE-BFCF-C2035F2739E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D70BB3D-A362-46AE-BFCF-C2035F2739E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D70BB3D-A362-46AE-BFCF-C2035F2739E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D70BB3D-A362-46AE-BFCF-C2035F2739E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{190D4A84-756F-484C-B1DA-49535F7FAC99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{190D4A84-756F-484C-B1DA-49535F7FAC99}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{190D4A84-756F-484C-B1DA-49535F7FAC99}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{190D4A84-756F-484C-B1DA-49535F7FAC99}.Release|Any CPU.Build.0 = Release|Any CPU
+		{909D90AD-A326-4DDD-8392-EB4F374751C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{909D90AD-A326-4DDD-8392-EB4F374751C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{909D90AD-A326-4DDD-8392-EB4F374751C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{909D90AD-A326-4DDD-8392-EB4F374751C5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{4B75F868-E791-43C9-AE32-68E592153CB9} = {6D61BD88-2E94-4CBC-B5A3-0B92A568DEE4}
+		{1495839E-F4D0-4D54-A13C-60F1EEDFF9D8} = {6D61BD88-2E94-4CBC-B5A3-0B92A568DEE4}
+		{1D70BB3D-A362-46AE-BFCF-C2035F2739E8} = {6D61BD88-2E94-4CBC-B5A3-0B92A568DEE4}
+		{190D4A84-756F-484C-B1DA-49535F7FAC99} = {6D61BD88-2E94-4CBC-B5A3-0B92A568DEE4}
+		{909D90AD-A326-4DDD-8392-EB4F374751C5} = {6D61BD88-2E94-4CBC-B5A3-0B92A568DEE4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {69A36C94-E8E0-45BA-8466-5D04300F3F27}

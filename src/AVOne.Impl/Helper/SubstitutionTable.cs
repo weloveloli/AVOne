@@ -24,12 +24,14 @@ namespace AVOne.Impl.Helper
                     continue;
                 }
 
+#pragma warning disable CS8601 // 引用类型赋值可能为 null。
                 dictionary[kvp[0]] = kvp.Count switch
                 {
                     1 => null,
                     2 => kvp[1],
                     _ => dictionary[kvp[0]]
                 };
+#pragma warning restore CS8601 // 引用类型赋值可能为 null。
             }
 
             return dictionary;

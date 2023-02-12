@@ -5,10 +5,13 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Jellyfin.Naming" Version="10.8.4" />
+    <ProjectReference Include="..\AVOne.Core\AVOne.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AVOne.Core\AVOne.Core.csproj" />
+    <Folder Include="Registrator\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
   </ItemGroup>
 
 </Project>

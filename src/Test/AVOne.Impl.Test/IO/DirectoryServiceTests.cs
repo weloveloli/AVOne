@@ -4,7 +4,6 @@
 namespace AVOne.Impl.IO.Tests
 {
     using Xunit;
-    using AVOne.Impl.Test;
     using AutoFixture;
     using Microsoft.Extensions.Logging;
     using Moq;

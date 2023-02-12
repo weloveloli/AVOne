@@ -10,6 +10,6 @@ namespace AVOne.Models.Item
     {
         public PornMovieInfo? PornMovieInfo { get; set; }
 
-        PornMovieInfo IHasLookupInfo<PornMovieInfo>.GetLookupInfo() => PornMovieInfo;
+        PornMovieInfo IHasLookupInfo<PornMovieInfo>.GetLookupInfo() => PornMovieInfo ?? PornMovieInfo.Empty(this.Name);
     }
 }
