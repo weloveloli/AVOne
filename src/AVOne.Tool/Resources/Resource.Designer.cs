@@ -61,6 +61,15 @@ namespace AVOne.Tool.Resources {
         }
         
         /// <summary>
+        ///   查找类似 Directory is null or not exist. 的本地化字符串。
+        /// </summary>
+        public static string ErrorDir {
+            get {
+                return ResourceManager.GetString("ErrorDir", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Directory &apos;{}&apos; not exists. 的本地化字符串。
         /// </summary>
         public static string ErrorDirectoryNotExists {

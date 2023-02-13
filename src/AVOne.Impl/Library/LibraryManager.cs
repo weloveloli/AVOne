@@ -325,10 +325,10 @@ namespace AVOne.Impl.Library
         private string GetContentTypeOverride(string path, bool inherit)
         {
             var nameValuePair = _configurationManager.CommonConfiguration.ContentTypes
-                                    .FirstOrDefault(i => _fileSystem.AreEqual(i.Item1, path)
-                                                         || (inherit && !string.IsNullOrEmpty(i.Item1)
-                                                                     && _fileSystem.ContainsSubPath(i.Item1, path)));
-            return nameValuePair?.Item2;
+                                    .FirstOrDefault(i => _fileSystem.AreEqual(i.Name, path)
+                                                         || (inherit && !string.IsNullOrEmpty(i.Name)
+                                                                     && _fileSystem.ContainsSubPath(i.Name, path)));
+            return nameValuePair?.Value;
         }
 
         public bool IgnoreFile(FileSystemMetadata file, BaseItem parent)

@@ -48,6 +48,7 @@ namespace AVOne.Tool
                 {
                     var appPaths = ConsoleApplicationPaths.CreateConsoleApplicationPaths(option);
                     var host = await CreateHost(option, appPaths);
+                    host.Init(new ServiceCollection());
                     return await host.ExecuteCmd().ConfigureAwait(false);
                 }
             }
@@ -75,12 +76,6 @@ namespace AVOne.Tool
             AppDomain.CurrentDomain.UnhandledException -= UnhandledExceptionToConsole;
             AppDomain.CurrentDomain.UnhandledException += (_, e)
                 => _logger.LogCritical((Exception)e.ExceptionObject, "Unhandled Exception");
-
-            var collection = new ServiceCollection();
-            collection.TryAdd(ServiceDescriptor.Singleton(_loggerFactory));
-            collection.TryAdd(ServiceDescriptor.Singleton(typeof(ILogger<>), typeof(Logger<>)));
-            _ = collection.AddHttpClient();
-            var serviceProvider = collection.BuildServiceProvider();
 
             // Intercept Ctrl+C and Ctrl+Break
             Console.CancelKeyPress += (_, e) =>

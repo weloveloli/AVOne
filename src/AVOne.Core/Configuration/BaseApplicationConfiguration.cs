@@ -76,7 +76,7 @@ namespace AVOne.Configuration
 
         public LibraryOptions Options { get; set; }
 
-        public Tuple<string, string> [] ContentTypes { get; set; } = Array.Empty<Tuple<string, string>>();
+        public NameValue[] ContentTypes { get; set; } = Array.Empty<NameValue>();
 
         /// <summary>
         /// Gets or sets a value indicating whether [enable case sensitive item ids].

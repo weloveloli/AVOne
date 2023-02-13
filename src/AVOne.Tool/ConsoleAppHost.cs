@@ -11,13 +11,9 @@ namespace AVOne.Tool
     using System.Threading.Tasks;
     using AVOne.Abstraction;
     using AVOne.Configuration;
-    using AVOne.Impl.Constants;
     using AVOne.Impl.IO;
-    using AVOne.Impl.Library;
-    using AVOne.Impl.Providers;
+    using AVOne.Impl.Registrator;
     using AVOne.IO;
-    using AVOne.Library;
-    using AVOne.Providers;
     using AVOne.Providers.Jellyfin;
     using AVOne.Providers.MetaTube;
     using AVOne.Providers.Official;
@@ -132,7 +128,7 @@ namespace AVOne.Tool
         protected IEnumerable<Assembly> GetComposablePartAssemblies()
         {
             // Include composable parts in the AVOne.Impl assembly
-            yield return typeof(OfficialProviderNames).Assembly;
+            yield return typeof(ImplRegistrator).Assembly;
             yield return typeof(OfficialLocalMetadataProvider).Assembly;
             yield return typeof(MetaTubeServiceRegistrator).Assembly;
             yield return typeof(JellyfinNamingOptionProvider).Assembly;

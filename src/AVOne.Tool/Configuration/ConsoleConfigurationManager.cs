@@ -13,6 +13,11 @@ namespace AVOne.Tool.Configuration
     {
         public ConsoleConfigurationManager(IApplicationPaths applicationPaths, ILoggerFactory loggerFactory, IXmlSerializer xmlSerializer, IFileSystem fileSystem) : base(applicationPaths, loggerFactory, xmlSerializer, fileSystem)
         {
+            if (!File.Exists(applicationPaths.SystemConfigurationFilePath))
+            {
+                this.CommonConfiguration = new BaseApplicationConfiguration();
+                this.SaveConfiguration();
+            }
         }
 
         protected override Type ConfigurationType => typeof(ConsoleConfiguration);

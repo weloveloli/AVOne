@@ -19,7 +19,7 @@ namespace AVOne.Impl.IO
         private static readonly ConcurrentDictionary<string, XmlSerializer> _serializers =
             new();
 
-        private static XmlSerializer GetSerializer(Type type)
+        public static XmlSerializer GetSerializer(Type type)
             => _serializers.GetOrAdd(
                 type.FullName ?? throw new ArgumentException($"Invalid type {type}."),
                 static (_, t) => new XmlSerializer(t),

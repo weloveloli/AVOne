@@ -4,6 +4,7 @@
 namespace AVOne.Impl.Registrator
 {
     using AVOne.Abstraction;
+    using AVOne.Impl.IO;
     using AVOne.Impl.Library;
     using AVOne.Impl.Providers;
     using AVOne.IO;
@@ -14,12 +15,15 @@ namespace AVOne.Impl.Registrator
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
 
-    internal class ImplRegistrator : IServiceRegistrator
+    public class ImplRegistrator : IServiceRegistrator
     {
         public void RegisterServices(IServiceCollection serviceCollection)
         {
-            _ = serviceCollection.AddSingleton<IProviderManager, ProviderManager>();
-            _ = serviceCollection.AddSingleton<ILibraryManager, LibraryManager>();
+            serviceCollection.AddSingleton<IProviderManager, ProviderManager>();
+            serviceCollection.AddSingleton<ILibraryManager, LibraryManager>();
+            serviceCollection.AddSingleton<IFileSystem, ManagedFileSystem>();
+            serviceCollection.AddSingleton<IDirectoryService, DirectoryService>();
+
         }
 
         public void PostBuildService(IApplicationHost host)
