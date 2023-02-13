@@ -15,6 +15,7 @@ namespace AVOne.Impl.Resolvers
     using Microsoft.Extensions.Logging;
     using System.Text.RegularExpressions;
     using AVOne.Models.Info;
+    using AVOne.Configuration;
 
     public class MovieResolver : BaseVideoResolver<Video>, IMultiItemResolver
     {
@@ -106,7 +107,45 @@ namespace AVOne.Impl.Resolvers
 
         public MultiItemResolverResult ResolveMultiple(Folder parent, List<FileSystemMetadata> files, string collectionType, IDirectoryService directoryService)
         {
-            throw new NotImplementedException();
+            var result = ResolveMultipleInternal(parent, files, collectionType);
+
+            if (result != null)
+            {
+                foreach (var item in result.Items)
+                {
+                    SetInitialItemValues((Video)item, null);
+                }
+            }
+
+            return result;
+        }
+        private MultiItemResolverResult ResolveMultipleInternal(
+            Folder parent,
+            List<FileSystemMetadata> files,
+            string collectionType)
+        {
+            if (IsInvalid(parent, collectionType))
+            {
+                return null;
+            }
+
+            if (string.IsNullOrEmpty(collectionType))
+            {
+                // Owned items should just use the plain video type
+                if (parent == null)
+                {
+                    return ResolveVideos<Video>(parent, files, false, collectionType, false);
+                }
+
+                return ResolveVideos<PornMovie>(parent, files, false, collectionType, true);
+            }
+
+            if (string.Equals(collectionType, CollectionType.PronMovies, StringComparison.OrdinalIgnoreCase))
+            {
+                return ResolveVideos<PornMovie>(parent, files, true, collectionType, true);
+            }
+
+            return null;
         }
 
         /// <summary>

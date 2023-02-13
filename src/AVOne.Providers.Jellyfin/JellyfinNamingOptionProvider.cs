@@ -46,12 +46,18 @@ namespace AVOne.Providers.Jellyfin
                 new FileStackRule("^(?<filename>.*?)(?:(?<=[\\]\\)\\}])|[ _.-]+)[\\(\\[]?(?<parttype>cd|dvd|part|pt|dis[ck])[ _.-]*(?<number>[a-d])[\\)\\]]?(?:\\.[^.]+)?$", isNumerical: false),
                 new FileStackRule("^(?<filename>.*?)(?:(?<=[\\]\\)\\}])|[ _.-]?)(?<number>[a-d])(?:\\.[^.]+)?$", isNumerical: false)
     };
+            StubTypes = _options.StubTypes.Select(e => new StubTypeRule(e.Token,e.StubType)).ToArray();
         }
 
         /// <summary>
         /// Gets or sets list of video file extensions.
         /// </summary>
         public string[] VideoFileExtensions => _options.VideoFileExtensions;
+
+        /// <summary>
+        /// Gets or sets list of video stub file extensions.
+        /// </summary>
+        public string[] StubFileExtensions => _options.StubFileExtensions;
 
         /// <summary>
         /// Gets or sets list of video flag delimiters.
@@ -95,5 +101,11 @@ namespace AVOne.Providers.Jellyfin
 
         public FileStackRule[] VideoFileStackingRules { get; private set; }
         public Dictionary<string, ExtraType> AllExtrasTypesFolderNames { get; private set; }
+        public StubTypeRule[] StubTypes { get; }
+
+        /// <summary>
+        /// Gets or sets list of audio file extensions.
+        /// </summary>
+        public string[] AudioFileExtensions => _options.AudioFileExtensions;
     }
 }

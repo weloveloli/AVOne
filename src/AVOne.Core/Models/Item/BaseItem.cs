@@ -236,6 +236,9 @@ namespace AVOne.Models.Item
         public Guid Id { get; set; }
 
         [JsonIgnore]
+        public Guid OwnerId { get; set; }
+
+        [JsonIgnore]
         public Guid ParentId { get; set; }
 
         public void SetParent(Folder parent)

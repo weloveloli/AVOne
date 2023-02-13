@@ -3,6 +3,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\AVOne.Impl\AVOne.Impl.csproj" />
+    <ProjectReference Include="..\..\AVOne.Providers.Jellyfin\AVOne.Providers.Jellyfin.csproj" />
   </ItemGroup>
 
   <ItemGroup>

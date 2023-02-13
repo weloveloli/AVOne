@@ -61,5 +61,14 @@ namespace AVOne.Library
         /// <param name="type">The type.</param>
         /// <returns>Guid.</returns>
         Guid GetNewItemId(string key, Type type);
+
+        /// <summary>
+        /// Finds the extras.
+        /// </summary>
+        /// <param name="owner">The owner.</param>
+        /// <param name="fileSystemChildren">The file system children.</param>
+        /// <param name="directoryService">An instance of <see cref="IDirectoryService"/>.</param>
+        /// <returns>IEnumerable&lt;BaseItem&gt;.</returns>
+        IEnumerable<BaseItem> FindExtras(BaseItem owner, IReadOnlyList<FileSystemMetadata> fileSystemChildren, IDirectoryService directoryService);
     }
 }

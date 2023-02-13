@@ -46,6 +46,7 @@ namespace AVOne.Impl.Helper
             SetDateCreated(item, fileInfo);
 
             EnsureName(item, fileInfo);
+
         }
 
         /// <summary>

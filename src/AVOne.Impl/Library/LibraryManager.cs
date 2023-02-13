@@ -8,12 +8,15 @@ namespace AVOne.Impl.Library
     using System.Collections.Generic;
     using AVOne.Abstraction;
     using AVOne.Configuration;
+    using AVOne.Enum;
     using AVOne.Extensions;
     using AVOne.Impl.Helper;
     using AVOne.Impl.IO;
+    using AVOne.Impl.Resolvers;
     using AVOne.IO;
     using AVOne.Library;
     using AVOne.Models.Item;
+    using AVOne.Providers;
     using AVOne.Resolvers;
     using Microsoft.Extensions.Logging;
 
@@ -21,19 +24,23 @@ namespace AVOne.Impl.Library
     {
 
         private readonly IConfigurationManager _configurationManager;
+        private readonly IProviderManager _providerManager;
         private readonly IFileSystem _fileSystem;
         private readonly IApplicationHost _appHost;
         private readonly ILogger<LibraryManager> _logger;
+        private INamingOptions _namingOptions => _providerManager.GetNamingOptionProvider().GetNamingOption();
+        private ExtraResolver _extraResolver;
 
         public LibraryManager(
-
             IApplicationHost appHost,
-            ILoggerFactory loggerFactory, IFileSystem fileSystem, IConfigurationManager configurationManager)
+            ILogger<LibraryManager> logger, IFileSystem fileSystem, IConfigurationManager configurationManager, IProviderManager providerManager)
         {
             _appHost = appHost;
-            _logger = loggerFactory.CreateLogger<LibraryManager>();
+            _logger = logger;
             _fileSystem = fileSystem;
             _configurationManager = configurationManager;
+            _providerManager = providerManager;
+            _extraResolver = new ExtraResolver(logger, _providerManager);
         }
         /// <summary>
         /// Gets or sets the list of currently registered entity resolvers.
@@ -54,7 +61,6 @@ namespace AVOne.Impl.Library
         {
             EntityResolutionIgnoreRules = rules.ToArray();
             ItemResolvers = resolvers.OrderBy(i => i.Priority).ToArray();
-
             MultiItemResolvers = ItemResolvers.OfType<IMultiItemResolver>().ToArray();
         }
 
@@ -327,5 +333,66 @@ namespace AVOne.Impl.Library
 
         public bool IgnoreFile(FileSystemMetadata file, BaseItem parent)
             => EntityResolutionIgnoreRules.Any(r => r.ShouldIgnore(file, parent));
+
+        public IEnumerable<BaseItem> FindExtras(BaseItem owner, IReadOnlyList<FileSystemMetadata> fileSystemChildren, IDirectoryService directoryService)
+        {
+            var ownerVideoInfo = VideoResolver.Resolve(owner.Path, owner.IsFolder, _namingOptions);
+            if (ownerVideoInfo == null)
+            {
+                yield break;
+            }
+
+            var count = fileSystemChildren.Count;
+            for (var i = 0; i < count; i++)
+            {
+                var current = fileSystemChildren[i];
+                if (current.IsDirectory && _namingOptions.AllExtrasTypesFolderNames.ContainsKey(current.Name))
+                {
+                    var filesInSubFolder = _fileSystem.GetFiles(current.FullName, null, false, false);
+                    foreach (var file in filesInSubFolder)
+                    {
+                        if (!_extraResolver.TryGetExtraTypeForOwner(file.FullName, ownerVideoInfo, out var extraType))
+                        {
+                            continue;
+                        }
+
+                        var extra = GetExtra(file, extraType.Value);
+                        if (extra != null)
+                        {
+                            yield return extra;
+                        }
+                    }
+                }
+                else if (!current.IsDirectory && _extraResolver.TryGetExtraTypeForOwner(current.FullName, ownerVideoInfo, out var extraType))
+                {
+                    var extra = GetExtra(current, extraType.Value);
+                    if (extra != null)
+                    {
+                        yield return extra;
+                    }
+                }
+            }
+
+            BaseItem GetExtra(FileSystemMetadata file, ExtraType extraType)
+            {
+                var extra = ResolvePath(_fileSystem.GetFileInfo(file.FullName), directoryService, _extraResolver.GetResolversForExtraType(extraType));
+                if (extra is not Video)
+                {
+                    return null;
+                }
+
+                //// Try to retrieve it from the db. If we don't find it, use the resolved version
+                //var itemById = GetItemById(extra.Id);
+                //if (itemById != null)
+                //{
+                //    extra = itemById;
+                //}
+
+                extra.ExtraType = extraType;
+                extra.ParentId = Guid.Empty;
+                extra.OwnerId = owner.Id;
+                return extra;
+            }
+        }
     }
 }

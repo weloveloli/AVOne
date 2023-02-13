@@ -13,6 +13,5 @@ namespace AVOne.Providers
         bool IsVideoFile(string path, INamingOptions namingOptions);
         VideoFileInfo Resolve(string path, bool v, INamingOptions namingOptions, bool parseName);
         VideoFileInfo ResolveDirectory(string path, INamingOptions namingOptions, bool parseName);
-        VideoFileInfo ResolveVideo(string path, bool directory);
     }
 }

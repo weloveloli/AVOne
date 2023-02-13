@@ -21,6 +21,16 @@ namespace AVOne.Providers
         string[] VideoFileExtensions { get; }
 
         /// <summary>
+        /// Gets or sets list of video stub file extensions.
+        /// </summary>
+        public string[] StubFileExtensions { get; }
+
+        /// <summary>
+        /// Gets or sets list of audio file extensions.
+        /// </summary>
+        public string[] AudioFileExtensions { get; }
+
+        /// <summary>
         /// Gets or sets list of video flag delimiters.
         /// </summary>
         char[] VideoFlagDelimiters { get; }
@@ -69,5 +79,10 @@ namespace AVOne.Providers
         /// Gets or sets the folder name to extra types mapping.
         /// </summary>
         public Dictionary<string, ExtraType> AllExtrasTypesFolderNames { get; }
+
+        /// <summary>
+        /// Gets or sets list of stub type rules.
+        /// </summary>
+        public StubTypeRule[] StubTypes { get;}
     }
 }
