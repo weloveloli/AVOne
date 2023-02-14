@@ -12,6 +12,7 @@ namespace AVOne.Tool.Commands
     using AVOne.Models.Item;
     using AVOne.Models.Result;
     using AVOne.Providers;
+    using AVOne.Tool.Extensions;
     using AVOne.Tool.Resources;
     using CommandLine;
     using CommandLine.Text;
@@ -70,7 +71,7 @@ namespace AVOne.Tool.Commands
             var remoteProviders = providers.OfType<IRemoteMetadataProvider<PornMovie, PornMovieInfo>>();
             var info = pornMovie.PornMovieInfo;
             var results = new List<MetadataResult<PornMovie>>();
-            var tasks = new List<Task<MetadataResult<PornMovie>?>>();
+            var tasks = new List<Task<List<NameValue>?>>();
             if (localProviders.Any())
             {
                 foreach (var localProvider in localProviders)
@@ -78,11 +79,7 @@ namespace AVOne.Tool.Commands
                     tasks.Add(Task.Run(async () =>
                     {
                         var metadata = await localProvider.GetMetadata(new ItemInfo(pornMovie), directoryService, CancellationToken.None);
-                        if (metadata.HasMetadata)
-                        {
-                            return metadata;
-                        }
-                        return null;
+                        return metadata.NameValues(localProvider);
                     }));
 
                 }
@@ -94,29 +91,22 @@ namespace AVOne.Tool.Commands
                     tasks.Add(Task.Run(async () =>
                     {
                         var metadata = await remoteMetadataProvider.GetMetadata(info, CancellationToken.None);
-                        if (metadata.HasMetadata)
-                        {
-                            return metadata;
-                        }
-                        return null;
+                        return metadata.NameValues(remoteMetadataProvider);
                     }));
 
                 }
             }
             var metadatas = await Task.WhenAll(tasks);
 
-            var tableRows = metadatas.Where(e => e is not null)
-                .Select(e => new List<NameValue> { new NameValue("MovieName", e.Item.Name), new NameValue("Provider", e.Provider), new NameValue("Genere", string.Join(';', e.Item.Genres)) })
-                .ToList();
+            var tableRows = metadatas.Where(e => e is not null);
 
             foreach (var tableRow in tableRows)
             {
-                Console.WriteLine("Provider:{0}", tableRow[1].Value);
                 ConsoleTable.From<NameValue>(tableRow)
                 .Configure(o => o.NumberAlignment = Alignment.Left)
-                .Write(Format.Alternative);
+                .Write(Format.Default);
+                Console.WriteLine();
             }
-
             return 0;
         }
     }

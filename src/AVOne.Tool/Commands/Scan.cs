@@ -40,7 +40,7 @@ namespace AVOne.Tool.Commands
             ConsoleTable
                 .From<BaseItemRow>(rows)
                 .Configure(o => o.NumberAlignment = Alignment.Left)
-                .Write(Format.Alternative);
+                .Write(Format.Default);
             return 0;
 
         }
