@@ -8,8 +8,8 @@ namespace AVOne.Models.Item
 
     public class PornMovie : Video, IHasLookupInfo<PornMovieInfo>
     {
-        public PornMovieInfo? PornMovieInfo { get; set; }
+        public PornMovieInfo PornMovieInfo => PornMovieInfo.Parse(this, ConfigurationManager.CommonConfiguration);
 
-        PornMovieInfo IHasLookupInfo<PornMovieInfo>.GetLookupInfo() => PornMovieInfo ?? PornMovieInfo.Empty(this.Name);
+        PornMovieInfo IHasLookupInfo<PornMovieInfo>.GetLookupInfo() => PornMovieInfo;
     }
 }

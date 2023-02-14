@@ -42,7 +42,7 @@ namespace AVOne.Impl.Test.Providers.Metatube
 
         }
 
-        [Fact()]
+        [SkippableFact]
         public async Task GetSearchResultsTest()
         {
             Skip.If(string.IsNullOrEmpty(metaTubeServerUrl) || disableHttpTest);

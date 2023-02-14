@@ -123,6 +123,9 @@
   <data name="ErrorDirectoryNotExists" xml:space="preserve">
     <value>指定路劲'{}'不存在</value>
   </data>
+  <data name="ErrorPathNotExists" xml:space="preserve">
+    <value>指定文件路劲'{0}'不存在</value>
+  </data>
   <data name="ExamplesNormalScenario" xml:space="preserve">
     <value>示例</value>
   </data>
@@ -149,6 +152,9 @@
   </data>
   <data name="HelpTextVerbSearchMetadata" xml:space="preserve">
     <value>根据文件名查询元数据信息</value>
+  </data>
+  <data name="InvalidMoviePath" xml:space="preserve">
+    <value>指定文件路劲'{0}' 不是一个合法的媒体路径.</value>
   </data>
   <data name="SentenceBadFormatConversionErrorOption" xml:space="preserve">
     <value>Možnost '{0}' je definována ve špatném formátu.</value>

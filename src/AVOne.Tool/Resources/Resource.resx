@@ -123,6 +123,9 @@
   <data name="ErrorDirectoryNotExists" xml:space="preserve">
     <value>Directory '{}' not exists.</value>
   </data>
+  <data name="ErrorPathNotExists" xml:space="preserve">
+    <value>File path '{0}' not exists.</value>
+  </data>
   <data name="ExamplesNormalScenario" xml:space="preserve">
     <value>normal scenario</value>
   </data>
@@ -146,6 +149,9 @@
   </data>
   <data name="HelpTextVerbSearchMetadata" xml:space="preserve">
     <value>Search metadata by filename.</value>
+  </data>
+  <data name="InvalidMoviePath" xml:space="preserve">
+    <value>File path '{0}' not valid media file.</value>
   </data>
   <data name="SentenceBadFormatConversionErrorOption" xml:space="preserve">
     <value>Možnost '{0}' je definována ve špatném formátu.</value>

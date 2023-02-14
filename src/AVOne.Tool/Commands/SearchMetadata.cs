@@ -4,10 +4,17 @@
 namespace AVOne.Tool.Commands
 {
     using System;
+    using AVOne.Configuration;
+    using AVOne.IO;
+    using AVOne.Library;
+    using AVOne.Models.Info;
+    using AVOne.Models.Item;
+    using AVOne.Models.Result;
+    using AVOne.Providers;
     using AVOne.Tool.Resources;
     using CommandLine;
     using CommandLine.Text;
-    using Microsoft.Extensions.Logging;
+    using ConsoleTables;
 
     [Verb("searchmetadata", false, new string[] { "sm" }, HelpText = "HelpTextVerbSearchMetadata", ResourceType = typeof(Resource))]
     internal class SearchMetadata : BaseOptions
@@ -24,18 +31,81 @@ namespace AVOne.Tool.Commands
         {
             get
             {
-                yield return new Example(Resource.ExamplesNormalScenario, new SearchMetadata { FileName = "MUM-120" });
+                yield return new Example(Resource.ExamplesNormalScenario, new SearchMetadata { FileName = "MUM-120.mp4" });
             }
         }
 
-        public override Task<int> ExecuteAsync(ConsoleAppHost host, CancellationToken token)
+        public override async Task<int> ExecuteAsync(ConsoleAppHost host, CancellationToken token)
         {
-            var client = host.Resolve<HttpClient>();
-            var logger = host.Resolve<ILogger<SearchMetadata>>();
-            logger?.LogDebug($"client null is {client is null}");
-            logger?.LogDebug($"logger null is {logger is null}");
-            Thread.Sleep(TimeSpan.FromSeconds(30));
-            return Task.FromResult(0);
+            var providerManager = host.Resolve<IProviderManager>();
+            var libraryManager = host.Resolve<ILibraryManager>();
+            var fileSystem = host.Resolve<IFileSystem>();
+            var directoryService = host.Resolve<IDirectoryService>();
+            if (!Path.Exists(FileName))
+            {
+                Console.Error.WriteLine(Resource.ErrorPathNotExists, FileName);
+                return 1;
+            }
+            var item = libraryManager.ResolvePath(fileSystem.GetFileInfo(FileName), null, directoryService);
+
+            if (item is null || item is not PornMovie pornMovie)
+            {
+                Console.Error.WriteLine(Resource.InvalidMoviePath, FileName);
+                return 1;
+            }
+            var providers = providerManager.GetMetadataProviders<PornMovie>(item);
+            var localProviders = providers.OfType<ILocalMetadataProvider<PornMovie>>();
+            var remoteProviders = providers.OfType<IRemoteMetadataProvider<PornMovie, PornMovieInfo>>();
+            var info = pornMovie.PornMovieInfo;
+            var results = new List<MetadataResult<PornMovie>>();
+            var tasks = new List<Task<MetadataResult<PornMovie>?>>();
+            if (localProviders.Any())
+            {
+                foreach (var localProvider in localProviders)
+                {
+                    tasks.Add(Task.Run(async () =>
+                    {
+                        var metadata = await localProvider.GetMetadata(new ItemInfo(pornMovie), directoryService, CancellationToken.None);
+                        if (metadata.HasMetadata)
+                        {
+                            return metadata;
+                        }
+                        return null;
+                    }));
+
+                }
+            }
+            if (remoteProviders.Any())
+            {
+                foreach (var remoteMetadataProvider in remoteProviders)
+                {
+                    tasks.Add(Task.Run(async () =>
+                    {
+                        var metadata = await remoteMetadataProvider.GetMetadata(info, CancellationToken.None);
+                        if (metadata.HasMetadata)
+                        {
+                            return metadata;
+                        }
+                        return null;
+                    }));
+
+                }
+            }
+            var metadatas = await Task.WhenAll(tasks);
+
+            var tableRows = metadatas.Where(e => e is not null)
+                .Select(e => new List<NameValue> { new NameValue("Name", e.Item.Name), new NameValue("Provider", e.Provider), new NameValue("Genere", string.Join(';', e.Item.Genres)) })
+                .ToList();
+
+            foreach (var tableRow in tableRows)
+            {
+                Console.WriteLine("Provider:{}", tableRow[1].Value);
+                ConsoleTable.From<NameValue>(tableRow)
+                .Configure(o => o.NumberAlignment = Alignment.Left)
+                .Write(Format.Alternative);
+            }
+
+            return 0;
         }
     }
 }

@@ -4,6 +4,7 @@
 namespace AVOne.Impl.Registrator
 {
     using AVOne.Abstraction;
+    using AVOne.Configuration;
     using AVOne.Impl.IO;
     using AVOne.Impl.Library;
     using AVOne.Impl.Providers;
@@ -30,6 +31,8 @@ namespace AVOne.Impl.Registrator
         {
             BaseItem.FileSystem = host.Resolve<IFileSystem>();
             BaseItem.Logger = host.Resolve<ILogger<BaseItem>>();
+            BaseItem.ConfigurationManager = host.Resolve<IConfigurationManager>();
+
             host.Resolve<IProviderManager>().AddParts(
                 host.GetExports<IImageProvider>(),
                 host.GetExports<IMetadataProvider>(),

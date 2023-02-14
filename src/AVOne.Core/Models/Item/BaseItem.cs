@@ -7,6 +7,7 @@ namespace AVOne.Models.Item
 {
     using System.Text.Json.Serialization;
     using AVOne.Abstraction;
+    using AVOne.Configuration;
     using AVOne.Enum;
     using AVOne.Helper;
     using AVOne.IO;
@@ -20,6 +21,8 @@ namespace AVOne.Models.Item
         /// Gets or sets the logger.
         /// </summary>
         public static ILogger<BaseItem> Logger { get; set; }
+
+        public static IConfigurationManager ConfigurationManager { get; set; }
 
         /// <summary>
         /// Gets or sets the provider ids.
