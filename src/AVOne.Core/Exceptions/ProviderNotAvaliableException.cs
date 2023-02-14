@@ -1,7 +1,7 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // Licensed under the Apache V2.0 License.
 
-namespace AVOne.Exception
+namespace AVOne.Exceptions
 {
     using System;
     using System.Runtime.Serialization;

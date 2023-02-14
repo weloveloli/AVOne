@@ -4,7 +4,7 @@
 namespace AVOne.Providers.Metatube
 {
     using AVOne.Configuration;
-    using AVOne.Exception;
+    using AVOne.Exceptions;
     using AVOne.Providers.MetaTube.Configuration;
     using Microsoft.Extensions.Logging;
 
