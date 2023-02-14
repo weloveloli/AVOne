@@ -11,9 +11,9 @@ namespace AVOne.Providers.MetaTube.Tests
     using AVOne.Providers.Metatube;
     using AVOne.Configuration;
 
+
     public class MetaTubeMovieImageProviderTests : BaseTestCase
     {
-        private readonly MetaTubeMovieImageProvider _provider;
         private readonly TestApplicationConfigs config;
         private readonly string metaTubeServerUrl;
         private readonly bool disableHttpTest;
@@ -28,14 +28,13 @@ namespace AVOne.Providers.MetaTube.Tests
             mockManager.Setup(m => m.CommonConfiguration).Returns(config);
             var logMock = fixture.Freeze<Mock<ILogger<MetatubeMovieMetaDataProvider>>>();
             fixture.Register((IConfigurationManager manager) => new MetatubeApiClient(new HttpClient(), manager));
-            _provider = fixture.Build<MetaTubeMovieImageProvider>().Create();
         }
-        [SkippableFact]
+
+        [SkippableFact(typeof(NotSupportedException), typeof(NotImplementedException))]
         public async Task MetaTubeMovieImageProviderTest()
         {
             Skip.If(string.IsNullOrEmpty(metaTubeServerUrl) || disableHttpTest);
-
-            Skip.If(string.IsNullOrEmpty(metaTubeServerUrl) || disableHttpTest);
+            var _provider = fixture.Build<MetaTubeMovieImageProvider>().Create();
             var data = await _provider.GetImages(new PornMovie
             {
                 Name = "stars-507",

@@ -4,6 +4,7 @@
 namespace AVOne.Providers.Metatube
 {
     using AVOne.Configuration;
+    using AVOne.Exception;
     using AVOne.Providers.MetaTube.Configuration;
     using Microsoft.Extensions.Logging;
 
@@ -27,12 +28,12 @@ namespace AVOne.Providers.Metatube
                 else
                 {
 
-                    throw new InvalidOperationException($"Metatube init failed, pls update the config file {configurationManager.ApplicationPaths.SystemConfigurationFilePath} or add 'MetaTubeServerUrl' in enviroment variable");
+                    throw new ProviderNotAvaliableException(this.GetType().FullName, $"Metatube init failed, pls update the config file {configurationManager.ApplicationPaths.SystemConfigurationFilePath} or add 'MetaTubeServerUrl' in enviroment variable");
                 }
             }
             else
             {
-                throw new InvalidOperationException($"No metatube config found.");
+                throw new ProviderNotAvaliableException(this.GetType().FullName, $"No metatube config found.");
             }
         }
 
