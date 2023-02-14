@@ -13,7 +13,6 @@ namespace AVOne.Impl.Test.Providers.Metatube
 
     public class MetatubeMovieMetaDataProviderTests : BaseTestCase
     {
-        private readonly MetatubeMovieMetaDataProvider _provider;
         private readonly TestApplicationConfigs config;
         private readonly string metaTubeServerUrl;
         private readonly bool disableHttpTest;
@@ -29,18 +28,19 @@ namespace AVOne.Impl.Test.Providers.Metatube
             BaseItem.ConfigurationManager = mockManager.Object;
             var logMock = fixture.Freeze<Mock<ILogger<MetatubeMovieMetaDataProvider>>>();
             fixture.Register((IConfigurationManager manager) => new MetatubeApiClient(new HttpClient(), manager));
-            _provider = fixture.Build<MetatubeMovieMetaDataProvider>().Create();
+
         }
 
         [SkippableFact]
         public async Task GetMetadataTest()
         {
             Skip.If(string.IsNullOrEmpty(metaTubeServerUrl) || disableHttpTest);
+            var provider = fixture.Build<MetatubeMovieMetaDataProvider>().Create();
             var porn = new PornMovie
             {
                 Name = "stars-507"
             };
-            var data = await _provider.GetMetadata(porn.PornMovieInfo, default);
+            var data = await provider.GetMetadata(porn.PornMovieInfo, default);
             Assert.NotNull(data);
 
         }
@@ -49,11 +49,12 @@ namespace AVOne.Impl.Test.Providers.Metatube
         public async Task GetSearchResultsTest()
         {
             Skip.If(string.IsNullOrEmpty(metaTubeServerUrl) || disableHttpTest);
+            var provider = fixture.Build<MetatubeMovieMetaDataProvider>().Create();
             var porn = new PornMovie
             {
                 Name = "stars-507"
             };
-            var data = await _provider.GetSearchResults(porn.PornMovieInfo, default);
+            var data = await provider.GetSearchResults(porn.PornMovieInfo, default);
 
             Assert.NotNull(data);
             Assert.True(data.Count() >= 1);

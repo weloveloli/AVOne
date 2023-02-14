@@ -151,20 +151,20 @@ namespace AVOne.Tool.Resources {
         }
         
         /// <summary>
+        ///   查找类似 Print movie metadata by filename. 的本地化字符串。
+        /// </summary>
+        public static string HelpTextVerbPrintMetadata {
+            get {
+                return ResourceManager.GetString("HelpTextVerbPrintMetadata", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Scan files under specific folder and preview the organize result. 的本地化字符串。
         /// </summary>
         public static string HelpTextVerbScan {
             get {
                 return ResourceManager.GetString("HelpTextVerbScan", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   查找类似 Search metadata by filename. 的本地化字符串。
-        /// </summary>
-        public static string HelpTextVerbSearchMetadata {
-            get {
-                return ResourceManager.GetString("HelpTextVerbSearchMetadata", resourceCulture);
             }
         }
         

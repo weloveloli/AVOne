@@ -16,8 +16,8 @@ namespace AVOne.Tool.Commands
     using CommandLine.Text;
     using ConsoleTables;
 
-    [Verb("searchmetadata", false, new string[] { "sm" }, HelpText = "HelpTextVerbSearchMetadata", ResourceType = typeof(Resource))]
-    internal class SearchMetadata : BaseOptions
+    [Verb("printmetadata", false, new string[] { "pm" }, HelpText = "HelpTextVerbPrintMetadata", ResourceType = typeof(Resource))]
+    internal class PrintMetadata : BaseOptions
     {
         public bool Debug { get; set; }
 
@@ -36,7 +36,7 @@ namespace AVOne.Tool.Commands
         {
             get
             {
-                yield return new Example(Resource.ExamplesNormalScenario, new SearchMetadata { FileName = "MUM-120.mp4" });
+                yield return new Example(Resource.ExamplesNormalScenario, new PrintMetadata { FileName = "MUM-120.mp4" });
             }
         }
 

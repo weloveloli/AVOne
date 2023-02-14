@@ -150,11 +150,11 @@
   <data name="HelpTextVerbOrganize" xml:space="preserve">
     <value>扫描整理指定文件下的视频文件.</value>
   </data>
+  <data name="HelpTextVerbPrintMetadata" xml:space="preserve">
+    <value>根据文件打印元数据信息</value>
+  </data>
   <data name="HelpTextVerbScan" xml:space="preserve">
     <value>扫描指定文件下的视频文件，并进行整理结果预览.</value>
-  </data>
-  <data name="HelpTextVerbSearchMetadata" xml:space="preserve">
-    <value>根据文件名查询元数据信息</value>
   </data>
   <data name="InvalidMoviePath" xml:space="preserve">
     <value>指定文件路劲'{0}' 不是一个合法的媒体路径.</value>
