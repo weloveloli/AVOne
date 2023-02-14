@@ -5,6 +5,7 @@ namespace AVOne.Tool.Commands
 {
     using System;
     using AVOne.Configuration;
+    using AVOne.Constants;
     using AVOne.IO;
     using AVOne.Library;
     using AVOne.Models.Info;
@@ -22,6 +23,11 @@ namespace AVOne.Tool.Commands
         public bool Debug { get; set; }
 
         public bool Quiet { get; set; }
+
+        /// <inheritdoc />
+        [Option("type", Required = false, HelpText = "HelpTextCollectionType",
+            ResourceType = typeof(Resource))]
+        public string? Type { get; set; } = CollectionType.PronMovies;
 
         [Value(0, Required = true, HelpText = "HelpTextFileName", ResourceType = typeof(Resource))]
         public string? FileName { get; set; }
@@ -46,7 +52,13 @@ namespace AVOne.Tool.Commands
                 Console.Error.WriteLine(Resource.ErrorPathNotExists, FileName);
                 return 1;
             }
-            var item = libraryManager.ResolvePath(fileSystem.GetFileInfo(FileName), null, directoryService);
+            var dir = Path.GetDirectoryName(FileName);
+            var parent = new Folder
+            {
+                Name = dir,
+                Path = dir
+            };
+            var item = libraryManager.ResolvePath(fileSystem.GetFileInfo(FileName), parent, directoryService, Type);
 
             if (item is null || item is not PornMovie pornMovie)
             {
@@ -94,12 +106,12 @@ namespace AVOne.Tool.Commands
             var metadatas = await Task.WhenAll(tasks);
 
             var tableRows = metadatas.Where(e => e is not null)
-                .Select(e => new List<NameValue> { new NameValue("Name", e.Item.Name), new NameValue("Provider", e.Provider), new NameValue("Genere", string.Join(';', e.Item.Genres)) })
+                .Select(e => new List<NameValue> { new NameValue("MovieName", e.Item.Name), new NameValue("Provider", e.Provider), new NameValue("Genere", string.Join(';', e.Item.Genres)) })
                 .ToList();
 
             foreach (var tableRow in tableRows)
             {
-                Console.WriteLine("Provider:{}", tableRow[1].Value);
+                Console.WriteLine("Provider:{0}", tableRow[1].Value);
                 ConsoleTable.From<NameValue>(tableRow)
                 .Configure(o => o.NumberAlignment = Alignment.Left)
                 .Write(Format.Alternative);

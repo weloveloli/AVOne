@@ -129,6 +129,9 @@
   <data name="ExamplesNormalScenario" xml:space="preserve">
     <value>示例</value>
   </data>
+  <data name="HelpTextCollectionType" xml:space="preserve">
+    <value>媒体类型, 可以为 PornMovie, 默认值为PornMovie.</value>
+  </data>
   <data name="HelpTextdatadir" xml:space="preserve">
     <value>数据路劲用于存储缓存以及日志</value>
   </data>

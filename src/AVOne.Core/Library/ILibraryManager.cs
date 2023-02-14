@@ -21,7 +21,8 @@ namespace AVOne.Library
         BaseItem ResolvePath(
             FileSystemMetadata fileInfo,
             Folder parent = null,
-            IDirectoryService directoryService = null);
+            IDirectoryService directoryService = null,
+            string collectionType = null);
 
         /// <summary>
         /// Resolves a set of files into a list of BaseItem.

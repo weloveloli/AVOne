@@ -129,6 +129,9 @@
   <data name="ExamplesNormalScenario" xml:space="preserve">
     <value>normal scenario</value>
   </data>
+  <data name="HelpTextCollectionType" xml:space="preserve">
+    <value>Collection Type, could be PornMovie,default is PornMovie.</value>
+  </data>
   <data name="HelpTextdatadir" xml:space="preserve">
     <value>Path to use for the data folder (database files, etc.).</value>
   </data>
