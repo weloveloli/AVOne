@@ -5,13 +5,14 @@ namespace AVOne.Tool.Extensions
 {
     using System.Reflection;
     using AVOne.Configuration;
+    using AVOne.Extensions;
     using AVOne.Models.Item;
     using AVOne.Models.Result;
     using AVOne.Providers;
-    using MediaBrowser.Model.Dto;
 
     public static class MetadataResultExtensions
     {
+        private const int Max_Length = 35;
         public static string[] IncludeProperties = new string[] { "Name", "Tagline", "OriginalTitle", "Overview", "OfficialRating", "PremiereDate", "ProductionYear", "Genres", "ProviderIds", "CommunityRating", "Studios", "Tags", "People", "ItemImageInfo" };
 
         public static List<NameValue>? NameValues<T>(this MetadataResult<T> metadataResult, IProvider provider) where T : BaseItem
@@ -42,15 +43,16 @@ namespace AVOne.Tool.Extensions
                     // get all properties of PornMovieInfo
                     var pornMovieInfoProperties = pornMovieInfo.GetType().GetProperties();
                     // add value for each properties
-                    AddPropertyValues(pornMovieInfo, result, pornMovieInfoProperties);
+                    AddPropertyValues(pornMovieInfo, result, pornMovieInfoProperties, keyPrefix: "PornMovieInfo.");
                 }
             }
 
             return result;
         }
 
-        private static void AddPropertyValues(object o, List<NameValue> result, IEnumerable<PropertyInfo> properties)
+        private static void AddPropertyValues(object o, List<NameValue> result, IEnumerable<PropertyInfo> properties, string? keyPrefix = null)
         {
+            keyPrefix ??= string.Empty;
             foreach (var property in properties)
             {
                 // get property value
@@ -61,23 +63,52 @@ namespace AVOne.Tool.Extensions
                     continue;
                 }
                 // if value is string, add to result
-                if (value is string)
+                if (value is string str)
                 {
-                    result.Add(new NameValue(property.Name, value.ToString()));
+                    result.Add(new NameValue(keyPrefix + property.Name, str.Ellipsis(Max_Length)));
                 }
                 // if value is IEnumerable, add to result
                 else if (value is IEnumerable<object>)
                 {
                     var enumerable = value as IEnumerable<object>;
-                    foreach (var item in enumerable)
+                    foreach (var (item, index) in enumerable.Select((value, i) => (value, i)))
                     {
-                        result.Add(new NameValue(property.Name, item.ToString()));
+                        if (item is null)
+                        {
+                            continue;
+                        }
+                        if (index == 0)
+                        {
+                            result.Add(new NameValue(keyPrefix + property.Name, item.ToString().Ellipsis(Max_Length)));
+                        }
+                        else
+                        {
+
+                            result.Add(new NameValue(string.Empty, item.ToString().Ellipsis(Max_Length)));
+                        }
+                    }
+                }
+                // if value is IDictionary, add to result
+                else if (value is Dictionary<string, string> dict)
+                {
+                    var enumerable = dict.AsEnumerable();
+                    foreach (var (item, index) in enumerable.Select((value, i) => (value, i)))
+                    {
+                        if (index == 0)
+                        {
+                            result.Add(new NameValue(keyPrefix + property.Name, $"{item.Key}:{item.Value}".Ellipsis(Max_Length)));
+                        }
+                        else
+                        {
+
+                            result.Add(new NameValue(string.Empty, $"{item.Key}:{item.Value}".Ellipsis(Max_Length)));
+                        }
                     }
                 }
                 // if value is not string or IEnumerable, add to result
                 else
                 {
-                    result.Add(new NameValue(property.Name, value.ToString()));
+                    result.Add(new NameValue(keyPrefix + property.Name, value.ToString().Ellipsis(Max_Length)));
                 }
             }
         }

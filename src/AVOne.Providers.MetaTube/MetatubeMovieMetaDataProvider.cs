@@ -110,7 +110,9 @@ namespace AVOne.Providers.Metatube
                     OfficialRating = Rating,
                     PremiereDate = m.ReleaseDate.GetValidDateTime(),
                     ProductionYear = m.ReleaseDate.GetValidYear(),
-                    Genres = m.Genres?.Any() == true ? m.Genres : Array.Empty<string>()
+                    Genres = m.Genres?.Any() == true ? m.Genres : Array.Empty<string>(),
+                    Path = info.Path,
+                    PornMovieInfo = info
                 },
                 HasMetadata = true
             };

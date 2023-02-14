@@ -16,7 +16,6 @@ namespace AVOne.Tool
     using AVOne.IO;
     using AVOne.Providers.Jellyfin;
     using AVOne.Providers.MetaTube;
-    using AVOne.Providers.Official;
     using AVOne.Tool.Commands;
     using AVOne.Tool.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -129,7 +128,7 @@ namespace AVOne.Tool
         {
             // Include composable parts in the AVOne.Impl assembly
             yield return typeof(ImplRegistrator).Assembly;
-            yield return typeof(OfficialLocalMetadataProvider).Assembly;
+            //yield return typeof(OfficialLocalMetadataProvider).Assembly;
             yield return typeof(MetaTubeServiceRegistrator).Assembly;
             yield return typeof(JellyfinNamingOptionProvider).Assembly;
         }

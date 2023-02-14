@@ -95,5 +95,18 @@ namespace AVOne.Extensions
 
 #pragma warning restore CA5351
         }
+
+        public static string Ellipsis(this string? str, int number)
+        {
+            if (string.IsNullOrEmpty(str))
+            {
+                return str;
+            }
+            else if (str.Length > number)
+            {
+                str = $"{str.Substring(0, number)}...";
+            }
+            return str;
+        }
     }
 }

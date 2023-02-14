@@ -66,9 +66,15 @@ namespace AVOne.Models.Info
 
         public static PornMovieInfo Empty(string name) => new() { Valid = false, Category = MovieIdCategory.None, Id = string.Empty, FileName = name, Flags = PornMovieFlags.None };
 
-        public static PornMovieInfo Parse(PornMovie movieInfo, BaseApplicationConfiguration cfg)
+        public static PornMovieInfo Parse(PornMovie movie, BaseApplicationConfiguration cfg)
         {
-            var filepath = movieInfo.Path;
+            var filepath = string.IsNullOrEmpty(movie.Path) ? movie.Name : movie.Path;
+
+            if (string.IsNullOrEmpty(filepath))
+            {
+                return Empty(string.Empty);
+            }
+
             var words = cfg.MovieID.ignore_whole_word.Replace(" ", "").Split(';');
             var regexes = cfg.MovieID.ignore_regex.Split(';');
 
@@ -79,7 +85,7 @@ namespace AVOne.Models.Info
             var ignore_pattern = new Regex(patternStr, RegexOptions.IgnoreCase | RegexOptions.Singleline);
             var id = GetId(ignore_pattern, filepath, out var category, out var flags);
             return string.IsNullOrEmpty(id)
-                ? PornMovieInfo.Empty(filepath)
+                ? Empty(filepath)
                 : new PornMovieInfo
                 {
                     FileName = filepath,
@@ -95,8 +101,8 @@ namespace AVOne.Models.Info
             var filename = System.IO.Path.GetFileName(filepath);
             filename = ignore_pattern.Replace(filename, string.Empty);
             category = MovieIdCategory.None;
-            flags = ReosolveFlagsByName(filename);
             var filename_lc = filename.ToLower();
+            flags = ReosolveFlagsByName(filename_lc);
             Match match;
             if (filename_lc.Contains("fc2"))
             {
@@ -209,9 +215,14 @@ namespace AVOne.Models.Info
         private static PornMovieFlags ReosolveFlagsByName(string movieName)
         {
             var flags = PornMovieFlags.None;
-            if (movieName.EndsWith("-C") || movieName.Contains("中文"))
+            if (string.IsNullOrEmpty(movieName))
             {
-                flags |= PornMovieFlags.ChineaseSubtilte;
+                return flags;
+            }
+
+            if (movieName.Contains("-c") || movieName.Contains("-ch") || movieName.Contains("chinese") || movieName.Contains("中文"))
+            {
+                flags |= PornMovieFlags.ChineseSubtilte;
             }
             return flags;
         }

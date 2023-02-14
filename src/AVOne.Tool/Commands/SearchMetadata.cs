@@ -104,7 +104,7 @@ namespace AVOne.Tool.Commands
             {
                 ConsoleTable.From<NameValue>(tableRow)
                 .Configure(o => o.NumberAlignment = Alignment.Left)
-                .Write(Format.Default);
+                .Write(Format.Minimal);
                 Console.WriteLine();
             }
             return 0;

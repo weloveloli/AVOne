@@ -8,7 +8,7 @@ namespace AVOne.Enum
     {
         None = 0b_0000_0000,  // 0
         Uncensored = 0b_0000_0001,  // 1
-        ChineaseSubtilte = 0b_0000_0010,  // 2
+        ChineseSubtilte = 0b_0000_0010,  // 2
         Hack = 0b_0000_0100,  // 4
         Thursday = 0b_0000_1000,  // 8
         Friday = 0b_0001_0000,  // 16
