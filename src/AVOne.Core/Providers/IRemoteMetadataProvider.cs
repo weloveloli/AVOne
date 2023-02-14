@@ -1,32 +1,23 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // Licensed under the Apache V2.0 License.
 
-namespace AVOne.Core.Providers
+#nullable disable
+
+namespace AVOne.Providers
 {
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using AVOne.Core.Abstraction;
-    using AVOne.Core.Entity;
-    using AVOne.Core.Models;
+    using AVOne.Abstraction;
+    using AVOne.Models.Info;
+    using AVOne.Models.Item;
+    using AVOne.Models.Result;
 
     public interface IRemoteMetadataProvider : IMetadataProvider
     {
     }
 
-    public interface IRemoteMetadataProvider<TItemType, in TLookupInfoType> : IMetadataProvider<TItemType>, IRemoteMetadataProvider, IRemoteSearchProvider<TLookupInfoType>
+    public interface IRemoteMetadataProvider<TItemType, in TLookupInfoType> : IMetadataProvider<TItemType>, IRemoteMetadataProvider, IRemoteMetadataSearchProvider<TLookupInfoType>
         where TItemType : BaseItem, IHasLookupInfo<TLookupInfoType>
         where TLookupInfoType : ItemLookupInfo, new()
     {
         Task<MetadataResult<TItemType>> GetMetadata(TLookupInfoType info, CancellationToken cancellationToken);
-    }
-
-    public interface IRemoteMetadataSearchProvider : IMetadataProvider
-    {
-    }
-
-    public interface IRemoteSearchProvider<in TLookupInfoType> : IRemoteMetadataSearchProvider
-        where TLookupInfoType : ItemLookupInfo
-    {
-        Task<IEnumerable<RemoteMetadataSearchResult>> GetSearchResults(TLookupInfoType searchInfo, CancellationToken cancellationToken);
     }
 }

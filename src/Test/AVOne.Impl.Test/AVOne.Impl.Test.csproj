@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+   <Import Project="../../commontest.props" />
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\AVOne.Impl\AVOne.Impl.csproj" />
+    <ProjectReference Include="..\..\AVOne.Providers.Jellyfin\AVOne.Providers.Jellyfin.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="files\movie\stars-507-C-backdrop.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="files\movie\stars-507-C-landscape.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="files\movie\stars-507-C-poster.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="files\movie\stars-507-C.mp4">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="files\movie\stars-507-C.nfo">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="files\testconfig.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="files\TextMovieIds.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

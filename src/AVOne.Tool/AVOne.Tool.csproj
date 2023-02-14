@@ -1,0 +1,54 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../common.props" />
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <Nullable>enable</Nullable>
+    <AssemblyName>AVOneTool</AssemblyName>
+    <IsPackable>true</IsPackable>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>AVOneTool</ToolCommandName>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Resources\Configuration\logging.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Configuration\logging.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommandLineParser" Version="2.9.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
+    <PackageReference Include="Serilog.Enrichers.Thread" Version="3.1.0" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="3.4.0" />
+    <PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+    <PackageReference Include="ConsoleTables" Version="2.4.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AVOne.Core\AVOne.Core.csproj" />
+    <ProjectReference Include="..\AVOne.Impl\AVOne.Impl.csproj" />
+    <ProjectReference Include="..\AVOne.Providers.Jellyfin\AVOne.Providers.Jellyfin.csproj" />
+    <ProjectReference Include="..\AVOne.Providers.MetaTube\AVOne.Providers.MetaTube.csproj" />
+    <ProjectReference Include="..\AVOne.Providers.Official\AVOne.Providers.Official.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resources\Resource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resource.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\Resource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>

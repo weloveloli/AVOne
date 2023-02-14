@@ -1,0 +1,6 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+   <Import Project="../../commontest.props" />
+   <ItemGroup>
+     <ProjectReference Include="..\..\AVOne.Providers.Official\AVOne.Providers.Official.csproj" />
+   </ItemGroup>
+</Project>

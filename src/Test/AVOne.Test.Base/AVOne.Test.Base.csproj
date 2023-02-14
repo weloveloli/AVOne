@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="AutoFixture" Version="4.17.0" />
+        <PackageReference Include="AutoFixture.AutoMoq" Version="4.17.0" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\..\AVOne.Impl\AVOne.Impl.csproj" />
+    </ItemGroup>
+</Project>
