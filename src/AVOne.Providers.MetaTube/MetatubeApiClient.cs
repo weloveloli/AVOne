@@ -9,17 +9,20 @@ namespace AVOne.Providers.Metatube
     using System.Net.Http.Headers;
     using System.Net.Http.Json;
     using System.Web;
-    using AVOne.Impl.Configuration;
+    using AVOne.Configuration;
     using AVOne.Providers.Metatube.Models;
+    using AVOne.Providers.MetaTube.Configuration;
 
     public class MetatubeApiClient
     {
         private readonly HttpClient _httpClient;
-        private readonly MetaTubeConfiguration _metaTubeConfiguration;
-        public MetatubeApiClient(HttpClient httpClient, IOfficialProvidersConfiguration officialProvidersConfiguration)
+        private readonly IConfigurationManager _configurationManager;
+
+        private MetaTubeConfiguration _metaTubeConfiguration => ((IMetaTubeConfiguration)_configurationManager.CommonConfiguration).MetaTube;
+        public MetatubeApiClient(HttpClient httpClient, IConfigurationManager configurationManager)
         {
             _httpClient = httpClient;
-            _metaTubeConfiguration = officialProvidersConfiguration.MetaTube;
+            _configurationManager = configurationManager;
         }
 
         private const string ActorInfoApi = "/v1/actors";
@@ -215,9 +218,9 @@ namespace AVOne.Providers.Metatube
 
             // EnsureSuccessStatusCode ignoring reason:
             // When the status is unsuccessful, the API response contains error details.
-            if (!response.IsSuccessStatusCode && apiResponse.Error != null)
+            if (!response.IsSuccessStatusCode)
             {
-                throw new Exception($"API request error: {apiResponse.Error.Code} ({apiResponse.Error.Message})");
+                throw new Exception($"API request error: {apiResponse.Error.Code} ({apiResponse.Error?.Message})");
             }
 
             // Note: data field must not be null if there are no errors.

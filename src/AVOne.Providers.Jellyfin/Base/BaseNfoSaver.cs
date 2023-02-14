@@ -104,11 +104,6 @@ namespace AVOne.Providers.Jellyfin.Base
 
         protected ILogger<BaseJellifinNfoSaver> Logger { get; }
 
-        /// <inheritdoc />
-        public string Name => SaverName;
-
-        public static string SaverName => "Nfo";
-
         public abstract int Order { get; }
 
         /// <inheritdoc />

@@ -16,7 +16,7 @@ namespace AVOne.Models.Info
         /// <summary>
         /// 类型
         /// </summary>
-        public MovieIdCategory Category { get; set; }
+        public AVCategory Category { get; set; }
 
         /// <summary>
         /// Gets or sets the flags.
@@ -27,7 +27,7 @@ namespace AVOne.Models.Info
         public PornMovieFlags Flags { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this <see cref="MovieId"/> is valid.
+        /// Gets or sets a value indicating whether this <see cref="Id"/> is valid.
         /// </summary>
         /// <value>
         ///   <c>true</c> if valid; otherwise, <c>false</c>.
@@ -64,7 +64,7 @@ namespace AVOne.Models.Info
         public static implicit operator string(PornMovieInfo id)
             => id?.Id;
 
-        public static PornMovieInfo Empty(string name) => new() { Valid = false, Category = MovieIdCategory.None, Id = string.Empty, FileName = name, Flags = PornMovieFlags.None };
+        public static PornMovieInfo Empty(PornMovie movie) => new() { Valid = false, Category = AVCategory.None, Id = string.Empty, Name = movie.Name, Path = movie.Path, Flags = PornMovieFlags.None };
 
         public static PornMovieInfo Parse(PornMovie movie, BaseApplicationConfiguration cfg)
         {
@@ -72,7 +72,7 @@ namespace AVOne.Models.Info
 
             if (string.IsNullOrEmpty(filepath))
             {
-                return Empty(string.Empty);
+                return Empty(movie);
             }
 
             var words = cfg.MovieID.ignore_whole_word.Replace(" ", "").Split(';');
@@ -85,22 +85,23 @@ namespace AVOne.Models.Info
             var ignore_pattern = new Regex(patternStr, RegexOptions.IgnoreCase | RegexOptions.Singleline);
             var id = GetId(ignore_pattern, filepath, out var category, out var flags);
             return string.IsNullOrEmpty(id)
-                ? Empty(filepath)
+                ? Empty(movie)
                 : new PornMovieInfo
                 {
                     FileName = filepath,
                     Id = id,
                     Category = category,
                     Flags = flags,
+                    Name = movie.Name,
+                    Path = movie.Path
                 };
         }
 
-
-        public static string GetId(Regex ignore_pattern, string filepath, out MovieIdCategory category, out PornMovieFlags flags)
+        public static string GetId(Regex ignore_pattern, string filepath, out AVCategory category, out PornMovieFlags flags)
         {
             var filename = System.IO.Path.GetFileName(filepath);
             filename = ignore_pattern.Replace(filename, string.Empty);
-            category = MovieIdCategory.None;
+            category = AVCategory.None;
             var filename_lc = filename.ToLower();
             flags = ReosolveFlagsByName(filename_lc);
             Match match;
@@ -110,7 +111,7 @@ namespace AVOne.Models.Info
                 match = Regex.Match(filename, @"fc2[^a-z\d]{0,5}(ppv[^a-z\d]{0,5})?(\d{5,7})", RegexOptions.IgnoreCase);
                 if (match.Success)
                 {
-                    category = MovieIdCategory.Amateur;
+                    category = AVCategory.Amateur;
                     flags |= PornMovieFlags.Uncensored;
                     return "FC2-" + match.Groups[2].Value;
                 }
@@ -120,7 +121,7 @@ namespace AVOne.Models.Info
                 match = Regex.Match(filename, @"(heydouga)[-_]*(\d{4})[-_]0?(\d{3,5})", RegexOptions.IgnoreCase);
                 if (match.Success)
                 {
-                    category = MovieIdCategory.Uncensor;
+                    category = AVCategory.Censored;
                     flags |= PornMovieFlags.Uncensored;
                     return string.Join("-", match.Groups[1].Value, match.Groups[2].Value, match.Groups[3].Value);
                 }
@@ -141,7 +142,7 @@ namespace AVOne.Models.Info
                 match = Regex.Match(filename, @"(?:hey)[-_]*(\d{4})[-_]0?(\d{3,5})", RegexOptions.IgnoreCase);
                 if (match.Success)
                 {
-                    category = MovieIdCategory.Uncensor;
+                    category = AVCategory.Uncensored;
                     flags |= PornMovieFlags.Uncensored;
                     return "heydouga-" + string.Join("-", match.Groups[1].Value, match.Groups[2].Value);
                 }
@@ -156,7 +157,7 @@ namespace AVOne.Models.Info
                 match = Regex.Match(filename, @"(red[01]\d\d|sky[0-3]\d\d|ex00[01]\d)", RegexOptions.IgnoreCase);
                 if (match.Success)
                 {
-                    category = MovieIdCategory.Uncensor;
+                    category = AVCategory.Uncensored;
                     flags |= PornMovieFlags.Uncensored;
                     return match.Groups[1].Value;
                 }
@@ -178,7 +179,7 @@ namespace AVOne.Models.Info
             match = Regex.Match(filename, @"(n\d{4}|k\d{4})", RegexOptions.IgnoreCase);
             if (match.Success)
             {
-                category = MovieIdCategory.Uncensor;
+                category = AVCategory.Uncensored;
                 flags |= PornMovieFlags.Uncensored;
                 return match.Groups[1].Value;
             }
@@ -187,7 +188,7 @@ namespace AVOne.Models.Info
             match = Regex.Match(filename, @"(\d{6}[-_]\d{2,3})");
             if (match.Success)
             {
-                category = MovieIdCategory.Uncensor;
+                category = AVCategory.Uncensored;
                 flags |= PornMovieFlags.Uncensored;
                 return match.Groups[1].Value;
             }

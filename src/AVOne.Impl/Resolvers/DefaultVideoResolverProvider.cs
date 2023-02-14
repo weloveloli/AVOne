@@ -3,14 +3,11 @@
 
 namespace AVOne.Impl.Resolvers
 {
-    using AVOne.Impl.Constants;
     using AVOne.Models.Info;
     using AVOne.Providers;
 
     public class DefaultVideoResolverProvider : IVideoResolverProvider
     {
-        public string Name => OfficialProviderNames.Default;
-
         public int Order => int.MaxValue;
 
         public bool IsVideoFile(string path, INamingOptions namingOptions)

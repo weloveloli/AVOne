@@ -6,7 +6,6 @@ namespace AVOne.Providers.Jellyfin
     using System.Collections.Generic;
     using System.Text.RegularExpressions;
     using AVOne.Enum;
-    using AVOne.Impl.Constants;
     using AVOne.Naming;
     using AVOne.Providers;
 
@@ -17,8 +16,6 @@ namespace AVOne.Providers.Jellyfin
         {
             _namingOptions = new JellyfinNamingOptions();
         }
-
-        public string Name => OfficialProviderNames.Jellifin;
 
         public int Order => int.MaxValue;
 

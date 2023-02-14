@@ -1,56 +1,49 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // Licensed under the Apache V2.0 License.
 
-namespace AVOne.Tool.Extensions
+namespace AVOne.Tool.Helper
 {
-    using System.Reflection;
-    using AVOne.Configuration;
     using AVOne.Extensions;
+    using System.Reflection;
     using AVOne.Models.Item;
-    using AVOne.Models.Result;
     using AVOne.Providers;
+    using ConsoleTables;
 
-    public static class MetadataResultExtensions
+    public static class ConsoleTableHelper
     {
         private const int Max_Length = 35;
-        public static string[] IncludeProperties = new string[] { "Name", "Tagline", "OriginalTitle", "Overview", "OfficialRating", "PremiereDate", "ProductionYear", "Genres", "ProviderIds", "CommunityRating", "Studios", "Tags", "People", "ItemImageInfo" };
+        public static string[] BaseItemIncludeProperties = new string[] { "Name", "Tagline", "OriginalTitle", "Overview", "OfficialRating", "PremiereDate", "ProductionYear", "Genres", "ProviderIds", "CommunityRating", "Studios", "Tags", "People", "ItemImageInfo" };
+        public static string[] PornMovieInfoIncludeProperties = new string[] { "Category", "Flags", "Id" };
 
-        public static List<NameValue>? NameValues<T>(this MetadataResult<T> metadataResult, IProvider provider) where T : BaseItem
+        public static ConsoleTable? ToTable(BaseItem? item, IProvider provider)
         {
-            // return null when metadataResult is null or HasMetadata is false
-            if (metadataResult == null || !metadataResult.HasMetadata)
+            if (item is null)
             {
                 return null;
             }
-
-            // return null when metadataResult.Item is null
-            var result = new List<NameValue>();
-            if (metadataResult.Item == null)
-            {
-                return result;
-            }
-            result.Add(new NameValue("Provider", provider.Name));
+            var table = new ConsoleTable("Key", "Value");
+            table.Configure(o => o.NumberAlignment = Alignment.Left);
+            table.AddRow("Provider", provider.Name);
             // get all included properties
-            var properties = metadataResult.Item.GetType().GetProperties().Where(e => IncludeProperties.Contains(e.Name));
-            AddPropertyValues(metadataResult.Item, result, properties);
+            var properties = item.GetType().GetProperties().Where(e => BaseItemIncludeProperties.Contains(e.Name));
+            AddPropertyValues(item, table, properties);
 
-            if (metadataResult.Item is PornMovie)
+            if (item is PornMovie movie)
             {
-                var movie = metadataResult.Item as PornMovie;
                 var pornMovieInfo = movie.PornMovieInfo;
                 if (pornMovieInfo != null)
                 {
                     // get all properties of PornMovieInfo
-                    var pornMovieInfoProperties = pornMovieInfo.GetType().GetProperties();
+                    var pornMovieInfoProperties = pornMovieInfo.GetType().GetProperties().Where(e => PornMovieInfoIncludeProperties.Contains(e.Name)); ;
                     // add value for each properties
-                    AddPropertyValues(pornMovieInfo, result, pornMovieInfoProperties, keyPrefix: "PornMovieInfo.");
+                    AddPropertyValues(pornMovieInfo, table, pornMovieInfoProperties, keyPrefix: "PornMovieInfo.");
                 }
             }
 
-            return result;
+            return table;
         }
 
-        private static void AddPropertyValues(object o, List<NameValue> result, IEnumerable<PropertyInfo> properties, string? keyPrefix = null)
+        private static void AddPropertyValues(object o, ConsoleTable table, IEnumerable<PropertyInfo> properties, string? keyPrefix = null)
         {
             keyPrefix ??= string.Empty;
             foreach (var property in properties)
@@ -65,7 +58,7 @@ namespace AVOne.Tool.Extensions
                 // if value is string, add to result
                 if (value is string str)
                 {
-                    result.Add(new NameValue(keyPrefix + property.Name, str.Ellipsis(Max_Length)));
+                    table.AddRow(keyPrefix + property.Name, str.Ellipsis(Max_Length));
                 }
                 // if value is IEnumerable, add to result
                 else if (value is IEnumerable<object>)
@@ -79,12 +72,12 @@ namespace AVOne.Tool.Extensions
                         }
                         if (index == 0)
                         {
-                            result.Add(new NameValue(keyPrefix + property.Name, item.ToString().Ellipsis(Max_Length)));
+                            table.AddRow(keyPrefix + property.Name, item.ToString().Ellipsis(Max_Length));
                         }
                         else
                         {
 
-                            result.Add(new NameValue(string.Empty, item.ToString().Ellipsis(Max_Length)));
+                            table.AddRow(string.Empty, item.ToString().Ellipsis(Max_Length));
                         }
                     }
                 }
@@ -96,19 +89,19 @@ namespace AVOne.Tool.Extensions
                     {
                         if (index == 0)
                         {
-                            result.Add(new NameValue(keyPrefix + property.Name, $"{item.Key}:{item.Value}".Ellipsis(Max_Length)));
+                            table.AddRow(keyPrefix + property.Name, $"{item.Key}:{item.Value}".Ellipsis(Max_Length));
                         }
                         else
                         {
 
-                            result.Add(new NameValue(string.Empty, $"{item.Key}:{item.Value}".Ellipsis(Max_Length)));
+                            table.AddRow(string.Empty, $"{item.Key}:{item.Value}".Ellipsis(Max_Length));
                         }
                     }
                 }
                 // if value is not string or IEnumerable, add to result
                 else
                 {
-                    result.Add(new NameValue(keyPrefix + property.Name, value.ToString().Ellipsis(Max_Length)));
+                    table.AddRow(keyPrefix + property.Name, value.ToString().Ellipsis(Max_Length));
                 }
             }
         }

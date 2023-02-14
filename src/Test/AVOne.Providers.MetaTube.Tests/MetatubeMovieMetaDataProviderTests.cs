@@ -4,12 +4,12 @@
 namespace AVOne.Impl.Test.Providers.Metatube
 {
     using AutoFixture;
-    using AVOne.Impl.Configuration;
     using AVOne.Providers.Metatube;
     using AVOne.Models.Info;
     using Microsoft.Extensions.Logging;
     using Moq;
     using Xunit;
+    using AVOne.Providers.MetaTube.Configuration;
 
     public class MetatubeMovieMetaDataProviderTests : BaseTestCase
     {
@@ -24,7 +24,7 @@ namespace AVOne.Impl.Test.Providers.Metatube
             disableHttpTest = bool.Parse(Environment.GetEnvironmentVariable("disableHttpTest") ?? "false");
             config = new TestApplicationConfigs();
             config.MetaTube.Server = metaTubeServerUrl;
-            fixture.Register<IOfficialProvidersConfiguration>(() => config);
+            fixture.Register<IMetaTubeConfiguration>(() => config);
             var logMock = fixture.Freeze<Mock<ILogger<MetatubeMovieMetaDataProvider>>>();
             fixture.Register(() => new MetatubeApiClient(new HttpClient(), config));
             _provider = fixture.Build<MetatubeMovieMetaDataProvider>().Create();

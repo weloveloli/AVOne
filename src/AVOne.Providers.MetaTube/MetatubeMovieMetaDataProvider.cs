@@ -9,7 +9,6 @@ namespace AVOne.Providers.Metatube
     using System.Threading.Tasks;
     using AVOne.Constants;
     using AVOne.Extensions;
-    using AVOne.Impl.Configuration;
     using AVOne.Impl.Extensions;
     using AVOne.Providers.Metatube.Models;
     using AVOne.Models.Info;
@@ -17,6 +16,8 @@ namespace AVOne.Providers.Metatube
     using AVOne.Models.Result;
     using AVOne.Providers;
     using Microsoft.Extensions.Logging;
+    using AVOne.Configuration;
+    using AVOne.Providers.MetaTube.Configuration;
 
     public class MetatubeMovieMetaDataProvider : BaseProvider, IRemoteMetadataProvider<PornMovie, PornMovieInfo>
     {
@@ -27,9 +28,9 @@ namespace AVOne.Providers.Metatube
         private static readonly string[] AvWikiSupportedProviderNames = { "DUGA", "FANZA", "Getchu", "MGS", "Pcolle" };
 
         public MetatubeMovieMetaDataProvider(ILogger<MetatubeMovieMetaDataProvider> logger,
-                                             IOfficialProvidersConfiguration officialProvidersConfiguration,
+                                             IConfigurationManager configurationManager,
                                              MetatubeApiClient metatubeApiClient)
-            : base(logger, officialProvidersConfiguration, metatubeApiClient)
+            : base(logger, configurationManager, metatubeApiClient)
         {
         }
 
@@ -192,9 +193,19 @@ namespace AVOne.Providers.Metatube
             var searchResults = new List<MovieSearchResult>();
             if (string.IsNullOrWhiteSpace(pid.Id) || string.IsNullOrWhiteSpace(pid.Provider))
             {
-                // Search movie by name.
-                Logger.Info("Search for movie: {0}", info.Name);
-                searchResults.AddRange(await ApiClient.SearchMovieAsync(info.Name, pid.Provider, cancellationToken));
+                if (info.Valid)
+                {
+                    // Search movie by id.
+                    Logger.Info("Search for movie : {0} by id : {}", info.Id);
+                    searchResults.AddRange(await ApiClient.SearchMovieAsync(info.Id, pid.Provider, cancellationToken));
+                }
+                else
+                {
+                    // Search movie by name.
+                    Logger.Info("Search for movie: {0} by name", info.Name);
+                    searchResults.AddRange(await ApiClient.SearchMovieAsync(info.Name, pid.Provider, cancellationToken));
+                }
+
             }
             else
             {

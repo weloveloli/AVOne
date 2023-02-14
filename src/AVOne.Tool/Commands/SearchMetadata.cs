@@ -4,15 +4,13 @@
 namespace AVOne.Tool.Commands
 {
     using System;
-    using AVOne.Configuration;
     using AVOne.Constants;
     using AVOne.IO;
     using AVOne.Library;
     using AVOne.Models.Info;
     using AVOne.Models.Item;
-    using AVOne.Models.Result;
     using AVOne.Providers;
-    using AVOne.Tool.Extensions;
+    using AVOne.Tool.Helper;
     using AVOne.Tool.Resources;
     using CommandLine;
     using CommandLine.Text;
@@ -70,42 +68,43 @@ namespace AVOne.Tool.Commands
             var localProviders = providers.OfType<ILocalMetadataProvider<PornMovie>>();
             var remoteProviders = providers.OfType<IRemoteMetadataProvider<PornMovie, PornMovieInfo>>();
             var info = pornMovie.PornMovieInfo;
-            var results = new List<MetadataResult<PornMovie>>();
-            var tasks = new List<Task<List<NameValue>?>>();
+            var tasks = new List<Task<ConsoleTable?>>();
             if (localProviders.Any())
             {
-                foreach (var localProvider in localProviders)
+                foreach (var provider in localProviders)
                 {
                     tasks.Add(Task.Run(async () =>
                     {
-                        var metadata = await localProvider.GetMetadata(new ItemInfo(pornMovie), directoryService, CancellationToken.None);
-                        return metadata.NameValues(localProvider);
+                        var metadata = await provider.GetMetadata(new ItemInfo(pornMovie), directoryService, CancellationToken.None);
+
+                        return metadata.HasMetadata ? ConsoleTableHelper.ToTable(metadata.Item, provider) : null;
                     }));
 
                 }
             }
+
             if (remoteProviders.Any())
             {
-                foreach (var remoteMetadataProvider in remoteProviders)
+                foreach (var provider in remoteProviders)
                 {
                     tasks.Add(Task.Run(async () =>
                     {
-                        var metadata = await remoteMetadataProvider.GetMetadata(info, CancellationToken.None);
-                        return metadata.NameValues(remoteMetadataProvider);
+                        var metadata = await provider.GetMetadata(info, CancellationToken.None);
+                        return metadata.HasMetadata ? ConsoleTableHelper.ToTable(metadata.Item, provider) : null;
                     }));
 
                 }
             }
-            var metadatas = await Task.WhenAll(tasks);
 
-            var tableRows = metadatas.Where(e => e is not null);
+            var tables = await Task.WhenAll(tasks);
 
-            foreach (var tableRow in tableRows)
+            foreach (var table in tables)
             {
-                ConsoleTable.From<NameValue>(tableRow)
-                .Configure(o => o.NumberAlignment = Alignment.Left)
-                .Write(Format.Minimal);
-                Console.WriteLine();
+                if (table is not null)
+                {
+                    table.Write(Format.Minimal);
+                    Console.WriteLine();
+                }
             }
             return 0;
         }

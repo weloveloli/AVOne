@@ -20,7 +20,7 @@ namespace AVOne.Providers.Jellyfin.Base
         }
 
         /// <inheritdoc />
-        public string Name => "Nfo";
+        public string Name => "Jellyfin.Nfo";
 
         /// <inheritdoc />
         public Task<MetadataResult<T>> GetMetadata(

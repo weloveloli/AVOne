@@ -23,13 +23,13 @@ namespace AVOne.Impl.Test
         }
 
         [Theory]
-        [InlineData("FC2PPV-3068336", "FC2-3068336", PornMovieFlags.Uncensored, MovieIdCategory.Amateur)]
-        [InlineData("FC2-PPV-3068336", "FC2-3068336", PornMovieFlags.Uncensored, MovieIdCategory.Amateur)]
-        [InlineData("FC2-3068336", "FC2-3068336", PornMovieFlags.Uncensored, MovieIdCategory.Amateur)]
-        [InlineData("FC2-3068336 sdsdsdsds", "FC2-3068336", PornMovieFlags.Uncensored, MovieIdCategory.Amateur)]
-        [InlineData("sdsdsdsds FC2-3068336", "FC2-3068336", PornMovieFlags.Uncensored, MovieIdCategory.Amateur)]
-        [InlineData("FC2-3068336-C", "FC2-3068336", PornMovieFlags.Uncensored | PornMovieFlags.ChineseSubtilte, MovieIdCategory.Amateur)]
-        public void TestValidCases(string name, string expectedId, PornMovieFlags flags, MovieIdCategory movieIdCategory)
+        [InlineData("FC2PPV-3068336", "FC2-3068336", PornMovieFlags.Uncensored, AVCategory.Amateur)]
+        [InlineData("FC2-PPV-3068336", "FC2-3068336", PornMovieFlags.Uncensored, AVCategory.Amateur)]
+        [InlineData("FC2-3068336", "FC2-3068336", PornMovieFlags.Uncensored, AVCategory.Amateur)]
+        [InlineData("FC2-3068336 sdsdsdsds", "FC2-3068336", PornMovieFlags.Uncensored, AVCategory.Amateur)]
+        [InlineData("sdsdsdsds FC2-3068336", "FC2-3068336", PornMovieFlags.Uncensored, AVCategory.Amateur)]
+        [InlineData("FC2-3068336-C", "FC2-3068336", PornMovieFlags.Uncensored | PornMovieFlags.ChineseSubtilte, AVCategory.Amateur)]
+        public void TestValidCases(string name, string expectedId, PornMovieFlags flags, AVCategory movieIdCategory)
         {
             var path = name + ".mp4";
             var movie = new PornMovie { Name = name, Path = path };

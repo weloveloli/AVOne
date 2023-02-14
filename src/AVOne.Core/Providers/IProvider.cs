@@ -5,6 +5,6 @@ namespace AVOne.Providers
 {
     public interface IProvider
     {
-        string Name { get; }
+        public string Name => this.GetType().Name;
     }
 }

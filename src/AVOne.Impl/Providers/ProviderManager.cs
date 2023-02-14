@@ -27,8 +27,6 @@ namespace AVOne.Impl.Providers
             ImageProviders = Array.Empty<IImageProvider>();
         }
 
-
-
         /// <inheritdoc/>
         public void AddParts(
             IEnumerable<IImageProvider> imageProviders,

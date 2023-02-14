@@ -1,18 +1,18 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // Licensed under the Apache V2.0 License.
 #nullable disable
-namespace AVOne.Impl.Configuration
+namespace AVOne.Providers.MetaTube.Configuration
 {
     using AVOne.Impl.Helper;
 
-    public interface IOfficialProvidersConfiguration
+    public interface IMetaTubeConfiguration
     {
         public MetaTubeConfiguration MetaTube { get; }
     }
 
     public class MetaTubeConfiguration
     {
-        public string Server { get; set; } = "localhost";
+        public string Server { get; set; } = Environment.GetEnvironmentVariable("MetaTubeServerUrl");
         public int DefaultImageQuality { get; set; } = -1;
         public double PrimaryImageRatio { get; set; } = 90;
         public string DefaultUserAgent => $"AVOne";

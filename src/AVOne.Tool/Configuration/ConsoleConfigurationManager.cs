@@ -15,7 +15,7 @@ namespace AVOne.Tool.Configuration
         {
             if (!File.Exists(applicationPaths.SystemConfigurationFilePath))
             {
-                this.CommonConfiguration = new BaseApplicationConfiguration();
+                this.CommonConfiguration = new ConsoleConfiguration();
                 this.SaveConfiguration();
             }
         }

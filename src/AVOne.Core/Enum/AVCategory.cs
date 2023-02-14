@@ -6,7 +6,7 @@ namespace AVOne.Enum
     /// <summary>
     /// 类型
     /// </summary>
-    public enum MovieIdCategory
+    public enum AVCategory
     {
         /// <summary>
         /// 不确定
@@ -16,13 +16,13 @@ namespace AVOne.Enum
         /// <summary>
         /// 有码
         /// </summary>
-        Censor,
+        Censored,
 
         /// <summary>
         /// 无码
         /// </summary>
         /// 
-        Uncensor,
+        Uncensored,
 
         /// <summary>
         /// 破解

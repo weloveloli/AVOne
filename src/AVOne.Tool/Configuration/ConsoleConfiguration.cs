@@ -4,9 +4,9 @@
 namespace AVOne.Tool.Configuration
 {
     using AVOne.Configuration;
-    using AVOne.Impl.Configuration;
+    using AVOne.Providers.MetaTube.Configuration;
 
-    public class ConsoleConfiguration : BaseApplicationConfiguration, IOfficialProvidersConfiguration
+    public class ConsoleConfiguration : BaseApplicationConfiguration, IMetaTubeConfiguration
     {
         public ConsoleConfiguration()
         {

@@ -4,8 +4,8 @@
 namespace AVOne.Providers.Metatube
 {
     using AVOne.Abstraction;
+    using AVOne.Configuration;
     using AVOne.Enum;
-    using AVOne.Impl.Configuration;
     using AVOne.Impl.Extensions;
     using AVOne.Models.Info;
     using AVOne.Models.Item;
@@ -16,15 +16,15 @@ namespace AVOne.Providers.Metatube
     {
 
         public MetaTubeMovieImageProvider(ILogger<MetatubeMovieMetaDataProvider> logger,
-                                             IOfficialProvidersConfiguration officialProvidersConfiguration,
+                                             IConfigurationManager configurationManager,
                                              MetatubeApiClient metatubeApiClient)
-            : base(logger, officialProvidersConfiguration, metatubeApiClient)
+            : base(logger, configurationManager, metatubeApiClient)
         {
         }
 
         public async Task<IEnumerable<RemoteImageInfo>> GetImages(BaseItem item, CancellationToken cancellationToken)
         {
-            var pid = item.GetPid(Name);
+            var pid = item.GetPid(this.Name);
             if (string.IsNullOrWhiteSpace(pid.Id) || string.IsNullOrWhiteSpace(pid.Provider))
             {
                 return Enumerable.Empty<RemoteImageInfo>();
