@@ -12,12 +12,11 @@ namespace AVOne.Impl.Test
 
     public class PornMovidInfoTest : BaseTestCase
     {
-
         public PornMovidInfoTest()
         {
             var json = File.ReadAllText(Path.Combine("files", "testconfig.json"));
             var mockManager = fixture.Freeze<Mock<IConfigurationManager>>();
-            var config = JsonConvert.DeserializeObject<TestApplicationConfigs>(json);
+            var config = JsonConvert.DeserializeObject<BaseApplicationConfiguration>(json);
             mockManager.Setup(e => e.CommonConfiguration).Returns(config);
             BaseItem.ConfigurationManager = mockManager.Object;
         }

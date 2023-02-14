@@ -4,9 +4,9 @@
 namespace AVOne.Test.Base
 {
     using AVOne.Configuration;
-    using AVOne.Impl.Configuration;
+    using AVOne.Providers.MetaTube.Configuration;
 
-    public class TestApplicationConfigs : BaseApplicationConfiguration, IOfficialProvidersConfiguration
+    public class TestApplicationConfigs : BaseApplicationConfiguration, IMetaTubeConfiguration
     {
         public TestApplicationConfigs()
         {

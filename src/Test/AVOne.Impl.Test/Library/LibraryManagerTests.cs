@@ -18,7 +18,6 @@ namespace AVOne.Impl.Library.Tests
     using AVOne.Impl.Resolvers;
     using AVOne.Providers.Jellyfin;
     using AVOne.Models.Item;
-    using Jellyfin.Data.Entities.Libraries;
     using AVOne.Enum;
     using System.Collections.Generic;
     using AVOne.Constants;

@@ -5,11 +5,11 @@ namespace AVOne.Impl.Test.Providers.Metatube
 {
     using AutoFixture;
     using AVOne.Providers.Metatube;
-    using AVOne.Models.Info;
     using Microsoft.Extensions.Logging;
     using Moq;
     using Xunit;
-    using AVOne.Providers.MetaTube.Configuration;
+    using AVOne.Configuration;
+    using AVOne.Models.Item;
 
     public class MetatubeMovieMetaDataProviderTests : BaseTestCase
     {
@@ -24,9 +24,11 @@ namespace AVOne.Impl.Test.Providers.Metatube
             disableHttpTest = bool.Parse(Environment.GetEnvironmentVariable("disableHttpTest") ?? "false");
             config = new TestApplicationConfigs();
             config.MetaTube.Server = metaTubeServerUrl;
-            fixture.Register<IMetaTubeConfiguration>(() => config);
+            var mockManager = fixture.Freeze<Mock<IConfigurationManager>>();
+            mockManager.Setup(m => m.CommonConfiguration).Returns(config);
+            BaseItem.ConfigurationManager = mockManager.Object;
             var logMock = fixture.Freeze<Mock<ILogger<MetatubeMovieMetaDataProvider>>>();
-            fixture.Register(() => new MetatubeApiClient(new HttpClient(), config));
+            fixture.Register((IConfigurationManager manager) => new MetatubeApiClient(new HttpClient(), manager));
             _provider = fixture.Build<MetatubeMovieMetaDataProvider>().Create();
         }
 
@@ -34,10 +36,11 @@ namespace AVOne.Impl.Test.Providers.Metatube
         public async Task GetMetadataTest()
         {
             Skip.If(string.IsNullOrEmpty(metaTubeServerUrl) || disableHttpTest);
-            var data = await _provider.GetMetadata(new PornMovieInfo
+            var porn = new PornMovie
             {
                 Name = "stars-507"
-            }, default);
+            };
+            var data = await _provider.GetMetadata(porn.PornMovieInfo, default);
             Assert.NotNull(data);
 
         }
@@ -46,10 +49,11 @@ namespace AVOne.Impl.Test.Providers.Metatube
         public async Task GetSearchResultsTest()
         {
             Skip.If(string.IsNullOrEmpty(metaTubeServerUrl) || disableHttpTest);
-            var data = await _provider.GetSearchResults(new PornMovieInfo
+            var porn = new PornMovie
             {
                 Name = "stars-507"
-            }, default);
+            };
+            var data = await _provider.GetSearchResults(porn.PornMovieInfo, default);
 
             Assert.NotNull(data);
             Assert.True(data.Count() >= 1);
