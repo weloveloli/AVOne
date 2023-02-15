@@ -5,6 +5,7 @@ namespace AVOne.Impl.Registrator
 {
     using AVOne.Abstraction;
     using AVOne.Configuration;
+    using AVOne.Impl.Facade;
     using AVOne.Impl.IO;
     using AVOne.Impl.Library;
     using AVOne.Impl.Providers;
@@ -24,6 +25,7 @@ namespace AVOne.Impl.Registrator
             serviceCollection.AddSingleton<ILibraryManager, LibraryManager>();
             serviceCollection.AddSingleton<IFileSystem, ManagedFileSystem>();
             serviceCollection.AddSingleton<IDirectoryService, DirectoryService>();
+            serviceCollection.AddSingleton<IToolFacade, ToolFacade>();
 
         }
 

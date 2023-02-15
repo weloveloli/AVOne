@@ -34,7 +34,7 @@ namespace AVOne.Tool.Commands
             var directoryService = host.Resolve<IDirectoryService>();
             var folder = new Folder { Path = fullpath };
             var files = directoryService.GetFiles(fullpath);
-            var items = libManager.ResolvePaths(files, directoryService, folder, default, CollectionType.PronMovies);
+            var items = libManager.ResolvePaths(files, directoryService, folder, default, CollectionType.PornMovies);
             var rows = items.OfType<PornMovie>().Select(e => new BaseItemRow { Name = e.Name, Path = e.Path });
 
             ConsoleTable

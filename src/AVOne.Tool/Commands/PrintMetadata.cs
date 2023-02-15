@@ -26,7 +26,7 @@ namespace AVOne.Tool.Commands
         /// <inheritdoc />
         [Option("type", Required = false, HelpText = "HelpTextCollectionType",
             ResourceType = typeof(Resource))]
-        public string? Type { get; set; } = CollectionType.PronMovies;
+        public string? Type { get; set; } = CollectionType.PornMovies;
 
         [Value(0, Required = true, HelpText = "HelpTextFileName", ResourceType = typeof(Resource))]
         public string? FileName { get; set; }

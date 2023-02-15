@@ -15,13 +15,12 @@ namespace AVOne.Impl.Resolvers
     using Microsoft.Extensions.Logging;
     using System.Text.RegularExpressions;
     using AVOne.Models.Info;
-    using AVOne.Configuration;
 
     public class MovieResolver : BaseVideoResolver<Video>, IMultiItemResolver
     {
         private string[] _validCollectionTypes = new[]
 {
-                CollectionType.PronMovies,
+                CollectionType.PornMovies,
                 CollectionType.HomeVideos
         };
 
@@ -83,7 +82,7 @@ namespace AVOne.Impl.Resolvers
             Video item = null;
 
             // To find a movie file, the collection type must be movies or boxsets
-            if (string.Equals(collectionType, CollectionType.PronMovies, StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(collectionType, CollectionType.PornMovies, StringComparison.OrdinalIgnoreCase))
             {
                 item = ResolveVideo<PornMovie>(args, true);
             }
@@ -140,7 +139,7 @@ namespace AVOne.Impl.Resolvers
                 return ResolveVideos<PornMovie>(parent, files, false, collectionType, true);
             }
 
-            if (string.Equals(collectionType, CollectionType.PronMovies, StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(collectionType, CollectionType.PornMovies, StringComparison.OrdinalIgnoreCase))
             {
                 return ResolveVideos<PornMovie>(parent, files, true, collectionType, true);
             }

@@ -118,7 +118,7 @@ namespace AVOne.Impl.Library.Tests
 
             var filesMap = files.ToDictionary(f => f.FullName, f => f);
             _fileSystemMock.Setup(e => e.GetFileInfo(It.IsAny<string>())).Returns<string>(p => filesMap[p]);
-            var items = _libraryManager.ResolvePaths(files, new DirectoryService(_fileSystemMock.Object), folder, default, CollectionType.PronMovies);
+            var items = _libraryManager.ResolvePaths(files, new DirectoryService(_fileSystemMock.Object), folder, default, CollectionType.PornMovies);
             var itemList = new List<BaseItem>(items);
             Assert.Single(items);
             Assert.IsType<PornMovie>(itemList[0]);

@@ -169,7 +169,7 @@
     <value>Verb '{0}' is not recognized.</value>
   </data>
   <data name="SentenceErrorsHeadingText" xml:space="preserve">
-    <value>错误(S):</value>
+    <value>Erros(S):</value>
   </data>
   <data name="SentenceHelpCommandTextOption" xml:space="preserve">
     <value>Display this help screen.</value>

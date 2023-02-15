@@ -14,7 +14,7 @@ namespace AVOne.Tool.Commands
         /// Gets or sets the path to the data directory.
         /// </summary>
         /// <value>The path to the data directory.</value>
-        [Option('d', "datadir", Required = false, HelpText = "HelpTextdatadir",
+        [Option('d', "data-dir", Required = false, HelpText = "HelpTextdatadir",
             ResourceType = typeof(Resource))]
         public string? DataDir { get; set; }
 

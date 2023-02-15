@@ -7,7 +7,7 @@ namespace AVOne.Constants
 {
     public static class CollectionType
     {
-        public const string PronMovies = "pornmovies";
+        public const string PornMovies = "pornmovies";
 
         public const string Folders = "folders";
 
