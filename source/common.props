@@ -8,6 +8,7 @@
     <Company>Weloveloli</Company>
     <Product>AVOne</Product>
     <IsPackable>false</IsPackable>
+    <FurionVersion>4.8.6.2</FurionVersion>
   </PropertyGroup>
   <PropertyGroup Label="Common NuGet Properties">
     <Copyright>Copyright (c) 2023 Weloveloli</Copyright>   
@@ -24,9 +25,9 @@
     <None Include="$(MSBuildThisFileDirectory)/../LICENSE" Visible="false" Pack="true" PackagePath="" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Furion" Version="4.8.6.2" />
-    <PackageReference Include="Furion.Extras.Authentication.JwtBearer" Version="4.8.6.2" />
-    <PackageReference Include="Furion.Extras.ObjectMapper.Mapster" Version="4.8.6.2" />
+    <PackageReference Include="Furion" Version="$(FurionVersion)" />
+    <PackageReference Include="Furion.Extras.Authentication.JwtBearer" Version="$(FurionVersion)" />
+    <PackageReference Include="Furion.Extras.ObjectMapper.Mapster" Version="$(FurionVersion)" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
     <PackageReference Include="MinVer" Version="4.3.0">
       <PrivateAssets>all</PrivateAssets>
