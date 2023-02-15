@@ -24,10 +24,11 @@ using AVOne.Tool.Commands;
 using AVOne.Tool.Configuration;
 using CacheManager.Core.Logging;
 using CommandLine;
-using Jellyfin.Server.Helpers;
+using Jellyfin.Server.Implementations;
 using MediaBrowser.Controller;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Serilog;
@@ -58,17 +59,20 @@ class Program
                 .ToArray();
         if (Parser.Default.ParseArguments(args, optionTypes) is Parsed<object> parsed)
         {
-
             if (parsed.Value is BaseOptions option)
             {
                 AppDomain.CurrentDomain.AssemblyResolve += StartupHelpers.ResolveJellyfinAssemlyRenameHandler;
-
                 var appPaths = StartupHelpers.CreateApplicationPaths(option);
                 var appHost = await CreateHost(option, appPaths);
-                var host = Serve.RunGeneric(true, false, args, (service) =>
-                {
-                    appHost.Init(service);
-                });
+                var options = GenericRunOptions.Default
+                    .WithArgs(args)
+                    .Silence(true, false)
+                    .ConfigureBuilder((builder) =>
+                    {
+                        return builder.UseContentRoot(StartupHelpers.RealRootContentPath);
+                    })
+                    .ConfigureServices(appHost.Init);
+                var host = Serve.Run(options);
                 try
                 {
                     // Re-use the host service provider in the app host since ASP.NET doesn't allow a custom service collection.
@@ -80,7 +84,7 @@ class Program
                 catch (Exception e)
                 {
                     _logger.LogError(e, "excute error");
-                    Console.Error.WriteLine($"Unhandled Exception: {e.Message}\n" + e.StackTrace);
+                    Console.Error.WriteLine($"Exception: {e.Message}\n" + e.StackTrace);
                 }
             }
         }

@@ -21,7 +21,12 @@ namespace AVOne.Tool.Commands
         [Value(0, Required = true, HelpText = "HelpTextDirectory")]
         public string? Dir { get; set; }
 
-        internal override async Task<int> ExecuteAsync(ConsoleAppHost host, CancellationToken token)
+        internal override Task<int> ExecuteAsync(ConsoleAppHost host, CancellationToken token)
+        {
+            return Task.Run(() => ScanFolder(host), token);
+        }
+
+        private int ScanFolder(ConsoleAppHost host)
         {
             if (string.IsNullOrEmpty(Dir) || !Directory.Exists(Dir))
             {
