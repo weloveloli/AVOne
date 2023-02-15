@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <Import Project="../common.props" />
+    <PropertyGroup>
+        <PackageId>AVOne.Impl</PackageId>
+        <IsPackable>true</IsPackable>
+        <RootNamespace>AVOne.Impl</RootNamespace>
+        <Description>Common Implement for tool and server</Description>
+    </PropertyGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\..\jellyfin\MediaBrowser.LocalMetadata\MediaBrowser.LocalMetadata.csproj" />
+      <ProjectReference Include="..\..\jellyfin\MediaBrowser.Model\MediaBrowser.Model.csproj" />
+      <ProjectReference Include="..\..\jellyfin\MediaBrowser.Providers\MediaBrowser.Providers.csproj" />
+      <ProjectReference Include="..\AVOne.Core\AVOne.Core.csproj" />
+    </ItemGroup>
+</Project>

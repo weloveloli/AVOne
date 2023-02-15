@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <Import Project="../common.props" />
+    <PropertyGroup>
+        <PackageId>AVOne.Core</PackageId>
+        <IsPackable>true</IsPackable>
+        <RootNamespace>AVOne</RootNamespace>
+        <Description>Core lib for AVOne</Description>
+        <!--Add support for sourcelink-->
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\..\jellyfin\MediaBrowser.Controller\MediaBrowser.Controller.csproj" />
+    </ItemGroup>
+</Project>
