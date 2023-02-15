@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
     <Import Project="../common.props" />
     <PropertyGroup>
         <PackageId>AVOne.Impl</PackageId>
@@ -7,9 +7,8 @@
         <Description>Common Implement for tool and server</Description>
     </PropertyGroup>
     <ItemGroup>
-      <ProjectReference Include="..\..\jellyfin\MediaBrowser.LocalMetadata\MediaBrowser.LocalMetadata.csproj" />
-      <ProjectReference Include="..\..\jellyfin\MediaBrowser.Model\MediaBrowser.Model.csproj" />
-      <ProjectReference Include="..\..\jellyfin\MediaBrowser.Providers\MediaBrowser.Providers.csproj" />
+      <ProjectReference Include="..\..\jellyfin\Emby.Server.Implementations\Emby.Server.Implementations.csproj" />
+      <ProjectReference Include="..\..\jellyfin\src\Jellyfin.Drawing.Skia\Jellyfin.Drawing.Skia.csproj" />
       <ProjectReference Include="..\AVOne.Core\AVOne.Core.csproj" />
     </ItemGroup>
 </Project>

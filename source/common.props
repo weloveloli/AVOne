@@ -26,8 +26,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Furion" Version="$(FurionVersion)" />
-    <PackageReference Include="Furion.Extras.Authentication.JwtBearer" Version="$(FurionVersion)" />
-    <PackageReference Include="Furion.Extras.ObjectMapper.Mapster" Version="$(FurionVersion)" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
     <PackageReference Include="MinVer" Version="4.3.0">
       <PrivateAssets>all</PrivateAssets>

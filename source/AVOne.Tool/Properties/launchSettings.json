@@ -1,0 +1,13 @@
+{
+  "profiles": {
+    "AVOne.Tool": {
+      "commandName": "Project",
+      "commandLineArgs": "scan\r\nZ:\\hentai\\未分类\\",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:4852;http://localhost:4853"
+    }
+  }
+}
