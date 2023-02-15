@@ -14,7 +14,8 @@ namespace AVOne.Models.Info
         public ItemInfo(BaseItem item)
         {
             Path = item.Path;
-
+            ContainingFolderPath = item.ContainingFolderPath;
+            IsInMixedFolder = item.IsInMixedFolder;
             if (item is Video video)
             {
                 VideoType = video.VideoType;
