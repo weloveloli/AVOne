@@ -1,32 +1,40 @@
 {
-    "Serilog": {
-        "MinimumLevel": {
-            "Default": "Information",
-            "Override": {
-                "Microsoft": "Warning",
-                "System": "Warning"
-            }
-        },
-        "WriteTo": [
+  "Serilog": {
+    "$schema": "https://gist.githubusercontent.com/turchenkoalex/ff9dc8443c3002eccf8df58020f82339/raw/6ae8d47908e49e0595694ea73e7f173ffb88cbf9/serilog-configuration-schema.json",
+    "MinimumLevel": {
+      "Default": "Information",
+      "Override": {
+        "Microsoft": "Warning",
+        "System": "Warning"
+      }
+    },
+    "WriteTo": [
+      {
+        "Name": "Console",
+        "Args": {
+          "outputTemplate": "[{Timestamp:HH:mm:ss}] [{Level:u3}] [{ThreadId}] {SourceContext}: {Message:lj}{NewLine}{Exception}",
+          "restrictedToMinimumLevel": "Warning"
+        }
+      },
+      {
+        "Name": "Async",
+        "Args": {
+          "configure": [
             {
-                "Name": "Async",
-                "Args": {
-                    "configure": [
-                        {
-                            "Name": "File",
-                            "Args": {
-                                "path": "%AVONETOOL_LOG_DIR%//log_.log",
-                                "rollingInterval": "Day",
-                                "retainedFileCountLimit": 3,
-                                "rollOnFileSizeLimit": true,
-                                "fileSizeLimitBytes": 100000000,
-                                "outputTemplate": "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz}] [{Level:u3}] [{ThreadId}] {SourceContext}: {Message}{NewLine}{Exception}"
-                            }
-                        }
-                    ]
-                }
+              "Name": "File",
+              "Args": {
+                "path": "%AVONETOOL_LOG_DIR%//log_.log",
+                "rollingInterval": "Day",
+                "retainedFileCountLimit": 3,
+                "rollOnFileSizeLimit": true,
+                "fileSizeLimitBytes": 100000000,
+                "outputTemplate": "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz}] [{Level:u3}] [{ThreadId}] {SourceContext}: {Message}{NewLine}{Exception}"
+              }
             }
-        ],
-        "Enrich": [ "FromLogContext", "WithThreadId" ]
-    }
+          ]
+        }
+      }
+    ],
+    "Enrich": [ "FromLogContext", "WithThreadId" ]
+  }
 }

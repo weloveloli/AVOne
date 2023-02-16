@@ -70,6 +70,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediaBrowser.MediaEncoding"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediaBrowser.XbmcMetadata", "..\jellyfin\MediaBrowser.XbmcMetadata\MediaBrowser.XbmcMetadata.csproj", "{23499896-B135-4527-8574-C26E926EA99E}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jellyfin.Server", "..\jellyfin\Jellyfin.Server\Jellyfin.Server.csproj", "{07E39F42-A2C6-4B32-AF8C-725F957A73FF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -192,6 +194,10 @@ Global
 		{23499896-B135-4527-8574-C26E926EA99E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{23499896-B135-4527-8574-C26E926EA99E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{23499896-B135-4527-8574-C26E926EA99E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07E39F42-A2C6-4B32-AF8C-725F957A73FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07E39F42-A2C6-4B32-AF8C-725F957A73FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07E39F42-A2C6-4B32-AF8C-725F957A73FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07E39F42-A2C6-4B32-AF8C-725F957A73FF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -218,6 +224,7 @@ Global
 		{B8E5E299-7603-4D9D-86FC-62DD319FA492} = {D15B0B49-2B51-4169-BABC-8BAE494B7EC1}
 		{960295EE-4AF4-4440-A525-B4C295B01A61} = {D15B0B49-2B51-4169-BABC-8BAE494B7EC1}
 		{23499896-B135-4527-8574-C26E926EA99E} = {D15B0B49-2B51-4169-BABC-8BAE494B7EC1}
+		{07E39F42-A2C6-4B32-AF8C-725F957A73FF} = {D15B0B49-2B51-4169-BABC-8BAE494B7EC1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B2073C2C-0FD3-452B-8047-8134D68E12CE}

@@ -22,6 +22,7 @@ namespace AVOne.Tool
     using MediaBrowser.Controller;
     using MediaBrowser.Controller.Extensions;
     using MediaBrowser.Model.IO;
+    using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Logging.Abstractions;
@@ -51,43 +52,9 @@ namespace AVOne.Tool
 
         internal const string AVOnePrefix = "AVONE_TOOL_";
         internal const string AVONE_TOOL_NAME = "avonetool";
-        private static readonly string[] s_relevantEnvVarPrefixes = { AVOnePrefix, "DOTNET_", "ASPNETCORE_" };
+        internal static readonly string[] RelevantEnvVarPrefixes = { AVOnePrefix, "DOTNET_", "ASPNETCORE_" };
 
         internal static string RealRootContentPath => Directory.GetParent(typeof(JellyfinDbContext).Assembly.Location)?.FullName ?? Directory.GetCurrentDirectory();
-        /// <summary>
-        /// Logs relevant environment variables and information about the host.
-        /// </summary>
-        /// <param name="logger">The logger to use.</param>
-        /// <param name="appPaths">The application paths to use.</param>
-        internal static void LogEnvironmentInfo(ILogger logger, IApplicationPaths appPaths)
-        {
-            // Distinct these to prevent users from reporting problems that aren't actually problems
-            var commandLineArgs = Environment
-                .GetCommandLineArgs()
-                .Distinct();
-
-            // Get all relevant environment variables
-            var allEnvVars = Environment.GetEnvironmentVariables();
-            var relevantEnvVars = new Dictionary<object, object>();
-            foreach (var key in allEnvVars.Keys)
-            {
-                if (s_relevantEnvVarPrefixes.Any(prefix => key.ToString()!.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)))
-                {
-                    relevantEnvVars.Add(key, allEnvVars[key]!);
-                }
-            }
-
-            logger.LogInformation("Environment Variables: {EnvVars}", relevantEnvVars);
-            logger.LogInformation("Arguments: {Args}", commandLineArgs);
-            logger.LogInformation("Operating system: {OS}", RuntimeInformation.OSDescription);
-            logger.LogInformation("Architecture: {Architecture}", RuntimeInformation.OSArchitecture);
-            logger.LogInformation("64-Bit Process: {Is64Bit}", Environment.Is64BitProcess);
-            logger.LogInformation("User Interactive: {IsUserInteractive}", Environment.UserInteractive);
-            logger.LogInformation("Processor count: {ProcessorCount}", Environment.ProcessorCount);
-            logger.LogInformation("Program data path: {ProgramDataPath}", appPaths.ProgramDataPath);
-            logger.LogInformation("Web resources path: {WebPath}", appPaths.WebPath);
-            logger.LogInformation("Application directory: {ApplicationPath}", appPaths.ProgramSystemPath);
-        }
 
         /// <summary>
         /// Create the data, config and log paths from the variety of inputs(command line args,

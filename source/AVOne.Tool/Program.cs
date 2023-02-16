@@ -8,6 +8,7 @@ using CommandLine;
 using CommandLine.Text;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Serilog;
 
 // Set sentence builder to localizable
 SentenceBuilder.Factory = () => new LocalizableSentenceBuilder();
@@ -26,6 +27,11 @@ if (Parser.Default.ParseArguments(args, optionTypes) is Parsed<object> parsed)
             .Silence(true, false)
             .ConfigureBuilder((builder) =>
             {
+                builder.ConfigureLogging((logging) =>
+                {
+                    logging.ClearProviders();
+                    logging.AddSerilog(Log.Logger);
+                });
                 return builder.UseContentRoot(StartupHelpers.RealRootContentPath);
             })
             .ConfigureServices(appHost.Init);

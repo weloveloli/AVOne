@@ -4,20 +4,58 @@
 namespace AVOne.Tool
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Xml.Linq;
     using Spectre.Console;
     using Spectre.Console.Rendering;
-    using TagLib.Ape;
 
-    public static class Cli
+    internal static class Cli
     {
         static readonly string errorMarkUp = new Style(foreground: Color.Maroon).ToMarkup();
+        static readonly string warningMarkUp = new Style(foreground: Color.Yellow).ToMarkup();
+        static readonly string infoMarkUp = new Style(foreground: Color.Green).ToMarkup();
+        static readonly string successMarkUp = new Style(foreground: Color.Green).ToMarkup();
+        static readonly string blueMarkUp = new Style(foreground: Color.Blue).ToMarkup();
+        static readonly string plainMarkUp = Style.Plain.ToMarkup();
+
         internal static void Error(string message)
         {
             AnsiConsole.MarkupLine($"[{errorMarkUp}]{message}[/]");
         }
 
+        internal static void Print(string message, object value)
+        {
+            if (value is string str)
+            {
+                Yellow(message, str);
+            }
+            else if (value is int i)
+            {
+                Green(message, i.ToString());
+            }
+            else
+            {
+                Green(message, value?.ToString() ?? string.Empty);
+            }
+        }
+
+        internal static void Yellow(string desc, string value)
+        {
+            AnsiConsole.MarkupLine("{0}[bold yellow]{1}[/]", Markup.Escape(desc), Markup.Escape(value));
+        }
+
+        internal static void Green(string desc, string value)
+        {
+            AnsiConsole.MarkupLine("{0}[bold green]{1}[/]", Markup.Escape(desc), Markup.Escape(value));
+        }
+
+        internal static void Blue(string desc, string value)
+        {
+            AnsiConsole.MarkupLine("{0}[bold blue]{1}[/]", Markup.Escape(desc), Markup.Escape(value));
+        }
+
+        internal static void Info(string message, params object[] args)
+        {
+            AnsiConsole.MarkupLine($"[{infoMarkUp}]{message}[/]", args);
+        }
         internal static void Error(string message, params object[] args)
         {
             AnsiConsole.MarkupLine($"[{errorMarkUp}]{message}[/]", args);

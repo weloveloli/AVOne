@@ -142,11 +142,11 @@ namespace AVOne.Tool.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Get and set application config..
+        ///   Looks up a localized string similar to Print system info..
         /// </summary>
-        public static string HelpTextVerbConfig {
+        public static string HelpTextVerbInfo {
             get {
-                return ResourceManager.GetString("HelpTextVerbConfig", resourceCulture);
+                return ResourceManager.GetString("HelpTextVerbInfo", resourceCulture);
             }
         }
         
