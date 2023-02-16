@@ -150,6 +150,9 @@
   <data name="HelpTextVerbOrganize" xml:space="preserve">
     <value>Scan &amp; organize files under specific folder. </value>
   </data>
+  <data name="HelpTextVerbPlugin" xml:space="preserve">
+    <value>Manage plugins.</value>
+  </data>
   <data name="HelpTextVerbPrintMetadata" xml:space="preserve">
     <value>Print movie metadata by filename.</value>
   </data>

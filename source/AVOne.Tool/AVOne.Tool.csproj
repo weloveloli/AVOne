@@ -45,5 +45,10 @@
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
     </ItemGroup>
+    <ItemGroup>
+        <Compile Include="$(JellyfinServerPath)/Migrations/**/*.cs" Exclude="$(JellyfinServerPath)/Migrations/MigrationRunner.cs">
+            <Link>Migrations\Jellyfin\%(RecursiveDir)/%(FileName)%(Extension)</Link>
+        </Compile>
+    </ItemGroup>
 
 </Project>

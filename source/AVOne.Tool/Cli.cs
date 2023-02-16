@@ -4,61 +4,36 @@
 namespace AVOne.Tool
 {
     using System;
+    using System.Linq;
+    using System.Reflection;
     using Spectre.Console;
     using Spectre.Console.Rendering;
 
     internal static class Cli
     {
-        static readonly string errorMarkUp = new Style(foreground: Color.Maroon).ToMarkup();
-        static readonly string warningMarkUp = new Style(foreground: Color.Yellow).ToMarkup();
-        static readonly string infoMarkUp = new Style(foreground: Color.Green).ToMarkup();
-        static readonly string successMarkUp = new Style(foreground: Color.Green).ToMarkup();
-        static readonly string blueMarkUp = new Style(foreground: Color.Blue).ToMarkup();
-        static readonly string plainMarkUp = Style.Plain.ToMarkup();
-
-        internal static void Error(string message)
-        {
-            AnsiConsole.MarkupLine($"[{errorMarkUp}]{message}[/]");
-        }
+        static readonly Style StyleError = new Style(foreground: Color.Red3);
+        static readonly Style StyleInfo = new Style(foreground: Color.DeepSkyBlue1);
+        static readonly Style StyleSuccess = new Style(foreground: Color.Green);
 
         internal static void Print(string message, object value)
         {
-            if (value is string str)
-            {
-                Yellow(message, str);
-            }
-            else if (value is int i)
-            {
-                Green(message, i.ToString());
-            }
-            else
-            {
-                Green(message, value?.ToString() ?? string.Empty);
-            }
-        }
-
-        internal static void Yellow(string desc, string value)
-        {
-            AnsiConsole.MarkupLine("{0}[bold yellow]{1}[/]", Markup.Escape(desc), Markup.Escape(value));
-        }
-
-        internal static void Green(string desc, string value)
-        {
-            AnsiConsole.MarkupLine("{0}[bold green]{1}[/]", Markup.Escape(desc), Markup.Escape(value));
-        }
-
-        internal static void Blue(string desc, string value)
-        {
-            AnsiConsole.MarkupLine("{0}[bold blue]{1}[/]", Markup.Escape(desc), Markup.Escape(value));
+            Info(message + "{0}", value);
         }
 
         internal static void Info(string message, params object[] args)
         {
-            AnsiConsole.MarkupLine($"[{infoMarkUp}]{message}[/]", args);
+            AnsiConsole.Write(new Text(string.Format(message, args), StyleInfo));
+            Console.WriteLine();
         }
         internal static void Error(string message, params object[] args)
         {
-            AnsiConsole.MarkupLine($"[{errorMarkUp}]{message}[/]", args);
+            AnsiConsole.Write(new Text(string.Format(message, args), StyleError));
+            Console.WriteLine();
+        }
+        internal static void Success(string message, params object[] args)
+        {
+            AnsiConsole.Write(new Text(string.Format(message, args), StyleSuccess));
+            Console.WriteLine();
         }
 
         internal static void Exception(Exception e, string message, params object[] args)
@@ -73,19 +48,122 @@ namespace AVOne.Tool
             AnsiConsole.WriteException(e);
         }
 
-        internal static void PrintTable<T>(IEnumerable<T> items, bool addNo = false, params string[] propertyNames)
-        {
-            PrintTable<T>(items, propertyNames, propertyNames.Select(CreateTextByPropertyToString<T>), addNo);
-        }
-
-        internal static Func<T, Text> CreateTextByPropertyToString<T>(string propertyName)
+        internal static Func<T, IRenderable> Text<T>(string propertyName)
         {
             var type = typeof(T);
             var property = type.GetProperty(propertyName);
             return (item) => new Text(Convert.ToString(property?.GetValue(item)) ?? string.Empty);
         }
 
+        internal static (string, Func<T, IRenderable>) TextDef<T>(string propertyName)
+        {
+            var type = typeof(T);
+            var property = type.GetProperty(propertyName);
+            return (propertyName,(item) => new Text(Convert.ToString(property?.GetValue(item)) ?? string.Empty));
+        }
+
+        internal static (string, Func<T, IRenderable>) TextPathDef<T>(string propertyName)
+        {
+            var type = typeof(T);
+            var property = type.GetProperty(propertyName);
+            return (propertyName, (item) => new TextPath(Convert.ToString(property?.GetValue(item)) ?? string.Empty));
+        }
+
+        internal static Func<T, IRenderable> Table<T, X>(Func<T, IEnumerable<X>> func, bool addNo, params string[] propertyNames)
+        {
+            return (o) =>
+            {
+                return GetTable(func(o), addNo, propertyNames);
+            };
+        }
+
+        internal static Func<T, IRenderable> CreateTextByPropertyPath<T>(string propertyPath)
+        {
+            return (o) =>
+            {
+                var type = typeof(T);
+                object? value = o;
+                PropertyInfo? property = null;
+                bool array = false;
+                while (propertyPath.Contains('.') && value != null)
+                {
+                    var properyName = propertyPath.Substring(0, propertyPath.IndexOf('.'));
+                    propertyPath = propertyPath.Substring(propertyPath.IndexOf('.') + 1);
+                    if (properyName.EndsWith("[]"))
+                    {
+                        properyName = properyName.Substring(0, properyName.IndexOf("[]"));
+                        array = true;
+                    }
+                    else
+                    {
+                        array = false;
+                    }
+
+                    property = type.GetProperty(properyName);
+                    // get property value
+                    value = property?.GetValue(value);
+                    type = property?.PropertyType;
+                }
+                if (value is not null && type is not null)
+                {
+                    if (!array)
+                    {
+                        property = type.GetProperty(propertyPath);
+                        value = property?.GetValue(value);
+                    }
+                    else
+                    {
+                        if (value is IEnumerable<object> values)
+                        {
+                            value = values.Select(e =>
+                            {
+                                property = e.GetType().GetProperty(propertyPath);
+                                return property?.GetValue(e);
+                            });
+                        }
+                        else
+                        {
+                            value = null;
+                        }
+                    }
+
+                }
+
+                // if value is null, continue
+                if (value == null)
+                {
+                    return new Text(string.Empty);
+                }
+                else if (value is string str)
+                {
+                    return new Text(str);
+                }
+                // if value is IEnumerable, add to result
+                else if (value is IEnumerable<object> items)
+                {
+                    return new Text(string.Join('\n', items.Select(e => Convert.ToString(e) ?? string.Empty)));
+                }
+                return new Text(Convert.ToString(value) ?? string.Empty);
+            };
+        }
+
+        internal static void PrintTable<T>(IEnumerable<T> items, bool addNo = false, params string[] propertyPaths)
+        {
+            var table = GetTable<T>(items, addNo, propertyPaths);
+            AnsiConsole.Write(table);
+        }
+        internal static void PrintTable<T>(IEnumerable<T> items, bool addNo = false, params (string, Func<T, IRenderable>)[] columNamesDef)
+        {
+            var table = GetTable<T>(items, columNamesDef.Select(e => e.Item1), columNamesDef.Select(e => e.Item2), addNo);
+            AnsiConsole.Write(table);
+        }
         internal static void PrintTable<T>(IEnumerable<T> items, IEnumerable<string> columNames, IEnumerable<Func<T, IRenderable>> renderRows, bool addNo = false)
+        {
+            var table = GetTable<T>(items, columNames, renderRows, addNo);
+            AnsiConsole.Write(table);
+        }
+        internal static Table GetTable<T>(IEnumerable<T> items, bool addNo = false, params string[] propertyPaths) => GetTable<T>(items, propertyPaths, propertyPaths.Select(CreateTextByPropertyPath<T>), addNo);
+        internal static Table GetTable<T>(IEnumerable<T> items, IEnumerable<string> columNames, IEnumerable<Func<T, IRenderable>> renderRows, bool addNo = false)
         {
             var table = new Table();
             if (addNo)
@@ -94,7 +172,7 @@ namespace AVOne.Tool
             }
             foreach (var name in columNames)
             {
-                table.AddColumn(name);
+                table.AddColumn(Markup.Escape(name));
             }
             var rowNumber = 1;
             foreach (var item in items)
@@ -111,7 +189,8 @@ namespace AVOne.Tool
 
                 table.AddRow(rows.ToArray());
             }
-            AnsiConsole.Write(table);
+
+            return table;
         }
     }
 }

@@ -5,8 +5,9 @@ namespace AVOne.Tool.Commands
 {
     using Emby.Server.Implementations;
 
-    public abstract class BaseOptions : IStartupOptions
+    public abstract class BaseHostOptions : IStartupOptions
     {
+        protected const string ToolAlias = "avonetool";
         /// <summary>
         /// Gets or sets the path to the data directory.
         /// </summary>

@@ -4,20 +4,17 @@
 namespace AVOne.Tool.Commands
 {
     using System;
-    using System.Runtime.InteropServices;
-    using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
     using AVOne.Tool.Resources;
     using CommandLine;
-    using MediaBrowser.Common.Configuration;
     using MediaBrowser.Controller.Entities;
     using MediaBrowser.Controller.Library;
     using MediaBrowser.Controller.Providers;
     using MediaBrowser.Model.Entities;
 
     [Verb("scan", false, HelpText = "HelpTextVerbScan", ResourceType = typeof(Resource))]
-    internal class Scan : BaseOptions
+    internal class Scan : BaseHostOptions
     {
         [Value(0, Required = true, HelpText = "HelpTextDirectory")]
         public string? Dir { get; set; }

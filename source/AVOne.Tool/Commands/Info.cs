@@ -12,7 +12,7 @@ namespace AVOne.Tool.Commands
     using MediaBrowser.Common.Configuration;
 
     [Verb("info", false, HelpText = "HelpTextVerbInfo", ResourceType = typeof(Resource))]
-    internal class Info : BaseOptions
+    internal class Info : BaseHostOptions
     {
         /// <summary>
         /// Gets or sets the path to the data directory.

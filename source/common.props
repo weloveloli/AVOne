@@ -9,6 +9,7 @@
     <Product>AVOne</Product>
     <IsPackable>false</IsPackable>
     <FurionVersion>4.8.6.3</FurionVersion>
+    <JellyfinServerPath>$(MSBuildThisFileDirectory)/../jellyfin/Jellyfin.Server</JellyfinServerPath>
   </PropertyGroup>
   <PropertyGroup Label="Common NuGet Properties">
     <Copyright>Copyright (c) 2023 Weloveloli</Copyright>   

@@ -4,17 +4,14 @@
 namespace AVOne.Tool
 {
     using System;
-    using System.Collections.Generic;
     using System.Globalization;
     using System.IO;
-    using System.Linq;
-    using System.Net;
     using System.Reflection;
-    using System.Runtime.InteropServices;
     using System.Runtime.Versioning;
     using System.Text;
     using System.Threading.Tasks;
     using AVOne.Tool.Commands;
+    using AVOne.Tools.Migrations;
     using CacheManager.Core.Logging;
     using Emby.Server.Implementations;
     using Jellyfin.Server.Implementations;
@@ -22,13 +19,12 @@ namespace AVOne.Tool
     using MediaBrowser.Controller;
     using MediaBrowser.Controller.Extensions;
     using MediaBrowser.Model.IO;
-    using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
     using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Logging.Abstractions;
     using Serilog;
     using Serilog.Extensions.Logging;
-    using SQLitePCL;
     using ILogger = Microsoft.Extensions.Logging.ILogger;
     using ILoggerFactory = Microsoft.Extensions.Logging.ILoggerFactory;
 
@@ -65,7 +61,7 @@ namespace AVOne.Tool
         /// </summary>
         /// <param name="options">The <see cref="StartupOptions" /> for this instance.</param>
         /// <returns><see cref="ServerApplicationPaths" />.</returns>
-        internal static ServerApplicationPaths CreateApplicationPaths(BaseOptions options)
+        internal static ServerApplicationPaths CreateApplicationPaths(BaseHostOptions options)
         {
             // LocalApplicationData
             // Windows: %LocalAppData%
@@ -122,10 +118,10 @@ namespace AVOne.Tool
             // Ensure the main folders exist before we continue
             try
             {
-                Directory.CreateDirectory(dataDir);
-                Directory.CreateDirectory(logDir);
-                Directory.CreateDirectory(configDir);
-                Directory.CreateDirectory(cacheDir);
+                _ = Directory.CreateDirectory(dataDir);
+                _ = Directory.CreateDirectory(logDir);
+                _ = Directory.CreateDirectory(configDir);
+                _ = Directory.CreateDirectory(cacheDir);
             }
             catch (IOException ex)
             {
@@ -134,6 +130,29 @@ namespace AVOne.Tool
             }
 
             return new ServerApplicationPaths(dataDir, logDir, configDir, cacheDir, webDir);
+        }
+
+        internal static IHost CreateHost(string[] args, ConsoleAppHost appHost)
+        {
+            var options =
+                GenericRunOptions.Default
+                .WithArgs(args)
+                .Silence(true, false)
+                .ConfigureBuilder((builder) =>
+                {
+                    _ = builder.ConfigureLogging((logging) =>
+                    {
+                        _ = logging.ClearProviders();
+                        _ = logging.AddSerilog(Log.Logger);
+                    });
+                    return builder.UseContentRoot(StartupHelpers.RealRootContentPath);
+                })
+                .ConfigureServices(appHost.Init);
+            var host = Serve.Run(options);
+            // Re-use the host service provider in the app host since ASP.NET doesn't allow a custom service collection.
+            appHost.ServiceProvider = host.Services;
+            MigrationRunner.Run(appHost, LoggerFactory);
+            return host;
         }
 
         private static string GetXdgCacheHome()
@@ -183,7 +202,7 @@ namespace AVOne.Tool
             return socketPath;
         }
 
-        internal static IConfiguration CreateAppConfiguration(BaseOptions commandLineOpts, IServerApplicationPaths appPaths)
+        internal static IConfiguration CreateAppConfiguration(BaseHostOptions commandLineOpts, IServerApplicationPaths appPaths)
         {
             return new ConfigurationBuilder()
                     .SetBasePath(appPaths.ConfigurationDirectoryPath)
@@ -280,26 +299,6 @@ namespace AVOne.Tool
             }
         }
 
-        /// <summary>
-        /// Call static initialization methods for the application.
-        /// </summary>
-        internal static void PerformStaticInitialization()
-        {
-            // Make sure we have all the code pages we can get
-            // Ref: https://docs.microsoft.com/en-us/dotnet/api/system.text.codepagesencodingprovider.instance?view=netcore-3.0#remarks
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
-            // Increase the max http request limit
-            // The default connection limit is 10 for ASP.NET hosted applications and 2 for all others.
-            ServicePointManager.DefaultConnectionLimit = Math.Max(96, ServicePointManager.DefaultConnectionLimit);
-
-            // Disable the "Expect: 100-Continue" header by default
-            // http://stackoverflow.com/questions/566437/http-post-returns-the-error-417-expectation-failed-c
-            ServicePointManager.Expect100Continue = false;
-
-            Batteries_V2.Init();
-        }
-
         internal static Assembly? ResolveJellyfinAssemlyRenameHandler(object? sender, ResolveEventArgs? args)
         {
             if (args is null)
@@ -332,7 +331,7 @@ namespace AVOne.Tool
             return null;
         }
 
-        internal static async Task<ConsoleAppHost> CreateConsoleAppHost(BaseOptions option, IServerApplicationPaths appPaths)
+        internal static async Task<ConsoleAppHost> CreateConsoleAppHost(BaseHostOptions option, ServerApplicationPaths appPaths)
         {
             // Log all uncaught exceptions to std error
             static void UnhandledExceptionToConsole(object sender, UnhandledExceptionEventArgs e)
@@ -379,6 +378,7 @@ namespace AVOne.Tool
                 Environment.ExitCode = 128 + 15;
                 Shutdown();
             };
+            MigrationRunner.RunPreStartup(appPaths, LoggerFactory);
             return new ConsoleAppHost(appPaths, LoggerFactory, option, startupConfig);
         }
 
