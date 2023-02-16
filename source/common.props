@@ -8,7 +8,7 @@
     <Company>Weloveloli</Company>
     <Product>AVOne</Product>
     <IsPackable>false</IsPackable>
-    <FurionVersion>4.8.6.2</FurionVersion>
+    <FurionVersion>4.8.6.3</FurionVersion>
   </PropertyGroup>
   <PropertyGroup Label="Common NuGet Properties">
     <Copyright>Copyright (c) 2023 Weloveloli</Copyright>   

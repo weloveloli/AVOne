@@ -1,5 +1,5 @@
-﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
-// Licensed under the GPLv2 License.
+﻿// Copyright (c) 2023 Weloveloli Contributors. All rights reserved.
+// See License in the project root for license information.
 
 namespace AVOne.Tool
 {
@@ -15,31 +15,51 @@ namespace AVOne.Tool
     using System.Text;
     using System.Threading.Tasks;
     using AVOne.Tool.Commands;
+    using CacheManager.Core.Logging;
     using Emby.Server.Implementations;
     using Jellyfin.Server.Implementations;
     using MediaBrowser.Common.Configuration;
+    using MediaBrowser.Controller;
     using MediaBrowser.Controller.Extensions;
     using MediaBrowser.Model.IO;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Logging.Abstractions;
     using Serilog;
+    using Serilog.Extensions.Logging;
     using SQLitePCL;
     using ILogger = Microsoft.Extensions.Logging.ILogger;
+    using ILoggerFactory = Microsoft.Extensions.Logging.ILoggerFactory;
 
     /// <summary>
     /// A class containing helper methods for server startup.
     /// </summary>
-    public static class StartupHelpers
+    internal static class StartupHelpers
     {
-        private static readonly string[] _relevantEnvVarPrefixes = { "AVONE_", "DOTNET_", "ASPNETCORE_" };
+        internal static readonly ILoggerFactory LoggerFactory = new SerilogLoggerFactory();
+        internal static ILogger Logger = NullLogger.Instance;
+        internal static CancellationTokenSource TokenSource = new();
+        /// <summary>
+        /// The name of logging configuration file containing application defaults.
+        /// </summary>
+        internal const string LoggingConfigFileDefault = "logging.default.json";
 
-        public static string RealRootContentPath => Directory.GetParent(typeof(JellyfinDbContext).Assembly.Location).FullName;
+        /// <summary>
+        /// The name of the logging configuration file containing the system-specific override settings.
+        /// </summary>
+        internal const string LoggingConfigFileSystem = "logging.json";
+
+        internal const string AVOnePrefix = "AVONE_TOOL_";
+        internal const string AVONE_TOOL_NAME = "avonetool";
+        private static readonly string[] s_relevantEnvVarPrefixes = { AVOnePrefix, "DOTNET_", "ASPNETCORE_" };
+
+        internal static string RealRootContentPath => Directory.GetParent(typeof(JellyfinDbContext).Assembly.Location)?.FullName ?? Directory.GetCurrentDirectory();
         /// <summary>
         /// Logs relevant environment variables and information about the host.
         /// </summary>
         /// <param name="logger">The logger to use.</param>
         /// <param name="appPaths">The application paths to use.</param>
-        public static void LogEnvironmentInfo(ILogger logger, IApplicationPaths appPaths)
+        internal static void LogEnvironmentInfo(ILogger logger, IApplicationPaths appPaths)
         {
             // Distinct these to prevent users from reporting problems that aren't actually problems
             var commandLineArgs = Environment
@@ -51,7 +71,7 @@ namespace AVOne.Tool
             var relevantEnvVars = new Dictionary<object, object>();
             foreach (var key in allEnvVars.Keys)
             {
-                if (_relevantEnvVarPrefixes.Any(prefix => key.ToString()!.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)))
+                if (s_relevantEnvVarPrefixes.Any(prefix => key.ToString()!.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)))
                 {
                     relevantEnvVars.Add(key, allEnvVars[key]!);
                 }
@@ -78,19 +98,19 @@ namespace AVOne.Tool
         /// </summary>
         /// <param name="options">The <see cref="StartupOptions" /> for this instance.</param>
         /// <returns><see cref="ServerApplicationPaths" />.</returns>
-        public static ServerApplicationPaths CreateApplicationPaths(BaseOptions options)
+        internal static ServerApplicationPaths CreateApplicationPaths(BaseOptions options)
         {
             // LocalApplicationData
             // Windows: %LocalAppData%
             // macOS: NSApplicationSupportDirectory
             // UNIX: $XDG_DATA_HOME
             var dataDir = options.DataDir
-                ?? Environment.GetEnvironmentVariable("AVONE_DATA_DIR")
+                ?? Environment.GetEnvironmentVariable(AVOnePrefix + "DATA_DIR")
                 ?? Path.Join(
                     Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                    "avone");
+                    AVONE_TOOL_NAME);
 
-            var configDir = Environment.GetEnvironmentVariable("AVONE_CONFIG_DIR");
+            var configDir = Environment.GetEnvironmentVariable(AVOnePrefix + "CONFIG_DIR");
             if (configDir is null)
             {
                 configDir = Path.Join(dataDir, "config");
@@ -106,7 +126,7 @@ namespace AVOne.Tool
                 }
             }
 
-            var cacheDir = Environment.GetEnvironmentVariable("AVONE_CACHE_DIR");
+            var cacheDir = Environment.GetEnvironmentVariable(AVOnePrefix + "CACHE_DIR");
             if (cacheDir is null)
             {
                 if (OperatingSystem.IsWindows() || OperatingSystem.IsMacOS())
@@ -119,17 +139,11 @@ namespace AVOne.Tool
                 }
             }
 
-            var webDir = Environment.GetEnvironmentVariable("AVONE_WEB_DIR");
-            if (webDir is null)
-            {
-                webDir = Path.Join(AppContext.BaseDirectory, "avone-web");
-            }
+            var webDir = Environment.GetEnvironmentVariable(AVOnePrefix + "WEB_DIR");
+            webDir ??= Path.Join(AppContext.BaseDirectory, "avone-web");
 
-            var logDir = Environment.GetEnvironmentVariable("AVONE_LOG_DIR");
-            if (logDir is null)
-            {
-                logDir = Path.Join(dataDir, "log");
-            }
+            var logDir = Environment.GetEnvironmentVariable(AVOnePrefix + "LOG_DIR");
+            logDir ??= Path.Join(dataDir, "log");
 
             // Normalize paths. Only possible with GetFullPath for now - https://github.com/dotnet/runtime/issues/2162
             dataDir = Path.GetFullPath(dataDir);
@@ -148,8 +162,7 @@ namespace AVOne.Tool
             }
             catch (IOException ex)
             {
-                Console.Error.WriteLine("Error whilst attempting to create folder");
-                Console.Error.WriteLine(ex.ToString());
+                Cli.Exception(ex, "Error whilst attempting to create folder");
                 Environment.Exit(1);
             }
 
@@ -186,7 +199,7 @@ namespace AVOne.Tool
 
             if (string.IsNullOrEmpty(socketPath))
             {
-                const string SocketFile = "avone.sock";
+                const string SocketFile = AVONE_TOOL_NAME + ".sock";
 
                 var xdgRuntimeDir = Environment.GetEnvironmentVariable("XDG_RUNTIME_DIR");
                 if (xdgRuntimeDir is null)
@@ -203,6 +216,18 @@ namespace AVOne.Tool
             return socketPath;
         }
 
+        internal static IConfiguration CreateAppConfiguration(BaseOptions commandLineOpts, IServerApplicationPaths appPaths)
+        {
+            return new ConfigurationBuilder()
+                    .SetBasePath(appPaths.ConfigurationDirectoryPath)
+                    .AddInMemoryCollection(ConsoleConfigurationOptions.DefaultConfiguration)
+                    .AddJsonFile(LoggingConfigFileDefault, optional: false, reloadOnChange: true)
+                    .AddJsonFile(LoggingConfigFileSystem, optional: true, reloadOnChange: true)
+                    .AddEnvironmentVariables(AVOnePrefix)
+                    .AddInMemoryCollection(commandLineOpts.ConvertToConfig())
+                    .Build();
+        }
+
         /// <summary>
         /// Sets the unix file permissions for Kestrel's socket file.
         /// </summary>
@@ -210,7 +235,7 @@ namespace AVOne.Tool
         /// <param name="socketPath">The socket path.</param>
         /// <param name="logger">The logger.</param>
         [UnsupportedOSPlatform("windows")]
-        public static void SetUnixSocketPermissions(IConfiguration startupConfig, string socketPath, ILogger logger)
+        internal static void SetUnixSocketPermissions(IConfiguration startupConfig, string socketPath, ILogger logger)
         {
             var socketPerms = startupConfig.GetUnixSocketPermissions();
 
@@ -227,10 +252,10 @@ namespace AVOne.Tool
         /// </summary>
         /// <param name="appPaths">The application paths.</param>
         /// <returns>A task representing the creation of the configuration file, or a completed task if the file already exists.</returns>
-        public static async Task InitLoggingConfigFile(IApplicationPaths appPaths)
+        internal static async Task InitLoggingConfigFile(IApplicationPaths appPaths)
         {
             // Do nothing if the config file already exists
-            var configPath = Path.Combine(appPaths.ConfigurationDirectoryPath, Program.LoggingConfigFileDefault);
+            var configPath = Path.Combine(appPaths.ConfigurationDirectoryPath, LoggingConfigFileDefault);
             if (File.Exists(configPath))
             {
                 return;
@@ -257,7 +282,7 @@ namespace AVOne.Tool
         /// </summary>
         /// <param name="configuration">The configuration object.</param>
         /// <param name="appPaths">The application paths.</param>
-        public static void InitializeLoggingFramework(IConfiguration configuration, IApplicationPaths appPaths)
+        internal static void InitializeLoggingFramework(IConfiguration configuration, IApplicationPaths appPaths)
         {
             try
             {
@@ -271,9 +296,9 @@ namespace AVOne.Tool
             catch (Exception ex)
             {
                 Log.Logger = new LoggerConfiguration()
-                    .WriteTo.Console(
-                        outputTemplate: "[{Timestamp:HH:mm:ss}] [{Level:u3}] [{ThreadId}] {SourceContext}: {Message:lj}{NewLine}{Exception}",
-                        formatProvider: CultureInfo.InvariantCulture)
+                    // .WriteTo.Console(
+                    //    outputTemplate: "[{Timestamp:HH:mm:ss}] [{Level:u3}] [{ThreadId}] {SourceContext}: {Message:lj}{NewLine}{Exception}",
+                    //    formatProvider: CultureInfo.InvariantCulture)
                     .WriteTo.Async(x => x.File(
                         Path.Combine(appPaths.LogDirectoryPath, "log_.log"),
                         rollingInterval: RollingInterval.Day,
@@ -291,7 +316,7 @@ namespace AVOne.Tool
         /// <summary>
         /// Call static initialization methods for the application.
         /// </summary>
-        public static void PerformStaticInitialization()
+        internal static void PerformStaticInitialization()
         {
             // Make sure we have all the code pages we can get
             // Ref: https://docs.microsoft.com/en-us/dotnet/api/system.text.codepagesencodingprovider.instance?view=netcore-3.0#remarks
@@ -307,8 +332,14 @@ namespace AVOne.Tool
 
             Batteries_V2.Init();
         }
-        public static Assembly ResolveJellyfinAssemlyRenameHandler(object sender, ResolveEventArgs args)
+
+        internal static Assembly? ResolveJellyfinAssemlyRenameHandler(object? sender, ResolveEventArgs? args)
         {
+            if (args is null)
+            {
+                return null;
+            }
+
             var basePath = RealRootContentPath;
 
             if (args.Name.StartsWith("Jellyfin.Common"))
@@ -332,6 +363,77 @@ namespace AVOne.Tool
                 return Assembly.LoadFile(dllPath);
             }
             return null;
+        }
+
+        internal static async Task<ConsoleAppHost> CreateConsoleAppHost(BaseOptions option, IServerApplicationPaths appPaths)
+        {
+            // Log all uncaught exceptions to std error
+            static void UnhandledExceptionToConsole(object sender, UnhandledExceptionEventArgs e)
+            {
+                Cli.Error("Unhandled Exception\n" + e.ExceptionObject.ToString());
+            }
+
+            // $AVONETOOL_LOG_DIR needs to be set for the logger configuration manager
+            Environment.SetEnvironmentVariable("AVONETOOL_LOG_DIR", appPaths.LogDirectoryPath);
+            await InitLoggingConfigFile(appPaths).ConfigureAwait(false);
+            // Create an instance of the application configuration to use for application startup
+            var startupConfig = CreateAppConfiguration(option, appPaths);
+            // Initialize logging framework
+            InitializeLoggingFramework(startupConfig, appPaths);
+            Logger = LoggerFactory.CreateLogger("Main");
+            // Log uncaught exceptions to the logging instead of std error
+            AppDomain.CurrentDomain.UnhandledException -= UnhandledExceptionToConsole;
+            AppDomain.CurrentDomain.UnhandledException += (_, e)
+                => Logger.LogCritical((Exception)e.ExceptionObject, "Unhandled Exception");
+
+            // Intercept Ctrl+C and Ctrl+Break
+            Console.CancelKeyPress += (_, e) =>
+            {
+                if (TokenSource.IsCancellationRequested)
+                {
+                    return; // Already shutting down
+                }
+
+                e.Cancel = true;
+                Logger.LogInformation("Ctrl+C, shutting down");
+                Environment.ExitCode = 128 + 2;
+                Shutdown();
+            };
+
+            // Register a SIGTERM handler
+            AppDomain.CurrentDomain.ProcessExit += (_, _) =>
+            {
+                if (TokenSource.IsCancellationRequested)
+                {
+                    return; // Already shutting down
+                }
+
+                Logger.LogInformation("Received a SIGTERM signal, shutting down");
+                Environment.ExitCode = 128 + 15;
+                Shutdown();
+            };
+            return new ConsoleAppHost(appPaths, LoggerFactory, option, startupConfig);
+        }
+
+        /// <summary>
+        /// Shuts down the application.
+        /// </summary>
+        internal static void Shutdown()
+        {
+            if (!TokenSource.IsCancellationRequested)
+            {
+                TokenSource.Cancel();
+            }
+        }
+
+        /// <summary>
+        /// Restarts the application.
+        /// </summary>
+        internal static void Restart()
+        {
+            //_restartOnShutdown = true;
+
+            Shutdown();
         }
     }
 }

@@ -1,5 +1,5 @@
-﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
-// Licensed under the Apache V2.0 License.
+﻿// Copyright (c) 2023 Weloveloli Contributors. All rights reserved.
+// See License in the project root for license information.
 
 namespace AVOne.Tool
 {
@@ -8,7 +8,7 @@ namespace AVOne.Tool
     /// <summary>
     /// Static class containing the default configuration options for the web server.
     /// </summary>
-    public static class ConfigurationOptions
+    public static class ConsoleConfigurationOptions
     {
         /// <summary>
         /// The key for the FFmpeg probe size option.

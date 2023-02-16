@@ -1,24 +1,29 @@
-﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
-// Licensed under the GPLv2 License.
+﻿// Copyright (c) 2023 Weloveloli Contributors. All rights reserved.
+// See License in the project root for license information.
 
 namespace AVOne.Tool
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
+    using System.Globalization;
+    using System.Net;
+    using System.Net.Http.Headers;
+    using System.Net.Mime;
     using System.Reflection;
     using System.Text;
-    using System.Threading.Tasks;
     using Emby.Server.Implementations;
     using Emby.Server.Implementations.Session;
     using Jellyfin.Api.WebSocketListeners;
     using Jellyfin.Drawing;
+    using Jellyfin.Drawing.Skia;
+    using Jellyfin.Server.Implementations;
     using Jellyfin.Server.Implementations.Activity;
     using Jellyfin.Server.Implementations.Devices;
     using Jellyfin.Server.Implementations.Events;
+    using Jellyfin.Server.Implementations.Extensions;
     using Jellyfin.Server.Implementations.Security;
     using Jellyfin.Server.Implementations.Users;
-    using Jellyfin.Server.Implementations;
+    using MediaBrowser.Common.Net;
     using MediaBrowser.Controller;
     using MediaBrowser.Controller.BaseItemManager;
     using MediaBrowser.Controller.Devices;
@@ -32,13 +37,6 @@ namespace AVOne.Tool
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
-    using Jellyfin.Drawing.Skia;
-    using Jellyfin.Server.Implementations.Extensions;
-    using MediaBrowser.Common.Net;
-    using System.Globalization;
-    using System.Net.Http.Headers;
-    using System.Net.Mime;
-    using System.Net;
 
     internal class ConsoleAppHost : ApplicationHost
     {
@@ -151,7 +149,7 @@ namespace AVOne.Tool
         }
 
         /// <inheritdoc />
-        protected override void RestartInternal() => Program.Restart();
+        protected override void RestartInternal() => StartupHelpers.Restart();
 
         /// <inheritdoc />
         protected override IEnumerable<Assembly> GetAssembliesWithPartsInternal()
@@ -164,6 +162,6 @@ namespace AVOne.Tool
         }
 
         /// <inheritdoc />
-        protected override void ShutdownInternal() => Program.Shutdown();
+        protected override void ShutdownInternal() => StartupHelpers.Shutdown();
     }
 }

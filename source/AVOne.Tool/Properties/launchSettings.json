@@ -2,7 +2,7 @@
   "profiles": {
     "AVOne.Tool": {
       "commandName": "Project",
-      "commandLineArgs": "scan\r\nZ:\\hentai\\未分类\\",
+      "commandLineArgs": "config --get-all",
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"

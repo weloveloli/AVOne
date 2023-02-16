@@ -149,7 +149,7 @@ dotnet_diagnostic.RS2008.severity = none
 
 # IDE0073: File header
 dotnet_diagnostic.IDE0073.severity = warning
-file_header_template = Copyright (c) 2023 Weloveloli. All rights reserved.\nLicensed under the GPLv2 License.
+file_header_template = Copyright (c) 2023 Weloveloli Contributors. All rights reserved.\nSee License in the project root for license information.
 
 # IDE0035: Remove unreachable code
 dotnet_diagnostic.IDE0035.severity = warning
