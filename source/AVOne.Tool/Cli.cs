@@ -59,7 +59,7 @@ namespace AVOne.Tool
         {
             var type = typeof(T);
             var property = type.GetProperty(propertyName);
-            return (propertyName,(item) => new Text(Convert.ToString(property?.GetValue(item)) ?? string.Empty));
+            return (propertyName, (item) => new Text(Convert.ToString(property?.GetValue(item)) ?? string.Empty));
         }
 
         internal static (string, Func<T, IRenderable>) TextPathDef<T>(string propertyName)
@@ -99,7 +99,7 @@ namespace AVOne.Tool
                         array = false;
                     }
 
-                    property = type.GetProperty(properyName);
+                    property = type?.GetProperty(properyName);
                     // get property value
                     value = property?.GetValue(value);
                     type = property?.PropertyType;

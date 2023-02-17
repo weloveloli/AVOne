@@ -12,17 +12,18 @@ namespace AVOne.Tool.Commands
     using MediaBrowser.Model.Updates;
     using Spectre.Console.Rendering;
     using CommandLine.Text;
+    using AVOne.Tool.Resources;
 
-    [Verb("plugin-repo", false, HelpText = "插件仓库")]
+    [Verb("plugin-repo", false, HelpText = nameof(Resource.HelpTextVerbPluginRepo), ResourceType = typeof(Resource))]
     internal class PluginRepo : BaseHostOptions
     {
-        [Option('l', "list", Required = false, Group = "action", HelpText = "显示插件仓库列表.")]
+        [Option('l', "list", Required = false, Group = "action", HelpText = nameof(Resource.HelpTextShowPluginRepositoryList), ResourceType = typeof(Resource))]
         public bool List { get; set; }
 
-        [Option('s', "show-packages", Required = false, Group = "action", HelpText = "显示插件仓库中的插件所有插件.")]
+        [Option('s', "show-packages", Required = false, Group = "action", HelpText = nameof(Resource.HelpTextShowAvaliablePlugins), ResourceType = typeof(Resource))]
         public bool Search { get; set; }
 
-        [Option('a', "add-repo", Required = false, Group = "action", Max = 2, Min = 2, HelpText = "添加插件仓库.")]
+        [Option('a', "add-repo", Required = false, Group = "action", Max = 2, Min = 2, HelpText = nameof(Resource.HelpTextAddRepo), ResourceType = typeof(Resource))]
         public IEnumerable<string>? AddRepoOption { get; set; }
 
         [Usage(ApplicationAlias = ToolAlias)]
@@ -30,9 +31,9 @@ namespace AVOne.Tool.Commands
         {
             get
             {
-                yield return new Example("添加仓库", new PluginRepo { AddRepoOption = new string[] { "Jellyfin Stable", "https://repo.jellyfin.org/releases/plugin/manifest-stable.json" } });
-                yield return new Example("显示插件仓库中的插件所有插件", new PluginRepo { Search = true });
-                yield return new Example("显示插件仓库列表", new PluginRepo { List = true });
+                yield return new Example(Resource.HelpTextAddRepo, new PluginRepo { AddRepoOption = new string[] { "Jellyfin Stable", "https://repo.jellyfin.org/releases/plugin/manifest-stable.json" } });
+                yield return new Example(Resource.HelpTextShowAvaliablePlugins, new PluginRepo { Search = true });
+                yield return new Example(Resource.HelpTextShowPluginRepositoryList, new PluginRepo { List = true });
             }
         }
 
@@ -65,6 +66,9 @@ namespace AVOne.Tool.Commands
             var opts = AddRepoOption?.ToArray();
             var name = opts?[0];
             var path = opts?[1];
+            ArgumentException.ThrowIfNullOrEmpty(path, nameof(path));
+            ArgumentException.ThrowIfNullOrEmpty(name, nameof(name));
+
             if (repos.Any(e => e.Name == name))
             {
                 Cli.Error("Repo Name '{0}' already exists", name);

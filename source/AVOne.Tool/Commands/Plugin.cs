@@ -1,5 +1,6 @@
 ﻿// Copyright (c) 2023 Weloveloli Contributors. All rights reserved.
 // See License in the project root for license information.
+#nullable disable
 
 namespace AVOne.Tool.Commands
 {
@@ -15,7 +16,7 @@ namespace AVOne.Tool.Commands
     using Microsoft.Extensions.Logging;
     using Spectre.Console;
 
-    [Verb("plugin", false, HelpText = "HelpTextVerbPlugin", ResourceType = typeof(Resource))]
+    [Verb("plugin", false, HelpText = nameof(Resource.HelpTextVerbPlugin), ResourceType = typeof(Resource))]
     internal class Plugin : BaseHostOptions
     {
         private IPluginManager pluginManager;
@@ -23,10 +24,10 @@ namespace AVOne.Tool.Commands
         private IInstallationManager installationManager;
         private ILogger<Plugin> _logger;
 
-        [Option('l', "list", Required = false, Group = "action", HelpText = "显示插件列表")]
+        [Option('l', "list", Required = false, Group = "action", HelpText = nameof(Resource.HelpTextShowInstalledPlugins), ResourceType = typeof(Resource))]
         public bool List { get; set; }
 
-        [Option('a', "add", Required = false, Group = "action", HelpText = "安装插件")]
+        [Option('i', "ins", Required = false, Group = "action", HelpText = nameof(Resource.HelpTextInstallPlugin), ResourceType = typeof(Resource))]
         public string AddPluginOption { get; set; }
 
         [Usage(ApplicationAlias = ToolAlias)]
@@ -34,7 +35,7 @@ namespace AVOne.Tool.Commands
         {
             get
             {
-                yield return new Example("安装插件", new Plugin { AddPluginOption = "MetaTube@2022.1218.1400.0" });
+                yield return new Example(nameof(Resource.HelpTextInstallPlugin), new Plugin { AddPluginOption = "MetaTube@2022.1218.1400.0" });
             }
         }
 
@@ -73,27 +74,30 @@ namespace AVOne.Tool.Commands
 
         private async Task InstallPlugin(string name, string version, CancellationToken cancellationToken)
         {
+
             // Asynchronous
             await AnsiConsole.Status()
-                .StartAsync("搜索插件...", async ctx =>
+                .StartAsync(Resource.InfoSearchingPlugins, async ctx =>
                 {
-                    var packages = await installationManager.GetAvailablePackages(cancellationToken);
-                    var packagesToInstall = installationManager.GetCompatibleVersions(packages, name: name);
+                    var packages = await installationManager?.GetAvailablePackages(cancellationToken);
+                    var packagesToInstall = installationManager?.GetCompatibleVersions(packages, name: name);
                     if (version != "latest")
                     {
-                        packagesToInstall = installationManager.GetCompatibleVersions(packages, name: name, specificVersion: Version.Parse(version));
+                        packagesToInstall = installationManager?.GetCompatibleVersions(packages, name: name, specificVersion: Version.Parse(version));
                     }
                     var package = packagesToInstall.FirstOrDefault();
                     if (package is null)
                     {
-                        Cli.Error("无法安装插件 {0}", AddPluginOption);
+                        Cli.Error(Resource.ErrorCannotInstallPlugins, AddPluginOption);
                         return;
                     }
 
                     try
                     {
-                        ctx.Status(string.Format("下载安装插件 '{0}'",AddPluginOption));
+                        ctx.Status(string.Format(Resource.InfoDownloadingPlugin, AddPluginOption));
                         await installationManager.InstallPackage(package, cancellationToken).ConfigureAwait(false);
+                        ctx.Status(string.Format(Resource.SuccessDownloadPlugin, AddPluginOption));
+                        Cli.Success(Resource.SuccessDownloadPlugin, AddPluginOption);
                     }
                     catch (OperationCanceledException)
                     {
@@ -105,18 +109,17 @@ namespace AVOne.Tool.Commands
                     }
                     catch (HttpRequestException ex)
                     {
-                        _logger.LogError(ex, "Error downloading {0}", package.Name);
+                        _logger.LogError(ex, Resource.ErrorCannotInstallPlugins, package.Name);
                     }
                     catch (IOException ex)
                     {
-                        _logger.LogError(ex, "Error updating {0}", package.Name);
+                        _logger.LogError(ex, Resource.ErrorCannotInstallPlugins, package.Name);
                     }
                     catch (InvalidDataException ex)
                     {
-                        _logger.LogError(ex, "Error updating {0}", package.Name);
+                        _logger.LogError(ex, Resource.ErrorCannotInstallPlugins, package.Name);
                     }
-                    ctx.Status(string.Format("安装插件成功 '{0}'", AddPluginOption));
-                    Cli.Success("安装插件 {0} 成功", AddPluginOption);
+
                 });
         }
     }
