@@ -4,6 +4,8 @@
 namespace AVOne.Tools.Migrations
 {
     using AVOne.Tool;
+    using AVOne.Tool.Migrations.PreStartupRoutines;
+    using AVOne.Tools.Migrations.Routines;
     using Emby.Server.Implementations;
     using Emby.Server.Implementations.Serialization;
     using Jellyfin.Server.Migrations;
@@ -24,7 +26,8 @@ namespace AVOne.Tools.Migrations
         /// </summary>
         private static readonly Type[] _preStartupMigrationTypes =
         {
-            typeof(CreateNetworkConfiguration)
+            typeof(CreateNetworkConfiguration),
+            typeof(CreateAVOneConfiguration)
         };
 
         /// <summary>
@@ -32,16 +35,17 @@ namespace AVOne.Tools.Migrations
         /// </summary>
         private static readonly Type[] _migrationTypes =
         {
-            typeof(DisableTranscodingThrottling),
-            typeof(CreateUserLoggingConfigFile),
-            typeof(MigrateActivityLogDb),
-            typeof(RemoveDuplicateExtras),
-            typeof(AddDefaultPluginRepository),
-            typeof(MigrateUserDb),
+            //typeof(DisableTranscodingThrottling),
+            //typeof(CreateUserLoggingConfigFile),
+            //typeof(MigrateActivityLogDb),
+            //typeof(RemoveDuplicateExtras),
+            //typeof(AddDefaultPluginRepository),
+            //typeof(MigrateUserDb),
             typeof(ReaddDefaultPluginRepository),
-            typeof(MigrateDisplayPreferencesDb),
-            typeof(RemoveDownloadImagesInAdvance),
-            typeof(MigrateAuthenticationDb)
+            typeof(AddDefaultPluginRepositoryV2),
+            //typeof(MigrateDisplayPreferencesDb),
+            //typeof(RemoveDownloadImagesInAdvance),
+            //typeof(MigrateAuthenticationDb)
         };
 
         /// <summary>

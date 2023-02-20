@@ -3,44 +3,64 @@
 
 namespace AVOne.Tool.Commands
 {
-    using System;
     using System.Threading;
     using System.Threading.Tasks;
+    using AVOne.Impl.Facade;
+    using AVOne.Impl.Models;
     using AVOne.Tool.Resources;
     using CommandLine;
-    using MediaBrowser.Controller.Entities;
-    using MediaBrowser.Controller.Library;
-    using MediaBrowser.Controller.Providers;
-    using MediaBrowser.Model.Entities;
+    using Spectre.Console;
+    using Spectre.Console.Rendering;
 
     [Verb("scan", false, HelpText = "HelpTextVerbScan", ResourceType = typeof(Resource))]
     internal class Scan : BaseHostOptions
     {
+        [Option('m', "metadata", Required = false, HelpText = nameof(Resource.HelpTextShowInstalledPlugins), ResourceType = typeof(Resource))]
+        public bool Metadata { get; set; }
+
         [Value(0, Required = true, HelpText = "HelpTextDirectory")]
         public string? Dir { get; set; }
 
         internal override Task ExecuteAsync(ConsoleAppHost host, CancellationToken token)
         {
-            return Task.Run(() => ScanFolder(host), token);
+            return ScanFolder(host, token);
         }
 
-        private void ScanFolder(ConsoleAppHost host)
+        private async Task ScanFolder(ConsoleAppHost host, CancellationToken token)
         {
             if (string.IsNullOrEmpty(Dir) || !Directory.Exists(Dir))
             {
                 return;
             }
+            var facade = host.Resolve<IMetaDataFacade>();
+            var items = await facade.ResolveAsMovies(dir: Dir ,token);
+            items = items.ToList();
+            Cli.PrintTableEnum(items, true,
+                ("Name", (MoveMetaDataItem e) => new Text(e.Name)),
+                ("HasMetaData", (MoveMetaDataItem e) => new Text(e.HasMetaData.ToString())),
+                ("MetaData", GenerateRenderable)
+                );
+        }
 
-            var fullpath = Path.GetFullPath(Dir);
-            var libManager = host.Resolve<ILibraryManager>();
-            var directoryService = host.Resolve<IDirectoryService>();
-            var folder = new Folder { Path = fullpath };
-            var files = directoryService.GetFiles(fullpath);
-            var items = libManager.ResolvePaths(files, directoryService, folder, default, CollectionType.Movies);
+        public IRenderable GenerateRenderable(MoveMetaDataItem item)
+        {
+            if (!item.HasMetaData)
+            {
+                return new Text(string.Empty);
+            }
+            var table = new Table();
 
-            Cli.PrintTable(items, true, "Name", "Path");
-            Console.WriteLine();
-            return;
+            table.AddColumn("Name");
+            table.AddColumn("Value");
+            table.AddRow(new Text("Overview"), new Text(item.Result.Overview));
+            table.AddRow(new Text("Genres"), new Text(string.Join(",", item.Result.Genres)));
+            var image = item.Result.ImageInfos
+                .Where(e => e.Type == MediaBrowser.Model.Entities.ImageType.Primary)
+                .FirstOrDefault();
+            Renderable imageRender = File.Exists(image.Path) ? new CanvasImage(image.Path) : new Text(image?.Path ?? string.Empty);
+            table.AddRow(new Text("Image"), imageRender);
+            return table;
         }
     }
 }
+

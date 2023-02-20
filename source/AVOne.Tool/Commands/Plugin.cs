@@ -64,7 +64,7 @@ namespace AVOne.Tool.Commands
         private void ListPlugins()
         {
             var plugins = pluginManager.Plugins;
-            Cli.PrintTable(plugins, true,
+            Cli.PrintTableEnum(plugins, true,
                 Cli.TextDef<LocalPlugin>(nameof(LocalPlugin.Id)),
                 Cli.TextDef<LocalPlugin>(nameof(LocalPlugin.Name)),
                 Cli.TextDef<LocalPlugin>(nameof(LocalPlugin.Version)),

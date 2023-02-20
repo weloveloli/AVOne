@@ -23,6 +23,7 @@
         <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
         <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
         <PackageReference Include="Spectre.Console" Version="0.46.0" />
+        <PackageReference Include="Spectre.Console.ImageSharp" Version="0.46.0" />
     </ItemGroup> 
     <ItemGroup>
         <ProjectReference Include="..\AVOne.Impl\AVOne.Impl.csproj" />

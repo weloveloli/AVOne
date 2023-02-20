@@ -183,6 +183,9 @@
   <data name="InfoDownloadingPlugin" xml:space="preserve">
     <value>Downloading and install plugin '{0}'</value>
   </data>
+  <data name="InfoFetchMetaData" xml:space="preserve">
+    <value>Scaning media metadata.</value>
+  </data>
   <data name="InfoSearchingPlugins" xml:space="preserve">
     <value>Searching plugin...</value>
   </data>

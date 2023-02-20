@@ -152,7 +152,7 @@ namespace AVOne.Tool
             var table = GetTable<T>(items, addNo, propertyPaths);
             AnsiConsole.Write(table);
         }
-        internal static void PrintTable<T>(IEnumerable<T> items, bool addNo = false, params (string, Func<T, IRenderable>)[] columNamesDef)
+        internal static void PrintTableEnum<T>(IEnumerable<T> items, bool addNo = false, params (string, Func<T, IRenderable>)[] columNamesDef)
         {
             var table = GetTable<T>(items, columNamesDef.Select(e => e.Item1), columNamesDef.Select(e => e.Item2), addNo);
             AnsiConsole.Write(table);

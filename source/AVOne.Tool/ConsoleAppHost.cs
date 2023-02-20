@@ -11,6 +11,7 @@ namespace AVOne.Tool
     using System.Net.Mime;
     using System.Reflection;
     using System.Text;
+    using AVOne.Impl.Configuration;
     using Emby.Server.Implementations;
     using Emby.Server.Implementations.Session;
     using Jellyfin.Api.WebSocketListeners;
@@ -154,7 +155,10 @@ namespace AVOne.Tool
         /// <inheritdoc />
         protected override IEnumerable<Assembly> GetAssembliesWithPartsInternal()
         {
-            // Jellyfin.Server
+            // AVOne.Impl
+            yield return typeof(AVOneConfigurationFactory).Assembly;
+
+            // AVOne.Tool
             yield return typeof(ConsoleAppHost).Assembly;
 
             // Jellyfin.Server.Implementations

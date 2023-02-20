@@ -180,6 +180,9 @@
   <data name="InfoDownloadingPlugin" xml:space="preserve">
     <value>正在下载安装插件 '{0}'</value>
   </data>
+  <data name="InfoFetchMetaData" xml:space="preserve">
+    <value>扫描媒体元数据.</value>
+  </data>
   <data name="InfoSearchingPlugins" xml:space="preserve">
     <value>搜索插件...</value>
   </data>
