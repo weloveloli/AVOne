@@ -17,7 +17,7 @@
     <PackageTags>AVOne</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <PackageLicenseExpression>GPL-2.0-or-later</PackageLicenseExpression>
+    <PackageLicenseExpression>GPL-3.0-only</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/weloveloli/AVOne</PackageProjectUrl>
   </PropertyGroup>
   <ItemGroup>

@@ -33,8 +33,7 @@ namespace AVOne.Tool.Commands
                 return;
             }
             var facade = host.Resolve<IMetaDataFacade>();
-            var items = await facade.ResolveAsMovies(dir: Dir ,token);
-            items = items.ToList();
+            var items = await facade.ResolveAsMovies(dir: Dir, token);
             Cli.PrintTableEnum(items, true,
                 ("Name", (MoveMetaDataItem e) => new Text(e.Name)),
                 ("HasMetaData", (MoveMetaDataItem e) => new Text(e.HasMetaData.ToString())),
@@ -57,7 +56,7 @@ namespace AVOne.Tool.Commands
             var image = item.Result.ImageInfos
                 .Where(e => e.Type == MediaBrowser.Model.Entities.ImageType.Primary)
                 .FirstOrDefault();
-            Renderable imageRender = File.Exists(image.Path) ? new CanvasImage(image.Path) : new Text(image?.Path ?? string.Empty);
+            Renderable imageRender = File.Exists(image?.Path) ? new CanvasImage(image.Path) : new Text(image?.Path ?? string.Empty);
             table.AddRow(new Text("Image"), imageRender);
             return table;
         }
