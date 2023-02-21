@@ -17,5 +17,13 @@ namespace AVOne.Providers
         IEnumerable<IMetadataProvider<T>> GetMetadataProviders<T>(BaseItem item) where T : BaseItem;
         IVideoResolverProvider GetVideoResolverProvider();
         INamingOptionProvider GetNamingOptionProvider();
+
+        /// <summary>
+        /// Gets the image providers for the provided item.
+        /// </summary>
+        /// <param name="item">The item.</param>
+        /// <param name="refreshOptions">The image refresh options.</param>
+        /// <returns>The image providers for the item.</returns>
+        IEnumerable<IImageProvider> GetImageProviders(BaseItem item);
     }
 }

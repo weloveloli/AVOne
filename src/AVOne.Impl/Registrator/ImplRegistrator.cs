@@ -25,7 +25,7 @@ namespace AVOne.Impl.Registrator
             serviceCollection.AddSingleton<ILibraryManager, LibraryManager>();
             serviceCollection.AddSingleton<IFileSystem, ManagedFileSystem>();
             serviceCollection.AddSingleton<IDirectoryService, DirectoryService>();
-            serviceCollection.AddSingleton<IToolFacade, ToolFacade>();
+            serviceCollection.AddSingleton<IMetaDataFacade, MetaDataFacade>();
 
         }
 

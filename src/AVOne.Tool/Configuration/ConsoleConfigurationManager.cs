@@ -19,6 +19,11 @@ namespace AVOne.Tool.Configuration
                 this.SaveConfiguration();
             }
         }
+        /// <summary>
+        /// Gets the configuration.
+        /// </summary>
+        /// <value>The configuration.</value>
+        public ConsoleConfiguration Configuration => (ConsoleConfiguration)CommonConfiguration;
 
         protected override Type ConfigurationType => typeof(ConsoleConfiguration);
     }

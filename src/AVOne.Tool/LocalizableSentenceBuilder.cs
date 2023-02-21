@@ -82,6 +82,11 @@ namespace AVOne.Tool
                         case ErrorType.SetValueExceptionError:
                             var setValueError = (SetValueExceptionError)error;
                             return string.Format(Resource.SentenceSetValueExceptionError, setValueError.NameInfo.NameText, setValueError.Exception.Message);
+                        case ErrorType.MissingGroupOptionError:
+                            var missingGroupOptionError = (MissingGroupOptionError)error;
+                            return string.Format(Resource.SentenceMissingGroupOptionError, missingGroupOptionError.Group);
+                        default:
+                            return error.Tag.ToString();
                     }
                     throw new InvalidOperationException();
                 };

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2023 Weloveloli Contributors. All rights reserved.
+﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // See License in the project root for license information.
 
 namespace AVOne.Tool
@@ -10,6 +10,7 @@ namespace AVOne.Tool
     using System.Threading.Tasks;
     using AVOne.Tool.Commands;
     using AVOne.Tool.Configuration;
+    using AVOne.Tools.Migrations;
     using MediaBrowser.Model.IO;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Hosting;
@@ -139,6 +140,7 @@ namespace AVOne.Tool
             // Re-use the host service provider in the app host since ASP.NET doesn't allow a custom service collection.
             appHost.ServiceProvider = host.Services;
             appHost.PostBuildService();
+            MigrationRunner.Run(appHost, LoggerFactory);
             return host;
         }
 
@@ -286,7 +288,7 @@ namespace AVOne.Tool
                 Environment.ExitCode = 128 + 15;
                 Shutdown();
             };
-            //MigrationRunner.RunPreStartup(appPaths, LoggerFactory);
+            MigrationRunner.RunPreStartup(appPaths, LoggerFactory);
             return new ConsoleAppHost(option, LoggerFactory, TokenSource, appPaths);
         }
 

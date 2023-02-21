@@ -1,44 +1,69 @@
-﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
+﻿// Copyright (c) 2023 Weloveloli Contributors. All rights reserved.
 // See License in the project root for license information.
 
 namespace AVOne.Tool.Commands
 {
     using System.Threading;
     using System.Threading.Tasks;
-    using AVOne.Common.Enum;
+    using AVOne.Enum;
+    using AVOne.Impl.Facade;
+    using AVOne.Impl.Models;
     using AVOne.Tool.Resources;
     using CommandLine;
-    using Furion.FriendlyException;
+    using Spectre.Console;
+    using Spectre.Console.Rendering;
 
-    [Verb("scan", false, new string[] { "scan" }, HelpText = "HelpTextVerbScan", ResourceType = typeof(Resource))]
+    [Verb("scan", false, HelpText = "HelpTextVerbScan", ResourceType = typeof(Resource))]
     internal class Scan : BaseHostOptions
     {
-        [Value(0, Required = true, HelpText = "HelpTextDirectory", ResourceType = typeof(Resource))]
+        [Option('s', "save-metadata", Required = false, HelpText = nameof(Resource.HelpTextSaveMetadata), ResourceType = typeof(Resource))]
+        public bool SaveMetadata { get; set; }
+
+        [Option('d', "dir", Group = "target", Required = false, HelpText = nameof(Resource.HelpTextScanDir), ResourceType = typeof(Resource))]
         public string? Dir { get; set; }
 
-        public override async Task<int> ExecuteAsync(ConsoleAppHost host, CancellationToken token)
+        [Option('f', "file", Group = "target", Required = false, HelpText = nameof(Resource.HelpTextScanPath), ResourceType = typeof(Resource))]
+        public string? FilePath { get; set; }
+
+        public override Task ExecuteAsync(ConsoleAppHost host, CancellationToken token)
         {
-            throw Oops.Oh(ErrorCodes.ProviderNotAvailable, "Hello");
-            //if (string.IsNullOrEmpty(Dir) || !Directory.Exists(Dir))
-            //{
-            //    Console.Error.WriteLine(Resource.ErrorDirectoryNotExists);
-            //    return -1;
-            //}
+            return ScanFolder(host, token);
+        }
 
-            //var fullpath = Path.GetFullPath(Dir);
-            //var libManager = host.Resolve<ILibraryManager>();
-            //var directoryService = host.Resolve<IDirectoryService>();
-            //var folder = new Folder { Path = fullpath };
-            //var files = directoryService.GetFiles(fullpath);
-            //var items = libManager.ResolvePaths(files, directoryService, folder, default, CollectionType.PornMovies);
-            //var rows = items.OfType<PornMovie>().Select(e => new BaseItemRow { Name = e.Name, Path = e.Path });
+        private async Task ScanFolder(ConsoleAppHost host, CancellationToken token)
+        {
+            if (string.IsNullOrEmpty(Dir) || !Directory.Exists(Dir))
+            {
+                return;
+            }
+            var facade = host.Resolve<IMetaDataFacade>();
+            var items = await facade.ResolveAsMovies(dir: Dir, token);
+            Cli.PrintTableEnum(items, true,
+                ("Name", (MoveMetaDataItem e) => new Text(e.Name)),
+                ("HasMetaData", (MoveMetaDataItem e) => new Text(e.HasMetaData.ToString())),
+                ("MetaData", GenerateRenderable)
+                );
+        }
 
-            //ConsoleTable
-            //    .From<BaseItemRow>(rows)
-            //    .Configure(o => o.NumberAlignment = Alignment.Left)
-            //    .Write(Format.Minimal);
-            return 0;
+        public IRenderable GenerateRenderable(MoveMetaDataItem item)
+        {
+            if (!item.HasMetaData)
+            {
+                return new Text(string.Empty);
+            }
+            var table = new Table();
 
+            table.AddColumn("Name");
+            table.AddColumn("Value");
+            table.AddRow(new Text("Overview"), new Text(item.Result.Overview));
+            table.AddRow(new Text("Genres"), new Text(string.Join(",", item.Result.Genres)));
+            var image = item.Result.ImageInfos
+                .Where(e => e.Type == ImageType.Primary)
+                .FirstOrDefault();
+            Renderable imageRender = File.Exists(image?.Path) ? new CanvasImage(image.Path) : new Text(image?.Path ?? string.Empty);
+            table.AddRow(new Text("Image"), imageRender);
+            return table;
         }
     }
 }
+

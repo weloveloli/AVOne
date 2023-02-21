@@ -168,7 +168,7 @@ namespace AVOne.Providers.Jellyfin.Base
                 Access = FileAccess.Write,
                 Share = FileShare.None,
                 PreallocationSize = stream.Length,
-                Options = FileOptions.Asynchronous
+                Options = System.IO.FileOptions.Asynchronous
             };
 
             var filestream = new FileStream(path, fileStreamOptions);

@@ -16,6 +16,23 @@ namespace AVOne.Models.Item
 
     public abstract class BaseItem : IHasProviderIds, IHasLookupInfo<ItemLookupInfo>
     {
+        protected BaseItem()
+        {
+            Tags = Array.Empty<string>();
+            Genres = Array.Empty<string>();
+            Studios = Array.Empty<string>();
+            ProviderIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            ImageInfos = Array.Empty<ItemImageInfo>();
+            ProductionLocations = Array.Empty<string>();
+            RemoteTrailers = Array.Empty<MediaUrl>();
+        }
+
+        /// <summary>
+        /// The supported image extensions.
+        /// </summary>
+        public static readonly string[] SupportedImageExtensions
+            = new[] { ".png", ".jpg", ".jpeg", ".tbn", ".gif" };
+
         public static IFileSystem FileSystem { get; set; }
         /// <summary>
         /// Gets or sets the logger.
@@ -244,9 +261,36 @@ namespace AVOne.Models.Item
         [JsonIgnore]
         public Guid ParentId { get; set; }
 
+        [JsonIgnore]
+        public bool IsFileProtocol => true;
+
+        [JsonIgnore]
+        public virtual string FileNameWithoutExtension
+        {
+            get
+            {
+                if (IsFileProtocol)
+                {
+                    return System.IO.Path.GetFileNameWithoutExtension(Path);
+                }
+
+                return null;
+            }
+        }
+
         public void SetParent(Folder parent)
         {
             ParentId = parent == null ? Guid.Empty : parent.Id;
+        }
+
+        public void AddImage(ItemImageInfo image)
+        {
+            var current = ImageInfos;
+            var currentCount = current.Length;
+            var newArr = new ItemImageInfo[currentCount + 1];
+            current.CopyTo(newArr, 0);
+            newArr[currentCount] = image;
+            ImageInfos = newArr;
         }
     }
 }

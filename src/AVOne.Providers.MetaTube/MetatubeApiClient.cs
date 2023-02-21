@@ -121,7 +121,6 @@ namespace AVOne.Providers.Metatube
         public async Task<HttpResponseMessage> GetImageResponse(string url, CancellationToken cancellationToken)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, url);
-            request.Headers.Add("User-Agent", _metaTubeConfiguration.DefaultUserAgent);
             var response = await _httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
             return response;
 
@@ -200,7 +199,6 @@ namespace AVOne.Providers.Metatube
 
             // Add General Headers.
             request.Headers.Add("Accept", "application/json");
-            request.Headers.Add("User-Agent", _metaTubeConfiguration.DefaultUserAgent);
 
             // Set API Authorization Token.
             if (requireAuth && !string.IsNullOrWhiteSpace(_metaTubeConfiguration.Token))

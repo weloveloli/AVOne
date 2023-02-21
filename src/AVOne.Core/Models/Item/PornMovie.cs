@@ -29,6 +29,6 @@ namespace AVOne.Models.Item
             }
         }
 
-        PornMovieInfo IHasLookupInfo<PornMovieInfo>.GetLookupInfo() => PornMovieInfo;
+        public override PornMovieInfo GetLookupInfo() => PornMovieInfo;
     }
 }

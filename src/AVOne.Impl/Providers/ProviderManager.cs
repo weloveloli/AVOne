@@ -11,7 +11,7 @@ namespace AVOne.Impl.Providers
 
     public class ProviderManager : IProviderManager
     {
-        private IImageProvider[] ImageProviders { get; set; }
+        private IImageProvider[] _imageProviders = Array.Empty<IImageProvider>();
         private IMetadataProvider[] _metadataProviders = Array.Empty<IMetadataProvider>();
         private INamingOptionProvider[] _namingOptionProviders = Array.Empty<INamingOptionProvider>();
         private IVideoResolverProvider[] _nameResolverProviders = Array.Empty<IVideoResolverProvider>();
@@ -24,7 +24,7 @@ namespace AVOne.Impl.Providers
             _logger = logger;
             _configurationManager = configurationManager;
             _configuration = configurationManager.CommonConfiguration;
-            ImageProviders = Array.Empty<IImageProvider>();
+            _imageProviders = Array.Empty<IImageProvider>();
         }
 
         /// <inheritdoc/>
@@ -34,7 +34,7 @@ namespace AVOne.Impl.Providers
             IEnumerable<INamingOptionProvider> nameOptionProviders,
             IEnumerable<IVideoResolverProvider> resolverProviders)
         {
-            ImageProviders = imageProviders.ToArray();
+            _imageProviders = imageProviders.ToArray();
             _metadataProviders = metadataProviders.ToArray();
             _namingOptionProviders = nameOptionProviders.ToArray();
             _nameResolverProviders = resolverProviders.ToArray();
@@ -101,6 +101,32 @@ namespace AVOne.Impl.Providers
                 return candidates.OfType<T>().Where(e => e.Name == name)
                 .OrderBy(e => GetDefaultOrder(e)).First();
             }
+        }
+
+        public IEnumerable<IImageProvider> GetImageProviders(BaseItem item)
+        {
+            return _imageProviders.Where(i => CanRefreshImages(i, item))
+                .OrderBy(GetDefaultOrder);
+        }
+
+        private bool CanRefreshImages(
+           IImageProvider provider,
+           BaseItem item)
+        {
+            try
+            {
+                if (!provider.Supports(item))
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "{ProviderName} failed in Supports for type {ItemType} at {ItemPath}", provider.GetType().Name, item.GetType().Name, item.Path);
+                return false;
+            }
+
+            return true;
         }
     }
 }

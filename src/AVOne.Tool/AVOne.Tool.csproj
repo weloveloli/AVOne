@@ -10,6 +10,11 @@
     <IncludeSymbols>False</IncludeSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Helper\**" />
+    <EmbeddedResource Remove="Helper\**" />
+    <None Remove="Helper\**" />
+  </ItemGroup>
+  <ItemGroup>
     <None Remove="Resources\Configuration\logging.json" />
   </ItemGroup>
   <ItemGroup>
@@ -51,11 +56,6 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-
-
-  <ItemGroup>
-    <Folder Include="Helper\" />
   </ItemGroup>
 
 </Project>

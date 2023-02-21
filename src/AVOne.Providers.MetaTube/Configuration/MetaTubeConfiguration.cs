@@ -8,11 +8,20 @@ namespace AVOne.Providers.MetaTube.Configuration
 
     public class MetaTubeConfiguration
     {
+        #region Image
+
+        public double PrimaryImageRatio { get; set; } = -1;
+
+        public int DefaultImageQuality { get; set; } = 90;
+
+        #endregion
+
+        #region General
+
         public string Server { get; set; } = Environment.GetEnvironmentVariable("MetaTubeServerUrl");
-        public int DefaultImageQuality { get; set; } = -1;
-        public double PrimaryImageRatio { get; set; } = 90;
-        public string DefaultUserAgent => $"AVOne";
+
         public string Token { get; set; } = string.Empty;
+
         public bool EnableCollections { get; set; } = false;
 
         public bool EnableDirectors { get; set; } = true;
@@ -22,6 +31,24 @@ namespace AVOne.Providers.MetaTube.Configuration
         public bool EnableTrailers { get; set; } = false;
 
         public bool EnableRealActorNames { get; set; } = false;
+
+        #endregion
+
+        #region Template
+
+        public bool EnableTemplate { get; set; } = false;
+
+        public string NameTemplate { get; set; } = DefaultNameTemplate;
+
+        public string TaglineTemplate { get; set; } = DefaultTaglineTemplate;
+
+        public static string DefaultNameTemplate => "{number} {title}";
+
+        public static string DefaultTaglineTemplate => "配信開始日 {date}";
+
+        #endregion
+
+        #region Provider
 
         public bool EnableMovieProviderFilter { get; set; } = false;
 
@@ -38,6 +65,10 @@ namespace AVOne.Providers.MetaTube.Configuration
         }
 
         private List<string> _movieProviderFilter;
+
+        #endregion
+
+        #region Substitution
 
         public bool EnableTitleSubstitution { get; set; } = false;
 
@@ -83,18 +114,6 @@ namespace AVOne.Providers.MetaTube.Configuration
         }
 
         private SubstitutionTable _genreSubstitutionTable;
-
-        #region Template
-
-        public bool EnableTemplate { get; set; } = false;
-
-        public string NameTemplate { get; set; } = DefaultNameTemplate;
-
-        public string TaglineTemplate { get; set; } = DefaultTaglineTemplate;
-
-        public static string DefaultNameTemplate => "{number} {title}";
-
-        public static string DefaultTaglineTemplate => "配信開始日 {date}";
 
         #endregion
     }

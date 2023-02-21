@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2023 Weloveloli Contributors. All rights reserved.
+﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // See License in the project root for license information.
 
 using System.Reflection;
@@ -33,8 +33,8 @@ internal class Program
                 {
                     var type = option.GetType();
                     var cmdName = type.GetCustomAttribute<VerbAttribute>()?.Name ?? type.Name;
-                    StartupHelpers.Logger.LogError(e, "Command {0} execute error", cmdName);
-                    Cli.Exception(e, $"Command {cmdName} execute error");
+                    StartupHelpers.Logger.LogError(e, "Command {0} execute error due to Exception", cmdName);
+                    Cli.Info("See error logs in {0}", appPaths.LogDirectoryPath);
                     Environment.Exit(1);
                 }
             }

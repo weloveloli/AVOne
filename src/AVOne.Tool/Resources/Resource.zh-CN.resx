@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ErrorCannotInstallPlugins" xml:space="preserve">
+    <value>无法安装插件 '{0}'</value>
+  </data>
   <data name="ErrorDir" xml:space="preserve">
     <value>路径为空或者路径不存在.</value>
   </data>
@@ -128,6 +131,9 @@
   </data>
   <data name="ExamplesNormalScenario" xml:space="preserve">
     <value>示例</value>
+  </data>
+  <data name="HelpTextAddRepo" xml:space="preserve">
+    <value>添加插件仓库.</value>
   </data>
   <data name="HelpTextCollectionType" xml:space="preserve">
     <value>媒体类型, 可以为 PornMovie, 默认值为PornMovie.</value>
@@ -144,17 +150,50 @@
   <data name="HelpTextFileName" xml:space="preserve">
     <value>文件名</value>
   </data>
+  <data name="HelpTextInstallPlugin" xml:space="preserve">
+    <value>安装插件.</value>
+  </data>
   <data name="HelpTextQuiet" xml:space="preserve">
     <value>不再显示摘要信息</value>
   </data>
+  <data name="HelpTextSaveMetadata" xml:space="preserve">
+    <value>是否将元数据保存至本地. </value>
+  </data>
+  <data name="HelpTextScanDir" xml:space="preserve">
+    <value>待扫描的文件夹路劲.</value>
+  </data>
+  <data name="HelpTextScanPath" xml:space="preserve">
+    <value>待扫描的文件路劲.</value>
+  </data>
+  <data name="HelpTextShowInstalledPlugins" xml:space="preserve">
+    <value>显示已经安装的插件.</value>
+  </data>
+  <data name="HelpTextShowPluginRepositoryList" xml:space="preserve">
+    <value>显示插件仓库列表.</value>
+  </data>
+  <data name="HelpTextShowPlugins" xml:space="preserve">
+    <value>显示插件仓库中的插件所有插件.</value>
+  </data>
   <data name="HelpTextVerbOrganize" xml:space="preserve">
     <value>扫描整理指定文件下的视频文件.</value>
+  </data>
+  <data name="HelpTextVerbPluginRepo" xml:space="preserve">
+    <value>管理插件仓库.</value>
   </data>
   <data name="HelpTextVerbPrintMetadata" xml:space="preserve">
     <value>根据文件打印元数据信息</value>
   </data>
   <data name="HelpTextVerbScan" xml:space="preserve">
     <value>扫描指定文件下的视频文件，并进行整理结果预览.</value>
+  </data>
+  <data name="InfoDownloadingPlugin" xml:space="preserve">
+    <value>正在下载安装插件 '{0}'</value>
+  </data>
+  <data name="InfoFetchMetaData" xml:space="preserve">
+    <value>扫描媒体元数据.</value>
+  </data>
+  <data name="InfoSearchingPlugins" xml:space="preserve">
+    <value>搜索插件...</value>
   </data>
   <data name="InvalidMoviePath" xml:space="preserve">
     <value>指定文件路劲'{0}' 不是一个合法的媒体路径.</value>
@@ -179,6 +218,9 @@
   </data>
   <data name="SentenceHelpCommandTextVerb" xml:space="preserve">
     <value>显示指定命令帮助信息.</value>
+  </data>
+  <data name="SentenceMissingGroupOptionError" xml:space="preserve">
+    <value>必须选择选项组'{0}'中一个选项.</value>
   </data>
   <data name="SentenceMissingRequiredOptionError" xml:space="preserve">
     <value>缺少必填选项 '{0}'.</value>
@@ -218,5 +260,8 @@
   </data>
   <data name="SentenceVersionCommandText" xml:space="preserve">
     <value>显示版本信息.</value>
+  </data>
+  <data name="SuccessDownloadPlugin" xml:space="preserve">
+    <value>安装插件成功 '{0}'</value>
   </data>
 </root>

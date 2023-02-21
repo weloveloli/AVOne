@@ -28,7 +28,7 @@ namespace AVOne.Tool.Commands
 
         }
 
-        public abstract Task<int> ExecuteAsync(ConsoleAppHost host, CancellationToken token);
+        public abstract Task ExecuteAsync(ConsoleAppHost host, CancellationToken token);
 
         /// <summary>
         /// Gets the command line options as a dictionary that can be used in the .NET configuration system.

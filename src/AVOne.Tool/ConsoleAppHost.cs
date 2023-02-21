@@ -11,6 +11,7 @@ namespace AVOne.Tool
     using System.Reflection;
     using System.Threading.Tasks;
     using AVOne.Abstraction;
+    using AVOne.Common.Migrations;
     using AVOne.Configuration;
     using AVOne.Impl.Extensions;
     using AVOne.Impl.IO;
@@ -86,11 +87,6 @@ namespace AVOne.Tool
             ConfigurationManager = new ConsoleConfigurationManager(path, loggerFactory, _xmlSerializer, _fileSystem);
         }
 
-        public async Task<int> ExecuteCmd()
-        {
-            return await _option.ExecuteAsync(this, _tokenSource.Token).ConfigureAwait(false);
-        }
-
         /// <summary>
         /// Discovers the types.
         /// </summary>
@@ -142,7 +138,7 @@ namespace AVOne.Tool
         {
             // Include composable parts in the AVOne.Impl assembly
             yield return typeof(ImplRegistrator).Assembly;
-            //yield return typeof(OfficialLocalMetadataProvider).Assembly;
+            yield return typeof(MigrationsFactory).Assembly;
             yield return typeof(MetaTubeServiceRegistrator).Assembly;
             yield return typeof(JellyfinNamingOptionProvider).Assembly;
         }
