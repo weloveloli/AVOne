@@ -1,15 +1,15 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
-// Licensed under the Apache V2.0 License.
+// See License in the project root for license information.
 
 namespace AVOne.Impl.IO.Tests
 {
-    using Xunit;
+    using System.IO;
     using AutoFixture;
-    using Microsoft.Extensions.Logging;
-    using Moq;
     using AVOne.Configuration;
     using AVOne.IO;
-    using System.IO;
+    using Microsoft.Extensions.Logging;
+    using Moq;
+    using Xunit;
 
     public class DirectoryServiceTests : BaseTestCase
     {

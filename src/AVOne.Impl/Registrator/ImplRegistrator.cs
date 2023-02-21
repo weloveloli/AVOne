@@ -1,5 +1,5 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
-// Licensed under the Apache V2.0 License.
+// See License in the project root for license information.
 
 namespace AVOne.Impl.Registrator
 {
@@ -44,6 +44,8 @@ namespace AVOne.Impl.Registrator
             host.Resolve<ILibraryManager>().AddParts(
                 host.GetExports<IResolverIgnoreRule>(),
                 host.GetExports<IItemResolver>());
+            host.Resolve<IConfigurationManager>()
+                .AddParts(host.GetExports<IConfigurationFactory>());
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
-// Licensed under the Apache V2.0 License.
+// See License in the project root for license information.
 
 namespace AVOne.Impl.Facade
 {
@@ -7,8 +7,6 @@ namespace AVOne.Impl.Facade
     using AVOne.Constants;
     using AVOne.IO;
     using AVOne.Library;
-    using AVOne.Models.Info;
-    using AVOne.Models.Item;
     using AVOne.Models.Result;
     using AVOne.Providers;
     using Microsoft.Extensions.Logging;

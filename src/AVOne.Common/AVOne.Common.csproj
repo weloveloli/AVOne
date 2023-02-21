@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <Import Project="../common.props" />
+    <PropertyGroup>
+        <PackageId>AVOne.Common</PackageId>
+        <IsPackable>true</IsPackable>
+        <RootNamespace>AVOne.Common</RootNamespace>
+        <Description>Common lib for AVOne</Description>
+        <!--Add support for sourcelink-->
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\AVOne.Core\AVOne.Core.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Furion" Version="4.8.6.11" />
+    </ItemGroup>
+
+</Project>

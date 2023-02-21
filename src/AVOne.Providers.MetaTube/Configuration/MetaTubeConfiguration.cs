@@ -1,14 +1,10 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
-// Licensed under the Apache V2.0 License.
+// See License in the project root for license information.
+
 #nullable disable
 namespace AVOne.Providers.MetaTube.Configuration
 {
-    using AVOne.Impl.Helper;
-
-    public interface IMetaTubeConfiguration
-    {
-        public MetaTubeConfiguration MetaTube { get; }
-    }
+    using AVOne.Common.Helper;
 
     public class MetaTubeConfiguration
     {

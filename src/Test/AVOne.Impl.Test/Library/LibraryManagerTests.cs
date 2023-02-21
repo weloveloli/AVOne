@@ -1,26 +1,26 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
-// Licensed under the Apache V2.0 License.
+// See License in the project root for license information.
 
 namespace AVOne.Impl.Library.Tests
 {
-    using Xunit;
-    using AVOne.Impl.Library;
+    using System.Collections.Generic;
     using AutoFixture;
+    using AVOne.Abstraction;
     using AVOne.Configuration;
+    using AVOne.Constants;
+    using AVOne.Enum;
     using AVOne.Impl.IO;
+    using AVOne.Impl.Library;
+    using AVOne.Impl.Resolvers;
     using AVOne.IO;
+    using AVOne.Library;
+    using AVOne.Models.Item;
+    using AVOne.Providers;
+    using AVOne.Providers.Jellyfin;
+    using AVOne.Resolvers;
     using Microsoft.Extensions.Logging;
     using Moq;
-    using AVOne.Library;
-    using AVOne.Abstraction;
-    using AVOne.Providers;
-    using AVOne.Resolvers;
-    using AVOne.Impl.Resolvers;
-    using AVOne.Providers.Jellyfin;
-    using AVOne.Models.Item;
-    using AVOne.Enum;
-    using System.Collections.Generic;
-    using AVOne.Constants;
+    using Xunit;
 
     public class LibraryManagerTests : BaseTestCase
     {

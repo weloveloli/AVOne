@@ -1,5 +1,5 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
-// Licensed under the Apache V2.0 License.
+// See License in the project root for license information.
 
 namespace AVOne.Tool.Commands
 {
@@ -11,7 +11,7 @@ namespace AVOne.Tool.Commands
     using CommandLine;
 
     [Verb("organize", false, new string[] { "org" }, HelpText = "HelpTextVerbOrganize", ResourceType = typeof(Resource))]
-    internal class Organize : BaseOptions
+    internal class Organize : BaseHostOptions
     {
         [Value(0, Required = true, HelpText = "HelpTextDirectory", ResourceType = typeof(Resource))]
         public string? Dir { get; set; }

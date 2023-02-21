@@ -1,12 +1,12 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
-// Licensed under the Apache V2.0 License.
+// See License in the project root for license information.
 
 #nullable disable
 
 namespace AVOne.Models.Info
 {
-    using System.Text.RegularExpressions;
     using System.IO;
+    using System.Text.RegularExpressions;
     using AVOne.Configuration;
     using AVOne.Enum;
     using AVOne.Models.Item;
@@ -196,7 +196,7 @@ namespace AVOne.Models.Info
             // If still not match, try to replace ')(' with '-' and match again, some video IDs are separated by ')('
             if (filepath.Contains(")("))
             {
-                var avid = GetId(ignore_pattern,filepath.Replace(")(", "-"), out category, out flags);
+                var avid = GetId(ignore_pattern, filepath.Replace(")(", "-"), out category, out flags);
                 if (!string.IsNullOrEmpty(avid))
                 {
                     return avid;

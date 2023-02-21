@@ -1,7 +1,7 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
-// Licensed under the Apache V2.0 License.
+// See License in the project root for license information.
 
-namespace AVOne.Impl.Helper
+namespace AVOne.Common.Helper
 {
     using System.Text;
 
@@ -24,14 +24,14 @@ namespace AVOne.Impl.Helper
                     continue;
                 }
 
-#pragma warning disable CS8601 // 引用类型赋值可能为 null。
+#pragma warning disable CS8601 // Possible null reference assignment.
                 dictionary[kvp[0]] = kvp.Count switch
                 {
                     1 => null,
                     2 => kvp[1],
                     _ => dictionary[kvp[0]]
                 };
-#pragma warning restore CS8601 // 引用类型赋值可能为 null。
+#pragma warning restore CS8601 // Possible null reference assignment.
             }
 
             return dictionary;

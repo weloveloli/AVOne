@@ -1,5 +1,5 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
-// Licensed under the Apache V2.0 License.
+// See License in the project root for license information.
 
 namespace AVOne.Providers.Jellyfin
 {
@@ -9,10 +9,10 @@ namespace AVOne.Providers.Jellyfin
     using System.Xml;
     using AVOne.Configuration;
     using AVOne.Enum;
-    using AVOne.Providers.Jellyfin.Base;
     using AVOne.IO;
     using AVOne.Models.Info;
     using AVOne.Models.Item;
+    using AVOne.Providers.Jellyfin.Base;
     using Microsoft.Extensions.Logging;
 
     /// <summary>

@@ -1,20 +1,20 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
-// Licensed under the Apache V2.0 License.
+// See License in the project root for license information.
 
 #nullable disable
 namespace AVOne.Impl.Resolvers
 {
     using System.Collections.Generic;
+    using System.Text.RegularExpressions;
     using AVOne.Constants;
-    using AVOne.Extensions;
     using AVOne.Enum;
+    using AVOne.Extensions;
     using AVOne.IO;
+    using AVOne.Models.Info;
     using AVOne.Models.Item;
     using AVOne.Providers;
     using AVOne.Resolvers;
     using Microsoft.Extensions.Logging;
-    using System.Text.RegularExpressions;
-    using AVOne.Models.Info;
 
     public class MovieResolver : BaseVideoResolver<Video>, IMultiItemResolver
     {

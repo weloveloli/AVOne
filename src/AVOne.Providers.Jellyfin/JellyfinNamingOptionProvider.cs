@@ -1,5 +1,5 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
-// Licensed under the Apache V2.0 License.
+// See License in the project root for license information.
 
 namespace AVOne.Providers.Jellyfin
 {
@@ -43,7 +43,7 @@ namespace AVOne.Providers.Jellyfin
                 new FileStackRule("^(?<filename>.*?)(?:(?<=[\\]\\)\\}])|[ _.-]+)[\\(\\[]?(?<parttype>cd|dvd|part|pt|dis[ck])[ _.-]*(?<number>[a-d])[\\)\\]]?(?:\\.[^.]+)?$", isNumerical: false),
                 new FileStackRule("^(?<filename>.*?)(?:(?<=[\\]\\)\\}])|[ _.-]?)(?<number>[a-d])(?:\\.[^.]+)?$", isNumerical: false)
     };
-            StubTypes = _options.StubTypes.Select(e => new StubTypeRule(e.Token,e.StubType)).ToArray();
+            StubTypes = _options.StubTypes.Select(e => new StubTypeRule(e.Token, e.StubType)).ToArray();
         }
 
         /// <summary>

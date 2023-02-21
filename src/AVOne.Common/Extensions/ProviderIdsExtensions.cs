@@ -1,7 +1,7 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
-// Licensed under the Apache V2.0 License.
+// See License in the project root for license information.
 
-namespace AVOne.Impl.Extensions
+namespace AVOne.Common.Extensions
 {
     using System;
     using System.Collections.Generic;
@@ -9,8 +9,8 @@ namespace AVOne.Impl.Extensions
     using System.Linq;
     using System.Web;
     using AVOne.Abstraction;
-    using AVOne.Impl.Enum;
-    using AVOne.Impl.Helper;
+    using AVOne.Common.Enum;
+    using AVOne.Common.Helper;
 
     public static class ProviderIdsExtensions
     {

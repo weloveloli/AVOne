@@ -1,13 +1,13 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
-// Licensed under the Apache V2.0 License.
+// See License in the project root for license information.
 
 namespace AVOne.Impl.Resolvers
 {
     using System.Diagnostics.CodeAnalysis;
+    using AVOne.Extensions;
     using AVOne.Impl.Helper;
     using AVOne.Models.Info;
     using AVOne.Providers;
-    using AVOne.Extensions;
 
     /// <summary>
     /// Resolves <see cref="VideoFileInfo"/> from file path.
