@@ -6,11 +6,13 @@ namespace AVOne.Tool
     using System;
     using System.Linq;
     using System.Reflection;
+    using Microsoft.Extensions.Logging;
     using Spectre.Console;
     using Spectre.Console.Rendering;
 
     internal static class Cli
     {
+        public static ILogger? Logger { get; set; }
         static readonly Style StyleError = new Style(foreground: Color.Red3);
         static readonly Style StyleInfo = new Style(foreground: Color.DeepSkyBlue1);
         static readonly Style StyleSuccess = new Style(foreground: Color.Green);

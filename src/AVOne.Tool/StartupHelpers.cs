@@ -254,6 +254,7 @@ namespace AVOne.Tool
             // Initialize logging framework
             InitializeLoggingFramework(startupConfig, appPaths);
             Logger = LoggerFactory.CreateLogger("Main");
+            Cli.Logger = Logger;
             // Log uncaught exceptions to the logging instead of std error
             AppDomain.CurrentDomain.UnhandledException -= UnhandledExceptionToConsole;
             AppDomain.CurrentDomain.UnhandledException += (_, e)
