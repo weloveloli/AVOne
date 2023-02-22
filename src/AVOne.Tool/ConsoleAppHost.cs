@@ -21,6 +21,7 @@ namespace AVOne.Tool
     using AVOne.Providers.MetaTube;
     using AVOne.Tool.Commands;
     using AVOne.Tool.Configuration;
+    using AVOne.Tool.Facade;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;
     using Microsoft.Extensions.Logging;
@@ -117,17 +118,18 @@ namespace AVOne.Tool
         /// <summary>
         /// Registers services/resources with the service collection that will be available via DI.
         /// </summary>
-        /// <param name="serviceCollection">Instance of the <see cref="IServiceCollection"/> interface.</param>
-        protected void RegisterServices(IServiceCollection serviceCollection)
+        /// <param name="service">Instance of the <see cref="IServiceCollection"/> interface.</param>
+        protected void RegisterServices(IServiceCollection service)
         {
-            _option.InitService(serviceCollection);
-            _ = serviceCollection.AddMemoryCache();
-            _ = serviceCollection.AddSingleton<IApplicationHost>(this);
-            _ = serviceCollection.AddSingleton<IStartupOptions>(_option);
-            _ = serviceCollection.AddSingleton<IApplicationPaths>(AppPaths);
-            _ = serviceCollection.AddSingleton(_xmlSerializer);
-            _ = serviceCollection.AddSingleton(_fileSystem);
-            _ = serviceCollection.AddSingleton<IConfigurationManager>(ConfigurationManager);
+            _option.InitService(service);
+            service.AddMemoryCache();
+            service.AddSingleton<IApplicationHost>(this);
+            service.AddSingleton<IStartupOptions>(_option);
+            service.AddSingleton<IApplicationPaths>(AppPaths);
+            service.AddSingleton(_xmlSerializer);
+            service.AddSingleton(_fileSystem);
+            service.AddSingleton<IConfigurationManager>(ConfigurationManager);
+            service.AddSingleton<IMetaDataFacade, MetaDataFacade>();
         }
 
         /// <summary>

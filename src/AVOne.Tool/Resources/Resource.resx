@@ -153,6 +153,9 @@
   <data name="HelpTextInstallPlugin" xml:space="preserve">
     <value>Install plugin.</value>
   </data>
+  <data name="HelpTextMoveToTargetFolder" xml:space="preserve">
+    <value>Path to target folder to move.</value>
+  </data>
   <data name="HelpTextSaveMetadata" xml:space="preserve">
     <value>Save metadata or not. </value>
   </data>
@@ -170,6 +173,9 @@
   </data>
   <data name="HelpTextShowPluginRepositoryList" xml:space="preserve">
     <value>Show plugin repository list.</value>
+  </data>
+  <data name="HelpTextUseContainer" xml:space="preserve">
+    <value>If use create a new container to hold all the media, image, nfo files.</value>
   </data>
   <data name="HelpTextVerbInfo" xml:space="preserve">
     <value>Print system info.</value>

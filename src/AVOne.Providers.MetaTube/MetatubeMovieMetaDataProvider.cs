@@ -15,7 +15,7 @@ namespace AVOne.Providers.Metatube
     using AVOne.Models.Info;
     using AVOne.Models.Item;
     using AVOne.Models.Result;
-    using AVOne.Providers;
+    using AVOne.Providers.Metadata;
     using AVOne.Providers.Metatube.Models;
     using AVOne.Providers.MetaTube.Configuration;
     using Furion.FriendlyException;
@@ -40,7 +40,7 @@ namespace AVOne.Providers.Metatube
         {
             if (!IsProviderAvailable())
             {
-                throw Oops.Oh(ErrorCodes.ProviderNotAvailable, Name);
+                throw Oops.Oh(ErrorCodes.PROVIDER_NOT_AVAILABLE, Name);
             }
 
             var pid = info.GetPid(Name);
@@ -197,7 +197,7 @@ namespace AVOne.Providers.Metatube
         {
             if (!IsProviderAvailable())
             {
-                throw Oops.Oh(ErrorCodes.ProviderNotAvailable, Name);
+                throw Oops.Oh(ErrorCodes.PROVIDER_NOT_AVAILABLE, Name);
             }
 
             var pid = info.GetPid(Name);

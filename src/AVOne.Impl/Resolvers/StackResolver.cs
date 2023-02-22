@@ -4,7 +4,7 @@
 namespace AVOne.Impl.Resolvers
 {
     using AVOne.IO;
-    using AVOne.Providers;
+    using AVOne.Providers.Metadata;
 
     /// <summary>
     /// Resolve <see cref="FileStack"/> from list of paths.

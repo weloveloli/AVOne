@@ -4,7 +4,9 @@
 namespace AVOne.Providers
 {
     using AVOne.Configuration;
+    using AVOne.Enum;
     using AVOne.Models.Item;
+    using AVOne.Providers.Metadata;
 
     public interface IProviderManager
     {
@@ -12,7 +14,10 @@ namespace AVOne.Providers
             IEnumerable<IImageProvider> imageProviders,
             IEnumerable<IMetadataProvider> metadataProviders,
             IEnumerable<INamingOptionProvider> nameOptionProviders,
-            IEnumerable<IVideoResolverProvider> resolverProviders);
+            IEnumerable<IVideoResolverProvider> resolverProviders,
+            IEnumerable<IMetadataSaverProvider> metadataSaverProviders,
+            IEnumerable<IImageSaverProvider> imageSaverProviders);
+
         MetadataOptions GetMetadataOptions(BaseItem item);
         IEnumerable<IMetadataProvider<T>> GetMetadataProviders<T>(BaseItem item) where T : BaseItem;
         IVideoResolverProvider GetVideoResolverProvider();
@@ -25,5 +30,21 @@ namespace AVOne.Providers
         /// <param name="refreshOptions">The image refresh options.</param>
         /// <returns>The image providers for the item.</returns>
         IEnumerable<IImageProvider> GetImageProviders(BaseItem item);
+
+        /// <summary>
+        /// Gets the metadata saver providers for the provided item.
+        /// </summary>
+        /// <param name="item">The item.</param>
+        /// <param name="refreshOptions">The image refresh options.</param>
+        /// <returns>The image providers for the item.</returns>
+        IEnumerable<IMetadataSaverProvider> GetMetadataSaverProvider(BaseItem item, ItemUpdateType itemUpdateType = ItemUpdateType.None);
+
+        /// <summary>
+        /// Gets the image saver providers.
+        /// </summary>
+        /// <param name="item">The item.</param>
+        /// <param name="refreshOptions">The image refresh options.</param>
+        /// <returns>The image providers for the item.</returns>
+        IEnumerable<IImageSaverProvider> GetImageSaverProvider();
     }
 }

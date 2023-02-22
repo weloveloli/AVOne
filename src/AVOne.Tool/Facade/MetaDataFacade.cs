@@ -2,7 +2,7 @@
 // See License in the project root for license information.
 
 #nullable disable
-namespace AVOne.Impl.Facade
+namespace AVOne.Tool.Facade
 {
     using System;
     using System.Collections.Generic;
@@ -12,19 +12,21 @@ namespace AVOne.Impl.Facade
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
+    using AVOne.Common.Helper;
     using AVOne.Configuration;
     using AVOne.Constants;
     using AVOne.Enum;
     using AVOne.Impl.Configuration;
-    using AVOne.Impl.Helper;
-    using AVOne.Impl.Models;
     using AVOne.IO;
     using AVOne.Library;
     using AVOne.Models.Info;
     using AVOne.Models.Item;
     using AVOne.Providers;
+    using AVOne.Providers.Metadata;
+    using AVOne.Tool.Models;
     using Furion.FriendlyException;
     using Microsoft.Extensions.Logging;
+    using Newtonsoft.Json.Linq;
 
     public class MetaDataFacade : IMetaDataFacade
     {
@@ -128,7 +130,7 @@ namespace AVOne.Impl.Facade
 
             var movieItems = await Task.WhenAll(tasks);
 
-            return movieItems.Select(this.MergeMetaData);
+            return movieItems.Select(MergeMetaData);
         }
 
         private async Task<MoveMetaDataItem> ExecuteMetaData(MoveMetaDataItem dataItem, CancellationToken token = default)
@@ -150,6 +152,7 @@ namespace AVOne.Impl.Facade
                 item.HasMetaData = true;
                 item.MetadataResult = metaDataResult;
                 item.Result = metaDataResult.Item;
+                item.Result.Path = item.Movie.Path;
             }
             else
             {
@@ -161,6 +164,7 @@ namespace AVOne.Impl.Facade
                         item.HasMetaData = true;
                         item.MetadataResult = metaDataResult;
                         item.Result = metaDataResult.Item;
+                        item.Result.Path = item.Movie.Path;
                     }
                 }
                 catch (Exception e)
@@ -174,82 +178,88 @@ namespace AVOne.Impl.Facade
                 return item;
             }
             item.LocalImageInfos = item.LocalImageProvider.GetImages(item.Result, _directoryService);
-            item.RemoteImageInfos = await item.RemoteImageProvider.GetImages(item.Result, token);
-            var hash = SHA256.Create();
-            if (item.RemoteImageInfos != null && item.RemoteImageInfos.Any())
+            if (!item.LocalImageInfos.Any())
             {
-                var imagsList = new List<LocalImageInfo>();
-                item.LocalRemoteImageInfos = imagsList;
-                foreach (var image in item.RemoteImageInfos)
+                item.RemoteImageInfos = await item.RemoteImageProvider.GetImages(item.Result, token);
+
+                if (item.RemoteImageInfos != null && item.RemoteImageInfos.Any())
                 {
-                    if (image.Type != ImageType.Primary)
+                    var imagsList = new List<LocalImageInfo>();
+                    item.LocalRemoteImageInfos = imagsList;
+                    foreach (var image in item.RemoteImageInfos)
                     {
-                        continue;
-                    }
-
-                    var imageHash = string.Concat(hash.ComputeHash(Encoding.UTF8.GetBytes(image.Url)).Select(x => x.ToString("x2")));
-                    var imagePng = Path.Combine(_serverApplicationPaths.ImageCachePath, imageHash + ".png");
-                    var imageJpg = Path.Combine(_serverApplicationPaths.ImageCachePath, imageHash + ".jpg");
-                    if (File.Exists(imageJpg))
-                    {
+                        if (image.Type != ImageType.Primary)
+                        {
+                            continue;
+                        }
+                        var imageCachePath = await DownloadRemoteImageToCache(item.RemoteImageProvider, image, token);
                         imagsList.Add(new LocalImageInfo
                         {
-                            FileInfo = _directoryService.GetFile(imageJpg),
+                            FileInfo = _directoryService.GetFile(imageCachePath),
                             Type = image.Type
                         });
-                        continue;
                     }
-                    else if (File.Exists(imagePng))
-                    {
-                        imagsList.Add(new LocalImageInfo
-                        {
-                            FileInfo = _directoryService.GetFile(imagePng),
-                            Type = image.Type
-                        });
-                        continue;
-                    }
-                    var url = image.Url;
-                    await Retry.InvokeAsync(async () =>
-                    {
-                        var response = await item.RemoteImageProvider.GetImageResponse(image.Url, token);
-                        // Sometimes providers send back bad urls. Just move to the next image
-                        if (response.StatusCode == HttpStatusCode.NotFound || response.StatusCode == HttpStatusCode.Forbidden)
-                        {
-                            _logger.LogInformation("{Url} returned {StatusCode}, ignoring", url, response.StatusCode);
-                            return;
-                        }
-
-                        if (!response.IsSuccessStatusCode)
-                        {
-                            _logger.LogInformation("{Url} returned {StatusCode}, skipping all remaining requests", url, response.StatusCode);
-                            throw new Exception();
-                        }
-
-                        using var source = response.Content.ReadAsStream();
-                        var mimeType = response.Content.Headers.ContentType?.MediaType;
-                        var extension = MimeTypesHelper.ToExtension(mimeType);
-                        var path = Path.Combine(_serverApplicationPaths.ImageCachePath, imageHash + extension);
-                        Directory.CreateDirectory(_serverApplicationPaths.ImageCachePath);
-
-                        var fileStreamOptions = FileOptionsHelper.AsyncWriteOptions;
-                        fileStreamOptions.Mode = FileMode.Create;
-                        fileStreamOptions.PreallocationSize = source.Length;
-                        var fs = new FileStream(path, fileStreamOptions);
-                        await using (fs.ConfigureAwait(false))
-                        {
-                            await source.CopyToAsync(fs, token).ConfigureAwait(false);
-                        }
-
-                        imagsList.Add(new LocalImageInfo
-                        {
-                            FileInfo = _directoryService.GetFile(path),
-                            Type = image.Type
-                        });
-                    }, 3, 1000, false);
                 }
             }
 
             return item;
+        }
+
+        private async Task<string> DownloadRemoteImageToCache(IRemoteImageProvider remoteImageProvider, RemoteImageInfo image, CancellationToken token = default)
+        {
+            var hash = SHA256.Create();
+            var imageHash = string.Concat(hash.ComputeHash(Encoding.UTF8.GetBytes(image.Url)).Select(x => x.ToString("x2")));
+
+            var imagePng = Path.Combine(_serverApplicationPaths.ImageCachePath, imageHash + ".png");
+            var imageJpg = Path.Combine(_serverApplicationPaths.ImageCachePath, imageHash + ".jpg");
+            string cacheFile = null;
+            if (File.Exists(imageJpg))
+            {
+                cacheFile = imageJpg;
+            }
+            else if (File.Exists(imagePng))
+            {
+                cacheFile = imagePng;
+            }
+            if (cacheFile is not null)
+            {
+                return cacheFile;
+            }
+
+            var url = image.Url;
+            string path = null;
+            await Retry.InvokeAsync(async () =>
+            {
+                var response = await remoteImageProvider.GetImageResponse(image.Url, token);
+                // Sometimes providers send back bad urls. Just move to the next image
+                if (response.StatusCode == HttpStatusCode.NotFound || response.StatusCode == HttpStatusCode.Forbidden)
+                {
+                    _logger.LogInformation("{Url} returned {StatusCode}, ignoring", url, response.StatusCode);
+                    return;
+                }
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    _logger.LogInformation("{Url} returned {StatusCode}, skipping all remaining requests", url, response.StatusCode);
+                    throw new Exception();
+                }
+
+                using var source = response.Content.ReadAsStream();
+                var mimeType = response.Content.Headers.ContentType?.MediaType;
+                var extension = MimeTypesHelper.ToExtension(mimeType);
+                path = Path.Combine(_serverApplicationPaths.ImageCachePath, imageHash + extension);
+                Directory.CreateDirectory(_serverApplicationPaths.ImageCachePath);
+
+                var fileStreamOptions = FileOptionsHelper.AsyncWriteOptions;
+                fileStreamOptions.Mode = FileMode.Create;
+                fileStreamOptions.PreallocationSize = source.Length;
+                var fs = new FileStream(path, fileStreamOptions);
+                await using (fs.ConfigureAwait(false))
+                {
+                    await source.CopyToAsync(fs, token).ConfigureAwait(false);
+                }
+            }, 3, 1000, false);
+            return path;
         }
 
         private MoveMetaDataItem MergeMetaData(MoveMetaDataItem item)
@@ -285,6 +295,11 @@ namespace AVOne.Impl.Facade
                 }
             }
             return item;
+        }
+
+        public void SaveMetaDataToLocal(MoveMetaDataItem item)
+        {
+            throw new NotImplementedException();
         }
     }
 }

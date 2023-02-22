@@ -12,6 +12,7 @@ namespace AVOne.Impl.Resolvers
     using AVOne.Models.Info;
     using AVOne.Models.Item;
     using AVOne.Providers;
+    using AVOne.Providers.Metadata;
     using AVOne.Resolvers;
     using Microsoft.Extensions.Logging;
 

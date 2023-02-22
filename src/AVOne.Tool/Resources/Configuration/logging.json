@@ -11,8 +11,8 @@
         {
           "Name": "Console",
           "Args": {
-            "outputTemplate": "[{Timestamp:HH:mm:ss}] [{Level:u3}] [{ThreadId}] {SourceContext}: {Message:lj}{NewLine}{Exception}",
-            "restrictedToMinimumLevel": "Error"
+            "outputTemplate": "[{Timestamp:HH:mm:ss}] [{Level:u3}] [{ThreadId}] {SourceContext}: {Message:lj}{NewLine}",
+            "restrictedToMinimumLevel": "Fatal"
           }
         },
         {

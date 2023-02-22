@@ -8,10 +8,17 @@ namespace AVOne.Common.Enum
     [ErrorCodeType]
     public enum ErrorCodes
     {
-        [ErrorCodeItemMetadata("ProviderNotAvailable")]
-        ProviderNotAvailable,
-
-        [ErrorCodeItemMetadata("服务器运行异常", ErrorCode = "Error")]
+        [ErrorCodeItemMetadata("PROVIDER_NOT_AVAILABLE")]
+        PROVIDER_NOT_AVAILABLE,
+        [ErrorCodeItemMetadata("PATH_NOT_EXIST")]
+        PATH_NOT_EXIST,
+        [ErrorCodeItemMetadata("DIR_NOT_EXIST")]
+        DIR_NOT_EXIST,
+        [ErrorCodeItemMetadata("SKIP_METADATA_NOT_EXIST")]
+        SKIP_METADATA_NOT_EXIST,
+        [ErrorCodeItemMetadata("SKIP_FILE_DUE_TO_TARGET_FILE_AREADY_EXIST")]
+        SKIP_FILE_DUE_TO_TARGET_FILE_AREADY_EXIST,
+        [ErrorCodeItemMetadata("SERVER_ERROR", ErrorCode = "Error")]
         SERVER_ERROR
     }
 }

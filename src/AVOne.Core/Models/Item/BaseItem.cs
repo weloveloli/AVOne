@@ -292,5 +292,35 @@ namespace AVOne.Models.Item
             newArr[currentCount] = image;
             ImageInfos = newArr;
         }
+
+        private string _targetName;
+
+        public string TargetName
+        {
+            get
+            {
+                return _targetName ?? Name;
+            }
+
+            set
+            {
+                _targetName = value;
+            }
+        }
+
+        private string _targetPath;
+
+        public string TargetPath
+        {
+            get
+            {
+                return _targetPath ?? Path;
+            }
+
+            set
+            {
+                _targetPath = value;
+            }
+        }
     }
 }

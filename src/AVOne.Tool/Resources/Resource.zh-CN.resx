@@ -153,6 +153,9 @@
   <data name="HelpTextInstallPlugin" xml:space="preserve">
     <value>安装插件.</value>
   </data>
+  <data name="HelpTextMoveToTargetFolder" xml:space="preserve">
+    <value>移动的目标路劲.</value>
+  </data>
   <data name="HelpTextQuiet" xml:space="preserve">
     <value>不再显示摘要信息</value>
   </data>
@@ -173,6 +176,9 @@
   </data>
   <data name="HelpTextShowPlugins" xml:space="preserve">
     <value>显示插件仓库中的插件所有插件.</value>
+  </data>
+  <data name="HelpTextUseContainer" xml:space="preserve">
+    <value>是否新建同名文件并将媒体文件以及元数据图片等放在下.</value>
   </data>
   <data name="HelpTextVerbOrganize" xml:space="preserve">
     <value>扫描整理指定文件下的视频文件.</value>

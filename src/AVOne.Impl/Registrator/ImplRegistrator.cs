@@ -5,7 +5,6 @@ namespace AVOne.Impl.Registrator
 {
     using AVOne.Abstraction;
     using AVOne.Configuration;
-    using AVOne.Impl.Facade;
     using AVOne.Impl.IO;
     using AVOne.Impl.Library;
     using AVOne.Impl.Providers;
@@ -13,6 +12,7 @@ namespace AVOne.Impl.Registrator
     using AVOne.Library;
     using AVOne.Models.Item;
     using AVOne.Providers;
+    using AVOne.Providers.Metadata;
     using AVOne.Resolvers;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
@@ -25,8 +25,6 @@ namespace AVOne.Impl.Registrator
             serviceCollection.AddSingleton<ILibraryManager, LibraryManager>();
             serviceCollection.AddSingleton<IFileSystem, ManagedFileSystem>();
             serviceCollection.AddSingleton<IDirectoryService, DirectoryService>();
-            serviceCollection.AddSingleton<IMetaDataFacade, MetaDataFacade>();
-
         }
 
         public void PostBuildService(IApplicationHost host)
@@ -39,11 +37,15 @@ namespace AVOne.Impl.Registrator
                 host.GetExports<IImageProvider>(),
                 host.GetExports<IMetadataProvider>(),
                 host.GetExports<INamingOptionProvider>(),
-                host.GetExports<IVideoResolverProvider>());
+                host.GetExports<IVideoResolverProvider>(),
+                host.GetExports<IMetadataSaverProvider>(),
+                host.GetExports<IImageSaverProvider>()
+                );
 
             host.Resolve<ILibraryManager>().AddParts(
                 host.GetExports<IResolverIgnoreRule>(),
                 host.GetExports<IItemResolver>());
+
             host.Resolve<IConfigurationManager>()
                 .AddParts(host.GetExports<IConfigurationFactory>());
         }

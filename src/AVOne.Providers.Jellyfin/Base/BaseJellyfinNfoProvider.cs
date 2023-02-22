@@ -7,7 +7,7 @@ namespace AVOne.Providers.Jellyfin.Base
     using AVOne.Models.Info;
     using AVOne.Models.Item;
     using AVOne.Models.Result;
-    using AVOne.Providers;
+    using AVOne.Providers.Metadata;
 
     public abstract class BaseJellyfinNfoProvider<T> : ILocalMetadataProvider<T>
         where T : BaseItem, new()

@@ -5,8 +5,10 @@ namespace AVOne.Impl.Providers
 {
     using AVOne.Abstraction;
     using AVOne.Configuration;
+    using AVOne.Enum;
     using AVOne.Models.Item;
     using AVOne.Providers;
+    using AVOne.Providers.Metadata;
     using Microsoft.Extensions.Logging;
 
     public class ProviderManager : IProviderManager
@@ -15,6 +17,8 @@ namespace AVOne.Impl.Providers
         private IMetadataProvider[] _metadataProviders = Array.Empty<IMetadataProvider>();
         private INamingOptionProvider[] _namingOptionProviders = Array.Empty<INamingOptionProvider>();
         private IVideoResolverProvider[] _nameResolverProviders = Array.Empty<IVideoResolverProvider>();
+        private IMetadataSaverProvider[] _metadataSaverProviders = Array.Empty<IMetadataSaverProvider>();
+        private IImageSaverProvider[] _imageSaverProviders = Array.Empty<IImageSaverProvider>();
         private readonly ILogger<ProviderManager> _logger;
         private readonly IConfigurationManager _configurationManager;
         private readonly BaseApplicationConfiguration _configuration;
@@ -32,12 +36,17 @@ namespace AVOne.Impl.Providers
             IEnumerable<IImageProvider> imageProviders,
             IEnumerable<IMetadataProvider> metadataProviders,
             IEnumerable<INamingOptionProvider> nameOptionProviders,
-            IEnumerable<IVideoResolverProvider> resolverProviders)
+            IEnumerable<IVideoResolverProvider> resolverProviders,
+            IEnumerable<IMetadataSaverProvider> metadataSaverProviders,
+            IEnumerable<IImageSaverProvider> imageSaverProviders
+            )
         {
             _imageProviders = imageProviders.ToArray();
             _metadataProviders = metadataProviders.ToArray();
             _namingOptionProviders = nameOptionProviders.ToArray();
             _nameResolverProviders = resolverProviders.ToArray();
+            _metadataSaverProviders = metadataSaverProviders.ToArray();
+            _imageSaverProviders = imageSaverProviders.ToArray();
         }
         /// <summary>
         /// Gets the metadata providers for the provided item.
@@ -109,6 +118,12 @@ namespace AVOne.Impl.Providers
                 .OrderBy(GetDefaultOrder);
         }
 
+        public IEnumerable<IMetadataSaverProvider> GetMetadataSaverProvider(BaseItem item, ItemUpdateType itemUpdateType = ItemUpdateType.None)
+        {
+            return _metadataSaverProviders.Where(i => i.IsEnabledFor(item, itemUpdateType))
+                .OrderBy(GetDefaultOrder);
+        }
+
         private bool CanRefreshImages(
            IImageProvider provider,
            BaseItem item)
@@ -127,6 +142,11 @@ namespace AVOne.Impl.Providers
             }
 
             return true;
+        }
+
+        public IEnumerable<IImageSaverProvider> GetImageSaverProvider()
+        {
+            return _imageSaverProviders.OrderBy(GetDefaultOrder);
         }
     }
 }

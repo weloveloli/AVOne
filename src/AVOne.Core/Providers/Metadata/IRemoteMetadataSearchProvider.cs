@@ -3,7 +3,7 @@
 
 #nullable disable
 
-namespace AVOne.Providers
+namespace AVOne.Providers.Metadata
 {
     using AVOne.Models.Info;
     using AVOne.Models.Result;

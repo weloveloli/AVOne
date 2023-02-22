@@ -17,6 +17,7 @@ namespace AVOne.Impl.Library.Tests
     using AVOne.Models.Item;
     using AVOne.Providers;
     using AVOne.Providers.Jellyfin;
+    using AVOne.Providers.Metadata;
     using AVOne.Resolvers;
     using Microsoft.Extensions.Logging;
     using Moq;

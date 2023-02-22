@@ -7,7 +7,7 @@ namespace AVOne.Impl.Resolvers
     using AVOne.Extensions;
     using AVOne.Impl.Helper;
     using AVOne.Models.Info;
-    using AVOne.Providers;
+    using AVOne.Providers.Metadata;
 
     /// <summary>
     /// Resolves <see cref="VideoFileInfo"/> from file path.

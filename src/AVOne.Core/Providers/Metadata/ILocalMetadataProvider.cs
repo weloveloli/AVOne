@@ -3,7 +3,7 @@
 
 #nullable disable
 
-namespace AVOne.Providers
+namespace AVOne.Providers.Metadata
 {
     using System.Threading;
     using System.Threading.Tasks;

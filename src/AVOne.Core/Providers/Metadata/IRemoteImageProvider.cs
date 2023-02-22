@@ -3,7 +3,9 @@
 
 #nullable disable
 
-namespace AVOne.Providers
+using AVOne;
+
+namespace AVOne.Providers.Metadata
 {
     using AVOne.Enum;
     using AVOne.Models.Info;

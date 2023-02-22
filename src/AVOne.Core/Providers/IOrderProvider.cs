@@ -3,8 +3,9 @@
 
 namespace AVOne.Providers
 {
-    public interface IOrderProvider : IProvider
+    using AVOne.Abstraction;
+
+    public interface IOrderProvider : IProvider, IHasOrder
     {
-        public int Order { get; }
     }
 }

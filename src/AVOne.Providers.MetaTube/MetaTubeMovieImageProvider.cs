@@ -10,9 +10,9 @@ namespace AVOne.Providers.Metatube
     using AVOne.Common.Extensions;
     using AVOne.Models.Info;
     using AVOne.Models.Item;
-    using AVOne.Providers;
     using Furion.FriendlyException;
     using Microsoft.Extensions.Logging;
+    using AVOne.Providers.Metadata;
 
     public class MetaTubeMovieImageProvider : BaseProvider, IRemoteImageProvider, IHasOrder
     {
@@ -28,7 +28,7 @@ namespace AVOne.Providers.Metatube
         {
             if (!IsProviderAvailable())
             {
-                throw Oops.Oh(ErrorCodes.ProviderNotAvailable, Name);
+                throw Oops.Oh(ErrorCodes.PROVIDER_NOT_AVAILABLE, Name);
             }
 
             var pid = item.GetPid(this.Name);

@@ -1,7 +1,7 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // See License in the project root for license information.
 
-namespace AVOne.Impl.Helper
+namespace AVOne.Common.Helper
 {
 #pragma warning disable CS1591
 
@@ -10,6 +10,7 @@ namespace AVOne.Impl.Helper
     using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Linq;
+    using AVOne.Common;
     using AVOne.Extensions;
 
     /// <summary>
@@ -152,7 +153,7 @@ namespace AVOne.Impl.Helper
                 return result;
             }
 
-            if (Impl.MimeTypes.TryGetMimeType(filename, out var mimeType))
+            if (MimeTypes.TryGetMimeType(filename, out var mimeType))
             {
                 return mimeType;
             }
@@ -178,7 +179,7 @@ namespace AVOne.Impl.Helper
                 return result;
             }
 
-            var extension = Impl.MimeTypes.GetMimeTypeExtensions(mimeType).FirstOrDefault();
+            var extension = MimeTypes.GetMimeTypeExtensions(mimeType).FirstOrDefault();
             return string.IsNullOrEmpty(extension) ? null : "." + extension;
         }
     }

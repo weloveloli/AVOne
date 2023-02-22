@@ -7,7 +7,7 @@ namespace AVOne.Impl.Resolvers
     using System.IO;
     using System.Text.RegularExpressions;
     using AVOne.Enum;
-    using AVOne.Providers;
+    using AVOne.Providers.Metadata;
 
     /// <summary>
     /// Resolve if file is extra for video.

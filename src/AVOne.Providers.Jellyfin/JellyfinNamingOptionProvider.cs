@@ -7,7 +7,7 @@ namespace AVOne.Providers.Jellyfin
     using System.Text.RegularExpressions;
     using AVOne.Enum;
     using AVOne.Naming;
-    using AVOne.Providers;
+    using AVOne.Providers.Metadata;
 
     public class JellyfinNamingOptionProvider : INamingOptionProvider
     {
@@ -18,6 +18,8 @@ namespace AVOne.Providers.Jellyfin
         }
 
         public int Order => int.MaxValue;
+
+        public string Name => "Jellyfin";
 
         public INamingOptions GetNamingOption() => _namingOptions;
     }

@@ -6,7 +6,7 @@ namespace AVOne.Impl.Resolvers
     using System;
     using System.IO;
     using AVOne.Extensions;
-    using AVOne.Providers;
+    using AVOne.Providers.Metadata;
 
     /// <summary>
     /// Static helper class to determine if file at path is audio file.

@@ -1,3 +1,13 @@
 {
-  "ProviderNotAvailable": "Provider {0} Not Available"
+  "PROVIDER_NOT_AVAILABLE": "Provider {0} 不可用",
+  "SERVER_ERROR": "服务器异常",
+  "PATH_NOT_EXIST": "文件 '{0}' 不存在.",
+  "DIR_NOT_EXIST": "文件夹 '{0}' 不存在.",
+  "SKIP_METADATA_NOT_EXIST": "由于无法获取元数据,跳过文件 '{0}'.",
+  "SKIP_FILE_DUE_TO_TARGET_FILE_AREADY_EXIST": "由于目标路径'{1}'已存在,跳过文件 '{0}'.",
+
+  "Searching Metadata": "正在搜索媒体元数据 ...",
+  "Moving file": "移动文件 {0} ...",
+  "Saving metadata": "为 {0} 保存元数据 ...",
+  "Moving file successfully": "成功将文件 {0} 移动至 {1}"
 }

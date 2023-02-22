@@ -38,7 +38,7 @@ namespace AVOne.Providers.Metatube
         {
             if (!IsProviderAvailable())
             {
-                throw Oops.Oh(ErrorCodes.ProviderNotAvailable, Name);
+                throw Oops.Oh(ErrorCodes.PROVIDER_NOT_AVAILABLE, Name);
             }
             Logger.LogDebug("GetImageResponse for url: {0}", url);
             return ApiClient.GetImageResponse(url, cancellationToken);

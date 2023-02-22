@@ -33,7 +33,7 @@ internal class Program
                 {
                     var type = option.GetType();
                     var cmdName = type.GetCustomAttribute<VerbAttribute>()?.Name ?? type.Name;
-                    StartupHelpers.Logger.LogError(e, "Command {0} execute error due to Exception", cmdName);
+                    StartupHelpers.Logger.LogCritical(e, "Command {0} execute error due to Exception", cmdName);
                     Cli.Info("See error logs in {0}", appPaths.LogDirectoryPath);
                     Environment.Exit(1);
                 }

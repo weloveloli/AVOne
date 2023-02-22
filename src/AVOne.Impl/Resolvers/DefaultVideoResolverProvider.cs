@@ -4,11 +4,13 @@
 namespace AVOne.Impl.Resolvers
 {
     using AVOne.Models.Info;
-    using AVOne.Providers;
+    using AVOne.Providers.Metadata;
 
     public class DefaultVideoResolverProvider : IVideoResolverProvider
     {
         public int Order => int.MaxValue;
+
+        public string Name => "Jellyfin";
 
         public bool IsVideoFile(string path, INamingOptions namingOptions)
         {

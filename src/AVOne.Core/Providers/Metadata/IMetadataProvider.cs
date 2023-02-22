@@ -3,9 +3,10 @@
 
 #nullable disable
 
-namespace AVOne.Providers
+namespace AVOne.Providers.Metadata
 {
     using AVOne.Models.Item;
+    using AVOne.Providers;
 
     /// <summary>
     /// Marker interface.

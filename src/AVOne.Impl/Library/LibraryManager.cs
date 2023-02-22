@@ -18,6 +18,7 @@ namespace AVOne.Impl.Library
     using AVOne.Library;
     using AVOne.Models.Item;
     using AVOne.Providers;
+    using AVOne.Providers.Metadata;
     using AVOne.Resolvers;
     using Microsoft.Extensions.Logging;
 

@@ -9,7 +9,7 @@ namespace AVOne.Providers.Jellyfin
     using AVOne.IO;
     using AVOne.Models.Info;
     using AVOne.Models.Item;
-    using AVOne.Providers;
+    using AVOne.Providers.Metadata;
 
     /// <summary>
     /// Local image provider.

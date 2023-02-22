@@ -3,12 +3,12 @@
 
 #nullable disable
 
-namespace AVOne.Impl.Models
+namespace AVOne.Tool.Models
 {
     using AVOne.Models.Info;
     using AVOne.Models.Item;
     using AVOne.Models.Result;
-    using AVOne.Providers;
+    using AVOne.Providers.Metadata;
 
     public class MoveMetaDataItem
     {

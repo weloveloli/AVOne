@@ -13,7 +13,7 @@ namespace AVOne.Providers.Jellyfin.Base
     using AVOne.IO;
     using AVOne.Models.Info;
     using AVOne.Models.Item;
-    using AVOne.Providers;
+    using AVOne.Providers.Metadata;
     using Microsoft.Extensions.Logging;
 
     public abstract class BaseJellifinNfoSaver : IMetadataFileSaverProvider
@@ -105,6 +105,8 @@ namespace AVOne.Providers.Jellyfin.Base
         protected ILogger<BaseJellifinNfoSaver> Logger { get; }
 
         public abstract int Order { get; }
+
+        public string Name => "Jellyfin.Nfo";
 
         /// <inheritdoc />
         public string GetSavePath(BaseItem item)

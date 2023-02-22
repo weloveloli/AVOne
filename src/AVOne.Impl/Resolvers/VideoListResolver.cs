@@ -7,7 +7,7 @@ namespace AVOne.Impl.Resolvers
     using AVOne.Impl.Helper;
     using AVOne.IO;
     using AVOne.Models.Info;
-    using AVOne.Providers;
+    using AVOne.Providers.Metadata;
 
     /// <summary>
     /// Resolves alternative versions and extras from list of video files.

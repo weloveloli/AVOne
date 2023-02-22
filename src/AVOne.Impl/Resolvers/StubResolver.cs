@@ -4,7 +4,7 @@
 namespace AVOne.Impl.Resolvers
 {
     using AVOne.Extensions;
-    using AVOne.Providers;
+    using AVOne.Providers.Metadata;
 
     /// <summary>
     /// Resolve if file is stub (.disc).

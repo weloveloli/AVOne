@@ -15,22 +15,46 @@ namespace AVOne.Tool
         public static ILogger? Logger { get; set; }
         static readonly Style StyleError = new Style(foreground: Color.Red3);
         static readonly Style StyleInfo = new Style(foreground: Color.DeepSkyBlue1);
+        static readonly Style StyleWarn = new Style(foreground: Color.Yellow3);
         static readonly Style StyleSuccess = new Style(foreground: Color.Green);
 
         internal static void Print(string message, object value)
         {
             Info(message + "{0}", value);
         }
+        internal static void WarnLocale(string message, params object[] args)
+        {
+            Warn(L.Text[message], args);
+        }
+        internal static void Warn(string message, params object[] args)
+        {
+            AnsiConsole.Write(new Text(string.Format(message, args), StyleWarn));
+            Console.WriteLine();
+        }
 
+        internal static void InfoLocale(string message, params object[] args)
+        {
+            Info(L.Text[message], args);
+        }
         internal static void Info(string message, params object[] args)
         {
             AnsiConsole.Write(new Text(string.Format(message, args), StyleInfo));
             Console.WriteLine();
         }
+        internal static void ErrorLocale(string message, params object[] args)
+        {
+            Error(L.Text[message], args);
+        }
+
         internal static void Error(string message, params object[] args)
         {
             AnsiConsole.Write(new Text(string.Format(message, args), StyleError));
             Console.WriteLine();
+        }
+
+        internal static void SuccessLocale(string message, params object[] args)
+        {
+            Success(L.Text[message], args);
         }
         internal static void Success(string message, params object[] args)
         {
