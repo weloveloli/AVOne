@@ -8,10 +8,10 @@ namespace AVOne.Tool
     using System.IO;
     using System.Text;
     using System.Threading.Tasks;
+    using AVOne.Constants;
     using AVOne.Tool.Commands;
     using AVOne.Tool.Configuration;
     using AVOne.Tools.Migrations;
-    using MediaBrowser.Model.IO;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
@@ -195,7 +195,7 @@ namespace AVOne.Tool
                               ?? throw new InvalidOperationException($"Invalid resource path: '{ResourcePath}'");
             await using (resource.ConfigureAwait(false))
             {
-                Stream dst = new FileStream(configPath, FileMode.CreateNew, FileAccess.Write, FileShare.None, IODefaults.FileStreamBufferSize, FileOptions.Asynchronous);
+                Stream dst = new FileStream(configPath, FileMode.CreateNew, FileAccess.Write, FileShare.None, AVOneConstants.FileStreamBufferSize, FileOptions.Asynchronous);
                 await using (dst.ConfigureAwait(false))
                 {
                     // Copy the resource contents to the expected file path for the config file

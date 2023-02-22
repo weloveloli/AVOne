@@ -40,7 +40,6 @@ namespace AVOne.Tool.Commands
                 ("MetaData", GenerateRenderable)
                 );
         }
-
         public IRenderable GenerateRenderable(MoveMetaDataItem item)
         {
             if (!item.HasMetaData)

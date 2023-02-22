@@ -25,25 +25,10 @@ namespace AVOne.Providers.Jellyfin
     internal class JellyfinNamingOptions : INamingOptions
     {
         private readonly Emby.Naming.Common.NamingOptions _options;
-        private readonly EpisodeExpression[] _multipleEpisodeExpressions;
 
         public JellyfinNamingOptions()
         {
             _options = new Emby.Naming.Common.NamingOptions();
-            EpisodeExpzressions = _options.EpisodeExpressions
-                .Select((e) => new EpisodeExpression(e.Expression, e.IsByDate)).ToArray();
-            _multipleEpisodeExpressions = _options.MultipleEpisodeExpressions
-                .Select((e) => new EpisodeExpression(e.Expression, e.IsByDate)).ToArray();
-            VideoExtraRules = _options.VideoExtraRules
-                .Select((e) => new ExtraRule((ExtraType)e.ExtraType, (ExtraRuleType)e.RuleType, e.Token, (MediaType)e.MediaType)).ToArray();
-            AllExtrasTypesFolderNames = _options.AllExtrasTypesFolderNames.ToArray().ToDictionary(e => e.Key, e => (ExtraType)(int)e.Value);
-            VideoFileStackingRules = new FileStackRule[3]
-    {
-                new FileStackRule("^(?<filename>.*?)(?:(?<=[\\]\\)\\}])|[ _.-]+)[\\(\\[]?(?<parttype>cd|dvd|part|pt|dis[ck])[ _.-]*(?<number>[0-9]+)[\\)\\]]?(?:\\.[^.]+)?$", isNumerical: true),
-                new FileStackRule("^(?<filename>.*?)(?:(?<=[\\]\\)\\}])|[ _.-]+)[\\(\\[]?(?<parttype>cd|dvd|part|pt|dis[ck])[ _.-]*(?<number>[a-d])[\\)\\]]?(?:\\.[^.]+)?$", isNumerical: false),
-                new FileStackRule("^(?<filename>.*?)(?:(?<=[\\]\\)\\}])|[ _.-]?)(?<number>[a-d])(?:\\.[^.]+)?$", isNumerical: false)
-    };
-            StubTypes = _options.StubTypes.Select(e => new StubTypeRule(e.Token, e.StubType)).ToArray();
         }
 
         /// <summary>
@@ -74,12 +59,12 @@ namespace AVOne.Providers.Jellyfin
         /// <summary>
         /// Gets or sets list of episode regular expressions.
         /// </summary>
-        public EpisodeExpression[] EpisodeExpzressions { get; }
+        public EpisodeExpression[] EpisodeExpzressions => _options.EpisodeExpressions;
 
         /// <summary>
         /// Gets or sets list of multi-episode regular expressions.
         /// </summary>
-        public EpisodeExpression[] MultipleEpisodeExpressions => _multipleEpisodeExpressions;
+        public EpisodeExpression[] MultipleEpisodeExpressions => _options.MultipleEpisodeExpressions;
 
         /// <summary>
         /// Gets list of episode without season regular expressions.
@@ -94,11 +79,11 @@ namespace AVOne.Providers.Jellyfin
         /// <summary>
         /// Gets or sets list of extra rules for videos.
         /// </summary>
-        public ExtraRule[] VideoExtraRules { get; private set; }
+        public ExtraRule[] VideoExtraRules => _options.VideoExtraRules;
 
-        public FileStackRule[] VideoFileStackingRules { get; private set; }
-        public Dictionary<string, ExtraType> AllExtrasTypesFolderNames { get; private set; }
-        public StubTypeRule[] StubTypes { get; }
+        public FileStackRule[] VideoFileStackingRules => _options.VideoFileStackingRules;
+        public Dictionary<string, ExtraType> AllExtrasTypesFolderNames => _options.AllExtrasTypesFolderNames;
+        public StubTypeRule[] StubTypes => _options.StubTypes;
 
         /// <summary>
         /// Gets or sets list of audio file extensions.

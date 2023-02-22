@@ -61,5 +61,10 @@ namespace AVOne.Abstraction
         /// </summary>
         /// <param name="serviceCollection">Instance of the <see cref="IServiceCollection"/> interface.</param>
         void Init(IServiceCollection serviceCollection);
+
+        /// <summary>
+        /// Gets or sets the service provider.
+        /// </summary>
+        public IServiceProvider ServiceProvider { get; }
     }
 }

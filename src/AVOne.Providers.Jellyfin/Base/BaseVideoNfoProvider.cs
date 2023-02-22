@@ -12,7 +12,7 @@ namespace AVOne.Providers.Jellyfin.Base
     using AVOne.Providers.Jellyfin;
     using Microsoft.Extensions.Logging;
 
-    public abstract class BaseVideoNfoProvider<T> : BaseNfoProvider<T>
+    public abstract class BaseVideoNfoProvider<T> : BaseJellyfinNfoProvider<T>
         where T : Video, new()
     {
         private readonly ILogger<BaseVideoNfoProvider<T>> _logger;
@@ -41,7 +41,7 @@ namespace AVOne.Providers.Jellyfin.Base
             {
                 Item = result.Item
             };
-            new BaseNfoParser<T>(_logger, _config, _providerManager, _directoryService).Fetch(tmpItem, path, cancellationToken);
+            new BaseJellyfinNfoParser<T>(_logger, _config, _providerManager, _directoryService).Fetch(tmpItem, path, cancellationToken);
 
             result.Item = tmpItem.Item;
             result.People = tmpItem.People;

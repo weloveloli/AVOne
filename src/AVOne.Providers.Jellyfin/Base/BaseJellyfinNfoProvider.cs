@@ -9,12 +9,12 @@ namespace AVOne.Providers.Jellyfin.Base
     using AVOne.Models.Result;
     using AVOne.Providers;
 
-    public abstract class BaseNfoProvider<T> : ILocalMetadataProvider<T>
+    public abstract class BaseJellyfinNfoProvider<T> : ILocalMetadataProvider<T>
         where T : BaseItem, new()
     {
         private readonly IFileSystem _fileSystem;
 
-        protected BaseNfoProvider(IFileSystem fileSystem)
+        protected BaseJellyfinNfoProvider(IFileSystem fileSystem)
         {
             _fileSystem = fileSystem;
         }

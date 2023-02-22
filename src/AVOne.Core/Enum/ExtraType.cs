@@ -14,6 +14,8 @@ namespace AVOne.Enum
         Scene = 6,
         Sample = 7,
         ThemeSong = 8,
-        ThemeVideo = 9
+        ThemeVideo = 9,
+        Featurette = 10,
+        Short = 11
     }
 }

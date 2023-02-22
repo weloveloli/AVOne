@@ -8,7 +8,7 @@ namespace AVOne.IO
     /// <summary>
     /// Helper class to create async <see cref="FileStream" />s.
     /// </summary>
-    public static class FileOptions
+    public static class FileOptionsHelper
     {
         /// <summary>
         /// Gets the default <see cref="FileStreamOptions"/> for reading files async.

@@ -25,7 +25,6 @@ namespace AVOne.Impl.Facade
     using AVOne.Providers;
     using Furion.FriendlyException;
     using Microsoft.Extensions.Logging;
-    using FileOptions = AVOne.IO.FileOptions;
 
     public class MetaDataFacade : IMetaDataFacade
     {
@@ -232,7 +231,7 @@ namespace AVOne.Impl.Facade
                         var path = Path.Combine(_serverApplicationPaths.ImageCachePath, imageHash + extension);
                         Directory.CreateDirectory(_serverApplicationPaths.ImageCachePath);
 
-                        var fileStreamOptions = FileOptions.AsyncWriteOptions;
+                        var fileStreamOptions = FileOptionsHelper.AsyncWriteOptions;
                         fileStreamOptions.Mode = FileMode.Create;
                         fileStreamOptions.PreallocationSize = source.Length;
                         var fs = new FileStream(path, fileStreamOptions);

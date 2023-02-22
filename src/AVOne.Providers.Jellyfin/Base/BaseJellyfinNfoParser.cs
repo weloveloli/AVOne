@@ -17,7 +17,7 @@ namespace AVOne.Providers.Jellyfin.Base
     using AVOne.Providers;
     using Microsoft.Extensions.Logging;
 
-    public class BaseNfoParser<T>
+    public class BaseJellyfinNfoParser<T>
             where T : BaseItem
     {
         public const string YouTubeWatchUrl = "https://www.youtube.com/watch?v=";
@@ -26,7 +26,7 @@ namespace AVOne.Providers.Jellyfin.Base
         private Dictionary<string, string> _validProviderIds;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BaseNfoParser{T}" /> class.
+        /// Initializes a new instance of the <see cref="BaseJellyfinNfoParser{T}" /> class.
         /// </summary>
         /// <param name="logger">Instance of the <see cref="ILogger"/> interface.</param>
         /// <param name="config">Instance of the <see cref="IConfigurationManager"/> interface.</param>
@@ -34,7 +34,7 @@ namespace AVOne.Providers.Jellyfin.Base
         /// <param name="userManager">Instance of the <see cref="IUserManager"/> interface.</param>
         /// <param name="userDataManager">Instance of the <see cref="IUserDataManager"/> interface.</param>
         /// <param name="directoryService">Instance of the <see cref="IDirectoryService"/> interface.</param>
-        public BaseNfoParser(
+        public BaseJellyfinNfoParser(
             ILogger logger,
             IConfigurationManager config,
             IProviderManager providerManager,

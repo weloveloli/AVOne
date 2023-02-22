@@ -96,7 +96,7 @@ namespace AVOne.Extensions
 #pragma warning restore CA5351
         }
 
-        public static string Ellipsis(this string? str, int number)
+        public static string? Ellipsis(this string? str, int number)
         {
             if (string.IsNullOrEmpty(str))
             {
@@ -121,7 +121,6 @@ namespace AVOne.Extensions
             return pos == -1 ? haystack : haystack[..pos];
         }
 
-
         /// <summary>
         /// Returns the part on the right of the <c>needle</c>.
         /// </summary>
@@ -143,5 +142,6 @@ namespace AVOne.Extensions
 
             return haystack[(pos + 1)..];
         }
+
     }
 }
