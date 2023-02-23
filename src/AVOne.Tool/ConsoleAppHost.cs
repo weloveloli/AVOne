@@ -19,6 +19,7 @@ namespace AVOne.Tool
     using AVOne.IO;
     using AVOne.Providers.Jellyfin;
     using AVOne.Providers.MetaTube;
+    using AVOne.Providers.Official;
     using AVOne.Tool.Commands;
     using AVOne.Tool.Configuration;
     using AVOne.Tool.Facade;
@@ -143,6 +144,7 @@ namespace AVOne.Tool
             yield return typeof(MigrationsFactory).Assembly;
             yield return typeof(MetaTubeServiceRegistrator).Assembly;
             yield return typeof(JellyfinNamingOptionProvider).Assembly;
+            yield return typeof(OfficialSimpleImageSaverProvider).Assembly;
         }
 
         private IEnumerable<Type> GetTypes(IEnumerable<Assembly> assemblies)

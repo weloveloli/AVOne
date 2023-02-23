@@ -52,7 +52,7 @@ namespace AVOne.Providers.Official
                     filename = "-" + type.ToString().ToLowerInvariant();
                     break;
             }
-            var path = Path.Join(Directory.GetParent(item.TargetPath).FullName, item.TargetName + filename + extension);
+            var path = Path.Join(Directory.GetParent(item.TargetPath)!.FullName, item.TargetName + filename + extension);
             var fileStreamOptions = FileOptionsHelper.AsyncWriteOptions;
             fileStreamOptions.Mode = FileMode.Create;
             fileStreamOptions.PreallocationSize = source.Length;

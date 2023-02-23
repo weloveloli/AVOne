@@ -12,6 +12,11 @@ namespace AVOne.Tool.Models
 
     public class MoveMetaDataItem
     {
+        /// <summary>
+        /// Occurs when [item added].
+        /// </summary>
+        public event EventHandler<StatusChangeArgs> StatusChanged;
+
         public PornMovie Movie { get; set; }
 
         public ILocalMetadataProvider<PornMovie> LocalMetadataProvider { get; set; }
@@ -19,6 +24,9 @@ namespace AVOne.Tool.Models
 
         public ILocalImageProvider LocalImageProvider { get; set; }
         public IRemoteImageProvider RemoteImageProvider { get; set; }
+
+        public IMetadataFileSaverProvider MetadataFileSaverProvider { get; set; }
+        public IImageSaverProvider ImageSaverProvider { get; set; }
 
         public MetadataResult<PornMovie> MetadataResult { get; set; }
 
@@ -32,6 +40,8 @@ namespace AVOne.Tool.Models
         public PornMovie Result { get; set; }
 
         public string Name => HasMetaData ? Result.Name : Movie.Name;
+
+        public void UpdateStatus(string message, params object[] args) => StatusChanged?.Invoke(this, new StatusChangeArgs { StatusMessage = string.Format(message, args) });
 
     }
 }

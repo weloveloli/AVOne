@@ -16,6 +16,7 @@ namespace AVOne.Tool.Facade
     using AVOne.Configuration;
     using AVOne.Constants;
     using AVOne.Enum;
+    using AVOne.Helper;
     using AVOne.Impl.Configuration;
     using AVOne.IO;
     using AVOne.Library;
@@ -24,6 +25,7 @@ namespace AVOne.Tool.Facade
     using AVOne.Providers;
     using AVOne.Providers.Metadata;
     using AVOne.Tool.Models;
+    using DotNet.Globbing.Generation;
     using Furion.FriendlyException;
     using Microsoft.Extensions.Logging;
     using Newtonsoft.Json.Linq;
@@ -123,6 +125,13 @@ namespace AVOne.Tool.Facade
                     .OfType<IRemoteImageProvider>()
                     .Where(e => _config.ImageMetaDataProviders.Contains(e.Name))
                     .FirstOrDefault();
+
+                m.ImageSaverProvider = _providerManager.GetImageSaverProvider().FirstOrDefault();
+
+                m.MetadataFileSaverProvider = _providerManager
+                .GetMetadataSaverProvider(movieItem, ItemUpdateType.MetadataDownload)
+                .OfType<IMetadataFileSaverProvider>()
+                .FirstOrDefault();
                 return m;
             });
 
@@ -142,7 +151,9 @@ namespace AVOne.Tool.Facade
                 LocalImageProvider = dataItem.LocalImageProvider,
                 RemoteImageProvider = dataItem.RemoteImageProvider,
                 LocalMetadataProvider = dataItem.LocalMetadataProvider,
-                RemoteMetadataProvider = dataItem.RemoteMetadataProvider
+                RemoteMetadataProvider = dataItem.RemoteMetadataProvider,
+                ImageSaverProvider = dataItem.ImageSaverProvider,
+                MetadataFileSaverProvider = dataItem.MetadataFileSaverProvider
             };
 
             var metaDataResult = await item.LocalMetadataProvider
@@ -165,6 +176,8 @@ namespace AVOne.Tool.Facade
                         item.MetadataResult = metaDataResult;
                         item.Result = metaDataResult.Item;
                         item.Result.Path = item.Movie.Path;
+                        item.Result.People?.Clear();
+                        item.Result.People.AddRange(metaDataResult.People);
                     }
                 }
                 catch (Exception e)
@@ -297,9 +310,50 @@ namespace AVOne.Tool.Facade
             return item;
         }
 
-        public void SaveMetaDataToLocal(MoveMetaDataItem item)
+        public async Task SaveMetaDataToLocal(MoveMetaDataItem item, CancellationToken token = default)
         {
-            throw new NotImplementedException();
+            if (item.LocalImageInfos != null && item.LocalImageInfos.Any())
+            {
+                foreach (var image in item.LocalImageInfos)
+                {
+                    var oldPath = image.FileInfo.FullName;
+                    var newPath = Path.Combine(Directory.GetParent(item.Result.TargetPath).FullName, image.FileInfo.Name);
+                    if (oldPath != newPath)
+                    {
+                        File.Move(oldPath, newPath);
+                    }
+                }
+            }
+            else if (item.RemoteImageInfos != null && item.RemoteImageInfos.Any())
+            {
+                item.UpdateStatus(L.Text["Downloading Remote Image"], item.Movie.Name);
+                foreach (var image in item.RemoteImageInfos)
+                {
+                    var url = image.Url;
+                    await Retry.InvokeAsync(async () =>
+                    {
+                        var response = await item.RemoteImageProvider.GetImageResponse(image.Url, token);
+                        // Sometimes providers send back bad urls. Just move to the next image
+                        if (response.StatusCode == HttpStatusCode.NotFound || response.StatusCode == HttpStatusCode.Forbidden)
+                        {
+                            _logger.LogInformation("{Url} returned {StatusCode}, ignoring", url, response.StatusCode);
+                            return;
+                        }
+
+                        if (!response.IsSuccessStatusCode)
+                        {
+                            _logger.LogInformation("{Url} returned {StatusCode}, skipping all remaining requests", url, response.StatusCode);
+                            throw new Exception();
+                        }
+
+                        using var source = response.Content.ReadAsStream();
+                        var mimeType = response.Content.Headers.ContentType?.MediaType;
+                        await item.ImageSaverProvider.SaveImage(item.Result, source, mimeType, image.Type, null, token);
+                    }, 3, 1000, false);
+                }
+            }
+            item.UpdateStatus(L.Text["Saving metadata"], item.Movie.Name);
+            await item.MetadataFileSaverProvider.SaveAsync(item.Result, token);
         }
     }
 }

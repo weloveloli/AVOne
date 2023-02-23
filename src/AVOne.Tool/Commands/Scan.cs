@@ -3,6 +3,7 @@
 
 namespace AVOne.Tool.Commands
 {
+    using System;
     using System.Threading;
     using System.Threading.Tasks;
     using AVOne.Common.Enum;
@@ -73,6 +74,7 @@ namespace AVOne.Tool.Commands
                     PrintMetaData(item);
                 }
                 var orignalName = item.Movie.FileNameWithoutExtension;
+                item.StatusChanged += (object? sender, StatusChangeArgs e) => ctx.Status(e.StatusMessage);
                 if (!string.IsNullOrEmpty(TargetFolder))
                 {
 
@@ -83,7 +85,7 @@ namespace AVOne.Tool.Commands
                 if (SaveMetadata)
                 {
                     ctx.Status(string.Format(L.Text["Saving metadata"], orignalName));
-                    facade.SaveMetaDataToLocal(item);
+                    await facade.SaveMetaDataToLocal(item);
                 }
             });
         }
@@ -103,6 +105,23 @@ namespace AVOne.Tool.Commands
                     if (!SaveMetadata && string.IsNullOrEmpty(TargetFolder))
                     {
                         PrintMetaData(items.ToArray());
+                    }
+                    foreach (var item in items)
+                    {
+                        var orignalName = item.Movie.FileNameWithoutExtension;
+                        item.StatusChanged += (object? sender, StatusChangeArgs e) => ctx.Status(e.StatusMessage);
+                        if (!string.IsNullOrEmpty(TargetFolder))
+                        {
+
+                            ctx.Status(string.Format(L.Text["Moving file"], orignalName));
+                            MoveFile(item);
+                            Cli.SuccessLocale("Moving file successfully", orignalName, item.Result.TargetPath);
+                        }
+                        if (SaveMetadata)
+                        {
+                            ctx.Status(string.Format(L.Text["Saving metadata"], orignalName));
+                            await facade.SaveMetaDataToLocal(item);
+                        }
                     }
                 });
         }
@@ -158,10 +177,12 @@ namespace AVOne.Tool.Commands
             if (targetPath != movie.Path)
             {
                 File.Move(movie.Path, targetPath);
+                movie.Path = targetPath;
             }
 
             movie.TargetPath = targetPath;
             movie.TargetName = newName;
+            movie.Name = newName;
 
         }
     }

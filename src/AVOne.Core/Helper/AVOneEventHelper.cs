@@ -11,7 +11,7 @@ namespace AVOne.Helper
     /// Class EventHelper.
     /// </summary>
     // TODO: @bond Remove
-    public static class EventHelper
+    public static class AVOneEventHelper
     {
         /// <summary>
         /// Fires the event.

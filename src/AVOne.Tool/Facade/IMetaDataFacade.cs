@@ -9,6 +9,6 @@ namespace AVOne.Tool.Facade
     {
         public Task<MoveMetaDataItem> ResolveAsMovie(string path, CancellationToken token = default);
         public Task<IEnumerable<MoveMetaDataItem>> ResolveAsMovies(string dir, CancellationToken token = default);
-        public void SaveMetaDataToLocal(MoveMetaDataItem item);
+        public Task SaveMetaDataToLocal(MoveMetaDataItem item, CancellationToken token = default);
     }
 }
