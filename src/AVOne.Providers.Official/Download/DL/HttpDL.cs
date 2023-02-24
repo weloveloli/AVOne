@@ -10,6 +10,7 @@ namespace AVOne.Providers.Official.Download.DL
     using System.Net.Http;
     using System.Threading;
     using System.Threading.Tasks;
+    using AVOne.Common.Helper;
     using AVOne.Providers.Official.Download.Events;
     using AVOne.Providers.Official.Download.Utils;
 
@@ -103,7 +104,7 @@ namespace AVOne.Providers.Official.Download.DL
             var contentType = respHeaders?.ContentType?.MediaType;
             var contentLength = respHeaders?.ContentRange?.Length;
 
-            var ext = contentType != null ? MimeTypeMap.GetExtension(contentType) : Path.GetExtension(new Uri(url).AbsolutePath);
+            var ext = contentType != null ? MimeTypesHelper.GetMimeType(contentType) : Path.GetExtension(new Uri(url).AbsolutePath);
             bool getResume()
             {
                 if (rangeTest != 1)

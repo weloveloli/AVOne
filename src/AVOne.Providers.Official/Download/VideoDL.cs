@@ -53,7 +53,7 @@ namespace AVOne.Providers.Official.Download
         public VideoDL(HttpClient httpClient, string ffmpegPath)
         {
             _httpClient = httpClient;
-            Hls = new HlsDL(httpClient);
+            Hls = new HlsDL(httpClient,ffmpegPath);
             Dash = new DashDL(httpClient);
             Http = new HttpDL(httpClient);
         }

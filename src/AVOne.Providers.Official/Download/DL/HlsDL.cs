@@ -717,7 +717,7 @@ namespace AVOne.Providers.Official.Download.DL
                         var arguments = "";
                         arguments += $@"-loglevel warning -f mp4 -i ""{partOutputPath}{ext}"" ";
                         arguments += $@"-c copy -y -f mp4 ""{partOutputPath}.mp4""";
-                        await FFmpeg.ExecuteAsync(arguments, null, onMessage, token);
+                        await FFmpeg.ExecuteAsync(arguments, _ffmepg, null, onMessage, token);
                         File.Delete($"{partOutputPath}{ext}");
                     }
                     else
@@ -759,7 +759,7 @@ namespace AVOne.Providers.Official.Download.DL
                         _ => throw new Exception("OutputFormat not match."),
                     };
                     var workingDir = Path.GetDirectoryName(partFiles.First());
-                    await FFmpeg.ExecuteAsync(arguments, workingDir, onMessage, token);
+                    await FFmpeg.ExecuteAsync(arguments, _ffmepg, workingDir, onMessage, token);
                 }
             }
 
@@ -867,7 +867,7 @@ namespace AVOne.Providers.Official.Download.DL
                         throw new Exception("OutputFormat not match.");
                 }
 
-                await FFmpeg.ExecuteAsync(arguments, null, onMessage, token);
+                await FFmpeg.ExecuteAsync(arguments, _ffmepg, null, onMessage, token);
                 File.Delete(concatTextPath);
 
                 var output = Directory.GetFiles(tempDir)
@@ -1227,7 +1227,7 @@ namespace AVOne.Providers.Official.Download.DL
                     throw new Exception("OutputFormat not match.");
             }
 
-            await FFmpeg.ExecuteAsync(arguments, null, onMessage, token);
+            await FFmpeg.ExecuteAsync(arguments, _ffmepg, null, onMessage, token);
 
             var ext = outputFormat == MuxOutputFormat.MP4 ? ".mp4" : ".ts";
             var finishPath = Path.Combine(workDir, $"{saveName}{ext}");
