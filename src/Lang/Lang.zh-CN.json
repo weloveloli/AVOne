@@ -5,6 +5,7 @@
   "DIR_NOT_EXIST": "文件夹 '{0}' 不存在.",
   "SKIP_METADATA_NOT_EXIST": "由于无法获取元数据,跳过文件 '{0}'.",
   "SKIP_FILE_DUE_TO_TARGET_FILE_AREADY_EXIST": "由于目标路径'{1}'已存在,跳过文件 '{0}'.",
+  "INVALID_DOWNLOADABLE_ITEM": "非法的下载目标.",
 
   "Searching Metadata": "正在搜索媒体元数据 ...",
   "Moving file": "移动文件 {0} ...",

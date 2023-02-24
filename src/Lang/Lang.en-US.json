@@ -5,6 +5,7 @@
   "DIR_NOT_EXIST": "Directory '{0}' not exists.",
   "SKIP_METADATA_NOT_EXIST": "Skip '{0}' due to metadata for this file not exists.",
   "SKIP_FILE_DUE_TO_TARGET_FILE_AREADY_EXIST": "Skip '{0}' due to target file path '{1}' already exists.",
+  "INVALID_DOWNLOADABLE_ITEM": "Invalid downloadable item.",
 
 
   "Searching Metadata": "Searching metadata for files ...",

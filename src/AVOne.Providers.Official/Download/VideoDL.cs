@@ -10,8 +10,8 @@ namespace AVOne.Providers.Official.Download
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
+    using AVOne.Enum;
     using AVOne.Providers.Official.Download.DL;
-    using AVOne.Providers.Official.Download.Enums;
     using AVOne.Providers.Official.Download.Extensions;
     using AVOne.Providers.Official.Download.Parser;
     using AVOne.Providers.Official.Download.Parser.DashParser;
@@ -41,7 +41,7 @@ namespace AVOne.Providers.Official.Download
         /// <param name="timeout">Set http request timeout.(millisecond)</param>
         /// <param name="proxy">Set http or socks5 proxy.
         /// http://{hostname}:{port} or socks5://{hostname}:{port}</param>
-        public VideoDL(string ffmpegPath= "ffmepg", int timeout = 60000, string? proxy = null)
+        public VideoDL(string ffmpegPath = "ffmepg", int timeout = 60000, string? proxy = null)
             : this(CreateHttpClient(timeout, proxy), ffmpegPath)
         {
         }
@@ -50,10 +50,10 @@ namespace AVOne.Providers.Official.Download
         /// Init VideoDL.
         /// </summary>
         /// <param name="httpClient">Set http client.</param>
-        public VideoDL(HttpClient httpClient, string ffmpegPath)
+        public VideoDL(HttpClient httpClient, string ffmepg = "ffmepg")
         {
             _httpClient = httpClient;
-            Hls = new HlsDL(httpClient,ffmpegPath);
+            Hls = new HlsDL(httpClient, ffmepg);
             Dash = new DashDL(httpClient);
             Http = new HttpDL(httpClient);
         }

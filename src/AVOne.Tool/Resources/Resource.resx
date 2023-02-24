@@ -177,6 +177,9 @@
   <data name="HelpTextUseContainer" xml:space="preserve">
     <value>If use create a new container to hold all the media, image, nfo files.</value>
   </data>
+  <data name="HelpTextVerbDownload" xml:space="preserve">
+    <value>Download media.</value>
+  </data>
   <data name="HelpTextVerbInfo" xml:space="preserve">
     <value>Print system info.</value>
   </data>

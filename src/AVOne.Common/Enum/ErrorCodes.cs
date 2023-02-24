@@ -18,6 +18,9 @@ namespace AVOne.Common.Enum
         SKIP_METADATA_NOT_EXIST,
         [ErrorCodeItemMetadata("SKIP_FILE_DUE_TO_TARGET_FILE_AREADY_EXIST")]
         SKIP_FILE_DUE_TO_TARGET_FILE_AREADY_EXIST,
+
+        [ErrorCodeItemMetadata("INVALID_DOWNLOADABLE_ITEM")]
+        INVALID_DOWNLOADABLE_ITEM,
         [ErrorCodeItemMetadata("SERVER_ERROR", ErrorCode = "Error")]
         SERVER_ERROR
     }

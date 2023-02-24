@@ -73,7 +73,7 @@ namespace AVOne.Providers.Official.Download.Utils
 
             var videoInfo = "";
             var arguments = $@"-i ""{filePath}""";
-            await ExecuteAsync(arguments, null,
+            await ExecuteAsync(arguments, ffmepegPath, null,
                 (message) => videoInfo = message, token);
 
             return videoInfo

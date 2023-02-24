@@ -9,6 +9,6 @@ namespace AVOne.Providers.Download
     {
         public bool Support(BaseDownloadableItem item);
 
-        public Task CreateTask(BaseDownloadableItem item, DownloadOpts opts);
+        public Task CreateTask(BaseDownloadableItem item, DownloadOpts opts, CancellationToken token = default);
     }
 }

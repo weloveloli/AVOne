@@ -241,6 +241,15 @@ namespace AVOne.Tool.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Download media..
+        /// </summary>
+        public static string HelpTextVerbDownload {
+            get {
+                return ResourceManager.GetString("HelpTextVerbDownload", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Print system info..
         /// </summary>
         public static string HelpTextVerbInfo {

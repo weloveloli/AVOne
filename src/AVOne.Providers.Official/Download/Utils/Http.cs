@@ -8,6 +8,7 @@ namespace AVOne.Providers.Official.Download.Utils
     using System.Linq;
     using System.Net;
     using System.Net.Http;
+    using MihaZupan;
 
     internal static class Http
     {

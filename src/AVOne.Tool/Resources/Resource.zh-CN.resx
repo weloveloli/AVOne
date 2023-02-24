@@ -180,6 +180,9 @@
   <data name="HelpTextUseContainer" xml:space="preserve">
     <value>是否新建同名文件并将媒体文件以及元数据图片等放在下.</value>
   </data>
+  <data name="HelpTextVerbDownload" xml:space="preserve">
+    <value> 下载媒体文件.</value>
+  </data>
   <data name="HelpTextVerbOrganize" xml:space="preserve">
     <value>扫描整理指定文件下的视频文件.</value>
   </data>

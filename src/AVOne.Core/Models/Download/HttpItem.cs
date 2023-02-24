@@ -5,7 +5,8 @@ namespace AVOne.Models.Download
 {
     public class HttpItem : BaseDownloadableItem
     {
-        public string Url { get; set; }
-        public Dictionary<string, string> Header { get; set; }
+        public string? Url { get; set; }
+
+        public Dictionary<string, string>? Header { get; set; }
     }
 }

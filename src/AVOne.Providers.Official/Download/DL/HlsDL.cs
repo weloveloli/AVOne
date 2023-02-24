@@ -12,7 +12,7 @@ namespace AVOne.Providers.Official.Download.DL
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
-    using AVOne.Providers.Official.Download.Enums;
+    using AVOne.Enum;
     using AVOne.Providers.Official.Download.Events;
     using AVOne.Providers.Official.Download.Extensions;
     using AVOne.Providers.Official.Download.Parser;
@@ -38,7 +38,7 @@ namespace AVOne.Providers.Official.Download.DL
         /// Init HlsDL.
         /// </summary>
         /// <param name="httpClient">Set http client.</param>
-        public HlsDL(HttpClient httpClient, string ffmepg)
+        public HlsDL(HttpClient httpClient, string ffmepg = "ffmepg")
         {
             _httpClient = httpClient;
             _ffmepg = ffmepg;
