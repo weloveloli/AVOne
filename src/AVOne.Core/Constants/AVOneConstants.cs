@@ -19,5 +19,10 @@ namespace AVOne.Constants
         /// The default <see cref="StreamWriter" /> buffer size.
         /// </summary>
         public const int StreamWriterBufferSize = 1024;
+
+        /// <summary>
+        /// Gets the value for the default named http client.
+        /// </summary>
+        public const string Default = nameof(Default);
     }
 }

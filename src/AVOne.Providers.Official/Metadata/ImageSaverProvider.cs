@@ -1,7 +1,7 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // See License in the project root for license information.
 
-namespace AVOne.Providers.Official
+namespace AVOne.Providers.Official.Metadata
 {
     using System;
     using System.IO;
@@ -13,7 +13,7 @@ namespace AVOne.Providers.Official
     using AVOne.Models.Item;
     using AVOne.Providers.Metadata;
 
-    public class OfficialSimpleImageSaverProvider : IImageSaverProvider
+    public class ImageSaverProvider : IImageSaverProvider
     {
         public string Name => "Official";
 
@@ -29,29 +29,16 @@ namespace AVOne.Providers.Official
 
         private async Task SaveImageForPornMovie(BaseItem item, Stream source, string mimeType, ImageType type, int imageIndex, CancellationToken cancellationToken)
         {
-            string filename;
             var extension = MimeTypesHelper.ToExtension(mimeType);
-            switch (type)
+            var filename = type switch
             {
-                case ImageType.Art:
-                    filename = "-clearart";
-                    break;
-                case ImageType.BoxRear:
-                    filename = "-back";
-                    break;
-                case ImageType.Thumb:
-                    filename = "-landscape";
-                    break;
-                case ImageType.Primary:
-                    filename = string.Empty;
-                    break;
-                case ImageType.Backdrop:
-                    filename = "-backdrop";
-                    break;
-                default:
-                    filename = "-" + type.ToString().ToLowerInvariant();
-                    break;
-            }
+                ImageType.Art => "-clearart",
+                ImageType.BoxRear => "-back",
+                ImageType.Thumb => "-landscape",
+                ImageType.Primary => string.Empty,
+                ImageType.Backdrop => "-backdrop",
+                _ => "-" + type.ToString().ToLowerInvariant(),
+            };
             var path = Path.Join(Directory.GetParent(item.TargetPath)!.FullName, item.TargetName + filename + extension);
             var fileStreamOptions = FileOptionsHelper.AsyncWriteOptions;
             fileStreamOptions.Mode = FileMode.Create;
@@ -61,6 +48,12 @@ namespace AVOne.Providers.Official
             {
                 await source.CopyToAsync(fs, cancellationToken).ConfigureAwait(false);
             }
+            item.AddImage(new Models.Info.ItemImageInfo
+            {
+                Path = path,
+                Type = type,
+                DateModified = DateTime.Now
+            });
         }
     }
 }

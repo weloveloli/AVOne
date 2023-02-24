@@ -16,7 +16,6 @@ namespace AVOne.Tool.Facade
     using AVOne.Configuration;
     using AVOne.Constants;
     using AVOne.Enum;
-    using AVOne.Helper;
     using AVOne.Impl.Configuration;
     using AVOne.IO;
     using AVOne.Library;
@@ -25,10 +24,8 @@ namespace AVOne.Tool.Facade
     using AVOne.Providers;
     using AVOne.Providers.Metadata;
     using AVOne.Tool.Models;
-    using DotNet.Globbing.Generation;
     using Furion.FriendlyException;
     using Microsoft.Extensions.Logging;
-    using Newtonsoft.Json.Linq;
 
     public class MetaDataFacade : IMetaDataFacade
     {

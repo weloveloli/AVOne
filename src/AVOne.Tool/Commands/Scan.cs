@@ -68,6 +68,17 @@ namespace AVOne.Tool.Commands
             {
                 var facade = host.Resolve<IMetaDataFacade>();
                 MoveMetaDataItem? item = await facade.ResolveAsMovie(FilePath, token);
+                if (item is null)
+                {
+                    Cli.WarnLocale("Not a movie", FilePath);
+                    return;
+                }
+
+                if (!item.HasMetaData)
+                {
+                    Cli.WarnLocale("Can't find metadata", item.Movie.Name);
+                    return;
+                }
 
                 if (!SaveMetadata && string.IsNullOrEmpty(TargetFolder))
                 {

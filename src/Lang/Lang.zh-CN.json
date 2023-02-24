@@ -10,5 +10,7 @@
   "Moving file": "移动文件 {0} ...",
   "Saving metadata": "为 {0} 保存元数据 ...",
   "Moving file successfully": "成功将文件 {0} 移动至 {1}",
-  "Downloading Remote Image": "正在为文件 '{0}'下载图片"
+  "Downloading Remote Image": "正在为文件 '{0}'下载图片",
+  "Not a movie": "'{0}' 不是一个视频文件.",
+  "Can't find metadata": "无法为 '{0}'找到元数据."
 }

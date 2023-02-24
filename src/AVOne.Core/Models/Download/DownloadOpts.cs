@@ -5,6 +5,7 @@ namespace AVOne.Models.Download
 {
     public class DownloadOpts
     {
+        public string? HttpClientName { get; set; }
         public string? OutputPath { get; set; }
         public string? WorkDir { get; set; }
         public int? ThreadCount { get; set; }
