@@ -3,9 +3,26 @@
 
 namespace AVOne.Models.Download
 {
+    using AVOne.Enum;
+
     public class M3U8Item : BaseDownloadableItem
     {
-        public string? Url { get; set; }
+        public M3U8Item(string saveName, string url, Dictionary<string, string>? header, MediaQuality quality, string title)
+        {
+            SaveName = saveName;
+            Url = url;
+            Header = header;
+            Quality = quality;
+            Title = title;
+        }
+
+        public string Url { get; set; }
         public Dictionary<string, string>? Header { get; set; }
+
+        public MediaQuality Quality { get; set; } = MediaQuality.Low;
+
+        public string Title { get; set; }
+
+        public override string DisplayName => $"{Title}[{Quality}]";
     }
 }

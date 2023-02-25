@@ -5,7 +5,10 @@ namespace AVOne.Providers
 {
     using AVOne.Configuration;
     using AVOne.Enum;
+    using AVOne.Models.Download;
     using AVOne.Models.Item;
+    using AVOne.Providers.Download;
+    using AVOne.Providers.Extractor;
     using AVOne.Providers.Metadata;
 
     public interface IProviderManager
@@ -16,7 +19,10 @@ namespace AVOne.Providers
             IEnumerable<INamingOptionProvider> nameOptionProviders,
             IEnumerable<IVideoResolverProvider> resolverProviders,
             IEnumerable<IMetadataSaverProvider> metadataSaverProviders,
-            IEnumerable<IImageSaverProvider> imageSaverProviders);
+            IEnumerable<IImageSaverProvider> imageSaverProviders,
+            IEnumerable<IDownloaderProvider> downloaderProviders,
+            IEnumerable<IMediaExtractorProvider> mediaExtractorProviders
+            );
 
         MetadataOptions GetMetadataOptions(BaseItem item);
         IEnumerable<IMetadataProvider<T>> GetMetadataProviders<T>(BaseItem item) where T : BaseItem;
@@ -46,5 +52,7 @@ namespace AVOne.Providers
         /// <param name="refreshOptions">The image refresh options.</param>
         /// <returns>The image providers for the item.</returns>
         IEnumerable<IImageSaverProvider> GetImageSaverProvider();
+        IEnumerable<IDownloaderProvider> GetDownloaderProviders(BaseDownloadableItem item);
+        IEnumerable<IMediaExtractorProvider> GetMediaExtractorProviders(string websiteUrl);
     }
 }

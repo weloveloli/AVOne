@@ -144,6 +144,12 @@
   <data name="HelpTextDirectory" xml:space="preserve">
     <value>Path to scan.</value>
   </data>
+  <data name="HelpTextDownloadToTargetFolder" xml:space="preserve">
+    <value>Output folder of the download item.</value>
+  </data>
+  <data name="HelpTextDownloadWebUrl" xml:space="preserve">
+    <value>Url of website to extract media.</value>
+  </data>
   <data name="HelpTextffmpeg" xml:space="preserve">
     <value>Path to external FFmpeg executable to use in place of default found in PATH.</value>
   </data>

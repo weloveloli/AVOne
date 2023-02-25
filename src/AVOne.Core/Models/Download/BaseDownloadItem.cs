@@ -5,6 +5,7 @@ namespace AVOne.Models.Download
 {
     public abstract class BaseDownloadableItem
     {
-        public string Name { get; set; }
+        public string SaveName { get; set; }
+        public abstract string DisplayName { get; }
     }
 }

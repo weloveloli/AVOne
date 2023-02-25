@@ -13,5 +13,9 @@
   "Moving file successfully": "成功将文件 {0} 移动至 {1}",
   "Downloading Remote Image": "正在为文件 '{0}'下载图片",
   "Not a movie": "'{0}' 不是一个视频文件.",
-  "Can't find metadata": "无法为 '{0}'找到元数据."
+  "Can't find metadata": "无法为 '{0}'找到元数据.",
+  "Can not find extractor for web url": "无法为 '{0}' 获得可用的提取器.",
+  "Can not find any media for web url": "无法为 '{0}' 获得可下载的视频.",
+  "Choose a media to download": "选择需要下载的视频",
+  "Can not download media": "无法下载视频 '{0}'."
 }

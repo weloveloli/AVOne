@@ -12,6 +12,8 @@ namespace AVOne.Impl.Registrator
     using AVOne.Library;
     using AVOne.Models.Item;
     using AVOne.Providers;
+    using AVOne.Providers.Download;
+    using AVOne.Providers.Extractor;
     using AVOne.Providers.Metadata;
     using AVOne.Resolvers;
     using Microsoft.Extensions.DependencyInjection;
@@ -39,7 +41,9 @@ namespace AVOne.Impl.Registrator
                 host.GetExports<INamingOptionProvider>(),
                 host.GetExports<IVideoResolverProvider>(),
                 host.GetExports<IMetadataSaverProvider>(),
-                host.GetExports<IImageSaverProvider>()
+                host.GetExports<IImageSaverProvider>(),
+                host.GetExports<IDownloaderProvider>(),
+                host.GetExports<IMediaExtractorProvider>()
                 );
 
             host.Resolve<ILibraryManager>().AddParts(

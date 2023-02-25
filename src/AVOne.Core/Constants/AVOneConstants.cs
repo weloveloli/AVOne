@@ -24,5 +24,15 @@ namespace AVOne.Constants
         /// Gets the value for the default named http client.
         /// </summary>
         public const string Default = nameof(Default);
+
+        /// <summary>
+        /// Gets the value for the default named http client.
+        /// </summary>
+        public const string Download = nameof(Download);
+
+        /// <summary>
+        /// Gets the value for the named http client for Crawler.
+        /// </summary>
+        public const string Crawler = nameof(Crawler);
     }
 }

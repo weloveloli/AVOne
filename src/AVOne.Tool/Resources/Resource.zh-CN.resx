@@ -144,6 +144,12 @@
   <data name="HelpTextDirectory" xml:space="preserve">
     <value>扫描路劲</value>
   </data>
+  <data name="HelpTextDownloadToTargetFolder" xml:space="preserve">
+    <value>下载目标文件夹的路劲.</value>
+  </data>
+  <data name="HelpTextDownloadWebUrl" xml:space="preserve">
+    <value>提取媒体的网站地址.</value>
+  </data>
   <data name="HelpTextffmpeg" xml:space="preserve">
     <value>指定外部ffmpeg路劲</value>
   </data>

@@ -3,6 +3,7 @@
 
 namespace AVOne.Tool.Commands
 {
+    using AVOne.Common.Helper;
     using AVOne.Configuration;
     using AVOne.Tool.Resources;
     using CommandLine;
@@ -10,6 +11,7 @@ namespace AVOne.Tool.Commands
 
     internal abstract class BaseHostOptions : IStartupOptions
     {
+        protected const string ToolAlias = "avonetool";
         /// <summary>
         /// Gets or sets the path to the data directory.
         /// </summary>
@@ -21,7 +23,7 @@ namespace AVOne.Tool.Commands
         /// <inheritdoc />
         [Option("ffmpeg", Required = false, HelpText = "HelpTextffmpeg",
             ResourceType = typeof(Resource))]
-        public string? FFmpegPath { get; set; }
+        public string? FFmpegPath { get; set; } = ExecutableHelper.FindExecutable("ffmpeg");
 
         public virtual void InitService(IServiceCollection collection)
         {

@@ -6,8 +6,11 @@ namespace AVOne.Impl.Providers
     using AVOne.Abstraction;
     using AVOne.Configuration;
     using AVOne.Enum;
+    using AVOne.Models.Download;
     using AVOne.Models.Item;
     using AVOne.Providers;
+    using AVOne.Providers.Download;
+    using AVOne.Providers.Extractor;
     using AVOne.Providers.Metadata;
     using Microsoft.Extensions.Logging;
 
@@ -19,6 +22,8 @@ namespace AVOne.Impl.Providers
         private IVideoResolverProvider[] _nameResolverProviders = Array.Empty<IVideoResolverProvider>();
         private IMetadataSaverProvider[] _metadataSaverProviders = Array.Empty<IMetadataSaverProvider>();
         private IImageSaverProvider[] _imageSaverProviders = Array.Empty<IImageSaverProvider>();
+        private IDownloaderProvider[] _downloaderProviders;
+        private IMediaExtractorProvider[] _mediaExtractorProviders;
         private readonly ILogger<ProviderManager> _logger;
         private readonly IConfigurationManager _configurationManager;
         private readonly BaseApplicationConfiguration _configuration;
@@ -38,7 +43,9 @@ namespace AVOne.Impl.Providers
             IEnumerable<INamingOptionProvider> nameOptionProviders,
             IEnumerable<IVideoResolverProvider> resolverProviders,
             IEnumerable<IMetadataSaverProvider> metadataSaverProviders,
-            IEnumerable<IImageSaverProvider> imageSaverProviders
+            IEnumerable<IImageSaverProvider> imageSaverProviders,
+            IEnumerable<IDownloaderProvider> downloaderProviders,
+            IEnumerable<IMediaExtractorProvider> mediaExtractorProviders
             )
         {
             _imageProviders = imageProviders.ToArray();
@@ -47,6 +54,8 @@ namespace AVOne.Impl.Providers
             _nameResolverProviders = resolverProviders.ToArray();
             _metadataSaverProviders = metadataSaverProviders.ToArray();
             _imageSaverProviders = imageSaverProviders.ToArray();
+            _downloaderProviders = downloaderProviders.ToArray();
+            _mediaExtractorProviders = mediaExtractorProviders.ToArray();
         }
         /// <summary>
         /// Gets the metadata providers for the provided item.
@@ -115,6 +124,18 @@ namespace AVOne.Impl.Providers
         public IEnumerable<IImageProvider> GetImageProviders(BaseItem item)
         {
             return _imageProviders.Where(i => CanRefreshImages(i, item))
+                .OrderBy(GetDefaultOrder);
+        }
+
+        public IEnumerable<IDownloaderProvider> GetDownloaderProviders(BaseDownloadableItem item)
+        {
+            return _downloaderProviders.Where(i => i.Support(item))
+                .OrderBy(GetDefaultOrder);
+        }
+
+        public IEnumerable<IMediaExtractorProvider> GetMediaExtractorProviders(string websiteUrl)
+        {
+            return _mediaExtractorProviders.Where(i => i.Support(websiteUrl))
                 .OrderBy(GetDefaultOrder);
         }
 
