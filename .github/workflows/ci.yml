@@ -5,8 +5,7 @@ on:
     paths-ignore:
     - 'doc/**'
     - 'img/**'
-    - 'changelog.md'
-    - 'readme.md'
+    - '*.md'
   pull_request:
 
 jobs:
