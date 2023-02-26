@@ -36,8 +36,7 @@ namespace AVOne.Tool.Facade
         private readonly IConfigurationManager _configurationManager;
         private readonly IApplicationPaths _serverApplicationPaths;
 
-        private AVOneConfiguration _config => _configurationManager
-            .GetConfiguration<AVOneConfiguration>(AVOneConfigStore.StoreKey);
+        private ProviderConfig _config => _configurationManager.CommonConfiguration.ProviderConfig;
 
         public MetaDataFacade(
             ILogger<MetaDataFacade> logger,
@@ -67,7 +66,6 @@ namespace AVOne.Tool.Facade
                 new List<FileSystemMetadata> { fileInfo },
                 _directoryService,
                 parent,
-                new LibraryOptions(),
                 CollectionType.PornMovies);
             var movies = await GetMovie(items, token);
             return movies.FirstOrDefault();
@@ -85,7 +83,6 @@ namespace AVOne.Tool.Facade
                 fileInfos,
                 _directoryService,
                 parent,
-                new LibraryOptions(),
                 CollectionType.PornMovies);
             return GetMovie(items, token);
         }
@@ -100,7 +97,6 @@ namespace AVOne.Tool.Facade
             var movis = items.OfType<PornMovie>().Select(movieItem =>
             {
                 var m = new MoveMetaDataItem { Movie = movieItem };
-                var libOpt = new LibraryOptions();
                 var providers = _providerManager
                     .GetMetadataProviders<PornMovie>(movieItem)
                     .Where(e => _config.ScanMetaDataProviders.Contains(e.Name));

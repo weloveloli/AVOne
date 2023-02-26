@@ -27,4 +27,7 @@
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
     </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Migrations\PreStartupRoutines\" />
+    </ItemGroup>
 </Project>

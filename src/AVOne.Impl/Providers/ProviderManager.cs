@@ -22,8 +22,8 @@ namespace AVOne.Impl.Providers
         private IVideoResolverProvider[] _nameResolverProviders = Array.Empty<IVideoResolverProvider>();
         private IMetadataSaverProvider[] _metadataSaverProviders = Array.Empty<IMetadataSaverProvider>();
         private IImageSaverProvider[] _imageSaverProviders = Array.Empty<IImageSaverProvider>();
-        private IDownloaderProvider[] _downloaderProviders;
-        private IMediaExtractorProvider[] _mediaExtractorProviders;
+        private IDownloaderProvider[] _downloaderProviders = Array.Empty<IDownloaderProvider>();
+        private IMediaExtractorProvider[] _mediaExtractorProviders = Array.Empty<IMediaExtractorProvider>();
         private readonly ILogger<ProviderManager> _logger;
         private readonly IConfigurationManager _configurationManager;
         private readonly BaseApplicationConfiguration _configuration;
@@ -32,7 +32,7 @@ namespace AVOne.Impl.Providers
         {
             _logger = logger;
             _configurationManager = configurationManager;
-            _configuration = configurationManager.CommonConfiguration;
+            _configuration = configurationManager.CommonConfiguration!;
             _imageProviders = Array.Empty<IImageProvider>();
         }
 

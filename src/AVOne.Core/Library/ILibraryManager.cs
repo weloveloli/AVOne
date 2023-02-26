@@ -37,7 +37,6 @@ namespace AVOne.Library
             IEnumerable<FileSystemMetadata> files,
             IDirectoryService directoryService,
             Folder parent,
-            LibraryOptions libraryOptions,
             string collectionType = null);
 
         /// <summary>

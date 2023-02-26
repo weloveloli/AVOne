@@ -9,6 +9,7 @@
     <ItemGroup>
         <PackageReference Include="AutoFixture" Version="4.17.0" />
         <PackageReference Include="AutoFixture.AutoMoq" Version="4.17.0" />
+        <PackageReference Include="System.ComponentModel.TypeConverter" Version="4.3.0" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\..\AVOne.Impl\AVOne.Impl.csproj" />

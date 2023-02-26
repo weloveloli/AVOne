@@ -12,13 +12,20 @@ namespace AVOne.Tool.Commands
     using CommandLine.Text;
     using Spectre.Console;
 
-    [Verb("download", false, HelpText = "HelpTextVerbDownload")]
+    [Verb("download", false, HelpText = nameof(Resource.HelpTextVerbDownload), ResourceType = typeof(Resource))]
     internal class Download : BaseHostOptions
     {
-        [Option('d', "directory", Required = false, HelpText = nameof(Resource.HelpTextDownloadToTargetFolder), ResourceType = typeof(Resource))]
+        [Option('o', "output", Required = false, HelpText = nameof(Resource.HelpTextOptionSaveDir), ResourceType = typeof(Resource))]
         public string? TargetFolder { get; set; }
-        [Option('w', "web", Required = false, Group ="target", HelpText = nameof(Resource.HelpTextDownloadWebUrl), ResourceType = typeof(Resource))]
+        [Option('w', "web-url", Required = false, Group = "target", HelpText = nameof(Resource.HelpTextDownloadWebUrl), ResourceType = typeof(Resource))]
         public string? Web { get; set; }
+        [Option('t',"thread-count", Required = false, Default = 4, HelpText = nameof(Resource.HelpTextOptionThreadCount), ResourceType = typeof(Resource))]
+        public int? ThreadCount { get; set; }
+        [Option('n', "save-name", Required = false, HelpText = nameof(Resource.HelpTextOptionPreferName), ResourceType = typeof(Resource))]
+        public string? PreferName { get; set; }
+
+        [Option('r', "retry-count", Required = false, HelpText = nameof(Resource.HelpTextOptionRetryCount), ResourceType = typeof(Resource))]
+        public int? RetryCount { get; set; }
 
         [Usage(ApplicationAlias = ToolAlias)]
         public static IEnumerable<Example> Examples
@@ -26,7 +33,7 @@ namespace AVOne.Tool.Commands
             get
             {
                 return new List<Example>() {
-                    new Example("Download video to d:/download from missav.", new Download { TargetFolder = "d:/download",Web = "https://missav.com/cus-1468" })
+                    new Example(string.Format(Resource.DownloadVideoExample,"d:/download","missav" ), new Download { TargetFolder = "d:/download", Web = "https://missav.com/cus-1468" })
                 };
             }
         }
@@ -38,14 +45,14 @@ namespace AVOne.Tool.Commands
                 var extractor = providerManager.GetMediaExtractorProviders(Web).FirstOrDefault();
                 if (extractor is null)
                 {
-                    Cli.ErrorLocale("Can not find extractor for web url", Web);
+                    throw Oops.Oh("Can not find extractor for web url", Web);
                 }
-                var items = await extractor.ExtractAsync(Web, token);
+                var items = await extractor!.ExtractAsync(Web, token);
                 var count = items.Count();
                 BaseDownloadableItem? downloadableItem = null;
                 if (count == 0)
                 {
-                    Cli.ErrorLocale("Can not find any media for web url", Web);
+                    throw Oops.Oh("Can not find any media for web url", Web);
                 }
                 else if (count > 1)
                 {
@@ -61,11 +68,10 @@ namespace AVOne.Tool.Commands
                 var downloadProvider = providerManager.GetDownloaderProviders(downloadableItem!).FirstOrDefault();
                 if (downloadProvider is null)
                 {
-                    Cli.ErrorLocale("Can not download media", downloadableItem!.DisplayName);
-                    return;
+                    throw Oops.Oh("Can not download media", downloadableItem!.DisplayName);
                 }
 
-                await downloadProvider!.CreateTask(downloadableItem!, new DownloadOpts { ThreadCount = 1, OutputDir = TargetFolder, RetryCount = 20, RetryWait = 500 });
+                await downloadProvider!.CreateTask(downloadableItem!, new DownloadOpts { ThreadCount = ThreadCount, OutputDir = TargetFolder, RetryCount = RetryCount, RetryWait = 500, PreferName = PreferName });
             }
         }
     }

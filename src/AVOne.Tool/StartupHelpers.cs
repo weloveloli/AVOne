@@ -42,7 +42,7 @@ namespace AVOne.Tool
         internal const string AVOnePrefix = "AVONE_TOOL_";
         internal const string AVONE_TOOL_NAME = "avonetool";
         internal static readonly string[] RelevantEnvVarPrefixes = { AVOnePrefix, "DOTNET_", "ASPNETCORE_" };
-
+        internal static string RealRootContentPath => Directory.GetParent(typeof(StartupHelpers).Assembly.Location)?.FullName ?? Directory.GetCurrentDirectory();
         /// <summary>
         /// Create the data, config and log paths from the variety of inputs(command line args,
         /// environment variables) or decide on what default to use. For Windows it's %AppPath%
@@ -133,6 +133,7 @@ namespace AVOne.Tool
                         _ = logging.AddSerilog(Log.Logger);
                     });
 
+                    //return builder.UseContentRoot(StartupHelpers.RealRootContentPath);
                     return builder;
                 })
                 .ConfigureServices(appHost.Init);

@@ -19,13 +19,10 @@ namespace AVOne.Configuration
 
     public class ProviderConfig
     {
-        public string NameOptionProvider { get; set; }
-        public string NameResolveProvider { get; set; }
-    }
-
-    public class LibraryOptions
-    {
-
+        public string NameOptionProvider { get; set; } = "Jellyfin";
+        public string NameResolveProvider { get; set; } = "Jellyfin";
+        public List<string> ScanMetaDataProviders { get; set; } = new List<string> { "MetaTube", "Jellyfin.Nfo" };
+        public List<string> ImageMetaDataProviders { get; set; } = new List<string> { "MetaTube" };
     }
 
     /// <summary>
@@ -74,8 +71,6 @@ namespace AVOne.Configuration
         public MetadataOptions[] MetadataOptions { get; set; }
 
         public ProviderConfig ProviderConfig { get; set; }
-
-        public LibraryOptions Options { get; set; }
 
         public NameValue[] ContentTypes { get; set; } = Array.Empty<NameValue>();
 

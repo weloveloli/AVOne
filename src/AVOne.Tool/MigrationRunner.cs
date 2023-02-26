@@ -6,7 +6,6 @@ namespace AVOne.Tools.Migrations
     using AVOne.Common.Migrations;
     using AVOne.Configuration;
     using AVOne.Impl.IO;
-    using AVOne.Impl.Migrations.PreStartupRoutines;
     using AVOne.Providers.MetaTube.Migrations.PreStartupRoutines;
     using AVOne.Tool;
     using AVOne.Tool.Configuration;
@@ -24,7 +23,6 @@ namespace AVOne.Tools.Migrations
         private static readonly Type[] _preStartupMigrationTypes =
         {
             typeof(CreateMetaTubeConfiguration),
-            typeof(CreateAVOneConfiguration)
         };
 
         /// <summary>
@@ -32,17 +30,6 @@ namespace AVOne.Tools.Migrations
         /// </summary>
         private static readonly Type[] _migrationTypes =
         {
-            //typeof(DisableTranscodingThrottling),
-            //typeof(CreateUserLoggingConfigFile),
-            //typeof(MigrateActivityLogDb),
-            //typeof(RemoveDuplicateExtras),
-            //typeof(AddDefaultPluginRepository),
-            //typeof(MigrateUserDb),
-            //typeof(ReaddDefaultPluginRepository),
-            //typeof(AddDefaultPluginRepositoryV2),
-            //typeof(MigrateDisplayPreferencesDb),
-            //typeof(RemoveDownloadImagesInAdvance),
-            //typeof(MigrateAuthenticationDb)
         };
 
         /// <summary>

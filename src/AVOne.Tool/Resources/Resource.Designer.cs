@@ -61,6 +61,15 @@ namespace AVOne.Tool.Resources {
         }
         
         /// <summary>
+        ///   查找类似 Download video to {0} from {1}. 的本地化字符串。
+        /// </summary>
+        public static string DownloadVideoExample {
+            get {
+                return ResourceManager.GetString("DownloadVideoExample", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Can not install plugin {0} 的本地化字符串。
         /// </summary>
         public static string ErrorCannotInstallPlugins {
@@ -192,6 +201,42 @@ namespace AVOne.Tool.Resources {
         public static string HelpTextMoveToTargetFolder {
             get {
                 return ResourceManager.GetString("HelpTextMoveToTargetFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Set output filename. 的本地化字符串。
+        /// </summary>
+        public static string HelpTextOptionPreferName {
+            get {
+                return ResourceManager.GetString("HelpTextOptionPreferName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 The number of retries when download segment error. 的本地化字符串。
+        /// </summary>
+        public static string HelpTextOptionRetryCount {
+            get {
+                return ResourceManager.GetString("HelpTextOptionRetryCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Set output directory. 的本地化字符串。
+        /// </summary>
+        public static string HelpTextOptionSaveDir {
+            get {
+                return ResourceManager.GetString("HelpTextOptionSaveDir", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Set download thread count. 的本地化字符串。
+        /// </summary>
+        public static string HelpTextOptionThreadCount {
+            get {
+                return ResourceManager.GetString("HelpTextOptionThreadCount", resourceCulture);
             }
         }
         

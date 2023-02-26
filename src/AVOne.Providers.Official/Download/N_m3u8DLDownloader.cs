@@ -35,7 +35,7 @@ namespace AVOne.Providers.Official.Download
                 throw Oops.Oh(ErrorCodes.INVALID_DOWNLOADABLE_ITEM);
             }
 
-            var exe = GetExecutorPath();
+            var exe = GetExecutorPath()!;
             var saveName = opts.PreferName ?? item.SaveName!;
             var url = m3U8Item.Url!;
             var threadCount = opts.ThreadCount ?? 4;

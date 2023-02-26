@@ -4,6 +4,7 @@
 namespace AVOne.Models.Download
 {
     using AVOne.Enum;
+    using AVOne.Helper;
 
     public class M3U8Item : BaseDownloadableItem
     {
@@ -23,6 +24,6 @@ namespace AVOne.Models.Download
 
         public string Title { get; set; }
 
-        public override string DisplayName => $"{Title}[{Quality}]";
+        public override string DisplayName => $"{Title}[{Quality.Description()}]";
     }
 }
