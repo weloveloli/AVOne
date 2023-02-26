@@ -17,6 +17,9 @@ AVOne是一个集下载,整理等多功能的插件化的AV管理工具。
 
 - 提供快速下载视频网站中的视频.
 - 提供视频元数据抓取和整理功能.
+
+[![asciicast](https://asciinema.org/a/NATv7vnegUUUAalekKZB1R7eB.svg)](https://asciinema.org/a/NATv7vnegUUUAalekKZB1R7eB)
+
 - 插件化，可以自行拓展.
 
 ## 许可
