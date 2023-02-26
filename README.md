@@ -1,4 +1,4 @@
-# AVOne [![ci](https://github.com/weloveloli/AVOne/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/weloveloli/AVOne/actions/workflows/ci.yml) ![Nuget](https://img.shields.io/nuget/v/AVOneTool)
+# AVOne [![ci](https://github.com/weloveloli/AVOne/actions/workflows/ci.yml/badge.svg)](https://github.com/weloveloli/AVOne/actions/workflows/ci.yml) ![Nuget](https://img.shields.io/nuget/v/AVOneTool)
 <p align="center">
 <img alt="Plugin Banner" src="./img/avone.png"/>
 <br/>
