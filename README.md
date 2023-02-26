@@ -1,6 +1,8 @@
 # AVOne [![ci](https://github.com/weloveloli/AVOne/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/weloveloli/AVOne/actions/workflows/ci.yml) ![Nuget](https://img.shields.io/nuget/v/AVOneTool)
-
-
+<p align="center">
+<img alt="Plugin Banner" src="./img/avone.png"/>
+<br/>
+<br/>
 <p align="center"><b><a href="README_EN.md">English</a> | 简体中文</b></p>
 
 ## 关于
