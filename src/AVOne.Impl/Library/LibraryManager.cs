@@ -1,5 +1,6 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
-// Licensed under the Apache V2.0 License.
+// See License in the project root for license information.
+
 #nullable disable
 
 namespace AVOne.Impl.Library
@@ -17,6 +18,7 @@ namespace AVOne.Impl.Library
     using AVOne.Library;
     using AVOne.Models.Item;
     using AVOne.Providers;
+    using AVOne.Providers.Metadata;
     using AVOne.Resolvers;
     using Microsoft.Extensions.Logging;
 
@@ -112,8 +114,7 @@ namespace AVOne.Impl.Library
            IDirectoryService directoryService,
            IItemResolver[] resolvers,
            Folder parent = null,
-           string collectionType = null,
-           LibraryOptions libraryOptions = null)
+           string collectionType = null)
         {
             if (fileInfo == null)
             {
@@ -220,16 +221,15 @@ namespace AVOne.Impl.Library
             }
         }
 
-        public IEnumerable<BaseItem> ResolvePaths(IEnumerable<FileSystemMetadata> files, IDirectoryService directoryService, Folder parent, LibraryOptions libraryOptions, string collectionType = null)
+        public IEnumerable<BaseItem> ResolvePaths(IEnumerable<FileSystemMetadata> files, IDirectoryService directoryService, Folder parent, string collectionType = null)
         {
-            return ResolvePaths(files, directoryService, parent, libraryOptions, collectionType, ItemResolvers);
+            return ResolvePaths(files, directoryService, parent, collectionType, ItemResolvers);
         }
 
         public IEnumerable<BaseItem> ResolvePaths(
             IEnumerable<FileSystemMetadata> files,
             IDirectoryService directoryService,
             Folder parent,
-            LibraryOptions libraryOptions,
             string collectionType,
             IItemResolver[] resolvers)
         {
@@ -251,13 +251,13 @@ namespace AVOne.Impl.Library
                             ResolverHelper.SetInitialItemValues(item, parent, this, directoryService);
                         }
 
-                        items.AddRange(ResolveFileList(result.ExtraFiles, directoryService, parent, collectionType, resolvers, libraryOptions));
+                        items.AddRange(ResolveFileList(result.ExtraFiles, directoryService, parent, collectionType, resolvers));
                         return items;
                     }
                 }
             }
 
-            return ResolveFileList(fileList, directoryService, parent, collectionType, resolvers, libraryOptions);
+            return ResolveFileList(fileList, directoryService, parent, collectionType, resolvers);
         }
 
         private IEnumerable<BaseItem> ResolveFileList(
@@ -265,8 +265,7 @@ namespace AVOne.Impl.Library
             IDirectoryService directoryService,
             Folder parent,
             string collectionType,
-            IItemResolver[] resolvers,
-            LibraryOptions libraryOptions)
+            IItemResolver[] resolvers)
         {
             // Given that fileList is a list we can save enumerator allocations by indexing
             for (var i = 0; i < fileList.Count; i++)
@@ -275,7 +274,7 @@ namespace AVOne.Impl.Library
                 BaseItem result = null;
                 try
                 {
-                    result = ResolvePath(file, directoryService, resolvers, parent, collectionType, libraryOptions);
+                    result = ResolvePath(file, directoryService, resolvers, parent, collectionType);
                 }
                 catch (Exception ex)
                 {

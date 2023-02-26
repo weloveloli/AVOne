@@ -1,16 +1,18 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
-// Licensed under the Apache V2.0 License.
+// See License in the project root for license information.
 
 namespace AVOne.Providers.Metatube
 {
     using AVOne.Abstraction;
+    using AVOne.Common.Enum;
     using AVOne.Configuration;
     using AVOne.Enum;
-    using AVOne.Impl.Extensions;
+    using AVOne.Common.Extensions;
     using AVOne.Models.Info;
     using AVOne.Models.Item;
-    using AVOne.Providers;
+    using Furion.FriendlyException;
     using Microsoft.Extensions.Logging;
+    using AVOne.Providers.Metadata;
 
     public class MetaTubeMovieImageProvider : BaseProvider, IRemoteImageProvider, IHasOrder
     {
@@ -24,6 +26,11 @@ namespace AVOne.Providers.Metatube
 
         public async Task<IEnumerable<RemoteImageInfo>> GetImages(BaseItem item, CancellationToken cancellationToken)
         {
+            if (!IsProviderAvailable())
+            {
+                throw Oops.Oh(ErrorCodes.PROVIDER_NOT_AVAILABLE, Name);
+            }
+
             var pid = item.GetPid(this.Name);
             if (string.IsNullOrWhiteSpace(pid.Id) || string.IsNullOrWhiteSpace(pid.Provider))
             {
@@ -82,6 +89,11 @@ namespace AVOne.Providers.Metatube
 
         public bool Supports(BaseItem item)
         {
+            if (!IsProviderAvailable())
+            {
+                return false;
+            }
+
             return item is PornMovie;
         }
 

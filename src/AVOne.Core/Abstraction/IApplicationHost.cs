@@ -1,5 +1,5 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
-// Licensed under the Apache V2.0 License.
+// See License in the project root for license information.
 
 namespace AVOne.Abstraction
 {
@@ -61,5 +61,10 @@ namespace AVOne.Abstraction
         /// </summary>
         /// <param name="serviceCollection">Instance of the <see cref="IServiceCollection"/> interface.</param>
         void Init(IServiceCollection serviceCollection);
+
+        /// <summary>
+        /// Gets or sets the service provider.
+        /// </summary>
+        public IServiceProvider ServiceProvider { get; }
     }
 }

@@ -1,7 +1,10 @@
-﻿namespace AVOne.Impl.Resolvers
+﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
+// See License in the project root for license information.
+
+namespace AVOne.Impl.Resolvers
 {
     using AVOne.IO;
-    using AVOne.Providers;
+    using AVOne.Providers.Metadata;
 
     /// <summary>
     /// Resolve <see cref="FileStack"/> from list of paths.
@@ -16,7 +19,7 @@
         /// <returns>Enumerable <see cref="FileStack"/> of directories.</returns>
         public static IEnumerable<FileStack> ResolveDirectories(IVideoResolverProvider videoResolver, IEnumerable<string> files, INamingOptions namingOptions)
         {
-            return Resolve(videoResolver,files.Select(i => new FileSystemMetadata { FullName = i, IsDirectory = true }), namingOptions);
+            return Resolve(videoResolver, files.Select(i => new FileSystemMetadata { FullName = i, IsDirectory = true }), namingOptions);
         }
 
         /// <summary>

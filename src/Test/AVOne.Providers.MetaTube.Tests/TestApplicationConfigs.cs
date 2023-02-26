@@ -1,17 +1,16 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
-// Licensed under the Apache V2.0 License.
+// See License in the project root for license information.
 
 namespace AVOne.Test.Base
 {
     using AVOne.Configuration;
     using AVOne.Providers.MetaTube.Configuration;
 
-    public class TestApplicationConfigs : BaseApplicationConfiguration, IMetaTubeConfiguration
+    public class TestApplicationConfigs : BaseApplicationConfiguration
     {
         public TestApplicationConfigs()
         {
-            MetaTube = new MetaTubeConfiguration();
+
         }
-        public MetaTubeConfiguration MetaTube { get; set; }
     }
 }

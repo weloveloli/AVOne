@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="DownloadVideoExample" xml:space="preserve">
+    <value>Download video to {0} from {1}.</value>
+  </data>
+  <data name="ErrorCannotInstallPlugins" xml:space="preserve">
+    <value>Can not install plugin {0}</value>
+  </data>
   <data name="ErrorDir" xml:space="preserve">
     <value>Directory is null or not exist.</value>
   </data>
@@ -129,6 +135,9 @@
   <data name="ExamplesNormalScenario" xml:space="preserve">
     <value>normal scenario</value>
   </data>
+  <data name="HelpTextAddRepo" xml:space="preserve">
+    <value>Add plugin repository.</value>
+  </data>
   <data name="HelpTextCollectionType" xml:space="preserve">
     <value>Collection Type, could be PornMovie,default is PornMovie.</value>
   </data>
@@ -138,20 +147,86 @@
   <data name="HelpTextDirectory" xml:space="preserve">
     <value>Path to scan.</value>
   </data>
+  <data name="HelpTextDownloadToTargetFolder" xml:space="preserve">
+    <value>Output folder of the download item.</value>
+  </data>
+  <data name="HelpTextDownloadWebUrl" xml:space="preserve">
+    <value>Url of website to extract media.</value>
+  </data>
   <data name="HelpTextffmpeg" xml:space="preserve">
     <value>Path to external FFmpeg executable to use in place of default found in PATH.</value>
   </data>
   <data name="HelpTextFileName" xml:space="preserve">
     <value>filename</value>
   </data>
+  <data name="HelpTextInstallPlugin" xml:space="preserve">
+    <value>Install plugin.</value>
+  </data>
+  <data name="HelpTextMoveToTargetFolder" xml:space="preserve">
+    <value>Path to target folder to move.</value>
+  </data>
+  <data name="HelpTextOptionPreferName" xml:space="preserve">
+    <value>Set output filename.</value>
+  </data>
+  <data name="HelpTextOptionRetryCount" xml:space="preserve">
+    <value>The number of retries when download segment error.</value>
+  </data>
+  <data name="HelpTextOptionSaveDir" xml:space="preserve">
+    <value>Set output directory.</value>
+  </data>
+  <data name="HelpTextOptionThreadCount" xml:space="preserve">
+    <value>Set download thread count.</value>
+  </data>
+  <data name="HelpTextSaveMetadata" xml:space="preserve">
+    <value>Save metadata or not. </value>
+  </data>
+  <data name="HelpTextScanDir" xml:space="preserve">
+    <value>Path of directory to be scanned.</value>
+  </data>
+  <data name="HelpTextScanPath" xml:space="preserve">
+    <value>Path of file to be scanned.</value>
+  </data>
+  <data name="HelpTextShowAvaliablePlugins" xml:space="preserve">
+    <value>Show all plugins in plugin repository.</value>
+  </data>
+  <data name="HelpTextShowInstalledPlugins" xml:space="preserve">
+    <value>Show all installed plugins.</value>
+  </data>
+  <data name="HelpTextShowPluginRepositoryList" xml:space="preserve">
+    <value>Show plugin repository list.</value>
+  </data>
+  <data name="HelpTextUseContainer" xml:space="preserve">
+    <value>If use create a new container to hold all the media, image, nfo files.</value>
+  </data>
+  <data name="HelpTextVerbDownload" xml:space="preserve">
+    <value>Download media.</value>
+  </data>
+  <data name="HelpTextVerbInfo" xml:space="preserve">
+    <value>Print system info.</value>
+  </data>
   <data name="HelpTextVerbOrganize" xml:space="preserve">
     <value>Scan &amp; organize files under specific folder. </value>
+  </data>
+  <data name="HelpTextVerbPlugin" xml:space="preserve">
+    <value>Manage plugins.</value>
+  </data>
+  <data name="HelpTextVerbPluginRepo" xml:space="preserve">
+    <value>Manage plugin repository.</value>
   </data>
   <data name="HelpTextVerbPrintMetadata" xml:space="preserve">
     <value>Print movie metadata by filename.</value>
   </data>
   <data name="HelpTextVerbScan" xml:space="preserve">
     <value>Scan files under specific folder and preview the organize result.</value>
+  </data>
+  <data name="InfoDownloadingPlugin" xml:space="preserve">
+    <value>Downloading and install plugin '{0}'</value>
+  </data>
+  <data name="InfoFetchMetaData" xml:space="preserve">
+    <value>Scaning media metadata.</value>
+  </data>
+  <data name="InfoSearchingPlugins" xml:space="preserve">
+    <value>Searching plugin...</value>
   </data>
   <data name="InvalidMoviePath" xml:space="preserve">
     <value>File path '{0}' not valid media file.</value>
@@ -169,13 +244,16 @@
     <value>Verb '{0}' is not recognized.</value>
   </data>
   <data name="SentenceErrorsHeadingText" xml:space="preserve">
-    <value>错误(S):</value>
+    <value>Erros(S):</value>
   </data>
   <data name="SentenceHelpCommandTextOption" xml:space="preserve">
     <value>Display this help screen.</value>
   </data>
   <data name="SentenceHelpCommandTextVerb" xml:space="preserve">
     <value>Display more information on a specific command.</value>
+  </data>
+  <data name="SentenceMissingGroupOptionError" xml:space="preserve">
+    <value>At least one option in a group '{0}' must have value.</value>
   </data>
   <data name="SentenceMissingRequiredOptionError" xml:space="preserve">
     <value>Required option '{0}' is missing.</value>
@@ -215,5 +293,8 @@
   </data>
   <data name="SentenceVersionCommandText" xml:space="preserve">
     <value>Display version information.</value>
+  </data>
+  <data name="SuccessDownloadPlugin" xml:space="preserve">
+    <value>Download plugin {0} successfully.</value>
   </data>
 </root>

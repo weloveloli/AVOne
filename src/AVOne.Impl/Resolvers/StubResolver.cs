@@ -1,7 +1,10 @@
-﻿namespace AVOne.Impl.Resolvers
+﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
+// See License in the project root for license information.
+
+namespace AVOne.Impl.Resolvers
 {
-    using AVOne.Providers;
     using AVOne.Extensions;
+    using AVOne.Providers.Metadata;
 
     /// <summary>
     /// Resolve if file is stub (.disc).

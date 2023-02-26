@@ -1,10 +1,13 @@
-﻿namespace AVOne.Impl.Resolvers
+﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
+// See License in the project root for license information.
+
+namespace AVOne.Impl.Resolvers
 {
     using System.Text.RegularExpressions;
     using AVOne.Impl.Helper;
     using AVOne.IO;
     using AVOne.Models.Info;
-    using AVOne.Providers;
+    using AVOne.Providers.Metadata;
 
     /// <summary>
     /// Resolves alternative versions and extras from list of video files.

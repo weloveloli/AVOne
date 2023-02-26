@@ -1,14 +1,14 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
-// Licensed under the Apache V2.0 License.
+// See License in the project root for license information.
 
 namespace AVOne.Impl.Resolvers
 {
     using System.Diagnostics.CodeAnalysis;
     using AVOne.Enum;
-    using AVOne.Impl.Providers;
     using AVOne.Models.Info;
     using AVOne.Models.Item;
     using AVOne.Providers;
+    using AVOne.Providers.Metadata;
     using AVOne.Resolvers;
     using Microsoft.Extensions.Logging;
 

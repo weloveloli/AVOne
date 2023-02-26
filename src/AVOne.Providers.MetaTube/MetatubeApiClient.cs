@@ -1,5 +1,6 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
-// Licensed under the Apache V2.0 License.
+// See License in the project root for license information.
+
 #nullable disable
 
 namespace AVOne.Providers.Metatube
@@ -18,7 +19,7 @@ namespace AVOne.Providers.Metatube
         private readonly HttpClient _httpClient;
         private readonly IConfigurationManager _configurationManager;
 
-        private MetaTubeConfiguration _metaTubeConfiguration => ((IMetaTubeConfiguration)_configurationManager.CommonConfiguration).MetaTube;
+        private MetaTubeConfiguration _metaTubeConfiguration => _configurationManager.GetConfiguration<MetaTubeConfiguration>(MetaTubeConfigStore.StoreKey);
         public MetatubeApiClient(HttpClient httpClient, IConfigurationManager configurationManager)
         {
             _httpClient = httpClient;
@@ -120,7 +121,6 @@ namespace AVOne.Providers.Metatube
         public async Task<HttpResponseMessage> GetImageResponse(string url, CancellationToken cancellationToken)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, url);
-            request.Headers.Add("User-Agent", _metaTubeConfiguration.DefaultUserAgent);
             var response = await _httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
             return response;
 
@@ -199,7 +199,6 @@ namespace AVOne.Providers.Metatube
 
             // Add General Headers.
             request.Headers.Add("Accept", "application/json");
-            request.Headers.Add("User-Agent", _metaTubeConfiguration.DefaultUserAgent);
 
             // Set API Authorization Token.
             if (requireAuth && !string.IsNullOrWhiteSpace(_metaTubeConfiguration.Token))

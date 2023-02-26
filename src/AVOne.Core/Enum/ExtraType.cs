@@ -1,5 +1,5 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
-// Licensed under the Apache V2.0 License.
+// See License in the project root for license information.
 
 namespace AVOne.Enum
 {
@@ -14,6 +14,8 @@ namespace AVOne.Enum
         Scene = 6,
         Sample = 7,
         ThemeSong = 8,
-        ThemeVideo = 9
+        ThemeVideo = 9,
+        Featurette = 10,
+        Short = 11
     }
 }

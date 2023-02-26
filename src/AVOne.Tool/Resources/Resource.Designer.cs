@@ -61,6 +61,24 @@ namespace AVOne.Tool.Resources {
         }
         
         /// <summary>
+        ///   查找类似 Download video to {0} from {1}. 的本地化字符串。
+        /// </summary>
+        public static string DownloadVideoExample {
+            get {
+                return ResourceManager.GetString("DownloadVideoExample", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Can not install plugin {0} 的本地化字符串。
+        /// </summary>
+        public static string ErrorCannotInstallPlugins {
+            get {
+                return ResourceManager.GetString("ErrorCannotInstallPlugins", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Directory is null or not exist. 的本地化字符串。
         /// </summary>
         public static string ErrorDir {
@@ -97,6 +115,15 @@ namespace AVOne.Tool.Resources {
         }
         
         /// <summary>
+        ///   查找类似 Add plugin repository. 的本地化字符串。
+        /// </summary>
+        public static string HelpTextAddRepo {
+            get {
+                return ResourceManager.GetString("HelpTextAddRepo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Collection Type, could be PornMovie,default is PornMovie. 的本地化字符串。
         /// </summary>
         public static string HelpTextCollectionType {
@@ -124,6 +151,24 @@ namespace AVOne.Tool.Resources {
         }
         
         /// <summary>
+        ///   查找类似 Output folder of the download item. 的本地化字符串。
+        /// </summary>
+        public static string HelpTextDownloadToTargetFolder {
+            get {
+                return ResourceManager.GetString("HelpTextDownloadToTargetFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Url of website to extract media. 的本地化字符串。
+        /// </summary>
+        public static string HelpTextDownloadWebUrl {
+            get {
+                return ResourceManager.GetString("HelpTextDownloadWebUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Path to external FFmpeg executable to use in place of default found in PATH. 的本地化字符串。
         /// </summary>
         public static string HelpTextffmpeg {
@@ -142,11 +187,164 @@ namespace AVOne.Tool.Resources {
         }
         
         /// <summary>
+        ///   查找类似 Install plugin. 的本地化字符串。
+        /// </summary>
+        public static string HelpTextInstallPlugin {
+            get {
+                return ResourceManager.GetString("HelpTextInstallPlugin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Path to target folder to move. 的本地化字符串。
+        /// </summary>
+        public static string HelpTextMoveToTargetFolder {
+            get {
+                return ResourceManager.GetString("HelpTextMoveToTargetFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Set output filename. 的本地化字符串。
+        /// </summary>
+        public static string HelpTextOptionPreferName {
+            get {
+                return ResourceManager.GetString("HelpTextOptionPreferName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 The number of retries when download segment error. 的本地化字符串。
+        /// </summary>
+        public static string HelpTextOptionRetryCount {
+            get {
+                return ResourceManager.GetString("HelpTextOptionRetryCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Set output directory. 的本地化字符串。
+        /// </summary>
+        public static string HelpTextOptionSaveDir {
+            get {
+                return ResourceManager.GetString("HelpTextOptionSaveDir", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Set download thread count. 的本地化字符串。
+        /// </summary>
+        public static string HelpTextOptionThreadCount {
+            get {
+                return ResourceManager.GetString("HelpTextOptionThreadCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Save metadata or not.  的本地化字符串。
+        /// </summary>
+        public static string HelpTextSaveMetadata {
+            get {
+                return ResourceManager.GetString("HelpTextSaveMetadata", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Path of directory to be scanned. 的本地化字符串。
+        /// </summary>
+        public static string HelpTextScanDir {
+            get {
+                return ResourceManager.GetString("HelpTextScanDir", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Path of file to be scanned. 的本地化字符串。
+        /// </summary>
+        public static string HelpTextScanPath {
+            get {
+                return ResourceManager.GetString("HelpTextScanPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Show all plugins in plugin repository. 的本地化字符串。
+        /// </summary>
+        public static string HelpTextShowAvaliablePlugins {
+            get {
+                return ResourceManager.GetString("HelpTextShowAvaliablePlugins", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Show all installed plugins. 的本地化字符串。
+        /// </summary>
+        public static string HelpTextShowInstalledPlugins {
+            get {
+                return ResourceManager.GetString("HelpTextShowInstalledPlugins", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Show plugin repository list. 的本地化字符串。
+        /// </summary>
+        public static string HelpTextShowPluginRepositoryList {
+            get {
+                return ResourceManager.GetString("HelpTextShowPluginRepositoryList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 If use create a new container to hold all the media, image, nfo files. 的本地化字符串。
+        /// </summary>
+        public static string HelpTextUseContainer {
+            get {
+                return ResourceManager.GetString("HelpTextUseContainer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Download media. 的本地化字符串。
+        /// </summary>
+        public static string HelpTextVerbDownload {
+            get {
+                return ResourceManager.GetString("HelpTextVerbDownload", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Print system info. 的本地化字符串。
+        /// </summary>
+        public static string HelpTextVerbInfo {
+            get {
+                return ResourceManager.GetString("HelpTextVerbInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Scan &amp; organize files under specific folder.  的本地化字符串。
         /// </summary>
         public static string HelpTextVerbOrganize {
             get {
                 return ResourceManager.GetString("HelpTextVerbOrganize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Manage plugins. 的本地化字符串。
+        /// </summary>
+        public static string HelpTextVerbPlugin {
+            get {
+                return ResourceManager.GetString("HelpTextVerbPlugin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Manage plugin repository. 的本地化字符串。
+        /// </summary>
+        public static string HelpTextVerbPluginRepo {
+            get {
+                return ResourceManager.GetString("HelpTextVerbPluginRepo", resourceCulture);
             }
         }
         
@@ -165,6 +363,33 @@ namespace AVOne.Tool.Resources {
         public static string HelpTextVerbScan {
             get {
                 return ResourceManager.GetString("HelpTextVerbScan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Downloading and install plugin &apos;{0}&apos; 的本地化字符串。
+        /// </summary>
+        public static string InfoDownloadingPlugin {
+            get {
+                return ResourceManager.GetString("InfoDownloadingPlugin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Scaning media metadata. 的本地化字符串。
+        /// </summary>
+        public static string InfoFetchMetaData {
+            get {
+                return ResourceManager.GetString("InfoFetchMetaData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Searching plugin... 的本地化字符串。
+        /// </summary>
+        public static string InfoSearchingPlugins {
+            get {
+                return ResourceManager.GetString("InfoSearchingPlugins", resourceCulture);
             }
         }
         
@@ -214,7 +439,7 @@ namespace AVOne.Tool.Resources {
         }
         
         /// <summary>
-        ///   查找类似 错误(S): 的本地化字符串。
+        ///   查找类似 Erros(S): 的本地化字符串。
         /// </summary>
         public static string SentenceErrorsHeadingText {
             get {
@@ -237,6 +462,15 @@ namespace AVOne.Tool.Resources {
         public static string SentenceHelpCommandTextVerb {
             get {
                 return ResourceManager.GetString("SentenceHelpCommandTextVerb", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 At least one option in a group &apos;{0}&apos; must have value. 的本地化字符串。
+        /// </summary>
+        public static string SentenceMissingGroupOptionError {
+            get {
+                return ResourceManager.GetString("SentenceMissingGroupOptionError", resourceCulture);
             }
         }
         
@@ -354,6 +588,15 @@ namespace AVOne.Tool.Resources {
         public static string SentenceVersionCommandText {
             get {
                 return ResourceManager.GetString("SentenceVersionCommandText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Download plugin {0} successfully. 的本地化字符串。
+        /// </summary>
+        public static string SuccessDownloadPlugin {
+            get {
+                return ResourceManager.GetString("SuccessDownloadPlugin", resourceCulture);
             }
         }
     }

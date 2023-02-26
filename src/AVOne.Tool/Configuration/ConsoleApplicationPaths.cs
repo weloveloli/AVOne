@@ -1,12 +1,12 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
-// Licensed under the Apache V2.0 License.
+// See License in the project root for license information.
 
 namespace AVOne.Tool.Configuration
 {
     using AVOne.Configuration;
     using AVOne.Tool.Commands;
 
-    internal class ConsoleApplicationPaths : IApplicationPaths
+    public class ConsoleApplicationPaths : IApplicationPaths
     {
         public ConsoleApplicationPaths(
             string programDataPath,
@@ -77,7 +77,7 @@ namespace AVOne.Tool.Configuration
 
         public string PeoplePath => Path.Combine(DefaultInternalMetadataPath, "People");
 
-        public static ConsoleApplicationPaths CreateConsoleApplicationPaths(BaseOptions options)
+        internal static ConsoleApplicationPaths CreateConsoleApplicationPaths(BaseHostOptions options)
         {
             // dataDir
             // IF      --datadir

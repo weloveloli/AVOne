@@ -1,20 +1,29 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
-// Licensed under the Apache V2.0 License.
+// See License in the project root for license information.
 
 namespace AVOne.Impl.Providers
 {
     using AVOne.Abstraction;
     using AVOne.Configuration;
+    using AVOne.Enum;
+    using AVOne.Models.Download;
     using AVOne.Models.Item;
     using AVOne.Providers;
+    using AVOne.Providers.Download;
+    using AVOne.Providers.Extractor;
+    using AVOne.Providers.Metadata;
     using Microsoft.Extensions.Logging;
 
     public class ProviderManager : IProviderManager
     {
-        private IImageProvider[] ImageProviders { get; set; }
+        private IImageProvider[] _imageProviders = Array.Empty<IImageProvider>();
         private IMetadataProvider[] _metadataProviders = Array.Empty<IMetadataProvider>();
         private INamingOptionProvider[] _namingOptionProviders = Array.Empty<INamingOptionProvider>();
         private IVideoResolverProvider[] _nameResolverProviders = Array.Empty<IVideoResolverProvider>();
+        private IMetadataSaverProvider[] _metadataSaverProviders = Array.Empty<IMetadataSaverProvider>();
+        private IImageSaverProvider[] _imageSaverProviders = Array.Empty<IImageSaverProvider>();
+        private IDownloaderProvider[] _downloaderProviders = Array.Empty<IDownloaderProvider>();
+        private IMediaExtractorProvider[] _mediaExtractorProviders = Array.Empty<IMediaExtractorProvider>();
         private readonly ILogger<ProviderManager> _logger;
         private readonly IConfigurationManager _configurationManager;
         private readonly BaseApplicationConfiguration _configuration;
@@ -23,8 +32,8 @@ namespace AVOne.Impl.Providers
         {
             _logger = logger;
             _configurationManager = configurationManager;
-            _configuration = configurationManager.CommonConfiguration;
-            ImageProviders = Array.Empty<IImageProvider>();
+            _configuration = configurationManager.CommonConfiguration!;
+            _imageProviders = Array.Empty<IImageProvider>();
         }
 
         /// <inheritdoc/>
@@ -32,12 +41,21 @@ namespace AVOne.Impl.Providers
             IEnumerable<IImageProvider> imageProviders,
             IEnumerable<IMetadataProvider> metadataProviders,
             IEnumerable<INamingOptionProvider> nameOptionProviders,
-            IEnumerable<IVideoResolverProvider> resolverProviders)
+            IEnumerable<IVideoResolverProvider> resolverProviders,
+            IEnumerable<IMetadataSaverProvider> metadataSaverProviders,
+            IEnumerable<IImageSaverProvider> imageSaverProviders,
+            IEnumerable<IDownloaderProvider> downloaderProviders,
+            IEnumerable<IMediaExtractorProvider> mediaExtractorProviders
+            )
         {
-            ImageProviders = imageProviders.ToArray();
+            _imageProviders = imageProviders.ToArray();
             _metadataProviders = metadataProviders.ToArray();
             _namingOptionProviders = nameOptionProviders.ToArray();
             _nameResolverProviders = resolverProviders.ToArray();
+            _metadataSaverProviders = metadataSaverProviders.ToArray();
+            _imageSaverProviders = imageSaverProviders.ToArray();
+            _downloaderProviders = downloaderProviders.ToArray();
+            _mediaExtractorProviders = mediaExtractorProviders.ToArray();
         }
         /// <summary>
         /// Gets the metadata providers for the provided item.
@@ -101,6 +119,55 @@ namespace AVOne.Impl.Providers
                 return candidates.OfType<T>().Where(e => e.Name == name)
                 .OrderBy(e => GetDefaultOrder(e)).First();
             }
+        }
+
+        public IEnumerable<IImageProvider> GetImageProviders(BaseItem item)
+        {
+            return _imageProviders.Where(i => CanRefreshImages(i, item))
+                .OrderBy(GetDefaultOrder);
+        }
+
+        public IEnumerable<IDownloaderProvider> GetDownloaderProviders(BaseDownloadableItem item)
+        {
+            return _downloaderProviders.Where(i => i.Support(item))
+                .OrderBy(GetDefaultOrder);
+        }
+
+        public IEnumerable<IMediaExtractorProvider> GetMediaExtractorProviders(string websiteUrl)
+        {
+            return _mediaExtractorProviders.Where(i => i.Support(websiteUrl))
+                .OrderBy(GetDefaultOrder);
+        }
+
+        public IEnumerable<IMetadataSaverProvider> GetMetadataSaverProvider(BaseItem item, ItemUpdateType itemUpdateType = ItemUpdateType.None)
+        {
+            return _metadataSaverProviders.Where(i => i.IsEnabledFor(item, itemUpdateType))
+                .OrderBy(GetDefaultOrder);
+        }
+
+        private bool CanRefreshImages(
+           IImageProvider provider,
+           BaseItem item)
+        {
+            try
+            {
+                if (!provider.Supports(item))
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "{ProviderName} failed in Supports for type {ItemType} at {ItemPath}", provider.GetType().Name, item.GetType().Name, item.Path);
+                return false;
+            }
+
+            return true;
+        }
+
+        public IEnumerable<IImageSaverProvider> GetImageSaverProvider()
+        {
+            return _imageSaverProviders.OrderBy(GetDefaultOrder);
         }
     }
 }

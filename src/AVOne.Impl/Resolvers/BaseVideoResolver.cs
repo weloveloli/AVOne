@@ -1,4 +1,7 @@
-﻿#nullable disable
+﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
+// See License in the project root for license information.
+
+#nullable disable
 
 #pragma warning disable CS1591
 
@@ -9,6 +12,7 @@ namespace AVOne.Impl.Resolvers
     using AVOne.Models.Info;
     using AVOne.Models.Item;
     using AVOne.Providers;
+    using AVOne.Providers.Metadata;
     using AVOne.Resolvers;
     using Microsoft.Extensions.Logging;
 

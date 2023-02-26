@@ -1,5 +1,5 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
-// Licensed under the Apache V2.0 License.
+// See License in the project root for license information.
 
 namespace AVOne.Constants
 {
@@ -19,5 +19,20 @@ namespace AVOne.Constants
         /// The default <see cref="StreamWriter" /> buffer size.
         /// </summary>
         public const int StreamWriterBufferSize = 1024;
+
+        /// <summary>
+        /// Gets the value for the default named http client.
+        /// </summary>
+        public const string Default = nameof(Default);
+
+        /// <summary>
+        /// Gets the value for the default named http client.
+        /// </summary>
+        public const string Download = nameof(Download);
+
+        /// <summary>
+        /// Gets the value for the named http client for Crawler.
+        /// </summary>
+        public const string Crawler = nameof(Crawler);
     }
 }

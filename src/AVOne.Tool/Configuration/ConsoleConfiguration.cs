@@ -1,18 +1,20 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
-// Licensed under the Apache V2.0 License.
+// See License in the project root for license information.
 
 namespace AVOne.Tool.Configuration
 {
     using AVOne.Configuration;
-    using AVOne.Providers.MetaTube.Configuration;
 
-    public class ConsoleConfiguration : BaseApplicationConfiguration, IMetaTubeConfiguration
+    public class ConsoleConfiguration : BaseApplicationConfiguration
     {
+        /// <summary>
+        /// Gets or sets a value indicating whether this instance is first run.
+        /// </summary>
+        /// <value><c>true</c> if this instance is first run; otherwise, <c>false</c>.</value>
+        public bool IsStartupWizardCompleted { get; set; }
+
         public ConsoleConfiguration()
         {
-            MetaTube = new MetaTubeConfiguration();
         }
-
-        public MetaTubeConfiguration MetaTube { get; set; }
     }
 }

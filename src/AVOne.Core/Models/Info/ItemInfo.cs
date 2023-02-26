@@ -1,5 +1,5 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
-// Licensed under the Apache V2.0 License.
+// See License in the project root for license information.
 
 #nullable disable
 
@@ -14,7 +14,8 @@ namespace AVOne.Models.Info
         public ItemInfo(BaseItem item)
         {
             Path = item.Path;
-
+            ContainingFolderPath = item.ContainingFolderPath;
+            IsInMixedFolder = item.IsInMixedFolder;
             if (item is Video video)
             {
                 VideoType = video.VideoType;

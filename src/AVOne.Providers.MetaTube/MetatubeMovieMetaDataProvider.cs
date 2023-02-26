@@ -1,5 +1,5 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
-// Licensed under the Apache V2.0 License.
+// See License in the project root for license information.
 
 namespace AVOne.Providers.Metatube
 {
@@ -7,17 +7,19 @@ namespace AVOne.Providers.Metatube
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
+    using AVOne.Common.Enum;
+    using AVOne.Common.Extensions;
+    using AVOne.Configuration;
     using AVOne.Constants;
     using AVOne.Extensions;
-    using AVOne.Impl.Extensions;
-    using AVOne.Providers.Metatube.Models;
     using AVOne.Models.Info;
     using AVOne.Models.Item;
     using AVOne.Models.Result;
-    using AVOne.Providers;
-    using Microsoft.Extensions.Logging;
-    using AVOne.Configuration;
+    using AVOne.Providers.Metadata;
+    using AVOne.Providers.Metatube.Models;
     using AVOne.Providers.MetaTube.Configuration;
+    using Furion.FriendlyException;
+    using Microsoft.Extensions.Logging;
 
     public class MetatubeMovieMetaDataProvider : BaseProvider, IRemoteMetadataProvider<PornMovie, PornMovieInfo>
     {
@@ -36,6 +38,11 @@ namespace AVOne.Providers.Metatube
 
         public async Task<MetadataResult<PornMovie>> GetMetadata(PornMovieInfo info, CancellationToken cancellationToken)
         {
+            if (!IsProviderAvailable())
+            {
+                throw Oops.Oh(ErrorCodes.PROVIDER_NOT_AVAILABLE, Name);
+            }
+
             var pid = info.GetPid(Name);
             if (string.IsNullOrWhiteSpace(pid.Id) || string.IsNullOrWhiteSpace(pid.Provider))
             {
@@ -188,6 +195,11 @@ namespace AVOne.Providers.Metatube
 
         public async Task<IEnumerable<RemoteMetadataSearchResult>> GetSearchResults(PornMovieInfo info, CancellationToken cancellationToken)
         {
+            if (!IsProviderAvailable())
+            {
+                throw Oops.Oh(ErrorCodes.PROVIDER_NOT_AVAILABLE, Name);
+            }
+
             var pid = info.GetPid(Name);
 
             var searchResults = new List<MovieSearchResult>();

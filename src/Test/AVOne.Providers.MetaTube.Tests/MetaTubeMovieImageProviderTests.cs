@@ -1,20 +1,20 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
-// Licensed under the Apache V2.0 License.
+// See License in the project root for license information.
 
 namespace AVOne.Providers.MetaTube.Tests
 {
-    using Xunit;
     using AutoFixture;
-    using Microsoft.Extensions.Logging;
-    using Moq;
+    using AVOne.Configuration;
     using AVOne.Models.Item;
     using AVOne.Providers.Metatube;
-    using AVOne.Configuration;
-
+    using AVOne.Providers.MetaTube.Configuration;
+    using Microsoft.Extensions.Logging;
+    using Moq;
+    using Xunit;
 
     public class MetaTubeMovieImageProviderTests : BaseTestCase
     {
-        private readonly TestApplicationConfigs config;
+        private readonly MetaTubeConfiguration config;
         private readonly string metaTubeServerUrl;
         private readonly bool disableHttpTest;
 
@@ -22,10 +22,11 @@ namespace AVOne.Providers.MetaTube.Tests
         {
             metaTubeServerUrl = Environment.GetEnvironmentVariable("MetaTubeServerUrl");
             disableHttpTest = bool.Parse(Environment.GetEnvironmentVariable("disableHttpTest") ?? "false");
-            config = new TestApplicationConfigs();
-            config.MetaTube.Server = metaTubeServerUrl;
+            var testConfig = new TestApplicationConfigs();
+            config = new MetaTubeConfiguration();
+            config.Server = metaTubeServerUrl;
             var mockManager = fixture.Freeze<Mock<IConfigurationManager>>();
-            mockManager.Setup(m => m.CommonConfiguration).Returns(config);
+            mockManager.Setup(m => m.CommonConfiguration).Returns(testConfig);
             var logMock = fixture.Freeze<Mock<ILogger<MetatubeMovieMetaDataProvider>>>();
             fixture.Register((IConfigurationManager manager) => new MetatubeApiClient(new HttpClient(), manager));
         }

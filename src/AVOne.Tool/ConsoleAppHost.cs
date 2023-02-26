@@ -1,5 +1,6 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
-// Licensed under the Apache V2.0 License.
+// See License in the project root for license information.
+
 #nullable disable
 
 namespace AVOne.Tool
@@ -10,21 +11,25 @@ namespace AVOne.Tool
     using System.Reflection;
     using System.Threading.Tasks;
     using AVOne.Abstraction;
+    using AVOne.Common.Migrations;
     using AVOne.Configuration;
+    using AVOne.Impl.Extensions;
     using AVOne.Impl.IO;
     using AVOne.Impl.Registrator;
     using AVOne.IO;
     using AVOne.Providers.Jellyfin;
     using AVOne.Providers.MetaTube;
+    using AVOne.Providers.Official.Metadata;
     using AVOne.Tool.Commands;
     using AVOne.Tool.Configuration;
+    using AVOne.Tool.Facade;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;
     using Microsoft.Extensions.Logging;
 
     internal class ConsoleAppHost : IApplicationHost, IAsyncDisposable, IDisposable
     {
-        private readonly BaseOptions _option;
+        private readonly BaseHostOptions _option;
         private readonly CancellationTokenSource _tokenSource;
         private bool _disposed = false;
         private List<Type> _creatingInstances;
@@ -64,7 +69,14 @@ namespace AVOne.Tool
         /// <value>All concrete types.</value>
         private Type[] _allConcreteTypes;
 
-        public ConsoleAppHost(BaseOptions option, ILoggerFactory loggerFactory, CancellationTokenSource tokenSource, ConsoleApplicationPaths path)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConsoleAppHost"/> class.
+        /// </summary>
+        /// <param name="option">The option.</param>
+        /// <param name="loggerFactory">The logger factory.</param>
+        /// <param name="tokenSource">The token source.</param>
+        /// <param name="path">The path.</param>
+        public ConsoleAppHost(BaseHostOptions option, ILoggerFactory loggerFactory, CancellationTokenSource tokenSource, ConsoleApplicationPaths path)
         {
             _option = option;
             LoggerFactory = loggerFactory;
@@ -77,11 +89,6 @@ namespace AVOne.Tool
             ConfigurationManager = new ConsoleConfigurationManager(path, loggerFactory, _xmlSerializer, _fileSystem);
         }
 
-        public async Task<int> ExecuteCmd()
-        {
-            return await _option.ExecuteAsync(this, _tokenSource.Token).ConfigureAwait(false);
-        }
-
         /// <summary>
         /// Discovers the types.
         /// </summary>
@@ -91,33 +98,39 @@ namespace AVOne.Tool
             _allConcreteTypes = GetTypes(GetComposablePartAssemblies()).ToArray();
         }
 
-        public void Init(IServiceCollection serviceCollection)
+        public void Init(IServiceCollection services)
         {
             DiscoverTypes();
-            serviceCollection.TryAdd(ServiceDescriptor.Singleton(LoggerFactory));
-            serviceCollection.TryAdd(ServiceDescriptor.Singleton(typeof(ILogger<>), typeof(Logger<>)));
-            _ = serviceCollection.AddHttpClient();
-            RegisterServices(serviceCollection);
-            var registrators = GetExportTypes<IServiceRegistrator>().Select(e => (IServiceRegistrator)Activator.CreateInstance(e)).ToList();
-            registrators.ForEach(e => e.RegisterServices(serviceCollection));
-            ServiceProvider = serviceCollection.BuildServiceProvider();
+            services.TryAdd(ServiceDescriptor.Singleton(LoggerFactory));
+            services.TryAdd(ServiceDescriptor.Singleton(typeof(ILogger<>), typeof(Logger<>)));
+            _ = services.AddHttpClient();
+            services.AddDefaultHostLocalization();
+            RegisterServices(services);
+            var registrators = GetExports<IServiceRegistrator>().ToList();
+            registrators.ForEach(e => e.RegisterServices(services));
+        }
+
+        public void PostBuildService()
+        {
+            var registrators = GetExports<IServiceRegistrator>().ToList();
             registrators.ForEach(e => e.PostBuildService(this));
         }
 
         /// <summary>
         /// Registers services/resources with the service collection that will be available via DI.
         /// </summary>
-        /// <param name="serviceCollection">Instance of the <see cref="IServiceCollection"/> interface.</param>
-        protected void RegisterServices(IServiceCollection serviceCollection)
+        /// <param name="service">Instance of the <see cref="IServiceCollection"/> interface.</param>
+        protected void RegisterServices(IServiceCollection service)
         {
-            _option.InitService(serviceCollection);
-            _ = serviceCollection.AddMemoryCache();
-            _ = serviceCollection.AddSingleton<IApplicationHost>(this);
-            _ = serviceCollection.AddSingleton<IStartupOptions>(_option);
-            _ = serviceCollection.AddSingleton<IApplicationPaths>(AppPaths);
-            _ = serviceCollection.AddSingleton(_xmlSerializer);
-            _ = serviceCollection.AddSingleton(_fileSystem);
-            _ = serviceCollection.AddSingleton<IConfigurationManager>(ConfigurationManager);
+            _option.InitService(service);
+            service.AddMemoryCache();
+            service.AddSingleton<IApplicationHost>(this);
+            service.AddSingleton<IStartupOptions>(_option);
+            service.AddSingleton<IApplicationPaths>(AppPaths);
+            service.AddSingleton(_xmlSerializer);
+            service.AddSingleton(_fileSystem);
+            service.AddSingleton<IConfigurationManager>(ConfigurationManager);
+            service.AddSingleton<IMetaDataFacade, MetaDataFacade>();
         }
 
         /// <summary>
@@ -128,9 +141,10 @@ namespace AVOne.Tool
         {
             // Include composable parts in the AVOne.Impl assembly
             yield return typeof(ImplRegistrator).Assembly;
-            //yield return typeof(OfficialLocalMetadataProvider).Assembly;
+            yield return typeof(MigrationsFactory).Assembly;
             yield return typeof(MetaTubeServiceRegistrator).Assembly;
             yield return typeof(JellyfinNamingOptionProvider).Assembly;
+            yield return typeof(ImageSaverProvider).Assembly;
         }
 
         private IEnumerable<Type> GetTypes(IEnumerable<Assembly> assemblies)

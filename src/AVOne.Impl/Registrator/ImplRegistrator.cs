@@ -1,5 +1,5 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
-// Licensed under the Apache V2.0 License.
+// See License in the project root for license information.
 
 namespace AVOne.Impl.Registrator
 {
@@ -12,6 +12,9 @@ namespace AVOne.Impl.Registrator
     using AVOne.Library;
     using AVOne.Models.Item;
     using AVOne.Providers;
+    using AVOne.Providers.Download;
+    using AVOne.Providers.Extractor;
+    using AVOne.Providers.Metadata;
     using AVOne.Resolvers;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
@@ -24,7 +27,6 @@ namespace AVOne.Impl.Registrator
             serviceCollection.AddSingleton<ILibraryManager, LibraryManager>();
             serviceCollection.AddSingleton<IFileSystem, ManagedFileSystem>();
             serviceCollection.AddSingleton<IDirectoryService, DirectoryService>();
-
         }
 
         public void PostBuildService(IApplicationHost host)
@@ -37,11 +39,19 @@ namespace AVOne.Impl.Registrator
                 host.GetExports<IImageProvider>(),
                 host.GetExports<IMetadataProvider>(),
                 host.GetExports<INamingOptionProvider>(),
-                host.GetExports<IVideoResolverProvider>());
+                host.GetExports<IVideoResolverProvider>(),
+                host.GetExports<IMetadataSaverProvider>(),
+                host.GetExports<IImageSaverProvider>(),
+                host.GetExports<IDownloaderProvider>(),
+                host.GetExports<IMediaExtractorProvider>()
+                );
 
             host.Resolve<ILibraryManager>().AddParts(
                 host.GetExports<IResolverIgnoreRule>(),
                 host.GetExports<IItemResolver>());
+
+            host.Resolve<IConfigurationManager>()
+                .AddParts(host.GetExports<IConfigurationFactory>());
         }
     }
 }

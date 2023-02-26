@@ -1,10 +1,12 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
-// Licensed under the Apache V2.0 License.
+// See License in the project root for license information.
 
 namespace AVOne.Providers.MetaTube
 {
     using AVOne.Abstraction;
+    using AVOne.Configuration;
     using AVOne.Providers.Metatube;
+    using AVOne.Providers.MetaTube.Configuration;
     using Microsoft.Extensions.DependencyInjection;
 
     public class MetaTubeServiceRegistrator : IServiceRegistrator
@@ -27,11 +29,11 @@ namespace AVOne.Providers.MetaTube
                     PooledConnectionLifetime = TimeSpan.FromMinutes(10),
                     PooledConnectionIdleTimeout = TimeSpan.FromSeconds(90)
                 });
+            serviceCollection.AddSingleton<IConfigurationFactory, MetaTubeConfigurationFactory>();
         }
 
         public void PostBuildService(IApplicationHost host)
         {
-
         }
     }
 }

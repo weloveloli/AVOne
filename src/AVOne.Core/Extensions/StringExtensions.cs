@@ -1,5 +1,5 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
-// Licensed under the Apache V2.0 License.
+// See License in the project root for license information.
 
 namespace AVOne.Extensions
 {
@@ -96,7 +96,7 @@ namespace AVOne.Extensions
 #pragma warning restore CA5351
         }
 
-        public static string Ellipsis(this string? str, int number)
+        public static string? Ellipsis(this string? str, int number)
         {
             if (string.IsNullOrEmpty(str))
             {
@@ -108,5 +108,40 @@ namespace AVOne.Extensions
             }
             return str;
         }
+
+        /// <summary>
+        /// Returns the part on the left of the <c>needle</c>.
+        /// </summary>
+        /// <param name="haystack">The string to seek.</param>
+        /// <param name="needle">The needle to find.</param>
+        /// <returns>The part left of the <paramref name="needle" />.</returns>
+        public static ReadOnlySpan<char> LeftPart(this ReadOnlySpan<char> haystack, char needle)
+        {
+            var pos = haystack.IndexOf(needle);
+            return pos == -1 ? haystack : haystack[..pos];
+        }
+
+        /// <summary>
+        /// Returns the part on the right of the <c>needle</c>.
+        /// </summary>
+        /// <param name="haystack">The string to seek.</param>
+        /// <param name="needle">The needle to find.</param>
+        /// <returns>The part right of the <paramref name="needle" />.</returns>
+        public static ReadOnlySpan<char> RightPart(this ReadOnlySpan<char> haystack, char needle)
+        {
+            var pos = haystack.LastIndexOf(needle);
+            if (pos == -1)
+            {
+                return haystack;
+            }
+
+            if (pos == haystack.Length - 1)
+            {
+                return ReadOnlySpan<char>.Empty;
+            }
+
+            return haystack[(pos + 1)..];
+        }
+
     }
 }

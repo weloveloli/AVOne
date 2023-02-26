@@ -1,14 +1,16 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
-// Licensed under the Apache V2.0 License.
+// See License in the project root for license information.
 
 namespace AVOne.Impl.Resolvers
 {
     using AVOne.Models.Info;
-    using AVOne.Providers;
+    using AVOne.Providers.Metadata;
 
     public class DefaultVideoResolverProvider : IVideoResolverProvider
     {
         public int Order => int.MaxValue;
+
+        public string Name => "Jellyfin";
 
         public bool IsVideoFile(string path, INamingOptions namingOptions)
         {

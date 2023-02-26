@@ -1,5 +1,5 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
-// Licensed under the Apache V2.0 License.
+// See License in the project root for license information.
 
 namespace AVOne.Providers.Jellyfin.Base
 {
@@ -14,7 +14,7 @@ namespace AVOne.Providers.Jellyfin.Base
     /// <summary>
     /// Nfo parser for movies.
     /// </summary>
-    public class VideoNfoParser : BaseNfoParser<Video>
+    public class VideoNfoParser : BaseJellyfinNfoParser<Video>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="VideoNfoParser"/> class.
