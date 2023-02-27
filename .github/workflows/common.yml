@@ -2,15 +2,8 @@ name: common
 
 on:
   push:
-    branches:
-      - 'releases/**'
-    paths-ignore:
-    - 'doc/**'
-    - 'img/**'
-    - '*.md'
-    - 'templates/**'
     tags:
-    - 'common-.*'
+    - 'common-*'
 
 jobs:
   build:
