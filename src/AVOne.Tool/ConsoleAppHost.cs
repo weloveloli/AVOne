@@ -12,9 +12,11 @@ namespace AVOne.Tool
     using System.Threading.Tasks;
     using AVOne.Abstraction;
     using AVOne.Common.Migrations;
+    using AVOne.Common.Plugins;
     using AVOne.Configuration;
     using AVOne.Impl.Extensions;
     using AVOne.Impl.IO;
+    using AVOne.Impl.Plugins;
     using AVOne.Impl.Registrator;
     using AVOne.IO;
     using AVOne.Providers.Jellyfin;
@@ -41,6 +43,8 @@ namespace AVOne.Tool
         private readonly IXmlSerializer _xmlSerializer;
 
         private readonly IFileSystem _fileSystem;
+
+        private readonly IPluginManager _pluginManager;
 
         public Version ApplicationVersion { get; }
 
@@ -87,6 +91,7 @@ namespace AVOne.Tool
             _fileSystem = new ManagedFileSystem(LoggerFactory.CreateLogger<ManagedFileSystem>(), path);
             _xmlSerializer = new DefaultXmlSerializer();
             ConfigurationManager = new ConsoleConfigurationManager(path, loggerFactory, _xmlSerializer, _fileSystem);
+            _pluginManager = new PluginManager(LoggerFactory.CreateLogger<PluginManager>(), this, ConfigurationManager.Configuration, path.PluginsPath, ApplicationVersion);
         }
 
         /// <summary>
@@ -108,10 +113,12 @@ namespace AVOne.Tool
             RegisterServices(services);
             var registrators = GetExports<IServiceRegistrator>().ToList();
             registrators.ForEach(e => e.RegisterServices(services));
+            _pluginManager.RegisterServices(services);
         }
 
         public void PostBuildService()
         {
+            _pluginManager.CreatePlugins();
             var registrators = GetExports<IServiceRegistrator>().ToList();
             registrators.ForEach(e => e.PostBuildService(this));
         }
@@ -131,6 +138,7 @@ namespace AVOne.Tool
             service.AddSingleton(_fileSystem);
             service.AddSingleton<IConfigurationManager>(ConfigurationManager);
             service.AddSingleton<IMetaDataFacade, MetaDataFacade>();
+            service.AddSingleton(_pluginManager);
         }
 
         /// <summary>
@@ -139,6 +147,11 @@ namespace AVOne.Tool
         /// <returns>IEnumerable{Assembly}.</returns>
         protected IEnumerable<Assembly> GetComposablePartAssemblies()
         {
+            foreach (var p in _pluginManager.LoadAssemblies())
+            {
+                yield return p;
+            }
+
             // Include composable parts in the AVOne.Impl assembly
             yield return typeof(ImplRegistrator).Assembly;
             yield return typeof(MigrationsFactory).Assembly;
@@ -159,11 +172,13 @@ namespace AVOne.Tool
                 catch (FileNotFoundException ex)
                 {
                     Logger.LogError(ex, "Error getting exported types from {Assembly}", ass.FullName);
+                    _pluginManager.FailPlugin(ass);
                     continue;
                 }
                 catch (TypeLoadException ex)
                 {
                     Logger.LogError(ex, "Error loading types from {Assembly}.", ass.FullName);
+                    _pluginManager.FailPlugin(ass);
                     continue;
                 }
 
@@ -264,6 +279,9 @@ namespace AVOne.Tool
                 {
                     Logger.LogError("Called from: {TypeName}", entry.FullName);
                 }
+
+                _pluginManager.FailPlugin(type.Assembly);
+
                 throw new TypeLoadException("DI Loop detected");
             }
 
@@ -276,6 +294,8 @@ namespace AVOne.Tool
             catch (Exception ex)
             {
                 Logger.LogError(ex, "Error creating {Type}", type);
+                // If this is a plugin fail it.
+                _pluginManager.FailPlugin(type.Assembly);
                 return null;
             }
             finally

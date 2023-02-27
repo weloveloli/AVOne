@@ -8,6 +8,7 @@ namespace AVOne.Impl.Registrator
     using AVOne.Impl.IO;
     using AVOne.Impl.Library;
     using AVOne.Impl.Providers;
+    using AVOne.Impl.Updates;
     using AVOne.IO;
     using AVOne.Library;
     using AVOne.Models.Item;
@@ -16,6 +17,7 @@ namespace AVOne.Impl.Registrator
     using AVOne.Providers.Extractor;
     using AVOne.Providers.Metadata;
     using AVOne.Resolvers;
+    using AVOne.Updates;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
 
@@ -25,6 +27,7 @@ namespace AVOne.Impl.Registrator
         {
             serviceCollection.AddSingleton<IProviderManager, ProviderManager>();
             serviceCollection.AddSingleton<ILibraryManager, LibraryManager>();
+            serviceCollection.AddSingleton<IInstallationManager, InstallationManager>();
             serviceCollection.AddSingleton<IFileSystem, ManagedFileSystem>();
             serviceCollection.AddSingleton<IDirectoryService, DirectoryService>();
         }

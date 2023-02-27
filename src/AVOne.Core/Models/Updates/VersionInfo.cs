@@ -1,7 +1,7 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // See License in the project root for license information.
 
-namespace AVOne.Common.Updates
+namespace AVOne.Models.Updates
 {
     using System.Text.Json.Serialization;
     using SysVersion = Version;

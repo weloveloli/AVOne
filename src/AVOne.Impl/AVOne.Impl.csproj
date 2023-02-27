@@ -20,14 +20,16 @@
         </None>
     </ItemGroup>
     <ItemGroup>
+      <Compile Remove="Migrations\**" />
+      <EmbeddedResource Remove="Migrations\**" />
+      <None Remove="Migrations\**" />
+    </ItemGroup>
+    <ItemGroup>
         <None Remove="appsettings.json" />
     </ItemGroup>
     <ItemGroup>
         <Content Include="appsettings.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-    </ItemGroup>
-    <ItemGroup>
-      <Folder Include="Migrations\PreStartupRoutines\" />
     </ItemGroup>
 </Project>

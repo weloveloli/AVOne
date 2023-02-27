@@ -5,6 +5,7 @@
 
 namespace AVOne.Configuration
 {
+    using AVOne.Models.Updates;
 
     public class MovieID
     {
@@ -79,5 +80,7 @@ namespace AVOne.Configuration
         /// </summary>
         /// <value><c>true</c> if [enable case sensitive item ids]; otherwise, <c>false</c>.</value>
         public bool EnableCaseSensitiveItemIds { get; set; } = true;
+
+        public List<RepositoryInfo> PluginRepositories { get; set; } = new List<RepositoryInfo>();
     }
 }
