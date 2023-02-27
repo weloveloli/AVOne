@@ -10,7 +10,7 @@ on:
     - '*.md'
     - 'templates/**'
     tags:
-    - tool-.*
+    - 'tool-.*'
 
 jobs:
   build:
