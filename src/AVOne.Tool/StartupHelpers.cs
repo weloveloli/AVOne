@@ -11,7 +11,7 @@ namespace AVOne.Tool
     using AVOne.Constants;
     using AVOne.Tool.Commands;
     using AVOne.Tool.Configuration;
-    using AVOne.Tools.Migrations;
+    using AVOne.Tool.Migrations;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;

@@ -2,8 +2,4 @@
 
     <Import Project="../../commontest.props" />
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\AVOne.Providers.MetaTube\AVOne.Providers.MetaTube.csproj" />
-  </ItemGroup>
-
 </Project>

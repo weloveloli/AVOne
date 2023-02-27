@@ -8,6 +8,8 @@
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>AVOneTool</ToolCommandName>
         <IncludeSymbols>False</IncludeSymbols>
+        <MinVerTagPrefix>tool-</MinVerTagPrefix>
+        <MinVerIgnoreHeight>true</MinVerIgnoreHeight>
     </PropertyGroup>
     <ItemGroup>
         <Compile Remove="Helper\**" />
@@ -20,7 +22,6 @@
     <ItemGroup>
         <EmbeddedResource Include="Resources\Configuration\logging.json" />
     </ItemGroup>
-
     <ItemGroup>
         <PackageReference Include="CommandLineParser" Version="2.9.1" />
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
@@ -38,10 +39,9 @@
         <ProjectReference Include="..\AVOne.Core\AVOne.Core.csproj" />
         <ProjectReference Include="..\AVOne.Impl\AVOne.Impl.csproj" />
         <ProjectReference Include="..\AVOne.Providers.Jellyfin\AVOne.Providers.Jellyfin.csproj" />
-        <ProjectReference Include="..\AVOne.Providers.MetaTube\AVOne.Providers.MetaTube.csproj" />
         <ProjectReference Include="..\AVOne.Providers.Official\AVOne.Providers.Official.csproj" />
     </ItemGroup>
-
+    
     <ItemGroup>
         <Compile Update="Resources\Resource.Designer.cs">
             <DesignTime>True</DesignTime>

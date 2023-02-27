@@ -9,6 +9,8 @@
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <Nullable>enable</Nullable>
+        <MinVerTagPrefix>common-</MinVerTagPrefix>
+        <MinVerIgnoreHeight>true</MinVerIgnoreHeight>
     </PropertyGroup>
 
     <ItemGroup>
@@ -23,5 +25,4 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
     </ItemGroup>
-
 </Project>

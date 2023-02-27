@@ -2,10 +2,16 @@ name: ci
 
 on:
   push:
+    branches:
+      - main
+      - 'releases/**'
     paths-ignore:
     - 'doc/**'
     - 'img/**'
     - '*.md'
+    - 'templates/**'
+    tags-ignore:        
+    - doc.*
   pull_request:
 
 jobs:

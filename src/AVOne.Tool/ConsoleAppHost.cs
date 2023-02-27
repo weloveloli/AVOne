@@ -8,6 +8,7 @@ namespace AVOne.Tool
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Reflection;
     using System.Threading.Tasks;
     using AVOne.Abstraction;
@@ -20,7 +21,6 @@ namespace AVOne.Tool
     using AVOne.Impl.Registrator;
     using AVOne.IO;
     using AVOne.Providers.Jellyfin;
-    using AVOne.Providers.MetaTube;
     using AVOne.Providers.Official.Metadata;
     using AVOne.Tool.Commands;
     using AVOne.Tool.Configuration;
@@ -85,7 +85,9 @@ namespace AVOne.Tool
             _option = option;
             LoggerFactory = loggerFactory;
             _tokenSource = tokenSource;
-            ApplicationVersion = typeof(ConsoleAppHost).Assembly.GetName().Version;
+            var assembly = Assembly.GetExecutingAssembly();
+            var fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
+            ApplicationVersion = Version.Parse(fvi.FileVersion);
             AppPaths = path;
             Logger = loggerFactory.CreateLogger<ConsoleAppHost>();
             _fileSystem = new ManagedFileSystem(LoggerFactory.CreateLogger<ManagedFileSystem>(), path);
@@ -155,7 +157,6 @@ namespace AVOne.Tool
             // Include composable parts in the AVOne.Impl assembly
             yield return typeof(ImplRegistrator).Assembly;
             yield return typeof(MigrationsFactory).Assembly;
-            yield return typeof(MetaTubeServiceRegistrator).Assembly;
             yield return typeof(JellyfinNamingOptionProvider).Assembly;
             yield return typeof(ImageSaverProvider).Assembly;
         }
