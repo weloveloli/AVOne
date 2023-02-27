@@ -3,17 +3,14 @@ name: ci
 on:
   push:
     branches:
-      - main
+      - 'releases/**'
     paths-ignore:
     - 'doc/**'
     - 'img/**'
     - '*.md'
     - 'templates/**'
-    - '.github/**'
-    - '**/*.toml'
-    tags-ignore:        
-    - doc.*
-  pull_request:
+    tags:
+    - common-.*
 
 jobs:
   build:

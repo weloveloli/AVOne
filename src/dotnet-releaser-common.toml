@@ -1,0 +1,6 @@
+[msbuild]
+project = [".\AVOne.Common\AVOne.Common.csproj","".\AVOne.Core\AVOne.Core.csproj""]
+[github]
+user = "weloveloli"
+repo = "AVOne"
+version_prefix = "common-"
