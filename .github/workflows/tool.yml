@@ -2,16 +2,9 @@ name: tool
 
 on:
   push:
-    branches:
-      - 'releases/**'
-    paths-ignore:
-    - 'doc/**'
-    - 'img/**'
-    - '*.md'
-    - 'templates/**'
     tags:
-    - 'tool-.*'
-
+    - 'tool-*'
+    
 jobs:
   build:
     runs-on: windows-latest
