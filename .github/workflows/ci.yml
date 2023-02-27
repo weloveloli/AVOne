@@ -6,6 +6,7 @@ on:
     - 'doc/**'
     - 'img/**'
     - '*.md'
+    - 'templates/**'
   pull_request:
 
 jobs:

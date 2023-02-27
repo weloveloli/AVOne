@@ -19,7 +19,7 @@ namespace AVOne.Tool.Commands
         public string? TargetFolder { get; set; }
         [Option('w', "web-url", Required = false, Group = "target", HelpText = nameof(Resource.HelpTextDownloadWebUrl), ResourceType = typeof(Resource))]
         public string? Web { get; set; }
-        [Option('t',"thread-count", Required = false, Default = 4, HelpText = nameof(Resource.HelpTextOptionThreadCount), ResourceType = typeof(Resource))]
+        [Option('t', "thread-count", Required = false, Default = 4, HelpText = nameof(Resource.HelpTextOptionThreadCount), ResourceType = typeof(Resource))]
         public int? ThreadCount { get; set; }
         [Option('n', "save-name", Required = false, HelpText = nameof(Resource.HelpTextOptionPreferName), ResourceType = typeof(Resource))]
         public string? PreferName { get; set; }

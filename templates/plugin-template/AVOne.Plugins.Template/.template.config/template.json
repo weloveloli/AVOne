@@ -1,0 +1,15 @@
+{
+    "$schema": "http://json.schemastore.org/template",
+    "author": "Weloveli",
+    "classifications": [ "AVOne", "Plugin" ], 
+    "name": "AVOne Plugin Template",
+    "identity": "AVOne.Plugins.Template",         
+    "groupIdentity":"Weloveli",
+    "shortName": "avoneplugin",                    // You can create the project using this short name instead of the one above.
+    "tags": {
+      "language": "C#",                         // Specify that this template is in C#.
+      "type":"project"
+    },
+    "sourceName": "AVOne.Plugins.Template",              // Will replace the string 'MyProject.StarterWeb' with the value provided via -n.
+    "preferNameDirectory":true
+  }

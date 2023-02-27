@@ -1,0 +1,1 @@
+# AVOne Plugin Template

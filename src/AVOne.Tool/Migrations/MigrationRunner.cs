@@ -1,12 +1,11 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // See License in the project root for license information.
 
-namespace AVOne.Tools.Migrations
+namespace AVOne.Tool.Migrations
 {
     using AVOne.Common.Migrations;
     using AVOne.Configuration;
     using AVOne.Impl.IO;
-    using AVOne.Providers.MetaTube.Migrations.PreStartupRoutines;
     using AVOne.Tool;
     using AVOne.Tool.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -22,7 +21,6 @@ namespace AVOne.Tools.Migrations
         /// </summary>
         private static readonly Type[] _preStartupMigrationTypes =
         {
-            typeof(CreateMetaTubeConfiguration),
         };
 
         /// <summary>
@@ -30,6 +28,7 @@ namespace AVOne.Tools.Migrations
         /// </summary>
         private static readonly Type[] _migrationTypes =
         {
+            typeof(AddMetaTubePluginRepository)
         };
 
         /// <summary>
