@@ -13,6 +13,8 @@ on:
     - '**/*.toml'
     tags-ignore:        
     - doc.*
+    - tool-.*
+    - common-.*
   pull_request:
 
 jobs:
