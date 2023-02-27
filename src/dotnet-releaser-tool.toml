@@ -1,5 +1,5 @@
 [msbuild]
-project = ".\AVOne.Tool\AVOne.Tool.csproj"
+project = "AVOne.Tool/AVOne.Tool.csproj"
 [github]
 user = "weloveloli"
 repo = "AVOne"
