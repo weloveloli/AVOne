@@ -12,9 +12,9 @@ on:
     - '.github/**'
     - '**/*.toml'
     tags-ignore:        
-    - 'doc.*'
-    - 'tool-.*'
-    - 'common-.*'
+    - doc.*
+    - tool.*
+    - common.*
   pull_request:
 
 jobs:
