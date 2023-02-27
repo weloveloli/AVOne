@@ -7,7 +7,7 @@ namespace AVOne.Common.Plugins
     using System.Collections.Generic;
     using System.Reflection;
     using System.Threading.Tasks;
-    using AVOne.Common.Updates;
+    using AVOne.Models.Updates;
     using Microsoft.Extensions.DependencyInjection;
 
     /// <summary>

@@ -15,11 +15,11 @@ namespace AVOne.Impl.Plugins
     using System.Threading.Tasks;
     using AVOne.Abstraction;
     using AVOne.Common.Plugins;
-    using AVOne.Common.Updates;
     using AVOne.Extensions;
     using AVOne.Impl.Json;
     using AVOne.Impl.Json.Converters;
     using AVOne.IO;
+    using AVOne.Models.Updates;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
 
