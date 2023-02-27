@@ -1,4 +1,4 @@
-name: ci
+name: common
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
     - '*.md'
     - 'templates/**'
     tags:
-    - common-.*
+    - 'common-.*'
 
 jobs:
   build:
