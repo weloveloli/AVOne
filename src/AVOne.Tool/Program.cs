@@ -29,6 +29,16 @@ internal class Program
                     await option.ExecuteAsync(appHost, StartupHelpers.TokenSource.Token).ConfigureAwait(false);
                     return 0;
                 }
+                catch (AppFriendlyException e)
+                {
+                    var type = option.GetType();
+                    var cmdName = type.GetCustomAttribute<VerbAttribute>()?.Name ?? type.Name;
+
+                    Cli.Error("Command {0} execute failed", cmdName);
+                    Cli.Error(e.ErrorMessage.ToString());
+
+                    Environment.Exit(1);
+                }
                 catch (Exception e)
                 {
                     var type = option.GetType();

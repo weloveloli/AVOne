@@ -1,25 +1,20 @@
-# AVOne [![ci](https://github.com/weloveloli/AVOne/actions/workflows/ci.yml/badge.svg)](https://github.com/weloveloli/AVOne/actions/workflows/ci.yml) [![AVOneTool Nuget](https://img.shields.io/nuget/v/AVOneTool)](https://www.nuget.org/packages/AVOneTool)
-<p align="center">
-<img alt="Plugin Banner" src="./img/avone.png"/>
-<br/>
-<br/>
-<p align="center"><b><a href="README_EN.md">English</a> | 简体中文</b></p>
-
+# AVOne 
+![banner](./img/avone.png)
 ## 关于
 AVOne是一个集下载,整理等多功能的插件化的AV管理工具。
 
-## 文档
-
-待补充
+| package      | Status |
+| ----------- | ----------- |
+| AVOneTool      | [![ci](https://github.com/weloveloli/AVOne/actions/workflows/tool.yml/badge.svg)](https://github.com/weloveloli/AVOne/actions/workflows/tool.yml) [![AVOneTool Nuget](https://img.shields.io/nuget/v/AVOneTool)](https://www.nuget.org/packages/AVOneTool)       |
+| AVOne.Common   | [![ci](https://github.com/weloveloli/AVOne/actions/workflows/common.yml/badge.svg)](https://github.com/weloveloli/AVOne/actions/workflows/common.yml) [![AVOneTool Nuget](https://img.shields.io/nuget/v/AVOne.Common)](https://www.nuget.org/packages/AVOne.Common)        |
+<br/>
+## 文档（待补充）
 
 
 ## 特性
 
 - 提供快速下载视频网站中的视频.
 - 提供视频元数据抓取和整理功能.
-
-[![asciicast](https://asciinema.org/a/NATv7vnegUUUAalekKZB1R7eB.svg)](https://asciinema.org/a/NATv7vnegUUUAalekKZB1R7eB)
-
 - 插件化，可以自行拓展.
 
 ## 许可
