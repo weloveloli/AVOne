@@ -8,16 +8,14 @@ using CommandLine;
 using CommandLine.Text;
 using Microsoft.Extensions.Logging;
 
-internal class Program
+public static class Program
 {
-    private static async Task<int> Main(string[] args)
+    public static async Task<int> Main(string[] args)
     {
         // Set sentence builder to localizable
         SentenceBuilder.Factory = () => new LocalizableSentenceBuilder();
-        var optionTypes = typeof(Program).Assembly.GetTypes()
-                .Where(t => t.IsSubclassOf(typeof(BaseHostOptions)))
-                .ToArray();
-        if (Parser.Default.ParseArguments(args, optionTypes) is Parsed<object> parsed)
+        var types = LoadVerbs();
+        if (Parser.Default.ParseArguments(args, types) is Parsed<object> parsed)
         {
             if (parsed.Value is BaseHostOptions option)
             {
@@ -50,5 +48,12 @@ internal class Program
             }
         }
         return 1;
+    }
+
+    //load all types using Reflection
+    public static Type[] LoadVerbs()
+    {
+        return Assembly.GetExecutingAssembly().GetTypes()
+            .Where(t => t.GetCustomAttribute<VerbAttribute>() != null).ToArray();
     }
 }
