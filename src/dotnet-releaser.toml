@@ -3,3 +3,4 @@ project = "src.sln"
 [github]
 user = "weloveloli"
 repo = "AVOne"
+branches=["tool-*","common-*"]
