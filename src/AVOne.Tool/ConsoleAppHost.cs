@@ -85,9 +85,9 @@ namespace AVOne.Tool
             _option = option;
             LoggerFactory = loggerFactory;
             _tokenSource = tokenSource;
-            var assembly = Assembly.GetExecutingAssembly();
-            var fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
-            ApplicationVersion = Version.Parse(fvi.FileVersion);
+            // TODO：Fix Version not correct here
+            ApplicationVersion = Assembly.GetExecutingAssembly().GetName().Version;
+            StartupHelpers.Logger.LogInformation("ApplicationVersion is {}", ApplicationVersion);
             AppPaths = path;
             Logger = loggerFactory.CreateLogger<ConsoleAppHost>();
             _fileSystem = new ManagedFileSystem(LoggerFactory.CreateLogger<ManagedFileSystem>(), path);

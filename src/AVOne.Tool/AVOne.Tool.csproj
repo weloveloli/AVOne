@@ -10,6 +10,7 @@
         <IncludeSymbols>False</IncludeSymbols>
         <MinVerTagPrefix>tool-</MinVerTagPrefix>
         <MinVerIgnoreHeight>true</MinVerIgnoreHeight>
+        <PublishReadyToRunComposite>true</PublishReadyToRunComposite>
     </PropertyGroup>
     <ItemGroup>
         <Compile Remove="Helper\**" />
@@ -17,6 +18,7 @@
         <None Remove="Helper\**" />
     </ItemGroup>
     <ItemGroup>
+        <None Remove="Cli.cs~RF2920b2fc.TMP" />
         <None Remove="Resources\Configuration\logging.json" />
     </ItemGroup>
     <ItemGroup>

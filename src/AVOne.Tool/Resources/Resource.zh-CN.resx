@@ -207,6 +207,9 @@
   <data name="HelpTextVerbOrganize" xml:space="preserve">
     <value>扫描整理指定文件下的视频文件.</value>
   </data>
+  <data name="HelpTextVerbPlugin" xml:space="preserve">
+    <value>管理插件</value>
+  </data>
   <data name="HelpTextVerbPluginRepo" xml:space="preserve">
     <value>管理插件仓库.</value>
   </data>

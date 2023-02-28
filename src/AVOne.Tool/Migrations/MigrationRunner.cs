@@ -3,6 +3,7 @@
 
 namespace AVOne.Tool.Migrations
 {
+    using System.Diagnostics.CodeAnalysis;
     using AVOne.Common.Migrations;
     using AVOne.Configuration;
     using AVOne.Impl.IO;
