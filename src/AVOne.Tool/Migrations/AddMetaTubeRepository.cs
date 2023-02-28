@@ -23,8 +23,8 @@ namespace AVOne.Tool.Migrations
 
         private readonly RepositoryInfo _defaultRepositoryInfo = new RepositoryInfo
         {
-            Name = "AVOne MetaTube",
-            Url = "https://raw.githubusercontent.com/weloveloli/AVOne.Plugins.Metatube/dist/manifest.json"
+            Name = "AVOne Official",
+            Url = "https://raw.githubusercontent.com/weloveloli/AVOne.Plugins/dist/manifest.json"
         };
 
         public Guid Id => Guid.Parse("F9C6E0D8-7B4F-4E3D-A5A9-6C2B0B8F7E5A");
