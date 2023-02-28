@@ -7,7 +7,7 @@ AVOne是一个集下载,整理等多功能的插件化的AV管理工具。
 | ----------- | ----------- |
 | AVOneTool      | [![ci](https://github.com/weloveloli/AVOne/actions/workflows/tool.yml/badge.svg)](https://github.com/weloveloli/AVOne/actions/workflows/tool.yml) [![AVOneTool Nuget](https://img.shields.io/nuget/v/AVOneTool)](https://www.nuget.org/packages/AVOneTool)       |
 | AVOne.Common   | [![ci](https://github.com/weloveloli/AVOne/actions/workflows/common.yml/badge.svg)](https://github.com/weloveloli/AVOne/actions/workflows/common.yml) [![AVOneTool Nuget](https://img.shields.io/nuget/v/AVOne.Common)](https://www.nuget.org/packages/AVOne.Common)        |
-<br/>
+
 ## 文档（待补充）
 
 
