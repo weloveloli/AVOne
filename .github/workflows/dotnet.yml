@@ -6,6 +6,13 @@ name: .NET
 on:
   push:
     branches: [ "main" ]
+    paths-ignore:
+      - 'docs/**'
+      - 'scripts/**'
+      - '*.md'
+      - '.github/**'
+      - 'template/**'
+      - 'src/*.toml'
   pull_request:
     branches: [ "main" ]
 

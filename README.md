@@ -1,13 +1,13 @@
 # AVOne 
-![banner](./img/avone.png)
+[![banner](./img/avone.png)](https://github.com/weloveloli/AVOne/raw/main/img/avone.png)
 ## 关于
 AVOne是一个集下载,整理等多功能的插件化的AV管理工具。
 
-| package      | Status |
+| Name      | Nuget Package |
 | ----------- | ----------- |
-| AVOneTool      | [![ci](https://github.com/weloveloli/AVOne/actions/workflows/tool.yml/badge.svg)](https://github.com/weloveloli/AVOne/actions/workflows/tool.yml) [![AVOneTool Nuget](https://img.shields.io/nuget/v/AVOneTool)](https://www.nuget.org/packages/AVOneTool)       |
-| AVOne.Common   | [![ci](https://github.com/weloveloli/AVOne/actions/workflows/common.yml/badge.svg)](https://github.com/weloveloli/AVOne/actions/workflows/common.yml) [![AVOneTool Nuget](https://img.shields.io/nuget/v/AVOne.Common)](https://www.nuget.org/packages/AVOne.Common)        |
-<br/>
+| AVOneTool | [![ci](https://github.com/weloveloli/AVOne/actions/workflows/tool.yml/badge.svg)](https://github.com/weloveloli/AVOne/actions/workflows/tool.yml) [![AVOneTool Nuget](https://img.shields.io/nuget/v/AVOneTool)](https://www.nuget.org/packages/AVOneTool) |
+| AVOne.Common | [![ci](https://github.com/weloveloli/AVOne/actions/workflows/common.yml/badge.svg)](https://github.com/weloveloli/AVOne/actions/workflows/common.yml) [![AVOneTool Nuget](https://img.shields.io/nuget/v/AVOne.Common)](https://www.nuget.org/packages/AVOne.Common) |
+
 ## 文档（待补充）
 
 
