@@ -3,7 +3,6 @@
 
 namespace AVOne.Tool.Commands
 {
-    using System;
     using System.Threading;
     using System.Threading.Tasks;
     using AVOne.Common.Enum;
@@ -67,7 +66,7 @@ namespace AVOne.Tool.Commands
                 , async ctx =>
             {
                 var facade = host.Resolve<IMetaDataFacade>();
-                MoveMetaDataItem? item = await facade.ResolveAsMovie(FilePath, token);
+                var item = await facade.ResolveAsMovie(FilePath, token);
                 if (item is null)
                 {
                     Cli.WarnLocale("Not a movie", FilePath);
