@@ -154,7 +154,7 @@ namespace AVOne.Providers.Official.Extractor
             return webPage.StartsWith("https://missav.com");
         }
 
-        [GeneratedRegex("<title>(.*?)\\s\\-\\sMissAV.com.*</title>", RegexOptions.IgnoreCase, "en-US")]
+        [GeneratedRegex("<title>(.*?)</title>", RegexOptions.IgnoreCase, "en-US")]
         private static partial Regex TitleRegex();
     }
 }
