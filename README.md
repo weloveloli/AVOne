@@ -1,7 +1,18 @@
 # AVOne 
 [![banner](./img/avone.png)](https://github.com/weloveloli/AVOne/raw/main/img/avone.png)
 ## 关于
-AVOne是一个集下载,整理等多功能的插件化的AV管理工具。
+AVOne是一个集下载,整理等多功能的插件化的AV管理工具。目前还在开发中，尽情期待
+
+## 为什么要有这个项目
+1. 目前的元数据抓取大部分只支持JAV，对TWAV, Hentail Anime 以及 PornHub 等视频网站没有支持
+2. 海报图缺乏打标功能单一，查找繁琐 
+3. 下载工具并不自带整理功能，后期整理繁琐费时
+4. 整理功能大部分对多cd，系列等处理不正常
+5. 多个工具分散
+6. 视频分散在多个视频网站，需要多次寻找
+7. 缺乏视频去重和质量升级功能
+
+
 
 | Name      | Nuget Package |
 | ----------- | ----------- |
