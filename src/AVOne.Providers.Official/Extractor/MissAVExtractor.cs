@@ -16,7 +16,7 @@ namespace AVOne.Providers.Official.Extractor
     using Jint;
     using Microsoft.Extensions.Logging;
 
-    public class MissAVExtractor : IMediaExtractorProvider
+    public partial class MissAVExtractor : IMediaExtractorProvider
     {
         private readonly HttpClient _httpClient;
         private readonly ILogger<MissAVExtractor> _logger;
@@ -37,9 +37,9 @@ namespace AVOne.Providers.Official.Extractor
             _httpClient = httpClientFactory?.CreateClient(AVOneConstants.Default) ?? new HttpClient();
             _logger = logger;
             // The regex pattern to match lines starting with eval
-            string pattern = @"^eval\((.*)\)$";
+            var pattern = @"^eval\((.*)\)$";
             // The regex options to enable multiline mode
-            RegexOptions options = RegexOptions.Multiline;
+            var options = RegexOptions.Multiline;
             // Create a regex object with the pattern and options
             _regex = new Regex(pattern, options);
             _titleRegex = GetTitleRegex();
@@ -55,7 +55,7 @@ namespace AVOne.Providers.Official.Extractor
                 resp.EnsureSuccessStatusCode();
                 var html = await resp.Content.ReadAsStringAsync();
                 var title = GetTitleFromHtml(html, _titleRegex);
-                bool isChineseSub = html.Contains("<a href=\"https://missav.com/chinese-subtitle\" class=\"text-nord13 font-medium\">中文字幕</a>");
+                var isChineseSub = html.Contains("<a href=\"https://missav.com/chinese-subtitle\" class=\"text-nord13 font-medium\">中文字幕</a>");
                 var avId = title[..title.IndexOf(" ")] + (isChineseSub ? "-C" : string.Empty);
                 sources = GetSources(html);
                 foreach (var source in sources)
@@ -87,7 +87,7 @@ namespace AVOne.Providers.Official.Extractor
 
         public static Regex GetTitleRegex()
         {
-            return new Regex(@"<title>(.*?)\s\-\sMissAV.com.*</title>", RegexOptions.IgnoreCase);
+            return TitleRegex();
         }
 
         // A method to fetch the title from a HTML string
@@ -153,5 +153,8 @@ namespace AVOne.Providers.Official.Extractor
         {
             return webPage.StartsWith("https://missav.com");
         }
+
+        [GeneratedRegex("<title>(.*?)\\s\\-\\sMissAV.com.*</title>", RegexOptions.IgnoreCase, "en-US")]
+        private static partial Regex TitleRegex();
     }
 }

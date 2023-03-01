@@ -9,12 +9,14 @@ namespace AVOne.Tool
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Diagnostics.Internal;
     using System.Reflection;
     using System.Threading.Tasks;
     using AVOne.Abstraction;
     using AVOne.Common.Migrations;
     using AVOne.Common.Plugins;
     using AVOne.Configuration;
+    using AVOne.Extensions;
     using AVOne.Impl.Extensions;
     using AVOne.Impl.IO;
     using AVOne.Impl.Plugins;
@@ -27,7 +29,10 @@ namespace AVOne.Tool
     using AVOne.Tool.Facade;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;
+    using Microsoft.Extensions.Localization;
     using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Options;
+    using My.Extensions.Localization.Json;
 
     internal class ConsoleAppHost : IApplicationHost, IAsyncDisposable, IDisposable
     {
@@ -85,15 +90,24 @@ namespace AVOne.Tool
             _option = option;
             LoggerFactory = loggerFactory;
             _tokenSource = tokenSource;
-            // TODO：Fix Version not correct here
-            ApplicationVersion = Assembly.GetExecutingAssembly().GetName().Version;
-            StartupHelpers.Logger.LogInformation("ApplicationVersion is {}", ApplicationVersion);
+
+            // Get the version from the assembly
+            var assembly = GetExecutingOrEntryAssembly();
+            var attribute = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
+            ApplicationVersion = attribute is not null ? Version.Parse(attribute.InformationalVersion.Substring(0, attribute.InformationalVersion.IndexOf('+'))) : assembly.GetName().Version;
             AppPaths = path;
             Logger = loggerFactory.CreateLogger<ConsoleAppHost>();
             _fileSystem = new ManagedFileSystem(LoggerFactory.CreateLogger<ManagedFileSystem>(), path);
             _xmlSerializer = new DefaultXmlSerializer();
             ConfigurationManager = new ConsoleConfigurationManager(path, loggerFactory, _xmlSerializer, _fileSystem);
             _pluginManager = new PluginManager(LoggerFactory.CreateLogger<PluginManager>(), this, ConfigurationManager.Configuration, path.PluginsPath, ApplicationVersion);
+        }
+
+        private static Assembly GetExecutingOrEntryAssembly()
+        {
+            //resolve issues of null EntryAssembly in Xunit Test #392,424,389
+            //return Assembly.GetEntryAssembly();
+            return Assembly.GetEntryAssembly() ?? Assembly.GetCallingAssembly();
         }
 
         /// <summary>
@@ -111,7 +125,21 @@ namespace AVOne.Tool
             services.TryAdd(ServiceDescriptor.Singleton(LoggerFactory));
             services.TryAdd(ServiceDescriptor.Singleton(typeof(ILogger<>), typeof(Logger<>)));
             _ = services.AddHttpClient();
+#if RELEASE
+            var localizationSettings = App.GetConfig<LocalizationSettingsOptions>("LocalizationSettings", true);
+            localizationSettings.AssemblyName = GetExecutingOrEntryAssembly().GetName().Name;
+            Console.WriteLine(localizationSettings.AssemblyName);
+            services.AddConfigurableOptions<LocalizationSettingsOptions>();
+
+            services.TryAddSingleton<IStringLocalizerFactory, JsonStringLocalizerFactory>();
+            services.Configure<JsonLocalizationOptions>((options =>
+            {
+                if (!string.IsNullOrWhiteSpace(localizationSettings.ResourcesPath))
+                    options.ResourcesPath = localizationSettings.ResourcesPath;
+            }));
+#else
             services.AddDefaultHostLocalization();
+#endif
             RegisterServices(services);
             var registrators = GetExports<IServiceRegistrator>().ToList();
             registrators.ForEach(e => e.RegisterServices(services));

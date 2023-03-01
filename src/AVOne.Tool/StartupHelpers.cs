@@ -133,8 +133,8 @@ namespace AVOne.Tool
                         _ = logging.AddSerilog(Log.Logger);
                     });
 
-                    return builder.UseContentRoot(StartupHelpers.RealRootContentPath);
-                    //return builder;
+                    //return builder.UseContentRoot(StartupHelpers.RealRootContentPath);
+                    return builder;
                 })
                 .ConfigureServices(appHost.Init);
             var host = Serve.Run(options);
@@ -212,7 +212,6 @@ namespace AVOne.Tool
         /// <param name="appPaths">The application paths.</param>
         internal static void InitializeLoggingFramework(IConfiguration configuration, ConsoleApplicationPaths appPaths)
         {
-            // TODO:fix serilog not working error
             try
             {
                 // Serilog.Log is used by SerilogLoggerFactory when no logger is specified

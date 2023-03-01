@@ -18,7 +18,6 @@
         <None Remove="Helper\**" />
     </ItemGroup>
     <ItemGroup>
-        <None Remove="Cli.cs~RF2920b2fc.TMP" />
         <None Remove="Resources\Configuration\logging.json" />
     </ItemGroup>
     <ItemGroup>

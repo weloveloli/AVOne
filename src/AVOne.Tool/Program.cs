@@ -42,6 +42,7 @@ namespace AVOne.Tool
                     {
                         var type = option.GetType();
                         var cmdName = type.GetCustomAttribute<VerbAttribute>()?.Name ?? type.Name;
+
                         StartupHelpers.Logger.LogCritical(e, "Command {0} execute error due to Exception", cmdName);
                         Cli.Info("See error logs in {0}", appPaths.LogDirectoryPath);
                         Environment.Exit(1);
