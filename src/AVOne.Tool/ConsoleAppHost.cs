@@ -14,7 +14,6 @@ namespace AVOne.Tool
     using AVOne.Common.Migrations;
     using AVOne.Common.Plugins;
     using AVOne.Configuration;
-    using AVOne.Impl.Extensions;
     using AVOne.Impl.IO;
     using AVOne.Impl.Plugins;
     using AVOne.Impl.Registrator;
@@ -27,6 +26,12 @@ namespace AVOne.Tool
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;
     using Microsoft.Extensions.Logging;
+#if RELEASE
+    using My.Extensions.Localization.Json;
+    using Microsoft.Extensions.Localization;
+#else
+    using AVOne.Impl.Extensions;
+#endif
 
     internal class ConsoleAppHost : IApplicationHost, IAsyncDisposable, IDisposable
     {
