@@ -8,15 +8,12 @@ namespace AVOne.Tool
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Diagnostics.Internal;
     using System.Reflection;
     using System.Threading.Tasks;
     using AVOne.Abstraction;
     using AVOne.Common.Migrations;
     using AVOne.Common.Plugins;
     using AVOne.Configuration;
-    using AVOne.Extensions;
     using AVOne.Impl.Extensions;
     using AVOne.Impl.IO;
     using AVOne.Impl.Plugins;
@@ -29,10 +26,7 @@ namespace AVOne.Tool
     using AVOne.Tool.Facade;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;
-    using Microsoft.Extensions.Localization;
     using Microsoft.Extensions.Logging;
-    using Microsoft.Extensions.Options;
-    using My.Extensions.Localization.Json;
 
     internal class ConsoleAppHost : IApplicationHost, IAsyncDisposable, IDisposable
     {
@@ -128,7 +122,6 @@ namespace AVOne.Tool
 #if RELEASE
             var localizationSettings = App.GetConfig<LocalizationSettingsOptions>("LocalizationSettings", true);
             localizationSettings.AssemblyName = GetExecutingOrEntryAssembly().GetName().Name;
-            Console.WriteLine(localizationSettings.AssemblyName);
             services.AddConfigurableOptions<LocalizationSettingsOptions>();
 
             services.TryAddSingleton<IStringLocalizerFactory, JsonStringLocalizerFactory>();
