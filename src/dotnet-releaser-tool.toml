@@ -4,3 +4,5 @@ project = "AVOne.Tool/AVOne.Tool.csproj"
 user = "weloveloli"
 repo = "AVOne"
 version_prefix = "tool-"
+[msbuild.properties]
+PublishTrimmed = false

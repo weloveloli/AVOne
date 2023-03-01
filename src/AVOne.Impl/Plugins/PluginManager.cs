@@ -5,6 +5,7 @@ namespace AVOne.Impl.Plugins
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
     using System.IO;
     using System.Linq;
@@ -100,6 +101,7 @@ namespace AVOne.Impl.Plugins
         /// Returns all the assemblies.
         /// </summary>
         /// <returns>An IEnumerable{Assembly}.</returns>
+        [RequiresUnreferencedCode("Use 'MethodFriendlyToTrimming' instead", Url = "http://help/unreferencedcode")]
         public IEnumerable<Assembly> LoadAssemblies()
         {
             // Attempt to remove any deleted plugins and change any successors to be active.
@@ -445,7 +447,7 @@ namespace AVOne.Impl.Plugins
         /// </summary>
         /// <param name="type">The type.</param>
         /// <returns>System.Object.</returns>
-        private IPlugin? CreatePluginInstance(Type type)
+        private IPlugin? CreatePluginInstance([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type type)
         {
             // Find the record for this plugin.
             var plugin = GetPluginByAssembly(type.Assembly);

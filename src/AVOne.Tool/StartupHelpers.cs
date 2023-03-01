@@ -42,7 +42,7 @@ namespace AVOne.Tool
         internal const string AVOnePrefix = "AVONE_TOOL_";
         internal const string AVONE_TOOL_NAME = "avonetool";
         internal static readonly string[] RelevantEnvVarPrefixes = { AVOnePrefix, "DOTNET_", "ASPNETCORE_" };
-        internal static string RealRootContentPath => Directory.GetParent(typeof(StartupHelpers).Assembly.Location)?.FullName ?? Directory.GetCurrentDirectory();
+        internal static string RealRootContentPath => AppContext.BaseDirectory;
         /// <summary>
         /// Create the data, config and log paths from the variety of inputs(command line args,
         /// environment variables) or decide on what default to use. For Windows it's %AppPath%
@@ -224,9 +224,9 @@ namespace AVOne.Tool
             catch (Exception ex)
             {
                 Log.Logger = new LoggerConfiguration()
-                    // .WriteTo.Console(
-                    //    outputTemplate: "[{Timestamp:HH:mm:ss}] [{Level:u3}] [{ThreadId}] {SourceContext}: {Message:lj}{NewLine}{Exception}",
-                    //    formatProvider: CultureInfo.InvariantCulture)
+                     .WriteTo.Console(
+                        outputTemplate: "[{Timestamp:HH:mm:ss}] [{Level:u3}] [{ThreadId}] {SourceContext}: {Message:lj}{NewLine}{Exception}",
+                        formatProvider: CultureInfo.InvariantCulture)
                     .WriteTo.Async(x => x.File(
                         Path.Combine(appPaths.LogDirectoryPath, "log_.log"),
                         rollingInterval: RollingInterval.Day,

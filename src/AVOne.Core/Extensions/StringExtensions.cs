@@ -5,6 +5,7 @@ namespace AVOne.Extensions
 {
     using System;
     using System.Diagnostics;
+    using System.Globalization;
     using System.Linq;
     using System.Security.Cryptography;
     using System.Text;
@@ -141,6 +142,11 @@ namespace AVOne.Extensions
             }
 
             return haystack[(pos + 1)..];
+        }
+
+        public static string ToStringInvariant<T>(this T value)
+        {
+            return Convert.ToString(value, CultureInfo.InvariantCulture);
         }
 
     }

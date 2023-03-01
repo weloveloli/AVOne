@@ -4,8 +4,6 @@
 namespace AVOne.Providers.Official
 {
     using System.Net.Http.Headers;
-    using System.Net.Security;
-    using System.Reflection.Metadata;
     using AVOne.Abstraction;
     using AVOne.Constants;
     using Microsoft.Extensions.DependencyInjection;
