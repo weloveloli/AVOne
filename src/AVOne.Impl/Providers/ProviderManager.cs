@@ -129,7 +129,7 @@ namespace AVOne.Impl.Providers
 
         public IEnumerable<IDownloaderProvider> GetDownloaderProviders(BaseDownloadableItem item)
         {
-            return _downloaderProviders.Where(i => i.Support(item))
+            return _downloaderProviders.OfType<IDownloaderProvider>().Where(i => i.Support(item))
                 .OrderBy(GetDefaultOrder);
         }
 

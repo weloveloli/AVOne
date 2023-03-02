@@ -5,7 +5,7 @@ namespace AVOne.Providers.Download
 {
     using AVOne.Models.Download;
 
-    public interface IDownloaderProvider : IOrderProvider
+    public interface IDownloaderProvider : ISelectableProvider
     {
         public bool Support(BaseDownloadableItem item);
 

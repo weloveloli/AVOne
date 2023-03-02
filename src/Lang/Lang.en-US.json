@@ -19,5 +19,9 @@
   "Can not find any media for web url": "Can not find any media for web url '{0}'.",
   "Choose a media to download": "Choose a media to download.",
   "Can not download media": "Can not download media '{0}'.",
-  "Download video example": "Download video to {0} from {1}."
+  "Download video example": "Download video to {0} from {1}.",
+
+
+
+  "Official M3U8 Donwloader": "Official M3U8 Donwloader"
 }
