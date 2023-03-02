@@ -4,8 +4,8 @@
 namespace AVOne.Providers.Official.Downloader.M3U8
 {
     using System;
-    using System.Collections.Generic;
     using System.Net.Http;
+    using System.Runtime.CompilerServices;
     using System.Text;
     using System.Text.Json;
     using System.Threading;
@@ -21,8 +21,6 @@ namespace AVOne.Providers.Official.Downloader.M3U8
     using AVOne.Providers.Official.Downloader.M3U8.Utils;
     using Furion.FriendlyException;
     using Furion.Localization;
-    using Jint.Parser;
-    using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
     public class M3U8DownloadProvider : IDownloaderProvider
     {
@@ -79,54 +77,156 @@ namespace AVOne.Providers.Official.Downloader.M3U8
             }
 
             DownloadParts(workingDir, mediaPlaylist, opts, m3U8Item, threadCount, token);
-
-            MergeAsync(workingDir, saveDir, saveName, OutputFormat.MP4, token: token).Wait();
+            opts.OnStatusChanged(new DownloadStatusArgs { Status = L.Text["Merge media"] });
+            var finalPath = await MergeAsync(workingDir, saveDir, saveName, OutputFormat.MP4, token: token);
 
             Directory.Delete(workingDir, true);
         }
 
         private void DownloadParts(string workingDir, MediaPlaylist mediaPlaylist, DownloadOpts opts, M3U8Item m3U8Item, int threadCount, CancellationToken token)
         {
-
-            var finished = 0;
+            int interval = 1000;
+            var downloadBytes = 0L;
+            var intervalDownloadBytes = 0L;
             var total = mediaPlaylist.Parts.Select(e => e.Segments.Count).Sum();
-            foreach (var (part, index) in mediaPlaylist.Parts.Select((e, i) => (e, i)))
+            var stop = false;
+            var finish = 0;
+            var timer = new System.Timers.Timer(interval)
             {
-                var partDir = Path.Combine(workingDir, $"Part_{index}");
-                Directory.CreateDirectory(partDir);
-                var list = mediaPlaylist.Parts[index].Segments;
-                var numbers = Enumerable.Range(0, list.Count).ToList();
-                Parallel.ForEach(numbers, new ParallelOptions { MaxDegreeOfParallelism = threadCount }, index =>
+                AutoReset = true
+            };
+            timer.Elapsed += delegate
+            {
+                if (!stop)
                 {
-                    var segment = list[index];
-                    var tsPath = Path.Combine(partDir, $"{index}.ts");
-                    var tsTmpPath = Path.Combine(partDir, $"{index}.tmp");
-                    if (!File.Exists(tsPath))
+                    ProgressEvent(opts, interval, downloadBytes, intervalDownloadBytes, total, finish);
+                    Interlocked.Exchange(ref intervalDownloadBytes, 0);
+                }
+            };
+
+            try
+            {
+                timer.Enabled = true;
+                foreach (var (part, index) in mediaPlaylist.Parts.Select((e, i) => (e, i)))
+                {
+                    var partDir = Path.Combine(workingDir, $"Part_{index}");
+                    Directory.CreateDirectory(partDir);
+                    var list = mediaPlaylist.Parts[index].Segments;
+                    var numbers = Enumerable.Range(0, list.Count).ToList();
+                    Parallel.ForEach(numbers, new ParallelOptions { MaxDegreeOfParallelism = threadCount }, index =>
                     {
-                        var request = new HttpRequestMessage
+                        var segment = list[index];
+                        var tsPath = Path.Combine(partDir, $"{index}.ts");
+                        var tsTmpPath = Path.Combine(partDir, $"{index}.tmp");
+                        if (!File.Exists(tsPath))
                         {
-                            RequestUri = new Uri(segment.Uri),
-                        };
+                            var request = new HttpRequestMessage
+                            {
+                                RequestUri = new Uri(segment.Uri),
+                            };
 
-                        foreach (var header in m3U8Item.Header)
-                        {
-                            request.Headers.Add(header.Key, header.Value);
+                            foreach (var header in m3U8Item.Header)
+                            {
+                                request.Headers.Add(header.Key, header.Value);
+                            }
+                            var rsp = _client.Send(request);
+                            rsp.EnsureSuccessStatusCode();
+                            var stream = File.OpenWrite(tsTmpPath);
+                            using var tsStream = rsp.Content.ReadAsStream();
+                            CopyTo(tsStream, stream, token, opts, interval, ref intervalDownloadBytes);
+                            stream.Flush();
+                            stream.Close();
+                            File.Move(tsTmpPath, tsPath);
+                            var info = new FileInfo(tsPath);
+                            Interlocked.Add(ref downloadBytes, info.Length);
                         }
-
-                        var rsp = _client.Send(request);
-                        rsp.EnsureSuccessStatusCode();
-                        var stream = File.OpenWrite(tsTmpPath);
-                        rsp.Content.CopyTo(stream, null, token);
-                        stream.Flush();
-                        stream.Close();
-                        File.Move(tsTmpPath, tsPath);
-                    }
-                    var done = Interlocked.Increment(ref finished);
-                    opts.OnStatusChanged(new DownloadStatusArgs { Status = $"{done}/{total}" });
-                });
+                        else
+                        {
+                            var info = new FileInfo(tsPath);
+                            Interlocked.Add(ref downloadBytes, info.Length);
+                        }
+                        var done = Interlocked.Increment(ref finish);
+                    });
+                }
+            }
+            catch (Exception)
+            {
+                stop = true;
+                timer.Enabled = false;
+                throw;
             }
         }
 
+        private static long CopyTo(Stream s, Stream d, CancellationToken token, DownloadOpts opts, int interval, ref long intervalDownloadBytes)
+        {
+            var bytes = 0L;
+            var buffer = new byte[4096];
+            var size = 0;
+            var limit = 0L;
+            if (opts.MaxSpeed != null)
+            {
+                limit = (long)((0.001 * interval * opts.MaxSpeed) - opts.ThreadCount * 1024);
+            }
+
+            while (true)
+            {
+                size = s.Read(buffer, 0, buffer.Length);
+                if (size <= 0)
+                    return bytes;
+                d.Write(buffer, 0, size);
+                bytes += size;
+                Interlocked.Add(ref intervalDownloadBytes, size);
+                if (opts.MaxSpeed != null)
+                {
+                    while (intervalDownloadBytes >= limit)
+                    {
+                        Task.Delay(1, token);
+                    }
+                }
+            }
+        }
+
+        private static void ProgressEvent(DownloadOpts opts, int interval, long downloadBytes, long intervalDownloadBytes, int total, int finish)
+        {
+            try
+            {
+                var percentage = Div(finish, total);
+                var totalBytes = (long)Div(downloadBytes * total, finish);
+                var speed = intervalDownloadBytes / interval * 1000;
+                var eta = (int)Div(totalBytes - downloadBytes, speed);
+                var args = new DownloadProgressEventArgs
+                {
+                    Total = total,
+                    Finish = finish,
+                    DownloadBytes = downloadBytes,
+                    MaxRetry = opts.RetryCount ?? 1,
+                    Retry = 0,
+                    Percentage = percentage,
+                    TotalBytes = totalBytes,
+                    Speed = speed,
+                    Eta = eta
+                };
+                opts.OnStatusChanged(args);
+
+            }
+            catch { }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Div(double a, double b)
+        {
+            return b == 0 ? 0 : a / b;
+        }
+
+        /// <summary>
+        /// Gets the media playlist.
+        /// </summary>
+        /// <param name="workingDir">The working dir.</param>
+        /// <param name="url">The URL.</param>
+        /// <param name="saveName">Name of the save.</param>
+        /// <param name="m3U8Item">The m3 u8 item.</param>
+        /// <param name="token">The token.</param>
+        /// <returns></returns>
         private async Task<MediaPlaylist> GetMediaPlaylist(string workingDir, string url, string saveName, M3U8Item m3U8Item, CancellationToken token)
         {
             var md5 = url.GetMD5();
@@ -174,8 +274,7 @@ namespace AVOne.Providers.Official.Downloader.M3U8
         public async Task<string> MergeAsync(string workDir, string outputDir, string saveName,
             OutputFormat outputFormat = OutputFormat.MP4, bool binaryMerge = false,
             bool keepFragmented = false, bool discardcorrupt = false,
-            bool genpts = false, bool igndts = false, bool ignidx = false,
-            bool clearTempFile = false, Action<string>? onMessage = null,
+            bool genpts = false, bool igndts = false, bool ignidx = false, Action<string>? onMessage = null,
             CancellationToken token = default)
         {
             var ffmpegPath = _options.FFmpegPath ?? "ffmepge";

@@ -11,6 +11,7 @@ namespace AVOne.Tool.Commands
     using AVOne.Providers;
     using CommandLine.Text;
     using Spectre.Console;
+    using AVOne.Providers.Download;
 
     [Verb("download", false, HelpText = nameof(Resource.HelpTextVerbDownload), ResourceType = typeof(Resource))]
     internal class Download : BaseHostOptions
@@ -65,13 +66,37 @@ namespace AVOne.Tool.Commands
                             .AddChoices(items));
                 }
 
-                var downloadProvider = providerManager.GetDownloaderProviders(downloadableItem!).FirstOrDefault();
-                if (downloadProvider is null)
+                var downloadProviders = providerManager.GetDownloaderProviders(downloadableItem!);
+
+                if (!downloadProviders.Any())
                 {
                     throw Oops.Oh("Can not download media", downloadableItem!.DisplayName);
                 }
+                IDownloaderProvider downloaderProvider;
 
-                await downloadProvider!.CreateTask(downloadableItem!, new DownloadOpts { ThreadCount = ThreadCount, OutputDir = TargetFolder, RetryCount = RetryCount, RetryWait = 500, PreferName = PreferName });
+                if (downloadProviders.Count() == 1)
+                {
+                    downloaderProvider = downloadProviders.FirstOrDefault()!;
+                }
+                else
+                {
+                    // Choose a media to download
+                    downloaderProvider = AnsiConsole.Prompt(
+                        new SelectionPrompt<IDownloaderProvider>()
+                            .Title(L.Text["Choose a downloader to download"])
+                            .UseConverter(item => Markup.Escape(item.DisplayName))
+                            .PageSize(10)
+                            .AddChoices(downloadProviders));
+                }
+
+                // Asynchronous
+                await AnsiConsole.Status()
+                    .StartAsync(L.Text["Start downloading"], async ctx =>
+                    {
+                        var opt = new DownloadOpts { ThreadCount = ThreadCount, OutputDir = TargetFolder, RetryCount = RetryCount, RetryWait = 500, PreferName = PreferName };
+                        opt.StatusChanged += (o, e) => ctx.Status(e.Status);
+                        await downloaderProvider.CreateTask(downloadableItem!, opt);
+                    });
             }
         }
     }
