@@ -95,7 +95,7 @@ namespace AVOne.Tool.Commands
                     {
                         var opt = new DownloadOpts { ThreadCount = ThreadCount, OutputDir = TargetFolder, RetryCount = RetryCount, RetryWait = 500, PreferName = PreferName };
                         opt.StatusChanged += (o, e) => ctx.Status(e.Status);
-                        await downloaderProvider.CreateTask(downloadableItem!, opt);
+                        await downloaderProvider.CreateTask(downloadableItem!, opt, token);
                     });
             }
         }

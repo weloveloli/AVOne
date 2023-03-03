@@ -113,7 +113,7 @@ namespace AVOne.Providers.Official.Downloader.M3U8
                     Directory.CreateDirectory(partDir);
                     var list = mediaPlaylist.Parts[index].Segments;
                     var numbers = Enumerable.Range(0, list.Count).ToList();
-                    Parallel.ForEach(numbers, new ParallelOptions { MaxDegreeOfParallelism = threadCount }, index =>
+                    Parallel.ForEach(numbers, new ParallelOptions { MaxDegreeOfParallelism = threadCount, CancellationToken = token }, index =>
                     {
                         var segment = list[index];
                         var tsPath = Path.Combine(partDir, $"{index}.ts");
@@ -243,7 +243,7 @@ namespace AVOne.Providers.Official.Downloader.M3U8
 
             var rsp = await _client.SendAsync(request, token);
             rsp.EnsureSuccessStatusCode();
-            var m3u8 = await rsp.Content.ReadAsStringAsync();
+            var m3u8 = await rsp.Content.ReadAsStringAsync(token);
             if (string.IsNullOrEmpty(m3u8))
             {
                 throw Oops.Oh(ErrorCodes.INVALID_DOWNLOADABLE_ITEM);
@@ -380,23 +380,14 @@ namespace AVOne.Providers.Official.Downloader.M3U8
                     }
                     arguments += $@"-loglevel warning {fflags} -i concat:""{concatText}"" ";
 
-                    switch (outputFormat)
+                    arguments += outputFormat switch
                     {
-                        case OutputFormat.MP4:
-                            arguments += $@"-map 0:v? -map 0:a? -map 0:s? -c copy -y -bsf:a aac_adtstoasc ""{partOutputPath}.mp4""";
-                            break;
-                        case OutputFormat.TS:
-                            arguments += $@"-map 0 -c copy -y -f mpegts -bsf:v h264_mp4toannexb ""{partOutputPath}.ts""";
-                            break;
-                        case OutputFormat.M4A:
-                            arguments += $@"-map 0:a -c copy -y ""{partOutputPath}.m4a""";
-                            break;
-                        case OutputFormat.SRT:
-                            arguments += $@"-map 0 -y ""{partOutputPath}.srt""";
-                            break;
-                        default:
-                            throw new Exception("OutputFormat not match.");
-                    }
+                        OutputFormat.MP4 => $@"-map 0:v? -map 0:a? -map 0:s? -c copy -y -bsf:a aac_adtstoasc ""{partOutputPath}.mp4""",
+                        OutputFormat.TS => $@"-map 0 -c copy -y -f mpegts -bsf:v h264_mp4toannexb ""{partOutputPath}.ts""",
+                        OutputFormat.M4A => $@"-map 0:a -c copy -y ""{partOutputPath}.m4a""",
+                        OutputFormat.SRT => $@"-map 0 -y ""{partOutputPath}.srt""",
+                        _ => throw new Exception("OutputFormat not match."),
+                    };
                     var partWorkingDir = Path.GetDirectoryName(partFiles.First());
                     await FFmpeg.ExecuteAsync(ffmpegPath, arguments, partWorkingDir, onMessage, token);
                 }
