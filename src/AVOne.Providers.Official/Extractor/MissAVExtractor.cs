@@ -18,6 +18,7 @@ namespace AVOne.Providers.Official.Extractor
 
     public partial class MissAVExtractor : IMediaExtractorProvider
     {
+        private const string ExtraTitle = " - MissAV.com | 免費高清AV在線看";
         private readonly HttpClient _httpClient;
         private readonly ILogger<MissAVExtractor> _logger;
         private readonly Regex _regex;
@@ -107,7 +108,13 @@ namespace AVOne.Providers.Official.Extractor
             if (match.Success)
             {
                 // Return the value of the first group (the title text)
-                return match.Groups[1].Value;
+                var title = match.Groups[1].Value;
+
+                if(title.Contains(ExtraTitle))
+                {
+                    title = title.Replace(ExtraTitle, "");
+                }
+                return title;
             }
             else
             {
