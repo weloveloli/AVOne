@@ -1,6 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
    <Import Project="../../commontest.props" />
    <ItemGroup>
+     <PackageReference Include="Furion.Xunit" Version="4.8.7.3" />
+   </ItemGroup>
+   <ItemGroup>
      <ProjectReference Include="..\..\AVOne.Providers.Official\AVOne.Providers.Official.csproj" />
    </ItemGroup>
    <ItemGroup>

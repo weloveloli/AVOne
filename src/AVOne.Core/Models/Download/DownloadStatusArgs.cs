@@ -5,5 +5,6 @@ namespace AVOne.Models.Download
 {
     public class DownloadStatusArgs
     {
+        public virtual string Status { get; set; }
     }
 }

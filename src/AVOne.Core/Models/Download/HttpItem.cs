@@ -3,6 +3,8 @@
 
 namespace AVOne.Models.Download
 {
+    using System;
+
     public class HttpItem : BaseDownloadableItem
     {
         public string? Url { get; set; }
@@ -10,5 +12,6 @@ namespace AVOne.Models.Download
         public Dictionary<string, string>? Header { get; set; }
 
         public override string DisplayName => SaveName;
+
     }
 }

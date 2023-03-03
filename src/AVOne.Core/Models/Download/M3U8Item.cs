@@ -25,5 +25,6 @@ namespace AVOne.Models.Download
         public string Title { get; set; }
 
         public override string DisplayName => $"{Title}[{Quality.Description()}]";
+
     }
 }

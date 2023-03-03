@@ -17,6 +17,11 @@
   "Can not find extractor for web url": "无法为 '{0}' 获得可用的提取器.",
   "Can not find any media for web url": "无法为 '{0}' 获得可下载的视频.",
   "Choose a media to download": "选择需要下载的视频",
+  "Choose a downloader to download": "选择下载器",
   "Can not download media": "无法下载视频 '{0}'.",
-  "Download video example": "从{1}下载视频到{0}."
+  "Download video example": "从{1}下载视频到{0}.",
+  "Merge media": "正在合并媒体",
+
+
+  "Official M3U8 Donwloader": "官方M3U8下载器"
 }
