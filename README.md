@@ -1,5 +1,5 @@
 # AVOne 
-[![banner](./img/avone.png)](https://raw.githubusercontent.com/weloveloli/AVOne/main/img/avone.png)
+[![banner](https://raw.githubusercontent.com/weloveloli/AVOne/main/img/avone.png)](https://raw.githubusercontent.com/weloveloli/AVOne/main/img/avone.png)
 ## 关于
 AVOne是一个集下载,整理等多功能的插件化的AV管理工具。目前还在开发中，尽情期待
 
