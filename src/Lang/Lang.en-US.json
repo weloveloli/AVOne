@@ -6,6 +6,9 @@
   "SKIP_METADATA_NOT_EXIST": "Skip '{0}' due to metadata for this file not exists.",
   "SKIP_FILE_DUE_TO_TARGET_FILE_AREADY_EXIST": "Skip '{0}' due to target file path '{1}' already exists.",
   "INVALID_DOWNLOADABLE_ITEM": "Invalid downloadable item.",
+  "PLUGIN_NOT_EXIST": "Plugin '{0}' not exists.",
+  "PLUGIN_IS_ALREADY_ENABLE": "Plugin '{0}' is already enable.",
+  "PLUGIN_IS_ALREADY_DISABLE": "Plugin '{0}' is already disable.",
 
 
   "Searching Metadata": "Searching metadata for files ...",

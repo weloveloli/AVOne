@@ -219,11 +219,29 @@
   <data name="HelpTextVerbScan" xml:space="preserve">
     <value>Scan files under specific folder and preview the organize result.</value>
   </data>
+  <data name="InfoDisablingPlugins" xml:space="preserve">
+    <value>Diable plugin {0}.</value>
+  </data>
   <data name="InfoDownloadingPlugin" xml:space="preserve">
     <value>Downloading and install plugin '{0}'</value>
   </data>
+  <data name="InfoEnablingPlugins" xml:space="preserve">
+    <value>Enable plugin {0}.</value>
+  </data>
   <data name="InfoFetchMetaData" xml:space="preserve">
     <value>Scaning media metadata.</value>
+  </data>
+  <data name="InfoFinishDisablingPlugins" xml:space="preserve">
+    <value>Diable plugin {0} successfully.</value>
+  </data>
+  <data name="InfoFinishEnablingPlugins" xml:space="preserve">
+    <value>Enabling plugin {0} successfully.</value>
+  </data>
+  <data name="InfoFinishRemovingPlugins" xml:space="preserve">
+    <value>Removing plugin {0} successfully.</value>
+  </data>
+  <data name="InfoRemovingPlugins" xml:space="preserve">
+    <value>Removing plugin {0}.</value>
   </data>
   <data name="InfoSearchingPlugins" xml:space="preserve">
     <value>Searching plugin...</value>

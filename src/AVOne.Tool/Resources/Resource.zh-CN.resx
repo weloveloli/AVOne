@@ -219,11 +219,29 @@
   <data name="HelpTextVerbScan" xml:space="preserve">
     <value>扫描指定文件下的视频文件，并进行整理结果预览.</value>
   </data>
+  <data name="InfoDisablingPlugins" xml:space="preserve">
+    <value>关闭插件 {0}.</value>
+  </data>
   <data name="InfoDownloadingPlugin" xml:space="preserve">
     <value>正在下载安装插件 '{0}'</value>
   </data>
+  <data name="InfoEnablingPlugins" xml:space="preserve">
+    <value>启动插件 {0}.</value>
+  </data>
   <data name="InfoFetchMetaData" xml:space="preserve">
     <value>扫描媒体元数据.</value>
+  </data>
+  <data name="InfoFinishDisablingPlugins" xml:space="preserve">
+    <value>关闭插件 {0} 成功.</value>
+  </data>
+  <data name="InfoFinishEnablingPlugins" xml:space="preserve">
+    <value>启动插件 {0} 成功.</value>
+  </data>
+  <data name="InfoFinishRemovingPlugins" xml:space="preserve">
+    <value>删除插件 {0} 成功.</value>
+  </data>
+  <data name="InfoRemovingPlugins" xml:space="preserve">
+    <value>正在删除插件 {0}.</value>
   </data>
   <data name="InfoSearchingPlugins" xml:space="preserve">
     <value>搜索插件...</value>
