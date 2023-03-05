@@ -367,6 +367,15 @@ namespace AVOne.Tool.Resources {
         }
         
         /// <summary>
+        ///   查找类似 Diable plugin {0}. 的本地化字符串。
+        /// </summary>
+        public static string InfoDisablingPlugins {
+            get {
+                return ResourceManager.GetString("InfoDisablingPlugins", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Downloading and install plugin &apos;{0}&apos; 的本地化字符串。
         /// </summary>
         public static string InfoDownloadingPlugin {
@@ -376,11 +385,56 @@ namespace AVOne.Tool.Resources {
         }
         
         /// <summary>
+        ///   查找类似 Enable plugin {0}. 的本地化字符串。
+        /// </summary>
+        public static string InfoEnablingPlugins {
+            get {
+                return ResourceManager.GetString("InfoEnablingPlugins", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Scaning media metadata. 的本地化字符串。
         /// </summary>
         public static string InfoFetchMetaData {
             get {
                 return ResourceManager.GetString("InfoFetchMetaData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Diable plugin {0} successfully. 的本地化字符串。
+        /// </summary>
+        public static string InfoFinishDisablingPlugins {
+            get {
+                return ResourceManager.GetString("InfoFinishDisablingPlugins", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Enabling plugin {0} successfully. 的本地化字符串。
+        /// </summary>
+        public static string InfoFinishEnablingPlugins {
+            get {
+                return ResourceManager.GetString("InfoFinishEnablingPlugins", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Removing plugin {0} successfully. 的本地化字符串。
+        /// </summary>
+        public static string InfoFinishRemovingPlugins {
+            get {
+                return ResourceManager.GetString("InfoFinishRemovingPlugins", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Removing plugin {0}. 的本地化字符串。
+        /// </summary>
+        public static string InfoRemovingPlugins {
+            get {
+                return ResourceManager.GetString("InfoRemovingPlugins", resourceCulture);
             }
         }
         

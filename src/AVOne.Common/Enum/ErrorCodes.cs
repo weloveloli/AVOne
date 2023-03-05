@@ -14,6 +14,13 @@ namespace AVOne.Common.Enum
         PATH_NOT_EXIST,
         [ErrorCodeItemMetadata("DIR_NOT_EXIST")]
         DIR_NOT_EXIST,
+        [ErrorCodeItemMetadata("PLUGIN_NOT_EXIST")]
+        PLUGIN_NOT_EXIST,
+        [ErrorCodeItemMetadata("PLUGIN_IS_ALREADY_ENABLE")]
+        PLUGIN_IS_ALREADY_ENABLE,
+        [ErrorCodeItemMetadata("PLUGIN_IS_ALREADY_DISABLE")]
+        PLUGIN_IS_ALREADY_DISABLE,
+
         [ErrorCodeItemMetadata("SKIP_METADATA_NOT_EXIST")]
         SKIP_METADATA_NOT_EXIST,
         [ErrorCodeItemMetadata("SKIP_FILE_DUE_TO_TARGET_FILE_AREADY_EXIST")]

@@ -1,12 +1,12 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // See License in the project root for license information.
-
 #nullable disable
-
 namespace AVOne.Tool.Commands
 {
+    using System;
     using System.Threading;
     using System.Threading.Tasks;
+    using AVOne.Common.Enum;
     using AVOne.Common.Plugins;
     using AVOne.Configuration;
     using AVOne.Tool.Resources;
@@ -27,8 +27,17 @@ namespace AVOne.Tool.Commands
         [Option('l', "list", Required = false, Group = "action", HelpText = nameof(Resource.HelpTextShowInstalledPlugins), ResourceType = typeof(Resource))]
         public bool List { get; set; }
 
-        [Option('i', "ins", Required = false, Group = "action", HelpText = nameof(Resource.HelpTextInstallPlugin), ResourceType = typeof(Resource))]
+        [Option('i', "install", Required = false, Group = "action", HelpText = nameof(Resource.HelpTextInstallPlugin), ResourceType = typeof(Resource))]
         public string AddPluginOption { get; set; }
+
+        [Option('r', "remove", Required = false, Group = "action", HelpText = nameof(Resource.InfoRemovingPlugins), ResourceType = typeof(Resource))]
+        public string RemovePluginOption { get; set; }
+
+        [Option('d', "disable", Required = false, Group = "action", HelpText = nameof(Resource.InfoDisablingPlugins), ResourceType = typeof(Resource))]
+        public string DisablePluginOption { get; set; }
+
+        [Option('e', "enable", Required = false, Group = "action", HelpText = nameof(Resource.InfoEnablingPlugins), ResourceType = typeof(Resource))]
+        public string EnablePluginOption { get; set; }
 
         [Usage(ApplicationAlias = ToolAlias)]
         public static IEnumerable<Example> Examples
@@ -58,7 +67,78 @@ namespace AVOne.Tool.Commands
                     var version = values[1];
                     await InstallPlugin(name, version, token);
                 }
+                else if (!string.IsNullOrEmpty(RemovePluginOption))
+                {
+                    await RemovePlugin(RemovePluginOption, token);
+                }
+                else if (!string.IsNullOrEmpty(EnablePluginOption))
+                {
+                    await EnablePlugin(EnablePluginOption, token);
+                }
+                else if (!string.IsNullOrEmpty(DisablePluginOption))
+                {
+                    await DisablePlugin(DisablePluginOption, token);
+                }
             }, token);
+        }
+
+        private async Task EnablePlugin(string pluginName, CancellationToken token)
+        {
+            var plugins = pluginManager.Plugins;
+            var plugin = pluginManager.Plugins.FirstOrDefault(p => p.Name == pluginName);
+            if (plugin is null)
+            {
+                throw Oops.Oh(ErrorCodes.PLUGIN_NOT_EXIST);
+            }
+            if (plugin.IsEnabledAndSupported)
+            {
+                throw Oops.Oh(ErrorCodes.PLUGIN_IS_ALREADY_ENABLE, pluginName);
+
+            }
+            // Asynchronous
+            AnsiConsole.Status()
+                .Start(Resource.InfoSearchingPlugins, ctx =>
+                {
+                    this.pluginManager.EnablePlugin(plugin);
+                });
+        }
+
+        private async Task DisablePlugin(string pluginName, CancellationToken token)
+        {
+            var plugins = pluginManager.Plugins;
+            var plugin = pluginManager.Plugins.FirstOrDefault(p => p.Name == pluginName);
+            if (plugin is null)
+            {
+                throw Oops.Oh(ErrorCodes.PLUGIN_NOT_EXIST);
+            }
+            if (!plugin.IsEnabledAndSupported)
+            {
+                throw Oops.Oh(ErrorCodes.PLUGIN_IS_ALREADY_DISABLE, pluginName);
+
+            }
+            // Asynchronous
+            await AnsiConsole.Status()
+                .StartAsync(Resource.InfoSearchingPlugins, async ctx =>
+                {
+                    this.pluginManager.DisablePlugin(plugin);
+                });
+        }
+
+        private async Task RemovePlugin(string removePluginOption, CancellationToken token)
+        {
+            var plugins = pluginManager.Plugins;
+            var plugin = pluginManager.Plugins.FirstOrDefault(p => p.Name == removePluginOption);
+            if (plugin is null)
+            {
+                throw Oops.Oh(ErrorCodes.PLUGIN_NOT_EXIST);
+            }
+            // Asynchronous
+            AnsiConsole.Status()
+                .Start(Resource.InfoSearchingPlugins,  ctx =>
+                {
+                    this.pluginManager.DisablePlugin(plugin);
+                    this.pluginManager.RemovePlugin(plugin);
+                });
         }
 
         private void ListPlugins()
@@ -119,7 +199,6 @@ namespace AVOne.Tool.Commands
                     {
                         _logger.LogError(ex, Resource.ErrorCannotInstallPlugins, package.Name);
                     }
-
                 });
         }
     }
