@@ -3,6 +3,7 @@
 
 using System.Reflection;
 using AVOne.Tool.Commands;
+using AVOne.Tool.Resources;
 using CommandLine;
 using CommandLine.Text;
 using Microsoft.Extensions.Logging;
@@ -33,9 +34,9 @@ namespace AVOne.Tool
                         var type = option.GetType();
                         var cmdName = type.GetCustomAttribute<VerbAttribute>()?.Name ?? type.Name;
 
-                        Cli.Error("Command {0} execute failed", cmdName);
+                        Cli.Error(Resource.ErrorCommand, cmdName);
                         Cli.Error(e.ErrorMessage.ToString());
-
+                        StartupHelpers.Logger.LogError(e, Resource.ErrorCommand, cmdName);
                         Environment.Exit(1);
                     }
                     catch (Exception e)
@@ -43,7 +44,7 @@ namespace AVOne.Tool
                         var type = option.GetType();
                         var cmdName = type.GetCustomAttribute<VerbAttribute>()?.Name ?? type.Name;
 
-                        StartupHelpers.Logger.LogCritical(e, "Command {0} execute error due to Exception", cmdName);
+                        StartupHelpers.Logger.LogCritical(e, Resource.ErrorCommand, cmdName);
                         Cli.Info("See error logs in {0}", appPaths.LogDirectoryPath);
                         Environment.Exit(1);
                     }

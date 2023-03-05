@@ -123,6 +123,9 @@
   <data name="ErrorCannotInstallPlugins" xml:space="preserve">
     <value>无法安装插件 '{0}'</value>
   </data>
+  <data name="ErrorCommand" xml:space="preserve">
+    <value>命令 {0} 执行失败.</value>
+  </data>
   <data name="ErrorDir" xml:space="preserve">
     <value>路径为空或者路径不存在.</value>
   </data>

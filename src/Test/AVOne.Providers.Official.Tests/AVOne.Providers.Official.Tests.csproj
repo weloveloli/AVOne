@@ -7,7 +7,10 @@
      <ProjectReference Include="..\..\AVOne.Providers.Official\AVOne.Providers.Official.csproj" />
    </ItemGroup>
    <ItemGroup>
-     <None Update="websites\missav.html">
+     <None Update="websites\avple.txt">
+       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+     </None>
+     <None Update="websites\missav.txt">
        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
      </None>
    </ItemGroup>

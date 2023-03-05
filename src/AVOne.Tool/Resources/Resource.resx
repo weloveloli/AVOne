@@ -123,6 +123,9 @@
   <data name="ErrorCannotInstallPlugins" xml:space="preserve">
     <value>Can not install plugin {0}</value>
   </data>
+  <data name="ErrorCommand" xml:space="preserve">
+    <value>Command {0} execute failed.</value>
+  </data>
   <data name="ErrorDir" xml:space="preserve">
     <value>Directory is null or not exist.</value>
   </data>

@@ -79,6 +79,15 @@ namespace AVOne.Tool.Resources {
         }
         
         /// <summary>
+        ///   查找类似 Command {0} execute failed. 的本地化字符串。
+        /// </summary>
+        public static string ErrorCommand {
+            get {
+                return ResourceManager.GetString("ErrorCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Directory is null or not exist. 的本地化字符串。
         /// </summary>
         public static string ErrorDir {

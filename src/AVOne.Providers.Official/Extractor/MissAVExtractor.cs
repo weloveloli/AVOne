@@ -9,18 +9,14 @@ namespace AVOne.Providers.Official.Extractor
     using System.Text.RegularExpressions;
     using System.Threading;
     using System.Threading.Tasks;
-    using AVOne.Constants;
     using AVOne.Enum;
     using AVOne.Models.Download;
-    using AVOne.Providers.Extractor;
     using Jint;
     using Microsoft.Extensions.Logging;
 
-    public partial class MissAVExtractor : IMediaExtractorProvider
+    public partial class MissAVExtractor : BaseHttpExtractor
     {
         private const string ExtraTitle = " - MissAV.com | 免費高清AV在線看";
-        private readonly HttpClient _httpClient;
-        private readonly ILogger<MissAVExtractor> _logger;
         private readonly Regex _regex;
         private readonly Regex _titleRegex;
 
@@ -30,23 +26,22 @@ namespace AVOne.Providers.Official.Extractor
                 { "origin", "https://missav.com" }
             };
 
-        public string Name => "Official";
+        public override string Name => "Official";
 
-        public int Order => 1;
+        public override int Order => 1;
         public MissAVExtractor(IHttpClientFactory httpClientFactory, ILogger<MissAVExtractor> logger)
+        : base(logger, httpClientFactory, "https://missav.com")
         {
-            _httpClient = httpClientFactory?.CreateClient(AVOneConstants.Default) ?? new HttpClient();
-            _logger = logger;
             // The regex pattern to match lines starting with eval
             var pattern = @"^eval\((.*)\)$";
             // The regex options to enable multiline mode
             var options = RegexOptions.Multiline;
             // Create a regex object with the pattern and options
             _regex = new Regex(pattern, options);
-            _titleRegex = GetTitleRegex();
+            _titleRegex = TitleRegex();
         }
 
-        public async Task<IEnumerable<BaseDownloadableItem>> ExtractAsync(string webPageUrl, CancellationToken token = default)
+        public override async Task<IEnumerable<BaseDownloadableItem>> ExtractAsync(string webPageUrl, CancellationToken token = default)
         {
             var sources = Enumerable.Empty<string>();
             var result = new List<BaseDownloadableItem>();
@@ -85,12 +80,6 @@ namespace AVOne.Providers.Official.Extractor
 
             return result;
         }
-
-        public static Regex GetTitleRegex()
-        {
-            return TitleRegex();
-        }
-
         // A method to fetch the title from a HTML string
         public static string GetTitleFromHtml(string html, Regex regex)
         {
@@ -110,7 +99,7 @@ namespace AVOne.Providers.Official.Extractor
                 // Return the value of the first group (the title text)
                 var title = match.Groups[1].Value;
 
-                if(title.Contains(ExtraTitle))
+                if (title.Contains(ExtraTitle))
                 {
                     title = title.Replace(ExtraTitle, "");
                 }
@@ -155,13 +144,5 @@ namespace AVOne.Providers.Official.Extractor
                 yield return line.Substring(start, end - start + 1);
             }
         }
-
-        public bool Support(string webPage)
-        {
-            return webPage.StartsWith("https://missav.com");
-        }
-
-        [GeneratedRegex("<title>(.*?)</title>", RegexOptions.IgnoreCase, "en-US")]
-        private static partial Regex TitleRegex();
     }
 }

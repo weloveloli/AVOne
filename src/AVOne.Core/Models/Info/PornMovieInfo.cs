@@ -100,7 +100,11 @@ namespace AVOne.Models.Info
         public static string GetId(Regex ignore_pattern, string filepath, out AVCategory category, out PornMovieFlags flags)
         {
             var filename = System.IO.Path.GetFileName(filepath);
-            filename = ignore_pattern.Replace(filename, string.Empty);
+            if (ignore_pattern is not null)
+            {
+                filename = ignore_pattern.Replace(filename, string.Empty);
+            }
+
             category = AVCategory.None;
             var filename_lc = filename.ToLower();
             flags = ReosolveFlagsByName(filename_lc);
