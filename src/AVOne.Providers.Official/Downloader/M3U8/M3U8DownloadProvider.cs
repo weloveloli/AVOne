@@ -60,12 +60,13 @@ namespace AVOne.Providers.Official.Downloader.M3U8
             var playMetaDataFile = $"{saveName}-{md5}.meta.json";
 
             // check if playList exists
-            MediaPlaylist mediaPlaylist;
+            MediaPlaylist? mediaPlaylist = null;
             if (File.Exists(Path.Combine(workingDir, playMetaDataFile)))
             {
                 mediaPlaylist = JsonSerializer.Deserialize<MediaPlaylist>(File.ReadAllText(Path.Combine(workingDir, playMetaDataFile)));
             }
-            else
+            
+            if(mediaPlaylist is null)
             {
                 mediaPlaylist = await GetMediaPlaylist(workingDir, url, saveName, m3U8Item, token);
                 File.WriteAllText(Path.Combine(workingDir, playMetaDataFile), JsonSerializer.Serialize(mediaPlaylist));
@@ -125,10 +126,13 @@ namespace AVOne.Providers.Official.Downloader.M3U8
                                 RequestUri = new Uri(segment.Uri),
                             };
 
-                            foreach (var header in m3U8Item.Header)
-                            {
-                                request.Headers.Add(header.Key, header.Value);
+                            if(m3U8Item.Header != null){
+                                foreach (var header in m3U8Item.Header)
+                                {
+                                    request.Headers.Add(header.Key, header.Value);
+                                }
                             }
+
                             var rsp = _client.Send(request);
                             rsp.EnsureSuccessStatusCode();
                             var stream = File.OpenWrite(tsTmpPath);
@@ -163,9 +167,9 @@ namespace AVOne.Providers.Official.Downloader.M3U8
             var buffer = new byte[4096];
             var size = 0;
             var limit = 0L;
-            if (opts.MaxSpeed != null)
+            if (opts.MaxSpeed != null && opts.MaxSpeed > 0 && opts.ThreadCount > 0)
             {
-                limit = (long)((0.001 * interval * opts.MaxSpeed) - opts.ThreadCount * 1024);
+                limit = (long)((0.001 * interval * opts.MaxSpeed!) - opts.ThreadCount * 1024);
             }
 
             while (true)
@@ -236,11 +240,15 @@ namespace AVOne.Providers.Official.Downloader.M3U8
                 RequestUri = new Uri(url),
             };
 
-            foreach (var header in m3U8Item.Header)
+            if (m3U8Item.Header != null)
             {
-                request.Headers.Add(header.Key, header.Value);
-            }
 
+                foreach (var header in m3U8Item.Header)
+                {
+                    request.Headers.Add(header.Key, header.Value);
+                }
+            }
+            
             var rsp = await _client.SendAsync(request, token);
             rsp.EnsureSuccessStatusCode();
             var m3u8 = await rsp.Content.ReadAsStringAsync(token);

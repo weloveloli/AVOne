@@ -35,7 +35,7 @@ namespace AVOne.Tool
                         var cmdName = type.GetCustomAttribute<VerbAttribute>()?.Name ?? type.Name;
 
                         Cli.Error(Resource.ErrorCommand, cmdName);
-                        Cli.Error(e.ErrorMessage.ToString());
+                        Cli.Error(e.ErrorMessage?.ToString() ?? string.Empty);
                         StartupHelpers.Logger.LogError(e, Resource.ErrorCommand, cmdName);
                         Environment.Exit(1);
                     }

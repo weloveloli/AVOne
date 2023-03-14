@@ -10,6 +10,13 @@
     <IsPackable>false</IsPackable>
     <LangResourcePath>$(MSBuildThisFileDirectory)/Lang</LangResourcePath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+  </PropertyGroup>
   <PropertyGroup Label="Common NuGet Properties">
     <Copyright>Copyright (c) 2023 Weloveloli</Copyright>   
     <PackageIcon>logo.jpg</PackageIcon>
