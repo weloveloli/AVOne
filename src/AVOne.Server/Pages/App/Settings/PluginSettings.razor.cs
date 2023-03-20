@@ -23,7 +23,11 @@ namespace AVOne.Server.Pages.App.Settings
 
         private IReadOnlyCollection<LocalPlugin> InstalledPlugins => PluginManager.Plugins;
 
-        // create a function to get all installed plugins
+        // create a function to get url of the plugin
+        private static string GetPluginUrl(LocalPlugin plugin)
+        {
+            return $"plugins/{plugin.Id}/{plugin.Version}/Image";
+        }
     }
 }
 

@@ -13,12 +13,22 @@
                     <MRow Dense>
                         @foreach (var item in InstalledPlugins)
                     {
-                            <MCol key="@item.Id" Cols="2">
-                                <MCard>
-                                    <MImage Src="@item.Manifest.ImagePath" Class="white--text align-end" Gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)" Height=200>
-                                        <MCardTitle>@item.Name</MCardTitle>
-                                    </MImage>
+                            <MCol key="@item.Id" Cols="2" >
+                                <MCard Class="mx-auto my-12" MaxWidth="374">
+                                    @if (item.GetPluginInfo().HasImage)
+                                    {
+                                        <MImage Src="@GetPluginUrl(item)" Class="white--text align-end" Height=180 Gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)">
+                                            <MCardTitle>@item.Name</MCardTitle>
+                                        </MImage>
+                                    }
+                                    else
+                                    {
+                                        <MImage Src="https://cdn.masastack.com/stack/images/website/masa-blazor/parallax/material.jpg" Class="white--text align-end" Height=180 Gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)">
+                                            <MCardTitle>@item.Name</MCardTitle>
+                                        </MImage>
+                                    }
 
+                                    @item.GetPluginInfo().Description
                                     <MCardActions>
                                         <MSpacer></MSpacer>
                                         <MButton Icon>

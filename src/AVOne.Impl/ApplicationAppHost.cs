@@ -105,7 +105,8 @@ namespace AVOne.Impl
                 ApplicationVersion = assembly.GetName().Version;
             }
 #else
-            ApplicationVersion = Version.Parse(attribute.InformationalVersion[..attribute.InformationalVersion.IndexOf('-')]);
+
+            ApplicationVersion = Version.Parse("1.0.0");
 #endif
             AppPaths = path;
             Logger = loggerFactory.CreateLogger<ApplicationAppHost>();

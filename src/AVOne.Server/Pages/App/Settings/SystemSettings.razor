@@ -33,26 +33,39 @@
                 <MCardTitle>
                     <MList Style="width:100%">
                         <MRow Class="mt-2">
-                        <MCol Md=12 Sm=12>
-                                <MTextarea @bind-Value="ConfigurationManager.CommonConfiguration.MovieID.ignore_regex" Rows="2" Label="@(I18n.T("Settings.System.Scaning.IgnoreRegex"))" Placeholder="@(I18n.T("Settings.System.Scaning.IgnoreRegex"))" Outlined TValue="string" />
-                        </MCol>
-                        <MCol Md=12 Sm=12>
-                                <MTextarea @bind-Value="ConfigurationManager.CommonConfiguration.MovieID.ignore_whole_word" Rows="2" Label="@(I18n.T("Settings.System.Scaning.IgnoreWholeWord"))" Placeholder="@(I18n.T("Settings.System.Scaning.IgnoreWholeWord"))" Outlined TValue="string" />
-                        </MCol>
-                        <MCol Md=12 Sm=12>
-                                <MTextField @bind-Value="ConfigurationManager.CommonConfiguration.File.media_ext" Label="@(I18n.T("Settings.System.Scaning.MediaExt"))" Placeholder="@(I18n.T("Settings.System.Scaning.MediaExt"))" Outlined TValue="string" />
-                        </MCol>
+                            <MCol Md=12 Sm=12>
+                                <MTextarea @bind-Value="ConfigurationManager.CommonConfiguration.MovieID.ignore_regex"
+                                Rows="2" Label="@(I18n.T("Settings.System.Scaning.IgnoreRegex"))"
+                                Placeholder="@(I18n.T("Settings.System.Scaning.IgnoreRegex"))" Outlined
+                                                                TValue="string" />
+                                </MCol>
                                 <MCol Md=12 Sm=12>
-                                <MTextField @bind-Value="ConfigurationManager.CommonConfiguration.File.ignore_folder" Label="@(I18n.T("Settings.System.Scaning.IgnoreFolder"))" Placeholder="@(I18n.T("Settings.System.Scaning.IgnoreFolder"))" Outlined TValue="string" />
+                                <MTextarea @bind-Value="ConfigurationManager.CommonConfiguration.MovieID.ignore_whole_word"
+                                Rows="2" Label="@(I18n.T("Settings.System.Scaning.IgnoreWholeWord"))"
+                                Placeholder="@(I18n.T("Settings.System.Scaning.IgnoreWholeWord"))" Outlined
+                                                                TValue="string" />
+                                </MCol>
+                                <MCol Md=12 Sm=12>
+                                <MTextField @bind-Value="ConfigurationManager.CommonConfiguration.File.media_ext"
+                                Label="@(I18n.T("Settings.System.Scaning.MediaExt"))"
+                                Placeholder="@(I18n.T("Settings.System.Scaning.MediaExt"))" Outlined TValue="string" />
+                                </MCol>
+                                <MCol Md=12 Sm=12>
+                                <MTextField @bind-Value="ConfigurationManager.CommonConfiguration.File.ignore_folder"
+                                Label="@(I18n.T("Settings.System.Scaning.IgnoreFolder"))"
+                                Placeholder="@(I18n.T("Settings.System.Scaning.IgnoreFolder"))" Outlined
+                                TValue="string" />
                                 </MCol>
                                 </MRow>
                                 <MItem>
-                                <MButton OnClick="SaveConfig" Color="deep-purple white--text font-weight-black"> @(I18n.T("Common.SaveChanges")) </MButton>
-                            <MButton Outlined Class="ml-2 grey--text font-weight-black" OnClick="ResetConfig"> @(I18n.T("Common.Reset")) </MButton>
-                            </MItem>
-                            </MList>
-                            </MCardTitle>
-                            </MCard>
+                                <MButton OnClick="SaveConfig" Color="deep-purple white--text font-weight-black">
+                                @(I18n.T("Common.SaveChanges")) </MButton>
+                            <MButton Outlined Class="ml-2 grey--text font-weight-black" OnClick="ResetConfig">
+                            @(I18n.T("Common.Reset")) </MButton>
+                        </MItem>
+                    </MList>
+                </MCardTitle>
+            </MCard>
         }
         @if (_current == 1)
         {
@@ -75,6 +88,5 @@
                 </MCardText>
              </MCard>
         }
-
     </MCol>
 </MRow>
