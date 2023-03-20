@@ -13,6 +13,7 @@ namespace AVOne.Tool.Commands
     using AVOne.Models.Updates;
     using AVOne.Updates;
     using AVOne.Configuration;
+    using AVOne.Impl;
 
     [Verb("plugin-repo", false, HelpText = nameof(Resource.HelpTextVerbPluginRepo), ResourceType = typeof(Resource))]
     internal class PluginRepo : BaseHostOptions
@@ -37,7 +38,7 @@ namespace AVOne.Tool.Commands
             }
         }
 
-        public override Task ExecuteAsync(ConsoleAppHost host, CancellationToken token)
+        public override Task ExecuteAsync(ApplicationAppHost host, CancellationToken token)
         {
             return Task.Run(async () =>
             {

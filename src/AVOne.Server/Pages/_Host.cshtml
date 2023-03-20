@@ -1,0 +1,9 @@
+﻿@page "/"
+@namespace AVOne.Server.Pages
+@using AVOne.Server.Global
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = "_Layout";
+}
+
+<component type="typeof(AVOne.Server.App)" render-mode="ServerPrerendered" />

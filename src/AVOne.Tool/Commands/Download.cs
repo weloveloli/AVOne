@@ -12,6 +12,7 @@ namespace AVOne.Tool.Commands
     using CommandLine.Text;
     using Spectre.Console;
     using AVOne.Providers.Download;
+    using AVOne.Impl;
 
     [Verb("download", false, HelpText = nameof(Resource.HelpTextVerbDownload), ResourceType = typeof(Resource))]
     internal class Download : BaseHostOptions
@@ -38,7 +39,7 @@ namespace AVOne.Tool.Commands
                 };
             }
         }
-        public override async Task ExecuteAsync(ConsoleAppHost host, CancellationToken token)
+        public override async Task ExecuteAsync(ApplicationAppHost host, CancellationToken token)
         {
             var providerManager = host.Resolve<IProviderManager>();
             if (!string.IsNullOrEmpty(Web))

@@ -1,0 +1,48 @@
+{
+  "$Text": "English",
+  "Dashboard": "Dashboard",
+  "Library": "Media Library",
+  "LocalLibrary": "Local Media Library",
+  "Common": {
+    "SaveChanges": "Save changes",
+    "Reset": "Reset"
+  },
+  "Settings": {
+    "Title": "Settings",
+    "System": {
+      "Title": "System Settings",
+      "Scaning": {
+        "Title": "Scaning Settings",
+        "MediaExt": "Extensions of media files",
+        "IgnoreFolder": "Folder name to ingore when scanning",
+        "IgnoreRegex": "Ignore Regex of media title",
+        "IgnoreWholeWord": "Whole word cleaner of media title"
+      },
+      "Paths": {
+        "Title": "System Path",
+        "CachePath": "System cache path",
+        "DataPath": "System data path",
+        "PluginsPath": "System plugins path",
+        "LogDirectoryPath": "System log path"
+      },
+      "Provider": {
+        "Title": "Provider Settings"
+      }
+    },
+    "Library": {
+      "Title": "Library Settings"
+    },
+    "Plugin": {
+      "Title": "Plugin Settings",
+      "InstalledPlugin": {
+        "Title": "Installed Plugins"
+      },
+      "AvaliablePlugin": {
+        "Title": "Avaliable Plugins"
+      },
+      "PluginRepository": {
+        "Title": "Plugin Repository"
+      }
+    }
+  }
+}

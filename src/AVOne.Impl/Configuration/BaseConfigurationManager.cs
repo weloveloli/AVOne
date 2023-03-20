@@ -233,5 +233,15 @@ namespace AVOne.Impl.Configuration
         {
             return Path.Combine(ApplicationPaths.ConfigurationDirectoryPath, key.ToLowerInvariant() + ".xml");
         }
+
+        public void ReloadConfiguration()
+        {
+            lock (_configurationSyncLock)
+            {
+                _configurationLoaded = false;
+                _configuration = (BaseApplicationConfiguration)ConfigurationHelper.GetXmlConfiguration(ConfigurationType, ApplicationPaths.SystemConfigurationFilePath, XmlSerializer);
+                _configurationLoaded = true;
+            }
+        }
     }
 }

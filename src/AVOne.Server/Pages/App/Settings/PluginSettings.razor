@@ -1,0 +1,50 @@
+﻿@page "/app/settings/plugin"
+@inherits ProCompontentBase
+@using BlazorComponent.I18n
+@inject I18n I18n
+<MCard>
+    <MCardText>
+        <MTabs Color="blue accent-4">
+                <MTab>@(I18n.T("Settings.Plugin.InstalledPlugin.Title"))</MTab>
+                <MTab>@(I18n.T("Settings.Plugin.AvaliablePlugin.Title"))</MTab>
+                <MTab>@(I18n.T("Settings.Plugin.PluginRepository.Title"))</MTab>
+            <MTabItem>
+                 <MContainer Fluid>
+                    <MRow Dense>
+                        @foreach (var item in InstalledPlugins)
+                    {
+                            <MCol key="@item.Id" Cols="2">
+                                <MCard>
+                                    <MImage Src="@item.Manifest.ImagePath" Class="white--text align-end" Gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)" Height=200>
+                                        <MCardTitle>@item.Name</MCardTitle>
+                                    </MImage>
+
+                                    <MCardActions>
+                                        <MSpacer></MSpacer>
+                                        <MButton Icon>
+                                        <MIcon>mdi-heart</MIcon>
+                                    </MButton>
+                                    <MButton Icon>
+                                        <MIcon>mdi-bookmark</MIcon>
+                                    </MButton>
+                                    <MButton Icon>
+                                        <MIcon>mdi-share-variant</MIcon>
+                                    </MButton>
+                                </MCardActions>
+                            </MCard>
+                            </MCol>
+                    }
+                </MRow>
+                </MContainer>
+            </MTabItem>
+            <MTabItem>
+            </MTabItem>
+            <MTabItem>
+            </MTabItem>
+        </MTabs>
+    </MCardText>
+</MCard>
+
+@code {
+
+}

@@ -1,0 +1,80 @@
+﻿@page "/app/settings/system"
+@inherits ProCompontentBase
+@using BlazorComponent.I18n
+@inject I18n I18n
+
+<MRow>
+    <MCol Md=3 Sm=12>
+        <MList>
+            <MListItemGroup Mandatory @bind-Value="_current" ActiveClass="deep-purple white--text elevation-6">
+                <MListItem>
+                    <MListItemIcon>
+                        <MIcon>fas fa-sync</MIcon>
+                    </MListItemIcon>
+                    <MListItemContent>
+                        <MListItemTitle>@(I18n.T("Settings.System.Scaning.Title"))</MListItemTitle>
+                    </MListItemContent>
+                </MListItem>
+                <MListItem>
+                    <MListItemIcon>
+                            <MIcon>fas fa-wrench</MIcon>
+                    </MListItemIcon>
+                    <MListItemContent>
+                            <MListItemTitle>@(I18n.T("Settings.System.Paths.Title"))</MListItemTitle>
+                    </MListItemContent>
+                </MListItem>
+            </MListItemGroup>
+        </MList>
+    </MCol>
+    <MCol Md=9 Sm=12>
+        @if (_current == 0)
+        {
+            <MCard>
+                <MCardTitle>
+                    <MList Style="width:100%">
+                        <MRow Class="mt-2">
+                        <MCol Md=12 Sm=12>
+                                <MTextarea @bind-Value="ConfigurationManager.CommonConfiguration.MovieID.ignore_regex" Rows="2" Label="@(I18n.T("Settings.System.Scaning.IgnoreRegex"))" Placeholder="@(I18n.T("Settings.System.Scaning.IgnoreRegex"))" Outlined TValue="string" />
+                        </MCol>
+                        <MCol Md=12 Sm=12>
+                                <MTextarea @bind-Value="ConfigurationManager.CommonConfiguration.MovieID.ignore_whole_word" Rows="2" Label="@(I18n.T("Settings.System.Scaning.IgnoreWholeWord"))" Placeholder="@(I18n.T("Settings.System.Scaning.IgnoreWholeWord"))" Outlined TValue="string" />
+                        </MCol>
+                        <MCol Md=12 Sm=12>
+                                <MTextField @bind-Value="ConfigurationManager.CommonConfiguration.File.media_ext" Label="@(I18n.T("Settings.System.Scaning.MediaExt"))" Placeholder="@(I18n.T("Settings.System.Scaning.MediaExt"))" Outlined TValue="string" />
+                        </MCol>
+                                <MCol Md=12 Sm=12>
+                                <MTextField @bind-Value="ConfigurationManager.CommonConfiguration.File.ignore_folder" Label="@(I18n.T("Settings.System.Scaning.IgnoreFolder"))" Placeholder="@(I18n.T("Settings.System.Scaning.IgnoreFolder"))" Outlined TValue="string" />
+                                </MCol>
+                                </MRow>
+                                <MItem>
+                                <MButton OnClick="SaveConfig" Color="deep-purple white--text font-weight-black"> @(I18n.T("Common.SaveChanges")) </MButton>
+                            <MButton Outlined Class="ml-2 grey--text font-weight-black" OnClick="ResetConfig"> @(I18n.T("Common.Reset")) </MButton>
+                            </MItem>
+                            </MList>
+                            </MCardTitle>
+                            </MCard>
+        }
+        @if (_current == 1)
+        {
+            <MCard>
+                <MCardText>
+                    <MRow>
+                        <MCol Md=12 Sm=12>
+                            <MTextField Value="@(ApplicationPaths.DataPath)" Label="@(I18n.T("Settings.System.Paths.DataPath"))" Outlined Readonly TValue="string" />
+                        </MCol>
+                        <MCol Md=12 Sm=12>
+                            <MTextField Value="@(ApplicationPaths.PluginsPath)" Label="@(I18n.T("Settings.System.Paths.PluginsPath"))" Outlined Readonly TValue="string" />
+                        </MCol>
+                        <MCol Md=12 Sm=12>
+                            <MTextField Value="@(ApplicationPaths.LogDirectoryPath)" Label="@(I18n.T("Settings.System.Paths.LogDirectoryPath"))" Outlined Readonly TValue="string" />
+                        </MCol>
+                        <MCol Md=12 Sm=12>
+                            <MTextField Value="@(ApplicationPaths.CachePath)" Label="@(I18n.T("Settings.System.Paths.CachePathPath"))" Outlined Readonly TValue="string" />
+                        </MCol>
+                    </MRow>
+                </MCardText>
+             </MCard>
+        }
+
+    </MCol>
+</MRow>

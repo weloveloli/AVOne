@@ -2,11 +2,15 @@
 // See License in the project root for license information.
 
 using System.Reflection;
+using AVOne.Impl;
+using AVOne.Impl.Migrations;
 using AVOne.Tool.Commands;
 using AVOne.Tool.Resources;
 using CommandLine;
 using CommandLine.Text;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace AVOne.Tool
 {
@@ -23,7 +27,8 @@ namespace AVOne.Tool
                 {
                     var appPaths = StartupHelpers.CreateApplicationPaths(option);
                     var appHost = await StartupHelpers.CreateConsoleAppHost(option, appPaths);
-                    var host = StartupHelpers.CreateHost(args, appHost);
+                    var host = CreateHost(args, appHost);
+                    Cli.Logger = StartupHelpers.Logger;
                     try
                     {
                         await option.ExecuteAsync(appHost, StartupHelpers.TokenSource.Token).ConfigureAwait(false);
@@ -58,6 +63,32 @@ namespace AVOne.Tool
         {
             return Assembly.GetExecutingAssembly().GetTypes()
                 .Where(t => t.GetCustomAttribute<VerbAttribute>() != null).ToArray();
+        }
+
+        public static IHost CreateHost(string[] args, ApplicationAppHost appHost)
+        {
+            var options =
+                GenericRunOptions.Default
+                .WithArgs(args)
+                .Silence(true, false)
+                .ConfigureBuilder((builder) =>
+                {
+                    _ = builder.ConfigureLogging((logging) =>
+                    {
+                        _ = logging.ClearProviders();
+                        _ = logging.AddSerilog(Serilog.Log.Logger);
+                    });
+
+                    //return builder.UseContentRoot(StartupHelpers.RealRootContentPath);
+                    return builder;
+                })
+                .ConfigureServices(appHost.Init);
+            var host = Serve.Run(options);
+            // Re-use the host service provider in the app host since ASP.NET doesn't allow a custom service collection.
+            appHost.ServiceProvider = host.Services;
+            appHost.PostBuildService();
+            MigrationRunner.Run(appHost, StartupHelpers.LoggerFactory);
+            return host;
         }
     }
 }

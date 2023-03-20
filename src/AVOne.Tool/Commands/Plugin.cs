@@ -9,6 +9,7 @@ namespace AVOne.Tool.Commands
     using AVOne.Common.Enum;
     using AVOne.Common.Plugins;
     using AVOne.Configuration;
+    using AVOne.Impl;
     using AVOne.Tool.Resources;
     using AVOne.Updates;
     using CommandLine;
@@ -48,7 +49,7 @@ namespace AVOne.Tool.Commands
             }
         }
 
-        public override Task ExecuteAsync(ConsoleAppHost host, CancellationToken token)
+        public override Task ExecuteAsync(ApplicationAppHost host, CancellationToken token)
         {
             return Task.Run(async () =>
             {

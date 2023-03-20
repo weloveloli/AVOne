@@ -1,0 +1,49 @@
+{
+  "$DefaultLanguage": "true",
+  "$Text": "中文简体",
+  "Dashboard": "仪表盘",
+  "Library": "视频库",
+  "LocalLibrary": "本地视频库",
+  "Common": {
+    "SaveChanges": "保存变更",
+    "Reset": "重置"
+  },
+  "Settings": {
+    "Title": "设置",
+    "System": {
+      "Title": "系统设置",
+      "Scaning": {
+        "Title": "扫描配置",
+        "MediaExt": "媒体拓展名列表",
+        "IgnoreFolder": "忽略的扫描文件夹名称",
+        "IgnoreRegex": "媒体标题清理正则表达式",
+        "IgnoreWholeWord": "媒体标题忽略字符"
+      },
+      "Paths": {
+        "Title": "系统路径",
+        "CachePath": "系统缓存文件夹",
+        "DataPath": "系统数据文件夹",
+        "PluginsPath": "系统插件文件夹",
+        "LogDirectoryPath": "系统日志文件夹"
+      },
+      "Provider": {
+        "Title": "Provider配置"
+      }
+    },
+    "Library": {
+      "Title": "库设置"
+    },
+    "Plugin": {
+      "Title": "插件设置",
+      "InstalledPlugin": {
+        "Title": "我的插件"
+      },
+      "AvaliablePlugin": {
+        "Title": "插件目录"
+      },
+      "PluginRepository": {
+        "Title": "插件仓库"
+      }
+    }
+  }
+}

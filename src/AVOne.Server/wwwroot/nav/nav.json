@@ -1,0 +1,40 @@
+[
+  {
+    "Id": 1,
+    "Title": "Library",
+    "Icon": "mdi-movie",
+    "Children": [
+      {
+        "Id": 2,
+        "Title": "LocalLibrary",
+        "Icon": "mdi-movie",
+        "Href": "app/library/local"
+      }
+    ]
+  },
+  {
+    "Id": 5,
+    "Title": "Settings.Title",
+    "Icon": "mdi-cog",
+    "Children": [
+      {
+        "Id": 6,
+        "Title": "Settings.System.Title",
+        "Icon": "mdi-cog",
+        "Href": "app/settings/system"
+      },
+      {
+        "Id": 7,
+        "Title": "Settings.Library.Title",
+        "Icon": "mdi-cog",
+        "Href": "app/settings/library"
+      },
+      {
+        "Id": 8,
+        "Title": "Settings.Plugin.Title",
+        "Icon": "mdi-cog",
+        "Href": "app/settings/plugin"
+      }
+    ]
+  }
+]
