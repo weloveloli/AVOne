@@ -35,7 +35,10 @@
     "Plugin": {
       "Title": "Plugin Settings",
       "InstalledPlugin": {
-        "Title": "Installed Plugins"
+        "Title": "Installed Plugins",
+        "EnablePlugins":"Enable Plugin",
+        "DisablePlugins":"Disable Plugin",
+        "DeletePlugins":"Delete Plugin"
       },
       "AvaliablePlugin": {
         "Title": "Avaliable Plugins"

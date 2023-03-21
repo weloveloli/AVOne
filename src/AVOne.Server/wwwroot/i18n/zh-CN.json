@@ -6,7 +6,12 @@
   "LocalLibrary": "本地视频库",
   "Common": {
     "SaveChanges": "保存变更",
-    "Reset": "重置"
+    "Reset": "重置",
+    "Disabled":"已禁用",
+    "Active":"已启用",
+    "NotSupported":"不支持",
+    "Malfunctioned":"已禁用",
+    "Restart":"待重启"
   },
   "Settings": {
     "Title": "设置",
@@ -36,7 +41,10 @@
     "Plugin": {
       "Title": "插件设置",
       "InstalledPlugin": {
-        "Title": "我的插件"
+        "Title": "我的插件",
+        "EnablePlugins":"启用插件",
+        "DisablePlugins":"禁用插件",
+        "DeletePlugins":"删除插件"
       },
       "AvaliablePlugin": {
         "Title": "插件目录"

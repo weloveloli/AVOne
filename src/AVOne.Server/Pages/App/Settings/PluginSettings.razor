@@ -1,7 +1,5 @@
 ﻿@page "/app/settings/plugin"
 @inherits ProCompontentBase
-@using BlazorComponent.I18n
-@inject I18n I18n
 <MCard>
     <MCardText>
         <MTabs Color="blue accent-4">
@@ -13,8 +11,8 @@
                     <MRow Dense>
                         @foreach (var item in InstalledPlugins)
                     {
-                            <MCol key="@item.Id" Cols="2" >
-                                <MCard Class="mx-auto my-12" MaxWidth="374">
+                            <MCol key="@item.Id" Cols="3" >
+                                <MCard Class="mx-auto my-12" MaxWidth="468" Elevation=8>
                                     @if (item.GetPluginInfo().HasImage)
                                     {
                                         <MImage Src="@GetPluginUrl(item)" Class="white--text align-end" Height=180 Gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)">
@@ -27,20 +25,47 @@
                                             <MCardTitle>@item.Name</MCardTitle>
                                         </MImage>
                                     }
+                                        <div class="d-flex flex-no-wrap justify-space-between">
+                                            <div>
+                                        <Masa.Blazor.Presets.PBlockText Primary="@item.GetPluginInfo().Description" Tags="@GetPluginTags(item)" Class="pa-2" style="max-width: 300px;"></Masa.Blazor.Presets.PBlockText>
+                                            </div>
+                                            <div class="pa-2">
+                                            <MMenu Bottom Right OffsetX=true CloseOnClick=true CloseOnContentClick=true>
+                    <ActivatorContent>
+                        <MButton
+                            Icon
+                            @attributes="@context.Attrs">
+                            <MIcon>mdi-dots-vertical</MIcon>
+                        </MButton>
+                    </ActivatorContent>
 
-                                    @item.GetPluginInfo().Description
-                                    <MCardActions>
-                                        <MSpacer></MSpacer>
-                                        <MButton Icon>
-                                        <MIcon>mdi-heart</MIcon>
-                                    </MButton>
-                                    <MButton Icon>
-                                        <MIcon>mdi-bookmark</MIcon>
-                                    </MButton>
-                                    <MButton Icon>
-                                        <MIcon>mdi-share-variant</MIcon>
-                                    </MButton>
-                                </MCardActions>
+                    <ChildContent>
+                        <MList>
+                                   @if(item.IsEnabledAndSupported){
+                                        <MListItem Link @onclick="@(e => DisablePlugin(item))">            
+                                        <MListItemTitle>
+                                             @(I18n.T("Settings.Plugin.InstalledPlugin.DisablePlugins"))
+                                        </MListItemTitle>
+                                           </MListItem>
+                                    }
+                                    else{
+                                        <MListItem Link @onclick="@(e => EnablePlugin(item))">
+                                        <MListItemTitle >
+                                           @(I18n.T("Settings.Plugin.InstalledPlugin.EnablePlugins"))
+                                        </MListItemTitle>                                        
+                                        </MListItem>
+                                    }
+
+                                <MListItem Link @onclick="@(e => DeletePlugin(item))">
+                                        <MListItemTitle >
+                                             @(I18n.T("Settings.Plugin.InstalledPlugin.DeletePlugins"))
+                                        </MListItemTitle>
+                                </MListItem>                                
+                        </MList>
+                    </ChildContent>
+                </MMenu>
+                                                </div>
+                                        </div>
                             </MCard>
                             </MCol>
                     }
