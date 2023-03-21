@@ -7,6 +7,8 @@
   "Common": {
     "SaveChanges": "保存变更",
     "Reset": "重置",
+    "Cancel": "取消",
+    "Submit": "提交",
     "Disabled":"已禁用",
     "Active":"已启用",
     "NotSupported":"不支持",
@@ -50,7 +52,12 @@
         "Title": "插件目录"
       },
       "PluginRepository": {
-        "Title": "插件仓库"
+        "Title": "插件仓库",
+        "AddRepo":"添加仓库",
+        "RepoUrl":"存储库 URL",
+        "RepoUrlHint":"您要添加的存储库清单的位置",
+        "RepoName":"存储库名称",
+        "RepoNameHint":"一个自定义名称，用于区分该存储库和添加到服务器的任何其他存储库"
       }
     }
   }

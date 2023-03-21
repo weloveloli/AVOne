@@ -9,6 +9,7 @@ namespace AVOne.Server.Pages.App.Settings
     using AVOne.Updates;
     using Masa.Blazor.Presets;
     using BlazorComponent.I18n;
+    using AVOne.Models.Updates;
 
     public partial class PluginSettings : ProCompontentBase
     {
@@ -31,15 +32,33 @@ namespace AVOne.Server.Pages.App.Settings
 
         private IReadOnlyCollection<LocalPlugin> InstalledPlugins { get; set; }
 
-        protected override void OnInitialized()
+        private IReadOnlyList<PackageInfo> PackageInfos { get; set; }
+        public List<RepositoryInfo> PluginRepositories { get; private set; }
+
+        protected override async Task OnInitializedAsync()
         {
             InstalledPlugins = PluginManager.Plugins.ToList();
+            this.PackageInfos = await InstallationManager.GetAvailablePackages();
+            this.PluginRepositories = ConfigurationManager.CommonConfiguration.PluginRepositories;
         }
 
         // create a function to get url of the plugin
         private static string GetPluginUrl(LocalPlugin plugin)
         {
             return $"plugins/{plugin.Id}/{plugin.Version}/Image";
+        }
+
+        // create a function to get the plugin tags
+        private IEnumerable<BlockTextTag> GetPackageTags(PackageInfo package)
+        {
+            var tags = new List<BlockTextTag>();
+
+            if (!string.IsNullOrWhiteSpace(package.Category))
+            {
+                tags.Add(new BlockTextTag(package.Category, "blue", "white"));
+            }
+
+            return tags;
         }
 
         // create a function to get the plugin tags
@@ -110,6 +129,14 @@ namespace AVOne.Server.Pages.App.Settings
             ConfigurationManager.SaveConfiguration();
         }
 
+        private void AddPluginRepo(AddRepoModel model){
+            ConfigurationManager.CommonConfiguration.PluginRepositories.Add(new RepositoryInfo{
+                Name = model.Name,
+                Url = model.RepoUrl
+            });
+            // save the configuration
+            ConfigurationManager.SaveConfiguration();
+        }
     }
 }
 

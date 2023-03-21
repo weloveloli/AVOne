@@ -5,7 +5,8 @@
   "LocalLibrary": "Local Media Library",
   "Common": {
     "SaveChanges": "Save changes",
-    "Reset": "Reset"
+    "Reset": "Reset",
+    "Submit": "Submit"
   },
   "Settings": {
     "Title": "Settings",
@@ -44,7 +45,8 @@
         "Title": "Avaliable Plugins"
       },
       "PluginRepository": {
-        "Title": "Plugin Repository"
+        "Title": "Plugin Repository",
+        "AddRepo":"Add Plugin Repository"
       }
     }
   }
