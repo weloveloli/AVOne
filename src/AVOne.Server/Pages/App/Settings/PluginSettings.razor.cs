@@ -46,7 +46,7 @@ namespace AVOne.Server.Pages.App.Settings
         private IEnumerable<BlockTextTag> GetPluginTags(LocalPlugin plugin)
         {
             var tags = new List<BlockTextTag>();
-            switch(plugin.Manifest.Status)
+            switch (plugin.Manifest.Status)
             {
                 case PluginStatus.Active:
                     tags.Add(new BlockTextTag(I18n.T("Common.Active"), "green", "white"));
@@ -90,7 +90,6 @@ namespace AVOne.Server.Pages.App.Settings
             // save the configuration
             ConfigurationManager.SaveConfiguration();
         }
-
 
         // create a function to enable plugin
         private void EnablePlugin(LocalPlugin plugin)
