@@ -1,7 +1,7 @@
 # AVOne 
 [![banner](https://raw.githubusercontent.com/weloveloli/AVOne/main/img/avone.png)](https://raw.githubusercontent.com/weloveloli/AVOne/main/img/avone.png)
 ## 关于
-AVOne是一个集下载,整理等多功能的插件化的AV管理工具。目前还在开发中，尽情期待
+AVOne(目前还在开发中，尽情期待)是一个集下载,整理等多功能的插件化的AV管理工具。
 
 ## 为什么要有这个项目
 1. 目前的元数据抓取大部分只支持JAV，对TWAV, Hentail Anime 以及 PornHub 等视频网站没有支持
