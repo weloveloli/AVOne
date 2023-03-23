@@ -78,7 +78,7 @@
                         @foreach (var package in PackageInfos)
                     {
                             <MCol key="@package.Id" Cols="3" >
-                                <MCard Class="mx-auto my-12" MaxWidth="468" Elevation=8>
+                                <MCard Class="mx-auto my-12 ml-12" MaxWidth="468" Elevation=8>
                                     @if (!string.IsNullOrWhiteSpace(package.ImageUrl))
                                     {
                                         <MImage Src=@package.ImageUrl Class="white--text align-end" Height=180 Gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)">
@@ -100,7 +100,7 @@
                 </MContainer>
             </MTabItem>
             <MTabItem>
-                <div class="md-flex flex-no-wrap justify-start">
+                <div class="md-flex flex-no-wrap justify-start pt-6 pl-6">
                     <span class="text-h5">@T("Settings.Plugin.PluginRepository.Title")</span>
                     
                         <MDialog
@@ -138,6 +138,27 @@
                     </ChildContent>
     </MDialog>
                 </div>
+                   <MList>
+                                    @foreach (var repo in PluginRepositories)
+                {
+                    <MDivider></MDivider>
+                    <MListItem>
+                         <ItemContent>
+                        <MListItemContent>
+                            <MListItemTitle>@repo.Name</MListItemTitle>
+                            <MListItemSubtitle>@repo.Url</MListItemSubtitle>
+                        </MListItemContent>
+                         <MListItemAction>
+                            <div class="d-flex flex-no-wrap align-center">
+                                <MButton @onclick="() => RemovePluginRepo(repo)" Color="red" Outlined Class="ml-2 mr-4" Icon><MIcon>mdi-delete</MIcon></MButton>
+                                <MSwitch @bind-Value="repo.Enabled" Color="success" HideDetails="true"></MSwitch>
+                             </div>
+                            </MListItemAction>                   
+                         </ItemContent>
+
+                    </MListItem>
+                }
+                   </MList>
             </MTabItem>
         </MTabs>
     </MCardText>
@@ -149,7 +170,7 @@
     class AddRepoModel
     {
         [Required]
-        [MaxLength(10, ErrorMessage = "Name must be less than 10 characters")]
+        [MaxLength(20, ErrorMessage = "Name must be less than 20 characters")]
         public string Name { get; set; }
         [Required]
         [Url]
@@ -163,6 +184,9 @@
     private void HandleOnValidSubmit()
     {
         //valid
+
+        this.AddPluginRepo(_addRepoModel);
+        addRepoDialog = false;
     }
 
     private void HandleOnInvalidSubmit()

@@ -40,6 +40,9 @@ internal class Program
         builder.Services.AddControllers().AddInject();
         var app = builder.Build();
 
+        // Re-use the host service provider in the app host since ASP.NET doesn't allow a custom service collection.
+        appHost.ServiceProvider = app.Services;
+        appHost.PostBuildService();
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {

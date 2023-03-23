@@ -54,7 +54,7 @@ namespace AVOne.Common.Plugins
         /// <param name="path">The path where to save the manifest.</param>
         /// <param name="status">Initial status of the plugin.</param>
         /// <returns>True if successful.</returns>
-        Task<bool> GenerateManifest(PackageInfo packageInfo, Version version, string path, PluginStatus status);
+        Task<bool> GenerateManifest(PackageInfo packageInfo, Version version, string path, PluginStatus status, bool forceUpdateImage = true);
 
         /// <summary>
         /// Imports plugin details from a folder.

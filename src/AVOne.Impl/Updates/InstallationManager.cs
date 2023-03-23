@@ -170,7 +170,7 @@ namespace AVOne.Impl.Updates
                             var plugin = _pluginManager.GetPlugin(package.Id, version.VersionNumber);
                             if (plugin != null)
                             {
-                                await _pluginManager.GenerateManifest(package, version.VersionNumber, plugin.Path, plugin.Manifest.Status).ConfigureAwait(false);
+                                await _pluginManager.GenerateManifest(package, version.VersionNumber, plugin.Path, plugin.Manifest.Status, false).ConfigureAwait(false);
                             }
 
                             // Remove versions with a target ABI greater then the current application version.

@@ -365,7 +365,7 @@ namespace AVOne.Impl.Plugins
         }
 
         /// <inheritdoc/>
-        public async Task<bool> GenerateManifest(PackageInfo packageInfo, Version version, string path, PluginStatus status)
+        public async Task<bool> GenerateManifest(PackageInfo packageInfo, Version version, string path, PluginStatus status, bool forceUpdateImage = true)
         {
             var versionInfo = packageInfo.Versions.First(v => v.Version == version.ToString());
             var imagePath = string.Empty;
@@ -375,22 +375,34 @@ namespace AVOne.Impl.Plugins
                 var url = new Uri(packageInfo.ImageUrl);
                 imagePath = Path.Join(path, url.Segments[^1]);
 
-                await using var fileStream = FileOptionsHelper.OpenWrite(imagePath);
-
-                try
+                if (File.Exists(imagePath) && !forceUpdateImage)
                 {
-                    await using var downloadStream = await HttpClientFactory
-                        .CreateClient(Default)
-                        .GetStreamAsync(url)
-                        .ConfigureAwait(false);
-
-                    await downloadStream.CopyToAsync(fileStream).ConfigureAwait(false);
+                    _logger.LogDebug("Image already exists at {Path}, skipping download.", imagePath);
+                    return true;
                 }
-                catch (HttpRequestException ex)
+                else
                 {
-                    _logger.LogError(ex, "Failed to download image to path {Path} on disk.", imagePath);
-                    imagePath = string.Empty;
-                }
+                    try
+                    {
+                        await using var fileStream = FileOptionsHelper.OpenWrite(imagePath);
+                        await using var downloadStream = await HttpClientFactory
+                            .CreateClient(Default)
+                            .GetStreamAsync(url)
+                            .ConfigureAwait(false);
+
+                        await downloadStream.CopyToAsync(fileStream).ConfigureAwait(false);
+                    }
+                    catch (IOException IOException)
+                    {
+                        _logger.LogError(IOException, "Failed to download image to path {Path} on disk.", imagePath);
+                        imagePath = string.Empty;
+                    }
+                    catch (HttpRequestException ex)
+                    {
+                        _logger.LogError(ex, "Failed to download image to path {Path} on disk.", imagePath);
+                        imagePath = string.Empty;
+                    }
+                }              
             }
 
             var manifest = new PluginManifest

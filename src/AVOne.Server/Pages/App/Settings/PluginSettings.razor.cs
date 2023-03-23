@@ -1,5 +1,6 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // See License in the project root for license information.
+#nullable disable
 
 namespace AVOne.Server.Pages.App.Settings
 {
@@ -130,10 +131,20 @@ namespace AVOne.Server.Pages.App.Settings
         }
 
         private void AddPluginRepo(AddRepoModel model){
+
+            if(ConfigurationManager.CommonConfiguration.PluginRepositories.Any(x => x.Url == model.RepoUrl)){
+                return;
+            }
             ConfigurationManager.CommonConfiguration.PluginRepositories.Add(new RepositoryInfo{
                 Name = model.Name,
                 Url = model.RepoUrl
             });
+            // save the configuration
+            ConfigurationManager.SaveConfiguration();
+        }
+
+        private void RemovePluginRepo(RepositoryInfo toRemove){
+            ConfigurationManager.CommonConfiguration.PluginRepositories.Remove(toRemove);
             // save the configuration
             ConfigurationManager.SaveConfiguration();
         }
