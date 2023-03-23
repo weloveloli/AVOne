@@ -1,5 +1,6 @@
 ﻿@page "/app/settings/plugin"
 @inherits ProCompontentBase
+@using AVOne.Common.Plugins;
 <MCard>
     <MCardText>
         <MTabs Color="blue accent-4">
@@ -41,14 +42,15 @@
 
                     <ChildContent>
                         <MList>
-                                   @if(item.IsEnabledAndSupported){
+                                   @if(item.IsEnabledAndSupported && item.Manifest.Status == PluginStatus.Active){
                                         <MListItem Link @onclick="@(e => DisablePlugin(item))">            
                                         <MListItemTitle>
                                              @(I18n.T("Settings.Plugin.InstalledPlugin.DisablePlugins"))
                                         </MListItemTitle>
                                            </MListItem>
                                     }
-                                    else{
+                                    else if(item.Manifest.Status == PluginStatus.Disabled)
+                                    {
                                         <MListItem Link @onclick="@(e => EnablePlugin(item))">
                                         <MListItemTitle >
                                            @(I18n.T("Settings.Plugin.InstalledPlugin.EnablePlugins"))
@@ -118,11 +120,11 @@
                 </MCardTitle>
                     <MCardText>
 
-                <MTextField @bind-Value="_addRepoModel.Name"
+                <MTextField Class="mt-2" @bind-Value="_addRepoModel.Name"
                 Counter="20"
                 Label='@T("Settings.Plugin.PluginRepository.RepoName")' Hint='@T("Settings.Plugin.PluginRepository.RepoNameHint")' PersistentHint
                             Outlined></MTextField>
-                <MTextField @bind-Value="_addRepoModel.RepoUrl"
+                <MTextField Class="mt-2" @bind-Value="_addRepoModel.RepoUrl"
                 Label='@T("Settings.Plugin.PluginRepository.RepoUrl")' Hint='@T("Settings.Plugin.PluginRepository.RepoUrlHint")' PersistentHint
                             Outlined></MTextField>
                           
@@ -139,7 +141,7 @@
     </MDialog>
                 </div>
                    <MList>
-                                    @foreach (var repo in PluginRepositories)
+                @foreach (var repo in PluginRepositories)
                 {
                     <MDivider></MDivider>
                     <MListItem>
@@ -151,7 +153,11 @@
                          <MListItemAction>
                             <div class="d-flex flex-no-wrap align-center">
                                 <MButton @onclick="() => RemovePluginRepo(repo)" Color="red" Outlined Class="ml-2 mr-4" Icon><MIcon>mdi-delete</MIcon></MButton>
-                                <MSwitch @bind-Value="repo.Enabled" Color="success" HideDetails="true"></MSwitch>
+                                @if(repo.Enabled){
+                                    <MButton @onclick="() => UpdatePluginRepo(repo)" Color='error' Class="ml-2 mr-4" Elevation="2">@T("Common.Disable")</MButton>
+                                }else{
+                                    <MButton @onclick="() => UpdatePluginRepo(repo)" Color='success' Class="ml-2 mr-4" Elevation="2">@T("Common.Enable")</MButton>
+                                }
                              </div>
                             </MListItemAction>                   
                          </ItemContent>
@@ -162,11 +168,38 @@
             </MTabItem>
         </MTabs>
     </MCardText>
+    <MSnackbar @bind-Value="_snackbar"
+                Timeout="2000" Dark>
+        <ChildContent>
+            @message
+        </ChildContent>
+        <ActionContent>
+            <MButton Color="blue"
+                     Text
+                     OnClick="()=>_snackbar = false">
+                Close
+            </MButton>
+        </ActionContent>
+    </MSnackbar>
 </MCard>
 
 @code {
 
     bool addRepoDialog;
+    bool _snackbar;
+    string message;
+
+    public void ShowSnackbar(string msg)
+    {
+        message = msg;
+        _snackbar = true;
+    }
+    public void ShowSnackbarLocal(string msgKey, params object[] args)
+    {
+        message = string.Format(I18n.T(msgKey), args);
+        _snackbar = true;
+    }
+
     class AddRepoModel
     {
         [Required]

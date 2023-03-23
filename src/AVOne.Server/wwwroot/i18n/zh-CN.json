@@ -13,7 +13,11 @@
     "Active":"已启用",
     "NotSupported":"不支持",
     "Malfunctioned":"已禁用",
-    "Restart":"待重启"
+    "Restart":"待重启",
+    "On":"开启",
+    "Off":"关闭",
+    "Disable":"禁用",
+    "Enable":"启用"
   },
   "Settings": {
     "Title": "设置",
@@ -46,7 +50,15 @@
         "Title": "我的插件",
         "EnablePlugins":"启用插件",
         "DisablePlugins":"禁用插件",
-        "DeletePlugins":"删除插件"
+        "DeletePlugins":"删除插件",
+        "Message":{
+          "EnablePluginsSuccess":"启用插件'{0}'成功",
+          "EnablePluginsFailed":"启用插件'{0}'失败",
+          "DisablePluginsSuccess":"禁用插件'{0}'成功",
+          "DisablePluginsFailed":"禁用插件'{0}'失败",
+          "DeletePluginsSuccess":"删除插件'{0}'成功",
+          "DeletePluginsFailed":"删除插件'{0}'失败"
+        }
       },
       "AvaliablePlugin": {
         "Title": "插件目录"
@@ -57,7 +69,17 @@
         "RepoUrl":"存储库 URL",
         "RepoUrlHint":"您要添加的存储库清单的位置",
         "RepoName":"存储库名称",
-        "RepoNameHint":"一个自定义名称，用于区分该存储库和添加到服务器的任何其他存储库"
+        "RepoNameHint":"一个自定义名称，用于区分该存储库和添加到服务器的任何其他存储库",
+        "Message":{
+          "AddRepoSuccess":"添加存储库'{0}'成功",
+          "AddRepoFailed":"添加存储库'{0}'失败",
+          "DeleteRepoSuccess":"删除存储库'{0}'成功",
+          "DeleteRepoFailed":"删除存储库'{0}'失败",
+          "EnableRepoSuccess":"启用存储库'{0}'成功",
+          "EnableRepoFailed":"启用存储库'{0}'失败",
+          "DisableRepoSuccess":"禁用存储库'{0}'成功",
+          "DisableRepoFailed":"禁用存储库'{0}'失败"
+        }
       }
     }
   }

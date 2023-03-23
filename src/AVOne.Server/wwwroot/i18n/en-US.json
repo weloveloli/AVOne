@@ -6,7 +6,9 @@
   "Common": {
     "SaveChanges": "Save changes",
     "Reset": "Reset",
-    "Submit": "Submit"
+    "Submit": "Submit",
+    "On":"On",
+    "Off":"Off"
   },
   "Settings": {
     "Title": "Settings",
@@ -39,14 +41,38 @@
         "Title": "Installed Plugins",
         "EnablePlugins":"Enable Plugin",
         "DisablePlugins":"Disable Plugin",
-        "DeletePlugins":"Delete Plugin"
+        "DeletePlugins":"Delete Plugin",
+        "Message": {
+          "DeletePluginHint": "Are you sure to delete this plugin?",
+          "DeletePluginSuccess": "Delete plugin '{0}' success",
+          "DeletePluginFailed": "Delete plugin '{0}' failed",
+          "EnablePluginSuccess": "Enable plugin '{0}' success",
+          "EnablePluginFailed": "Enable plugin '{0}' failed",
+          "DisablePluginSuccess": "Disable plugin '{0}' success",
+          "DisablePluginFailed": "Disable plugin '{0}' failed"
+        }
       },
       "AvaliablePlugin": {
         "Title": "Avaliable Plugins"
       },
       "PluginRepository": {
         "Title": "Plugin Repository",
-        "AddRepo":"Add Plugin Repository"
+        "AddRepo":"Add Plugin Repository",
+        "DeleteRepo":"Delete Plugin Repository",
+        "RepoUrl":"Plugin Repository Url",
+        "RepoUrlHint":"The url of plugin repository",
+        "RepoName":"Plugin Repository Name",
+        "RepoNameHint":"The name of plugin repository",
+        "Message": {
+          "AddRepoSuccess": "Add plugin repository '{0}' success",
+          "AddRepoFailed": "Add plugin repository '{0}' failed",
+          "DeleteRepoSuccess": "Delete plugin repository '{0}' success",
+          "DeleteRepoFailed": "Delete plugin repository '{0}' failed",
+          "EnableRepoSuccess": "Enable plugin repository '{0}' success",
+          "EnableRepoFailed": "Enable plugin repository '{0}' failed",
+          "DisableRepoSuccess": "Disable plugin repository '{0}' success",
+          "DisableRepoFailed": "Disable plugin repository '{0}' failed"
+        }
       }
     }
   }

@@ -109,6 +109,8 @@ namespace AVOne.Server.Pages.App.Settings
             PluginManager.DisablePlugin(plugin);
             // save the configuration
             ConfigurationManager.SaveConfiguration();
+            
+            ShowSnackbarLocal("Settings.Plugin.InstalledPlugin.Message.DisablePluginsSuccess", plugin.Name);
         }
 
         // create a function to enable plugin
@@ -118,6 +120,8 @@ namespace AVOne.Server.Pages.App.Settings
             PluginManager.EnablePlugin(plugin);
             // save the configuration
             ConfigurationManager.SaveConfiguration();
+            
+            ShowSnackbarLocal("Settings.Plugin.InstalledPlugin.Message.EnablePluginsSuccess", plugin.Name);
         }
 
         // create a function to delete plugin
@@ -128,11 +132,14 @@ namespace AVOne.Server.Pages.App.Settings
             PluginManager.RemovePlugin(plugin);
             // save the configuration
             ConfigurationManager.SaveConfiguration();
+            
+            ShowSnackbarLocal("Settings.Plugin.InstalledPlugin.Message.DeletePluginsSuccess", plugin.Name);
         }
 
         private void AddPluginRepo(AddRepoModel model){
 
             if(ConfigurationManager.CommonConfiguration.PluginRepositories.Any(x => x.Url == model.RepoUrl)){
+                ShowSnackbarLocal("Settings.Plugin.PluginRepository.Message.AddRepoFailed", model.Name);
                 return;
             }
             ConfigurationManager.CommonConfiguration.PluginRepositories.Add(new RepositoryInfo{
@@ -141,12 +148,28 @@ namespace AVOne.Server.Pages.App.Settings
             });
             // save the configuration
             ConfigurationManager.SaveConfiguration();
+            ShowSnackbarLocal("Settings.Plugin.PluginRepository.Message.AddRepoSuccess", model.Name);
         }
 
         private void RemovePluginRepo(RepositoryInfo toRemove){
             ConfigurationManager.CommonConfiguration.PluginRepositories.Remove(toRemove);
             // save the configuration
             ConfigurationManager.SaveConfiguration();
+            ShowSnackbarLocal("Settings.Plugin.PluginRepository.Message.DeleteRepoSuccess", toRemove.Name);
+        }
+
+         private void UpdatePluginRepo(RepositoryInfo toUpdate){
+            toUpdate.Enabled = !toUpdate.Enabled;
+            // save the configuration
+            ConfigurationManager.SaveConfiguration();
+            if(toUpdate.Enabled)
+            {
+                ShowSnackbarLocal("Settings.Plugin.PluginRepository.Message.EnableRepoSuccess", toUpdate.Name);
+            }
+            else
+            {
+                ShowSnackbarLocal("Settings.Plugin.PluginRepository.Message.DisableRepoSuccess", toUpdate.Name);
+            }
         }
     }
 }
