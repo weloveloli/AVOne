@@ -1,14 +1,14 @@
 [
   {
     "Id": 1,
-    "Title": "Downloads.Title",
-    "Icon": "mdi-download",
+    "Title": "Library",
+    "Icon": "mdi-movie",
     "Children": [
       {
         "Id": 2,
-        "Title": "Downloads.Tasks.Title",
-        "Icon": "mdi-download",
-        "Href": "app/downloads/tasks"
+        "Title": "LocalLibrary",
+        "Icon": "mdi-movie",
+        "Href": "app/library/local"
       }
     ]
   },
@@ -22,6 +22,12 @@
         "Title": "Settings.System.Title",
         "Icon": "mdi-cog",
         "Href": "app/settings/system"
+      },
+      {
+        "Id": 7,
+        "Title": "Settings.Library.Title",
+        "Icon": "mdi-cog",
+        "Href": "app/settings/library"
       },
       {
         "Id": 8,

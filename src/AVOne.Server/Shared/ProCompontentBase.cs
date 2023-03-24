@@ -6,7 +6,19 @@ namespace AVOne.Server.Shared
     public abstract class ProCompontentBase : ComponentBase
     {
         private I18n? _languageProvider;
+        private bool _snackbar;
+        private string? message;
 
+        public void ShowSnackbar(string msg)
+        {
+            message = msg;
+            _snackbar = true;
+        }
+        public void ShowSnackbarLocal(string msgKey, params object[] args)
+        {
+            message = string.Format(T(msgKey), args);
+            _snackbar = true;
+        }
         [CascadingParameter]
         public I18n LanguageProvider
         {

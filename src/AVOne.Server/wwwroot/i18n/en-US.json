@@ -75,5 +75,13 @@
         }
       }
     }
+  },
+  "Downloads":{
+    "Title":"Downloads",
+    "Tasks":{
+      "Title":"Download Tasks",
+      "AddTask":"Add Download Task",
+      "DeleteTask":"Delete Download Task"
+    }
   }
 }

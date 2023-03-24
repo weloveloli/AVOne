@@ -2,7 +2,7 @@
 // See License in the project root for license information.
 #nullable disable
 
-namespace AVOne.Server.Pages.App.Settings
+namespace AVOne.Server.Pages.App.Settings.Plugins
 {
     using AVOne.Common.Plugins;
     using AVOne.Configuration;
@@ -43,12 +43,7 @@ namespace AVOne.Server.Pages.App.Settings
             this.PluginRepositories = ConfigurationManager.CommonConfiguration.PluginRepositories;
         }
 
-        // create a function to get url of the plugin
-        private static string GetPluginUrl(LocalPlugin plugin)
-        {
-            return $"plugins/{plugin.Id}/{plugin.Version}/Image";
-        }
-
+        
         // create a function to get the plugin tags
         private IEnumerable<BlockTextTag> GetPackageTags(PackageInfo package)
         {
@@ -61,7 +56,6 @@ namespace AVOne.Server.Pages.App.Settings
 
             return tags;
         }
-
         // create a function to get the plugin tags
         private IEnumerable<BlockTextTag> GetPluginTags(LocalPlugin plugin)
         {

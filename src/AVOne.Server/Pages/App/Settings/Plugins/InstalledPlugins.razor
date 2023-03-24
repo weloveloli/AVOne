@@ -1,0 +1,67 @@
+ @inherits ProCompontentBase
+ @using AVOne.Common.Plugins;
+<MContainer Fluid>
+                    <MRow Dense>
+                        @foreach (var item in Installed)
+                    {
+                            <MCol key="@item.Id" Cols="3" >
+                                <MCard Class="mx-auto my-12" MaxWidth="468" Elevation=8>
+                                    @if (item.GetPluginInfo().HasImage)
+                                    {
+                                        <MImage Src="@GetPluginUrl(item)" Class="white--text align-end" Height=180 Gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)">
+                                            <MCardTitle>@item.Name</MCardTitle>
+                                        </MImage>
+                                    }
+                                    else
+                                    {
+                                        <MImage Src="img/logo/material.jpg" Class="white--text align-end" Height=180 Gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)">
+                                            <MCardTitle>@item.Name</MCardTitle>
+                                        </MImage>
+                                    }
+                                        <div class="d-flex flex-no-wrap justify-space-between">
+                                            <div>
+                                        <Masa.Blazor.Presets.PBlockText Primary="@item.GetPluginInfo().Description" Tags="@GetPluginTags(item)" Class="pa-2" style="max-width: 300px;"></Masa.Blazor.Presets.PBlockText>
+                                            </div>
+                                            <div class="pa-2">
+                                            <MMenu Bottom Right OffsetX=true CloseOnClick=true CloseOnContentClick=true>
+                    <ActivatorContent>
+                        <MButton
+                            Icon
+                            @attributes="@context.Attrs">
+                            <MIcon>mdi-dots-vertical</MIcon>
+                        </MButton>
+                    </ActivatorContent>
+
+                    <ChildContent>
+                        <MList>
+                                   @if(item.IsEnabledAndSupported && item.Manifest.Status == PluginStatus.Active){
+                                        <MListItem Link @onclick="@(e => DisablePlugin(item))">            
+                                        <MListItemTitle>
+                                             @T("Settings.Plugin.InstalledPlugin.DisablePlugins")
+                                        </MListItemTitle>
+                                           </MListItem>
+                                    }
+                                    else if(item.Manifest.Status == PluginStatus.Disabled)
+                                    {
+                                        <MListItem Link @onclick="@(e => EnablePlugin(item))">
+                                        <MListItemTitle >
+                                           @T("Settings.Plugin.InstalledPlugin.EnablePlugins")
+                                        </MListItemTitle>                                        
+                                        </MListItem>
+                                    }
+
+                                <MListItem Link @onclick="@(e => DeletePlugin(item))">
+                                        <MListItemTitle >
+                                             @T("Settings.Plugin.InstalledPlugin.DeletePlugins")
+                                        </MListItemTitle>
+                                </MListItem>                                
+                        </MList>
+                    </ChildContent>
+                </MMenu>
+                                                </div>
+                                        </div>
+                            </MCard>
+                            </MCol>
+                    }
+                </MRow>
+                </MContainer>
