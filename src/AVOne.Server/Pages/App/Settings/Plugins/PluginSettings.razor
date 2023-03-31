@@ -11,31 +11,7 @@
                  <InstalledPlugins></InstalledPlugins>
             </MTabItem>
             <MTabItem>
-                <MContainer Fluid>
-                    <MRow Dense>
-                        @foreach (var package in PackageInfos)
-                    {
-                            <MCol key="@package.Id" Cols="3" >
-                                <MCard Class="mx-auto my-12 ml-12" MaxWidth="468" Elevation=8>
-                                    @if (!string.IsNullOrWhiteSpace(package.ImageUrl))
-                                    {
-                                        <MImage Src=@package.ImageUrl Class="white--text align-end" Height=180 Gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)">
-                                            <MCardTitle>@package.Name</MCardTitle>
-                                        </MImage>
-                                    }
-                                    else
-                                    {
-                                        <MImage Src="img/logo/material.jpg" Class="white--text align-end" Height=180 Gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)">
-                                            <MCardTitle>@package.Name</MCardTitle>
-                                        </MImage>
-                                    }
-
-                                        <Masa.Blazor.Presets.PBlockText Primary="@package.Description" Tags="@GetPackageTags(package)" Class="pa-2" style="max-width: 300px;"></Masa.Blazor.Presets.PBlockText>
-                            </MCard>
-                            </MCol>
-                    }
-                </MRow>
-                </MContainer>
+                <AvaliablePlugins></AvaliablePlugins>
             </MTabItem>
             <MTabItem>
                 <div class="md-flex flex-no-wrap justify-start pt-6 pl-6">

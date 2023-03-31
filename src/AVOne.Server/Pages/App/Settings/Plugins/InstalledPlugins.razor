@@ -5,7 +5,7 @@
                         @foreach (var item in Installed)
                     {
                             <MCol key="@item.Id" Cols="3" >
-                                <MCard Class="mx-auto my-12" MaxWidth="468" Elevation=8>
+                                <MCard Class="mx-auto my-10" MaxWidth="468" Elevation=8>
                                     @if (item.GetPluginInfo().HasImage)
                                     {
                                         <MImage Src="@GetPluginUrl(item)" Class="white--text align-end" Height=180 Gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)">

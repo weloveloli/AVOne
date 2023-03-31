@@ -43,19 +43,6 @@ namespace AVOne.Server.Pages.App.Settings.Plugins
             this.PluginRepositories = ConfigurationManager.CommonConfiguration.PluginRepositories;
         }
 
-        
-        // create a function to get the plugin tags
-        private IEnumerable<BlockTextTag> GetPackageTags(PackageInfo package)
-        {
-            var tags = new List<BlockTextTag>();
-
-            if (!string.IsNullOrWhiteSpace(package.Category))
-            {
-                tags.Add(new BlockTextTag(package.Category, "blue", "white"));
-            }
-
-            return tags;
-        }
         // create a function to get the plugin tags
         private IEnumerable<BlockTextTag> GetPluginTags(LocalPlugin plugin)
         {
