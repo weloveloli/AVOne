@@ -5,6 +5,7 @@ namespace AVOne.Impl.Registrator
 {
     using AVOne.Abstraction;
     using AVOne.Configuration;
+    using AVOne.Impl.Data;
     using AVOne.Impl.IO;
     using AVOne.Impl.Library;
     using AVOne.Impl.Providers;
@@ -30,6 +31,11 @@ namespace AVOne.Impl.Registrator
             serviceCollection.AddSingleton<IInstallationManager, InstallationManager>();
             serviceCollection.AddSingleton<IFileSystem, ManagedFileSystem>();
             serviceCollection.AddSingleton<IDirectoryService, DirectoryService>();
+            serviceCollection.AddSingleton<ApplicationDbContext>(sp =>
+            {
+                return ApplicationDbContext.Create(sp.GetService<IApplicationPaths>());
+            })
+                .AddSingleton<JobRepository>();
         }
 
         public void PostBuildService(IApplicationHost host)

@@ -10,6 +10,18 @@
     "On":"On",
     "Off":"Off"
   },
+  "Download":{
+      "Title":"Download Tasks",
+      "AddTask":"Add Download Task",
+      "DeleteTask":"Delete Download Task",
+      "Message":{
+          "AddTaskSuccess":"Add download task '{0}' success",
+          "AddTaskFailed":"Add download task '{0}' failed",
+          "DeleteTaskSuccess":"Delete download task '{0}' success",
+          "DeleteTaskFailed":"Delete download task '{0}' failed"
+      }
+  },
+
   "Settings": {
     "Title": "Settings",
     "System": {
