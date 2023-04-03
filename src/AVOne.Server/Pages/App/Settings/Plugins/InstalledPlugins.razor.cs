@@ -1,4 +1,4 @@
-// Copyright (c) 2023 Weloveloli. All rights reserved.
+﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // See License in the project root for license information.
 #nullable disable
 
@@ -10,7 +10,7 @@ namespace AVOne.Server.Pages.App.Settings.Plugins
     using AVOne.Configuration;
     using Masa.Blazor.Presets;
 
-    public partial class InstalledPlugins: ProCompontentBase
+    public partial class InstalledPlugins : ProCompontentBase
     {
         [Inject]
         private IPluginManager PluginManager { get; set; }
@@ -18,8 +18,6 @@ namespace AVOne.Server.Pages.App.Settings.Plugins
         [Inject]
         private IConfigurationManager ConfigurationManager { get; set; }
         private IReadOnlyCollection<LocalPlugin> Installed { get; set; }
-
-        private IReadOnlyList<PackageInfo> PackageInfos { get; set; }
         public List<RepositoryInfo> PluginRepositories { get; private set; }
 
         protected override void OnInitialized()
@@ -27,7 +25,6 @@ namespace AVOne.Server.Pages.App.Settings.Plugins
             Installed = PluginManager.Plugins.ToList();
         }
 
-        
         // create a function to disable plugin 
         private void DisablePlugin(LocalPlugin plugin)
         {
@@ -35,7 +32,7 @@ namespace AVOne.Server.Pages.App.Settings.Plugins
             PluginManager.DisablePlugin(plugin);
             // save the configuration
             ConfigurationManager.SaveConfiguration();
-            
+
             ShowSnackbarLocal("Settings.Plugin.InstalledPlugin.Message.DisablePluginsSuccess", plugin.Name);
         }
 
@@ -46,7 +43,7 @@ namespace AVOne.Server.Pages.App.Settings.Plugins
             PluginManager.EnablePlugin(plugin);
             // save the configuration
             ConfigurationManager.SaveConfiguration();
-            
+
             ShowSnackbarLocal("Settings.Plugin.InstalledPlugin.Message.EnablePluginsSuccess", plugin.Name);
         }
 
@@ -58,18 +55,16 @@ namespace AVOne.Server.Pages.App.Settings.Plugins
             PluginManager.RemovePlugin(plugin);
             // save the configuration
             ConfigurationManager.SaveConfiguration();
-            
+
             ShowSnackbarLocal("Settings.Plugin.InstalledPlugin.Message.DeletePluginsSuccess", plugin.Name);
         }
 
-        
         // create a function to get url of the plugin
         private static string GetPluginUrl(LocalPlugin plugin)
         {
             return $"plugins/{plugin.Id}/{plugin.Version}/Image";
         }
 
-        
         // create a function to get the plugin tags
         private IEnumerable<BlockTextTag> GetPluginTags(LocalPlugin plugin)
         {

@@ -31,7 +31,7 @@ namespace AVOne.Impl.Library
         private readonly IApplicationHost _appHost;
         private readonly ILogger<LibraryManager> _logger;
         private INamingOptions _namingOptions => _providerManager.GetNamingOptionProvider().GetNamingOption();
-        private ExtraResolver _extraResolver;
+        private readonly ExtraResolver _extraResolver;
 
         public LibraryManager(
             IApplicationHost appHost,

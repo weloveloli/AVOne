@@ -7,6 +7,7 @@ namespace AVOne.Impl.Registrator
     using AVOne.Configuration;
     using AVOne.Impl.Data;
     using AVOne.Impl.IO;
+    using AVOne.Impl.Job;
     using AVOne.Impl.Library;
     using AVOne.Impl.Providers;
     using AVOne.Impl.Updates;
@@ -31,11 +32,12 @@ namespace AVOne.Impl.Registrator
             serviceCollection.AddSingleton<IInstallationManager, InstallationManager>();
             serviceCollection.AddSingleton<IFileSystem, ManagedFileSystem>();
             serviceCollection.AddSingleton<IDirectoryService, DirectoryService>();
-            serviceCollection.AddSingleton<ApplicationDbContext>(sp =>
+            serviceCollection.AddSingleton(sp =>
             {
                 return ApplicationDbContext.Create(sp.GetService<IApplicationPaths>());
             })
-                .AddSingleton<JobRepository>();
+            .AddSingleton<JobRepository>()
+            .AddSingleton<IJobManager, JobManager>();
         }
 
         public void PostBuildService(IApplicationHost host)
@@ -43,6 +45,8 @@ namespace AVOne.Impl.Registrator
             BaseItem.FileSystem = host.Resolve<IFileSystem>();
             BaseItem.Logger = host.Resolve<ILogger<BaseItem>>();
             BaseItem.ConfigurationManager = host.Resolve<IConfigurationManager>();
+            IAVOneJob.JobManager = host.Resolve<IJobManager>();
+            IAVOneJob.ApplicationHost = host.Resolve<IApplicationHost>();
 
             host.Resolve<IProviderManager>().AddParts(
                 host.GetExports<IImageProvider>(),

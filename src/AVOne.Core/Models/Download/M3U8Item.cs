@@ -26,5 +26,7 @@ namespace AVOne.Models.Download
 
         public override string DisplayName => $"{Title}[{Quality.Description()}]";
 
+        public override string Key => $"M3U8Item:{Url}";
+
     }
 }

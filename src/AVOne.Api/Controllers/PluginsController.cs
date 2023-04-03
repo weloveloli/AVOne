@@ -1,4 +1,7 @@
-﻿namespace AVOne.Api.Controllers
+﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
+// See License in the project root for license information.
+
+namespace AVOne.Api.Controllers
 {
     using AVOne.Common.Plugins;
     using AVOne.Common;
@@ -11,6 +14,10 @@
     using Microsoft.AspNetCore.Mvc;
     using AVOne.Api.Attributes;
 
+    /// <summary>
+    /// Controllers for plugins
+    /// </summary>
+    /// <seealso cref="AVOne.Api.Controllers.BaseApiController" />
     public class PluginsController : BaseApiController
     {
         private readonly IInstallationManager _installationManager;

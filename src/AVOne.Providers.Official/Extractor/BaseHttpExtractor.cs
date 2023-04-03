@@ -5,14 +5,13 @@ namespace AVOne.Providers.Official.Extractor
 {
     using System.Collections.Generic;
     using System.Net.Http;
-    using System.Text.RegularExpressions;
     using System.Threading;
     using System.Threading.Tasks;
     using AVOne.Models.Download;
     using AVOne.Providers.Extractor;
     using Microsoft.Extensions.Logging;
 
-    public abstract partial class BaseHttpExtractor : IMediaExtractorProvider
+    public abstract class BaseHttpExtractor : IMediaExtractorProvider
     {
         protected HttpClient _httpClient;
         protected ILogger _logger;
@@ -29,10 +28,7 @@ namespace AVOne.Providers.Official.Extractor
         public abstract string Name { get; }
         public abstract int Order { get; }
 
-        [GeneratedRegex("<title>(.*?)</title>", RegexOptions.IgnoreCase, "en-US")]
-        public static partial Regex TitleRegex();
-
-        public abstract Task<IEnumerable<BaseDownloadableItem>> ExtractAsync(string webPage, CancellationToken token = default);
+        public abstract Task<IEnumerable<BaseDownloadableItem>> ExtractAsync(string webPageUrl, CancellationToken token = default);
         public virtual bool Support(string webPage)
         {
             return !string.IsNullOrEmpty(webPage) && webPage.StartsWith(_webPageStart);

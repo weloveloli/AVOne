@@ -11,6 +11,7 @@
         <ProjectReference Include="..\AVOne.Providers.Official\AVOne.Providers.Official.csproj" />
     </ItemGroup>
     <ItemGroup>
+        <PackageReference Include="LiteDB" />
         <PackageReference Include="Microsoft.Extensions.Http" />
         <PackageReference Include="DotNet.Glob" />
         <PackageReference Include="My.Extensions.Localization.Json" />

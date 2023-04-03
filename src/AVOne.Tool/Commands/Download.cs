@@ -44,11 +44,7 @@ namespace AVOne.Tool.Commands
             var providerManager = host.Resolve<IProviderManager>();
             if (!string.IsNullOrEmpty(Web))
             {
-                var extractor = providerManager.GetMediaExtractorProviders(Web).FirstOrDefault();
-                if (extractor is null)
-                {
-                    throw Oops.Oh("Can not find extractor for web url", Web);
-                }
+                var extractor = providerManager.GetMediaExtractorProviders(Web).FirstOrDefault() ?? throw Oops.Oh("Can not find extractor for web url", Web);
                 var items = await extractor!.ExtractAsync(Web, token);
                 var count = items.Count();
                 BaseDownloadableItem? downloadableItem = null;

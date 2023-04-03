@@ -17,8 +17,8 @@
         <ProjectReference Include="..\AVOne.Core\AVOne.Core.csproj" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Furion"/>
-        <PackageReference Include="HttpToSocks5Proxy"/>
+        <PackageReference Include="Furion" />
+        <PackageReference Include="HttpToSocks5Proxy" />
         <PackageReference Include="Jint" />
         <PackageReference Include="MimeTypes">
             <PrivateAssets>all</PrivateAssets>

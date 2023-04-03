@@ -1,10 +1,14 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // See License in the project root for license information.
 
+#nullable disable
+
 namespace AVOne.Impl.Data
 {
     using System;
     using System.Collections.Generic;
+    using AVOne.Abstraction;
+    using AVOne.Impl.Job;
     using LiteDB;
 
     /// <summary>
@@ -12,6 +16,8 @@ namespace AVOne.Impl.Data
     /// </summary>
     public abstract class IAVOneJob
     {
+        public static IApplicationHost ApplicationHost { get; set; }
+        public static IJobManager JobManager { get; set; }
         public IProgress<double> Progress { get; set; }
 
         /// <summary>
@@ -50,6 +56,28 @@ namespace AVOne.Impl.Data
         /// </summary>
         public DateTime Created { get; set; }
 
+        /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
+        /// <value>
+        /// The name.
+        /// </value>
+        public virtual string Name { get; set; }
+
+        /// <summary>
+        /// Gets or sets the description.
+        /// </summary>
+        /// <value>
+        /// The name.
+        /// </value>
+        public virtual string Description { get; set; }
+
+        /// <summary>
+        /// Gets or sets the progress value.
+        /// </summary>
+        /// <value>
+        /// The progress value.
+        /// </value>
         public double ProgressValue { get; set; }
 
         /// <summary>
@@ -65,13 +93,15 @@ namespace AVOne.Impl.Data
         {
             return new JobModel
             {
-                id = this.Id,
+                Id = this.Id,
                 Status = this.Status,
                 Modified = this.Modified,
                 Created = this.Created,
                 Extra = this.BuildExtra(),
                 Type = this.Type,
-                Key = this.Key
+                Key = this.Key,
+                Name = this.Name,
+                Description = this.Description,
             };
         }
 
@@ -81,10 +111,12 @@ namespace AVOne.Impl.Data
         /// <param name="model">The model<see cref="JobModel"/>.</param>
         public virtual void FromModel(JobModel model)
         {
-            this.Id = model.id;
+            this.Id = model.Id;
             this.Status = model.Status;
             this.Modified = model.Modified;
             this.Created = model.Created;
+            this.Name = model.Name;
+            this.Description = model.Description;
             FromExtra(model.Extra);
         }
 

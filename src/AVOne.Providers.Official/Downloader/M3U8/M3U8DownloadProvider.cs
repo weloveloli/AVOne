@@ -65,8 +65,8 @@ namespace AVOne.Providers.Official.Downloader.M3U8
             {
                 mediaPlaylist = JsonSerializer.Deserialize<MediaPlaylist>(File.ReadAllText(Path.Combine(workingDir, playMetaDataFile)));
             }
-            
-            if(mediaPlaylist is null)
+
+            if (mediaPlaylist is null)
             {
                 mediaPlaylist = await GetMediaPlaylist(workingDir, url, saveName, m3U8Item, token);
                 File.WriteAllText(Path.Combine(workingDir, playMetaDataFile), JsonSerializer.Serialize(mediaPlaylist));
@@ -114,7 +114,7 @@ namespace AVOne.Providers.Official.Downloader.M3U8
                     Directory.CreateDirectory(partDir);
                     var list = mediaPlaylist.Parts[index].Segments;
                     var numbers = Enumerable.Range(0, list.Count).ToList();
-                    Parallel.ForEach(numbers, new ParallelOptions { MaxDegreeOfParallelism = threadCount, CancellationToken = token }, index =>
+                    _ = Parallel.ForEach(numbers, new ParallelOptions { MaxDegreeOfParallelism = threadCount, CancellationToken = token }, index =>
                     {
                         var segment = list[index];
                         var tsPath = Path.Combine(partDir, $"{index}.ts");
@@ -126,7 +126,8 @@ namespace AVOne.Providers.Official.Downloader.M3U8
                                 RequestUri = new Uri(segment.Uri),
                             };
 
-                            if(m3U8Item.Header != null){
+                            if (m3U8Item.Header != null)
+                            {
                                 foreach (var header in m3U8Item.Header)
                                 {
                                     request.Headers.Add(header.Key, header.Value);
@@ -205,7 +206,7 @@ namespace AVOne.Providers.Official.Downloader.M3U8
                     DownloadBytes = downloadBytes,
                     MaxRetry = opts.RetryCount ?? 1,
                     Retry = 0,
-                    Percentage = percentage,
+                    Progress = percentage,
                     TotalBytes = totalBytes,
                     Speed = speed,
                     Eta = eta
@@ -248,7 +249,7 @@ namespace AVOne.Providers.Official.Downloader.M3U8
                     request.Headers.Add(header.Key, header.Value);
                 }
             }
-            
+
             var rsp = await _client.SendAsync(request, token);
             rsp.EnsureSuccessStatusCode();
             var m3u8 = await rsp.Content.ReadAsStringAsync(token);

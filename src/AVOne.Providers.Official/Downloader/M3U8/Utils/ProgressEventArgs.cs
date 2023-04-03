@@ -9,18 +9,19 @@ namespace AVOne.Providers.Official.Downloader.M3U8.Utils
     {
         public int Total { get; set; }
         public int Finish { get; set; }
-        public double Percentage { get; set; }
+        public override double Progress { get; set; }
         public long TotalBytes { get; set; }
         public long DownloadBytes { get; set; }
         public int MaxRetry { get; set; }
         public int Retry { get; set; }
         public long Speed { get; set; }
         public int Eta { get; set; }
+
         public override string Status
         {
             get
             {
-                var percentage = (Percentage * 100).ToString("0.00");
+                var percentage = (Progress * 100).ToString("0.00");
                 var totalSize = FormatFileSize(TotalBytes);
                 var downloadSize = FormatFileSize(DownloadBytes);
                 var speed = FormatFileSize(Speed);

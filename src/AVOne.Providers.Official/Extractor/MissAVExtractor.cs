@@ -21,7 +21,8 @@ namespace AVOne.Providers.Official.Extractor
         private readonly Regex _titleRegex;
 
         public static Dictionary<string, string> HeaderForMissAV =
-            new Dictionary<string, string> {
+            new()
+            {
                 { "referer", "https://missav.com" },
                 { "origin", "https://missav.com" }
             };
@@ -80,37 +81,6 @@ namespace AVOne.Providers.Official.Extractor
 
             return result;
         }
-        // A method to fetch the title from a HTML string
-        public static string GetTitleFromHtml(string html, Regex regex)
-        {
-            // Check if the html string is null or empty
-            if (string.IsNullOrEmpty(html))
-            {
-                // Return an empty string
-                return "";
-            }
-
-            // Find the first match in the html string
-            var match = regex.Match(html);
-
-            // Check if the match is successful
-            if (match.Success)
-            {
-                // Return the value of the first group (the title text)
-                var title = match.Groups[1].Value;
-
-                if (title.Contains(ExtraTitle))
-                {
-                    title = title.Replace(ExtraTitle, "");
-                }
-                return title;
-            }
-            else
-            {
-                // Return an empty string if no match is found
-                return "";
-            }
-        }
 
         public IEnumerable<string> GetSources(string html)
         {
@@ -142,6 +112,39 @@ namespace AVOne.Providers.Official.Extractor
                 var end = line.LastIndexOf("'") - 1;
                 if (end <= start) continue;
                 yield return line.Substring(start, end - start + 1);
+            }
+        }
+        [GeneratedRegex("<title>(.*?)</title>", RegexOptions.IgnoreCase, "en-US")]
+        public static partial Regex TitleRegex();
+        // A method to fetch the title from a HTML string
+        public static string GetTitleFromHtml(string html, Regex regex)
+        {
+            // Check if the html string is null or empty
+            if (string.IsNullOrEmpty(html))
+            {
+                // Return an empty string
+                return "";
+            }
+
+            // Find the first match in the html string
+            var match = regex.Match(html);
+
+            // Check if the match is successful
+            if (match.Success)
+            {
+                // Return the value of the first group (the title text)
+                var title = match.Groups[1].Value;
+
+                if (title.Contains(ExtraTitle))
+                {
+                    title = title.Replace(ExtraTitle, "");
+                }
+                return title;
+            }
+            else
+            {
+                // Return an empty string if no match is found
+                return "";
             }
         }
     }

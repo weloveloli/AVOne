@@ -143,7 +143,7 @@ namespace AVOne.Impl.Data
         /// <param name="pageSize">The pageSize<see cref="int"/>.</param>
         /// <param name="conditionPredicates">The predicate.</param>
         /// <returns>The <see cref="Task"/>.</returns>
-        public PagedList<JobModel> GetPagedList(int pageIndex, int pageSize, params (bool condition, Expression<Func<JobModel, bool>> expression)[] conditionPredicates) 
+        public PagedList<JobModel> GetPagedList(int pageIndex, int pageSize, params (bool condition, Expression<Func<JobModel, bool>> expression)[] conditionPredicates)
         {
             var totalCount = this.Count(conditionPredicates);
             var exp = this.MergeExp(conditionPredicates);

@@ -1,12 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
    <Import Project="../../commontest.props" />
    <ItemGroup>
-     <PackageReference Include="Furion.Xunit"/>
+     <PackageReference Include="Furion.Xunit" />
    </ItemGroup>
    <ItemGroup>
      <ProjectReference Include="..\..\AVOne.Providers.Official\AVOne.Providers.Official.csproj" />
    </ItemGroup>
    <ItemGroup>
+     <None Update="websites\51av.txt">
+       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+     </None>
      <None Update="websites\avple.txt">
        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
      </None>

@@ -19,6 +19,7 @@ namespace AVOne.Server.Shared
             message = string.Format(T(msgKey), args);
             _snackbar = true;
         }
+
         [CascadingParameter]
         public I18n LanguageProvider
         {

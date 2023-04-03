@@ -1,11 +1,91 @@
 ﻿@page "/app/downloads/tasks"
 @inherits ProCompontentBase
 <MCard>
-    <MCardTitle>@T("Download.Tasks.Title")</MCardTitle>
+    <MCardTitle>
+        @T("Download.Tasks.Title")
+        <MDialog @bind-Value="addJobDialog"
+                 Width="500">
+            <ActivatorContent>
+                <MButton @attributes="@context.Attrs" Outlined Class="ml-2" Icon><MIcon Dark>mdi-plus</MIcon></MButton>
+            </ActivatorContent>
+            <ChildContent>
+                <MCard>
+                    <MForm Model="_addJobModel" EnableValidation OnValidSubmit="HandleOnValidSubmit">
+                        <MCardTitle>
+                            <span class="text-h5">@T("Settings.Plugin.PluginRepository.AddRepo")</span>
+                        </MCardTitle>
+                        <MCardText>
+
+                            <MTextField Class="mt-2" @bind-Value="_addJobModel.Name"
+                                        Counter="20"
+                                        Label='@T("Settings.Plugin.PluginRepository.RepoName")' Hint='@T("Settings.Plugin.PluginRepository.RepoNameHint")' PersistentHint
+                                            Outlined></MTextField>
+                            <MTextField Class="mt-2" @bind-Value="_addJobModel.RepoUrl"
+                                        Label='@T("Settings.Plugin.PluginRepository.RepoUrl")' Hint='@T("Settings.Plugin.PluginRepository.RepoUrlHint")' PersistentHint
+                                            Outlined></MTextField>
+
+
+                        </MCardText>
+                        <MCardActions Class="justify-end">
+                            <MButton Type="reset" @onclick="()=> {addJobDialog = false;}">@T("Common.Cancel")</MButton>
+                            <MButton Type="submit" Color="primary">@T("Common.Submit")</MButton>
+                        </MCardActions>
+                    </MForm>
+                </MCard>
+
+            </ChildContent>
+        </MDialog>
+    </MCardTitle>
     <MCardText>
+
+        <MList>
+            @foreach (var job in Jobs)
+            {
+                <MDivider></MDivider>
+                <MListItem>
+                    <ItemContent>
+                        <MListItemContent>
+                            <MListItemTitle>@job.Name</MListItemTitle>
+                            <MListItemSubtitle>@job.Description</MListItemSubtitle>
+                        </MListItemContent>
+                        <MListItemAction>
+                            <div class="d-flex flex-no-wrap align-center">
+                                <MButton @onclick="() => RemoveJob(job)" Color="red" Outlined Class="ml-2 mr-4" Icon><MIcon>mdi-delete</MIcon></MButton>
+                            </div>
+                        </MListItemAction>
+                    </ItemContent>
+
+                </MListItem>
+            }
+        </MList>
     </MCardText>
 </MCard>
 
+@code {
+
+    bool addJobDialog;
+
+
+    class AddJobModel
+    {
+        [Required]
+        [MaxLength(20, ErrorMessage = "Name must be less than 20 characters")]
+        public string? Name { get; set; }
+        [Required]
+        [Url]
+        public string? RepoUrl { get; set; }
+    }
+
+    private AddJobModel _addJobModel = new();
+
+    private void HandleOnValidSubmit()
+    {
+        //valid
+
+        this.AddDownloadJob(_addJobModel);
+        addJobDialog = false;
+    }
+}
 
 @code {
 

@@ -8,22 +8,26 @@ namespace AVOne.Impl.Job
     using System.Linq.Expressions;
     using AVOne.Impl.Data;
     using LiteDB;
+    using Microsoft.Extensions.Logging;
 
     public class JobManager : IJobManager
     {
         private readonly IDictionary<string, Task> TaskInstances;
         private readonly IDictionary<string, CancellationTokenSource> CancelToken;
         private readonly JobRepository _jobRepository;
+        private readonly ILogger<JobManager> _logger;
 
-        public JobManager(JobRepository jobRepository)
+        public JobManager(JobRepository jobRepository, ILogger<JobManager> logger)
         {
             TaskInstances = new ConcurrentDictionary<string, Task>();
             CancelToken = new ConcurrentDictionary<string, CancellationTokenSource>();
             _jobRepository = jobRepository;
+            _logger = logger;
         }
 
         public void AddJob<T>(T job) where T : IAVOneJob
         {
+            job.Id = ObjectId.NewObjectId();
             _jobRepository.UpsertJob(job);
         }
 
@@ -47,9 +51,9 @@ namespace AVOne.Impl.Job
             }).ToList();
         }
 
-        private IProgress<double> CreateProcessForJob(IAVOneJob job)
+        public IProgress<double> CreateProcessForJob(IAVOneJob job)
         {
-            return new Progress<double>( value =>
+            return new Progress<double>(value =>
             {
                 job.ProgressValue = value;
                 if (value >= 100)
@@ -69,7 +73,6 @@ namespace AVOne.Impl.Job
             }
 
             job.Status = (int)JobStatus.Canceled;
-            _jobRepository.UpsertJob(job);
         }
 
         public Task ExecuteJob<T>(T job) where T : IAVOneJob
@@ -78,19 +81,43 @@ namespace AVOne.Impl.Job
             CancelToken[job.Key] = cancellationTokenSource;
             var task = job.Execute(cancellationTokenSource.Token);
             TaskInstances[job.Key] = task;
-            return task;
+            job.Progress = CreateProcessForJob(job);
+            var exeTaks = task.ContinueWith((t) =>
+            {
+                if (t.IsCompleted)
+                {
+                    job.Status = (int)JobStatus.Completed;
+                    job.ProgressValue = 100;
+                }
+                else if (t.IsCanceled)
+                {
+                    _logger.LogDebug("Job {0} is Canceled", job.Key);
+                }
+                else if (t.IsFaulted)
+                {
+                    job.Status = (int)JobStatus.Canceled;
+                    _logger.LogWarning(t.Exception, "Job {0} canceld due to exception", job.Key);
+                }
+
+                _jobRepository.UpsertJob(job);
+                TaskInstances.Remove(job.Key);
+                CancelToken.Remove(job.Key);
+            });
+            return exeTaks;
         }
 
         public void RemoveJob<T>(T job) where T : IAVOneJob
         {
-            if (job == null) throw new ArgumentNullException("Job is null");
+            if (job == null)
+            {
+                var argumentNullException = new ArgumentNullException("Job is null");
+                throw argumentNullException;
+            }
             if (CancelToken.TryGetValue(job.Key, out var tokenSource))
             {
                 tokenSource.Cancel();
             }
-
             job.Status = (int)JobStatus.Deleted;
-            _jobRepository.UpsertJob(job);
         }
     }
 }

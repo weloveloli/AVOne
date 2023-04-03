@@ -1,6 +1,8 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // See License in the project root for license information.
 
+#nullable disable
+
 namespace AVOne.Impl.Data
 {
     using System;
@@ -13,11 +15,10 @@ namespace AVOne.Impl.Data
     public class JobModel
     {
         /// <summary>
-        /// Gets or sets the id
-        /// id......
+        /// Gets or sets the Id.
         /// </summary>
         [BsonId]
-        public ObjectId id { get; set; }
+        public ObjectId Id { get; set; }
 
         /// <summary>
         /// Gets or sets the Type.
@@ -43,6 +44,19 @@ namespace AVOne.Impl.Data
         /// Gets or sets the Key.
         /// </summary>
         public string Key { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Name.
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Gets or sets the description.
+        /// </summary>
+        /// <value>
+        /// The description.
+        /// </value>
+        public string Description { get; set; }
         /// <summary>
         /// Gets or sets the Extra.
         /// </summary>
