@@ -102,6 +102,7 @@ namespace AVOne.Impl.Data
                 Key = this.Key,
                 Name = this.Name,
                 Description = this.Description,
+                Progress = this.ProgressValue
             };
         }
 
@@ -117,6 +118,7 @@ namespace AVOne.Impl.Data
             this.Created = model.Created;
             this.Name = model.Name;
             this.Description = model.Description;
+            this.ProgressValue = model.Progress;
             FromExtra(model.Extra);
         }
 

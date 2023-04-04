@@ -51,6 +51,14 @@ namespace AVOne.Impl.Data
         public string Name { get; set; }
 
         /// <summary>
+        /// Gets or sets the Progress.
+        /// </summary>
+        /// <value>
+        /// The Progress value.
+        /// </value>
+        public double Progress { get; set; }
+
+        /// <summary>
         /// Gets or sets the description.
         /// </summary>
         /// <value>

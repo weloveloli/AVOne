@@ -29,6 +29,7 @@ namespace AVOne.Impl.Job
         {
             job.Id = ObjectId.NewObjectId();
             _jobRepository.UpsertJob(job);
+            job.Progress = CreateProcessForJob(job);
         }
 
         /// <summary>
@@ -53,15 +54,7 @@ namespace AVOne.Impl.Job
 
         public IProgress<double> CreateProcessForJob(IAVOneJob job)
         {
-            return new Progress<double>(value =>
-            {
-                job.ProgressValue = value;
-                if (value >= 100)
-                {
-                    job.Status = (int)JobStatus.Completed;
-                }
-                this._jobRepository.UpsertJob(job);
-            });
+            return new JobManagerProgress(_jobRepository, job);
         }
 
         public void CancelJob<T>(T job) where T : IAVOneJob
@@ -81,7 +74,6 @@ namespace AVOne.Impl.Job
             CancelToken[job.Key] = cancellationTokenSource;
             var task = job.Execute(cancellationTokenSource.Token);
             TaskInstances[job.Key] = task;
-            job.Progress = CreateProcessForJob(job);
             var exeTaks = task.ContinueWith((t) =>
             {
                 if (t.IsCompleted)
@@ -118,6 +110,41 @@ namespace AVOne.Impl.Job
                 tokenSource.Cancel();
             }
             job.Status = (int)JobStatus.Deleted;
+        }
+    }
+
+    public class JobManagerProgress : IProgress<double>
+    {
+        private readonly JobRepository _jobRepository;
+
+        private readonly IAVOneJob job;
+
+        private double _progress = 0;
+
+        private DateTime _lastEventTime = DateTime.UtcNow;
+
+        public JobManagerProgress(JobRepository jobRepository, IAVOneJob job)
+        {
+            _jobRepository = jobRepository;
+            this.job = job;
+        }
+        public void Report(double value)
+        {
+            job.ProgressValue = value;
+            if (value >= 100)
+            {
+                job.Status = (int)JobStatus.Completed;
+            }
+            if (_progress < value)
+            {
+                var now = DateTime.UtcNow;
+                _progress = value;
+                if (value >= 100 || now.Subtract(_lastEventTime).TotalMilliseconds >= 500)
+                {
+                    this._jobRepository.UpsertJob(job);
+                    _lastEventTime = now;
+                }
+            }
         }
     }
 }

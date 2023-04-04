@@ -1,92 +1,92 @@
-﻿@page "/app/downloads/tasks"
+﻿@page "/app/downloads/tasks/{FilterText?}"
 @inherits ProCompontentBase
-<MCard>
-    <MCardTitle>
-        @T("Download.Tasks.Title")
-        <MDialog @bind-Value="addJobDialog"
-                 Width="500">
-            <ActivatorContent>
-                <MButton @attributes="@context.Attrs" Outlined Class="ml-2" Icon><MIcon Dark>mdi-plus</MIcon></MButton>
-            </ActivatorContent>
-            <ChildContent>
-                <MCard>
-                    <MForm Model="_addJobModel" EnableValidation OnValidSubmit="HandleOnValidSubmit">
-                        <MCardTitle>
-                            <span class="text-h5">@T("Settings.Plugin.PluginRepository.AddRepo")</span>
-                        </MCardTitle>
-                        <MCardText>
 
-                            <MTextField Class="mt-2" @bind-Value="_addJobModel.Name"
-                                        Counter="20"
-                                        Label='@T("Settings.Plugin.PluginRepository.RepoName")' Hint='@T("Settings.Plugin.PluginRepository.RepoNameHint")' PersistentHint
-                                            Outlined></MTextField>
-                            <MTextField Class="mt-2" @bind-Value="_addJobModel.RepoUrl"
-                                        Label='@T("Settings.Plugin.PluginRepository.RepoUrl")' Hint='@T("Settings.Plugin.PluginRepository.RepoUrlHint")' PersistentHint
-                                            Outlined></MTextField>
+<CascadingValue Value="this">
+    <div>
+        <MRow Class="no-gutters">
+            <div style="height:calc(100vh - 112px );">
+                <TaskNav />
+            </div>
+            <div class="pl-6 rounded-2" style="height:calc(100vh - 112px ); width: calc(100% - 300px); overflow: hidden; display:block;">
+                <div>
+                    <MToolbar Dense Elevation="0" Class="rounded-2" Height="60">
+                        <MTextField TValue="string"
+                                    Class="task-search mx-4"
+                                    HideDetails=true
+                                    Placeholder="Search Task" @bind-Value=InputText>
+                            <PrependContent>
+                                <MIcon Small Class="mt-1">fa fa-search</MIcon>
+                            </PrependContent>
 
+                        </MTextField>
+                        <MMenu OffsetX Left OffsetY>
+                            <ActivatorContent>
+                                <MButton Class="mr-5" Icon Large @attributes="context.Attrs"><MIcon>mdi-dots-horizontal</MIcon></MButton>
+                            </ActivatorContent>
+                            <ChildContent>
+                                <MList Dense>
+                                    <MListItem Link OnClick=ResetSort>
+                                        <MListItemContent>
+                                            <MListItemTitle>
+                                                Reset Sort
+                                            </MListItemTitle>
+                                        </MListItemContent>
+                                    </MListItem>
+                                    <MListItem Link OnClick=SortbyName>
+                                        <MListItemContent>
+                                            <MListItemTitle>
+                                                Sort By Name
+                                            </MListItemTitle>
+                                        </MListItemContent>
+                                    </MListItem>
+                                    <MListItem Link OnClick=SortbyCreatedDate>
+                                        <MListItemContent>
+                                            <MListItemTitle>
+                                                Sort Created Date
+                                            </MListItemTitle>
+                                        </MListItemContent>
+                                    </MListItem>
+                                </MList>
+                            </ChildContent>
+                        </MMenu>
+                    </MToolbar>
 
-                        </MCardText>
-                        <MCardActions Class="justify-end">
-                            <MButton Type="reset" @onclick="()=> {addJobDialog = false;}">@T("Common.Cancel")</MButton>
-                            <MButton Type="submit" Color="primary">@T("Common.Submit")</MButton>
-                        </MCardActions>
-                    </MForm>
-                </MCard>
-
-            </ChildContent>
-        </MDialog>
-    </MCardTitle>
-    <MCardText>
-
-        <MList>
-            @foreach (var job in Jobs)
-            {
-                <MDivider></MDivider>
-                <MListItem>
-                    <ItemContent>
+                                <MList Subheader
+               TwoLine Class="rounded-4 mt-6" Style="height: calc(100vh - 196px ); overflow-y:auto;">
+                       @foreach (var job in Jobs)
+                        {
+                    <MListItem key="@job.Id">
+                        <ItemContent>
+                            <MListItemAvatar>
+                                <MIcon Class="blue lighten-1"
+                                        Dark>
+                            mdi-movie
+                        </MIcon>
+                    </MListItemAvatar>
                         <MListItemContent>
                             <MListItemTitle>@job.Name</MListItemTitle>
-                            <MListItemSubtitle>@job.Description</MListItemSubtitle>
-                        </MListItemContent>
-                        <MListItemAction>
-                            <div class="d-flex flex-no-wrap align-center">
-                                <MButton @onclick="() => RemoveJob(job)" Color="red" Outlined Class="ml-2 mr-4" Icon><MIcon>mdi-delete</MIcon></MButton>
-                            </div>
+                            <MListItemSubtitle>
+                            <MProgressLinear Striped Value="@(job.Progress)" Height="15" Color="light-blue">
+                                <ChildContent Context="process_bar">
+                                    <strong>@($"{job.Progress.ToString("0.00")}%")</strong>
+                                        </ChildContent>
+                                    </MProgressLinear>
+                                </MListItemSubtitle>
+                            </MListItemContent>
+                            <MListItemAction>
+                            <MButton Icon @onclick="() => RemoveJob(job)">
+                                <MIcon Color="red lighten-1">mdi-delete</MIcon>
+                            </MButton>
+                            <MButton Icon>
+                            <MIcon Color="grey lighten-1">mdi-information</MIcon>
+                        </MButton>
                         </MListItemAction>
                     </ItemContent>
-
                 </MListItem>
-            }
-        </MList>
-    </MCardText>
-</MCard>
-
-@code {
-
-    bool addJobDialog;
-
-
-    class AddJobModel
-    {
-        [Required]
-        [MaxLength(20, ErrorMessage = "Name must be less than 20 characters")]
-        public string? Name { get; set; }
-        [Required]
-        [Url]
-        public string? RepoUrl { get; set; }
-    }
-
-    private AddJobModel _addJobModel = new();
-
-    private void HandleOnValidSubmit()
-    {
-        //valid
-
-        this.AddDownloadJob(_addJobModel);
-        addJobDialog = false;
-    }
-}
-
-@code {
-
-}
+                        }
+                    </MList>
+                </div>
+            </div>
+        </MRow>
+    </div>
+</CascadingValue>

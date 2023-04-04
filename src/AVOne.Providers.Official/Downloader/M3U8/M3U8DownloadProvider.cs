@@ -27,12 +27,14 @@ namespace AVOne.Providers.Official.Downloader.M3U8
         private readonly IApplicationPaths _applicationPaths;
         private readonly IStartupOptions _options;
         private readonly HttpClient _client;
+        private readonly IConfigurationManager _configurationManager;
 
-        public M3U8DownloadProvider(IApplicationPaths applicationPaths, IStartupOptions options, IHttpClientFactory httpClientFactory)
+        public M3U8DownloadProvider(IApplicationPaths applicationPaths, IStartupOptions options, IHttpClientFactory httpClientFactory, IConfigurationManager configurationManager)
         {
             _applicationPaths = applicationPaths;
             _options = options;
             _client = httpClientFactory.CreateClient(AVOneConstants.Download);
+            _configurationManager = configurationManager;
         }
 
         public string Name => "Official";
@@ -206,7 +208,7 @@ namespace AVOne.Providers.Official.Downloader.M3U8
                     DownloadBytes = downloadBytes,
                     MaxRetry = opts.RetryCount ?? 1,
                     Retry = 0,
-                    Progress = percentage,
+                    Precentage = percentage,
                     TotalBytes = totalBytes,
                     Speed = speed,
                     Eta = eta
@@ -259,7 +261,17 @@ namespace AVOne.Providers.Official.Downloader.M3U8
             }
             File.WriteAllText(Path.Combine(workingDir, playListName), m3u8);
             var parser = new MediaPlaylistParser();
-            return parser.Parse(m3u8, url);
+            var parsed = parser.Parse(m3u8, url);
+
+            /// master playlist
+            if (parsed.Parts.Count == 1 && parsed.Parts[0].Segments.All(e => e.Uri.EndsWith("m3u8")))
+            {
+                return await GetMediaPlaylist(workingDir, parsed.Parts[0].Segments[0].Uri, saveName, m3U8Item, token);
+            }
+            else
+            {
+                return parsed;
+            }
         }
 
         /// <summary>
@@ -286,7 +298,7 @@ namespace AVOne.Providers.Official.Downloader.M3U8
             bool genpts = false, bool igndts = false, bool ignidx = false, Action<string>? onMessage = null,
             CancellationToken token = default)
         {
-            var ffmpegPath = _options.FFmpegPath ?? "ffmepge";
+            var ffmpegPath = _options.FFmpegPath ?? _configurationManager.CommonConfiguration.FFmpegConfig.FFmpegPath ?? "ffmepge";
             if (string.IsNullOrWhiteSpace(workDir))
                 throw new Exception("Parameter workDir cannot be empty.");
             if (string.IsNullOrWhiteSpace(saveName))

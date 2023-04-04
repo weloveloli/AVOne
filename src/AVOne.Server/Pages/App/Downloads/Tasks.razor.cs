@@ -5,22 +5,31 @@ namespace AVOne.Server.Pages.App.Downloads
 {
     using AVOne.Impl.Data;
     using AVOne.Impl.Job;
-    using AVOne.Models.Download;
     using AVOne.Providers;
     using AVOne.Server.Shared;
     using System.Timers;
+    using Timer = System.Timers.Timer;
 
-    public partial class Tasks : ProCompontentBase
+    public partial class Tasks : ProCompontentBase, IDisposable
     {
         [Inject]
         protected IJobManager JobManager { get; set; }
         [Inject]
         protected IProviderManager ProviderManager { get; set; }
-
+        private string? _inputText;
         [Inject]
         protected JobRepository JobRepository { get; set; }
+        [Inject]
+        protected ILogger<Tasks> Logger { get; set; }
 
-        public IEnumerable<JobModel> Jobs { get; set; }
+        private void InputTextChanged(string? text)
+        {
+        }
+
+        [Parameter]
+        public string? FilterText { get; set; }
+
+        public List<JobModel> Jobs { get; set; }
 
         public Tasks()
         {
@@ -31,7 +40,7 @@ namespace AVOne.Server.Pages.App.Downloads
         public int PageIndex { get; set; } = 1;
         public int PageCount { get; set; } = 1;
 
-        private readonly Timer timer = new Timer(1000);
+        protected Timer Timer { get; set; }
 
         public void OnPageIndexChanged(int index)
         {
@@ -57,48 +66,72 @@ namespace AVOne.Server.Pages.App.Downloads
             PageIndex = 1;
             PageSize = 10;
             PageCount = 1;
-            var pageList = JobRepository.GetPagedList(PageIndex, PageSize, (true, (j) => j.Type == "DownloadAVJob"));
-            this.Jobs = pageList.Items;
-            timer.Elapsed += (sender, eventArgs) => OnTimerCallback();
-            timer.Start();
+            if (Timer == null)
+            {
+                Timer = new Timer
+                {
+                    Interval = 2000
+                };
+                Timer.Elapsed += OnTimerCallback;
+                Timer.Start();
+            }
         }
-        private void OnTimerCallback()
+
+        private async void OnTimerCallback(object? sender, ElapsedEventArgs e)
         {
-            _ = InvokeAsync(() =>
+            await InvokeAsync(() =>
             {
                 var pageList = JobRepository.GetPagedList(PageIndex, PageSize, (true, (j) => j.Type == "DownloadAVJob"));
-                this.Jobs = pageList.Items;
-                this.OnPageCountChanged(pageList.TotalPages);
-                StateHasChanged();
+                var list = new List<JobModel> { };
+                list.AddRange(pageList.Items);
+                this.Jobs = list;
+                if (Jobs.Count > 0)
+                {
+                    var job = Jobs.FirstOrDefault();
+                    if (job is not null)
+                    {
+                        Logger.LogInformation($"Job {job.Id} {job.Name} {job.Progress}");
+                    }
+                }
+                PageIndex = pageList.PageIndex;
+                PageSize = pageList.PageSize;
+                PageCount = pageList.TotalPages;
+                base.StateHasChanged();
             });
         }
 
-        private async Task AddDownloadJob(AddJobModel addJobModel)
+        public string? InputText
         {
-            var jobItems = ProviderManager.GetMediaExtractorProviders(addJobModel.RepoUrl);
-            var extractorProvider = jobItems.FirstOrDefault();
-            if (extractorProvider is null)
+            get { return _inputText; }
+            set
             {
-                return;
+                _inputText = value;
+                InputTextChanged(_inputText);
             }
-
-            var item = await extractorProvider.ExtractAsync(addJobModel.RepoUrl);
-            var jobItem = item.FirstOrDefault();
-            if (jobItem is null)
-            {
-                return;
-            }
-            var opt = new DownloadOpts { ThreadCount = 4, OutputDir = "D:\\tmp", RetryCount = 1, RetryWait = 500 };
-            var downloadJob = new DownloadAVJob();
-            downloadJob.DownloadableItem = jobItem;
-            downloadJob.DownloadOpts = opt;
-            JobManager.AddJob(downloadJob);
-            JobManager.ExecuteJob(downloadJob);
         }
 
         private void RemoveJob(JobModel removeJobModel)
         {
 
+        }
+        private void ResetSort()
+        {
+
+        }
+
+        private void SortbyName()
+        {
+
+        }
+
+        private void SortbyCreatedDate()
+        {
+
+        }
+
+        public void Dispose()
+        {
+            Timer?.Dispose();
         }
     }
 }

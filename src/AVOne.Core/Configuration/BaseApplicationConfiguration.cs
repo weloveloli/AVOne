@@ -26,6 +26,17 @@ namespace AVOne.Configuration
         public string[] ImageMetaDataProviders { get; set; } = new string[] { "MetaTube" };
     }
 
+    public class DownloadConfig
+    {
+        public string DefaultDownloadPath { get; set; } = OperatingSystem.IsWindows() ? "c://downloads" : "/tmp";
+        public int DefaultDownloadThreadCount { get; set; } = 4;
+    }
+
+    public class FFmpegConfig
+    {
+        public string FFmpegPath { get; set; }
+    }
+
     /// <summary>
     /// Class MetadataOptions.
     /// </summary>
@@ -64,6 +75,8 @@ namespace AVOne.Configuration
             File = new FileConfig();
             MetadataOptions = Array.Empty<MetadataOptions>();
             ProviderConfig = new ProviderConfig();
+            DownloadConfig = new DownloadConfig();
+            FFmpegConfig = new FFmpegConfig();
         }
         public MovieID MovieID { get; set; }
 
@@ -72,7 +85,8 @@ namespace AVOne.Configuration
         public MetadataOptions[] MetadataOptions { get; set; }
 
         public ProviderConfig ProviderConfig { get; set; }
-
+        public DownloadConfig DownloadConfig { get; set; }
+        public FFmpegConfig FFmpegConfig { get; private set; }
         public NameValue[] ContentTypes { get; set; } = Array.Empty<NameValue>();
 
         /// <summary>
