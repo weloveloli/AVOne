@@ -1,4 +1,5 @@
 ﻿@page "/app/downloads/tasks/{FilterText?}"
+@using AVOne.Impl.Data
 @inherits ProCompontentBase
 
 <CascadingValue Value="this">
@@ -65,18 +66,25 @@
                     </MListItemAvatar>
                         <MListItemContent>
                             <MListItemTitle>@job.Name</MListItemTitle>
+                            @if(job.Status == (int)JobStatus.Running){
                             <MListItemSubtitle>
-                            <MProgressLinear Striped Value="@(job.Progress)" Height="15" Color="light-blue">
+
+                                <MProgressLinear Striped Value="@(job.Progress)" Height="15" Color="light-blue">
                                 <ChildContent Context="process_bar">
                                     <strong>@($"{job.Progress.ToString("0.00")}%")</strong>
                                         </ChildContent>
                                     </MProgressLinear>
                                 </MListItemSubtitle>
+                            }
                             </MListItemContent>
                             <MListItemAction>
-                            <MButton Icon @onclick="() => RemoveJob(job)">
-                                <MIcon Color="red lighten-1">mdi-delete</MIcon>
-                            </MButton>
+                                    @foreach (var tag in job.Tags)
+                                    {
+                                        <MChip Class="mx-1 text-btn" Small TextColor="@GetColorForTag(tag)" Color="@(@GetColorForTag(tag)+"-lighten-5")">@tag</MChip>
+                                    }
+                                <MButton Icon @onclick="() => RemoveJob(job)">
+                                    <MIcon Color="red lighten-1">mdi-delete</MIcon>
+                                </MButton>
                             <MButton Icon>
                             <MIcon Color="grey lighten-1">mdi-information</MIcon>
                         </MButton>
@@ -90,3 +98,26 @@
         </MRow>
     </div>
 </CascadingValue>
+
+@code {
+    private Dictionary<int, string> _tagColorMap = new Dictionary<int, string>()
+    {
+        { 0, "blue" },
+        { 1, "pry" },
+        { 2, "sample-green" },
+        { 3, "remind" },
+        { 4, "error" },
+        { 5, "info" },
+    };
+
+    public string GetColorForTag(string tagStr)
+    {
+        if(string.IsNullOrEmpty(tagStr))
+        {
+            return "grey";
+        }
+        // convert the tagStr to int with hashcode
+        var tag = tagStr.GetHashCode() % 6;
+        return _tagColorMap[tag];
+    }
+}

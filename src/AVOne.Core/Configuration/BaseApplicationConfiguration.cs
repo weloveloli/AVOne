@@ -86,7 +86,7 @@ namespace AVOne.Configuration
 
         public ProviderConfig ProviderConfig { get; set; }
         public DownloadConfig DownloadConfig { get; set; }
-        public FFmpegConfig FFmpegConfig { get; private set; }
+        public FFmpegConfig FFmpegConfig { get; set; }
         public NameValue[] ContentTypes { get; set; } = Array.Empty<NameValue>();
 
         /// <summary>

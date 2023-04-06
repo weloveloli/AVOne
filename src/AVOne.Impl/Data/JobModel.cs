@@ -14,6 +14,11 @@ namespace AVOne.Impl.Data
     /// </summary>
     public class JobModel
     {
+        public JobModel()
+        {
+            this.Tags = new List<string>();
+        }
+        
         /// <summary>
         /// Gets or sets the Id.
         /// </summary>
@@ -57,6 +62,8 @@ namespace AVOne.Impl.Data
         /// The Progress value.
         /// </value>
         public double Progress { get; set; }
+
+        public List<string>Tags {get;set;}
 
         /// <summary>
         /// Gets or sets the description.

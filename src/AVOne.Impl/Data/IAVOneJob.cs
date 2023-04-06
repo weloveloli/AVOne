@@ -27,6 +27,7 @@ namespace AVOne.Impl.Data
         {
             this.Created = DateTime.UtcNow;
             this.Modified = DateTime.UtcNow;
+            this.Tags = new List<string>();
         }
 
         /// <summary>
@@ -85,6 +86,9 @@ namespace AVOne.Impl.Data
         /// </summary>
         public abstract string Key { get; }
 
+
+        public List<string> Tags {get;set;}
+
         /// <summary>
         /// The ToModel.
         /// </summary>
@@ -102,7 +106,8 @@ namespace AVOne.Impl.Data
                 Key = this.Key,
                 Name = this.Name,
                 Description = this.Description,
-                Progress = this.ProgressValue
+                Progress = this.ProgressValue,
+                Tags = this.Tags
             };
         }
 
@@ -119,6 +124,7 @@ namespace AVOne.Impl.Data
             this.Name = model.Name;
             this.Description = model.Description;
             this.ProgressValue = model.Progress;
+            this.Tags = model.Tags;
             FromExtra(model.Extra);
         }
 

@@ -70,7 +70,7 @@
     public IProviderManager ProviderManager { get; set; }
 
     [Inject]
-    public JobManager JobManager { get; set; }
+    public IJobManager JobManager { get; set; }
 
     private async Task AddDownloadJob(AddJobModel addJobModel)
     {
