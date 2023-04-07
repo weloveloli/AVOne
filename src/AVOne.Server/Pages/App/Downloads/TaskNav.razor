@@ -6,17 +6,17 @@
     <MDialog @bind-Value="addTaskDialog"
              Width="500">
         <ActivatorContent>
-            <MButton Class="ma-6 rounded-pill" Style="width:-webkit-fill-available;" @attributes="@context.Attrs" Dark Color="primary">@T("Settings.Download.Tasks.AddTask")</MButton>
+            <MButton Class="ma-6 rounded-pill" Style="width:-webkit-fill-available;" @attributes="@context.Attrs" Dark Color="primary">@T("Download.Tasks.AddTask")</MButton>
         </ActivatorContent>
         <ChildContent>
             <MCard>
                 <MForm Model="_addJobModel" EnableValidation OnValidSubmit="HandleOnValidSubmit">
                     <MCardTitle>
-                        <span class="text-h5">@T("Settings.Plugin.PluginRepository.AddRepo")</span>
+                        <span class="text-h5">@T("Download.Tasks.AddTask")</span>
                     </MCardTitle>
                     <MCardText>
                         <MTextField Class="mt-2" @bind-Value="_addJobModel.Url"
-                                    Label='@T("Settings.Plugin.PluginRepository.RepoUrl")' Hint='@T("Settings.Plugin.PluginRepository.RepoUrlHint")' PersistentHint
+                                    Label='@T("Download.Tasks.AddTaskUrl")' Hint='@T("Download.Tasks.AddTaskUrlHint")' PersistentHint
                                         Outlined></MTextField>
                     </MCardText>
                     <MCardActions Class="justify-end">
@@ -30,21 +30,25 @@
     </MDialog>
 
     <MList Linkage Dense Class="remover-ripple">
-        <TaskNavItem Href="/app/todo" Icon="mdi-email-outline" Title="My Task"></TaskNavItem>
-        <TaskNavItem Href="/app/todo/important" Icon="mdi-star-outline" Title="Important"></TaskNavItem>
-        <TaskNavItem Href="/app/todo/completed" Icon="mdi-check" Title="Completed"></TaskNavItem>
-        <TaskNavItem Href="/app/todo/deleted" Icon="mdi-delete-outline" Title="Deleted"></TaskNavItem>
+        <TaskNavItem Icon="mdi-check-all" Title="Download.Status.All"></TaskNavItem>
+        <TaskNavItem Status=0 Icon="mdi-sync" Title="Download.Status.Pending"></TaskNavItem>
+        <TaskNavItem Status=1 Icon="mdi-play-box-outline" Title="Download.Status.Running"></TaskNavItem>
+        <TaskNavItem Status=2 Icon="mdi-check" Title="Download.Status.Completed"></TaskNavItem>
+        <TaskNavItem Status=3 Icon="mdi-playlist-minus" Title="Download.Status.Canceled"></TaskNavItem>
+        <TaskNavItem Status=4 Icon="mdi-delete" Title="Download.Status.Failed"></TaskNavItem>
 
         <MRow NoGutters Justify="JustifyTypes.SpaceBetween">
             <MSubheader Class="px-6 my-6 text-subtitle neutral-lighten-4--text">Tags</MSubheader>
-            <MIcon Class="px-6 my-6" Small Color="#A3AED0">fas fa-plus</MIcon>
+            @* <MIcon Class="px-6 my-6" Small Color="#A3AED0">fas fa-plus</MIcon> *@
         </MRow>
-
-            <TaskNavItem Href="/app/todo/team" Icon="fas fa-circle" IconColor="purple" Title="Team"></TaskNavItem>
-            <TaskNavItem Href="/app/todo/low" Icon="fas fa-circle" IconColor="#05CD99" Title="Low"></TaskNavItem>
-            <TaskNavItem Href="/app/todo/medium" Icon="fas fa-circle" IconColor="#FFB547" Title="Medium"></TaskNavItem>
-            <TaskNavItem Href="/app/todo/high" Icon="fas fa-circle" IconColor="#FF5252" Title="High"></TaskNavItem>
-            <TaskNavItem Href="/app/todo/update" Icon="fas fa-circle" IconColor="#4318FF" Title="Update"></TaskNavItem>
+            <TaskNavItem Tag="Censored" Icon="fas fa-circle" IconColor="purple" Title="Download.Tags.Censored"></TaskNavItem>
+            <TaskNavItem Tag="Uncensored" Icon="fas fa-circle" IconColor="#05CD99" Title="Download.Tags.Uncensored"></TaskNavItem>
+            <TaskNavItem Tag="Chinese" Icon="fas fa-circle" IconColor="#FFB547" Title="Download.Tags.Chinese"></TaskNavItem>
+            <TaskNavItem Tag="Taiwanese" Icon="fas fa-circle" IconColor="#FF5252" Title="Download.Tags.Taiwanese"></TaskNavItem>
+            <TaskNavItem Tag="Japanese" Icon="fas fa-circle" IconColor="#4318FF" Title="Download.Tags.Japanese"></TaskNavItem>    
+            <TaskNavItem Tag="Catoon" Icon="fas fa-circle" IconColor="#05CD99" Title="Download.Tags.Catoon"></TaskNavItem>
+            <TaskNavItem Tag="US" Icon="fas fa-circle" IconColor="#FFB547" Title="Download.Tags.US"></TaskNavItem>
+            <TaskNavItem Tag="Other" Icon="fas fa-circle" IconColor="purple" Title="Download.Tags.Other"></TaskNavItem>
     </MList>
 </MNavigationDrawer>
 

@@ -1,10 +1,14 @@
-﻿<MListItem Exact Style="height:38px;" Class="px-6" Link Href="@Href">
+﻿@using System.Timers;
+@using Timer = System.Timers.Timer;
+@inherits ProCompontentBase;
+@implements IDisposable;
+<MListItem Exact Style="height:38px;" Class="px-6" Link Href="@Href">
     <ItemContent>
         <MListItemIcon Class="mr-2">
-            <MIcon Color="@ListItemIconColor(context.Active)" Size=18>@Icon</MIcon>
+            <MIcon Color="@ListItemIconColor(IsActive())" Size=18>@Icon</MIcon>
         </MListItemIcon>
         <MListItemContent>
-            <MListItemTitle Class="@ListItemTitleClass(context.Active)">@Title</MListItemTitle>
+            <MListItemTitle Class="@ListItemTitleClass(IsActive())">@T(Title)</MListItemTitle>
         </MListItemContent>
     </ItemContent>
 </MListItem>
@@ -13,9 +17,31 @@
 @code {
     string ListItemIconColor(bool active) => IconColor ?? (active ? "primary" : "neutral-lighten-4");
     static string ListItemTitleClass(bool active) => active ? "text-subtitle primary--text" : "text-body neutral-lighten-4--text";
+    @inject NavigationManager Navigation
+    private string url = null;
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Navigation.LocationChanged += OnLocationChanged;
+    }
+
+    private void OnLocationChanged(object? obj, LocationChangedEventArgs e)
+    {
+        InvokeAsync(() =>
+        {
+               if(Navigation.Uri != url)
+                {
+                    url = Navigation.Uri;
+                    StateHasChanged();
+                }
+        });
+    }
 
     [Parameter]
-    public string Href { get; set; }
+    public string? Tag { get; set; }
+
+    [Parameter]
+    public int? Status { get; set; }
 
     [Parameter]
     public string Icon { get; set; }
@@ -26,4 +52,48 @@
     [Parameter]
     public string Title { get; set; }
 
+    private string Href => string.IsNullOrEmpty(Tag) ? Navigation.GetUriWithQueryParameter("Status", Status) : Navigation.GetUriWithQueryParameter("Tag", Tag);
+
+    private bool IsActive()
+    {
+        var uriBuilder = new UriBuilder(Navigation.Uri);
+        var q = System.Web.HttpUtility.ParseQueryString(uriBuilder.Query);
+        if (q is null)
+        {
+            return false;
+        }
+        if (Status is not null && Status.HasValue)
+        {
+            string? status = q["Status"];
+            if (!string.IsNullOrEmpty(status))
+            {
+                if(int.Parse(status) == Status.Value!)
+                {
+                    return true;
+                }
+            }
+        }
+        if (!string.IsNullOrEmpty(Tag))
+        {
+            string? tag = q["Tag"];
+            if (!string.IsNullOrEmpty(tag))
+            {
+                if( tag == Tag!)
+                {
+                    return true;
+                }
+            }
+        }
+
+        if ((Status is null || !Status.HasValue) && string.IsNullOrEmpty(Tag))
+        {
+            return string.IsNullOrEmpty(q["Status"]) && string.IsNullOrEmpty(q["Tag"]);
+        }
+        return false;
+    }
+
+    public void Dispose()
+    {
+        Navigation.LocationChanged -= OnLocationChanged;
+    }
 }

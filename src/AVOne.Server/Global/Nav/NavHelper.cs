@@ -1,4 +1,7 @@
-﻿namespace AVOne.Server.Global;
+﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
+// See License in the project root for license information.
+
+namespace AVOne.Server.Global;
 
 public class NavHelper
 {
@@ -47,6 +50,10 @@ public class NavHelper
 
         SameLevelNavs.Where(nav => nav.Href is not null).ForEach(nav =>
         {
+            if (nav.Href is not null && nav.Href.StartsWith("app/downloads/tasks"))
+            {
+                nav.Target = "Self";
+            }
             // The following path will not open a new tab
             if (nav.Href is "app/user/view" or "app/user/edit" or "app/ecommerce/details")
             {

@@ -7,21 +7,43 @@
     "SaveChanges": "Save changes",
     "Reset": "Reset",
     "Submit": "Submit",
-    "On":"On",
-    "Off":"Off"
+    "On": "On",
+    "Off": "Off"
   },
-  "Download":{
-      "Title":"Download Tasks",
-      "AddTask":"Add Download Task",
-      "DeleteTask":"Delete Download Task",
-      "Message":{
-          "AddTaskSuccess":"Add download task '{0}' success",
-          "AddTaskFailed":"Add download task '{0}' failed",
-          "DeleteTaskSuccess":"Delete download task '{0}' success",
-          "DeleteTaskFailed":"Delete download task '{0}' failed"
+  "Download": {
+    "Title": "Download Tasks",
+    "Search":"Search Task",
+    "Tasks": {
+      "AddTask": "Add Download Task",
+      "AddTaskUrl": "Add Download Task Url",
+      "AddTaskUrlHint": "For example :https://missav.com/fr/cus-1468",
+      "DeleteTask": "Delete Download Task",
+      "Message": {
+        "AddTaskSuccess": "Add download task '{0}' success",
+        "AddTaskFailed": "Add download task '{0}' failed",
+        "DeleteTaskSuccess": "Delete download task '{0}' success",
+        "DeleteTaskFailed": "Delete download task '{0}' failed"
       }
+    },
+    "Status": {
+      "All":"All",
+      "Pending": "Pending",
+      "Running": "Running",
+      "Completed": "Completed",
+      "Canceled": "Canceled",
+      "Failed": "Failed"
+    },
+    "Tags": {
+      "Censored": "JAV Censored",
+      "Uncensored": "JAV Uncensored",
+      "Chinese": "Chinese",
+      "Taiwanese": "Taiwanese",
+      "Japanese": "Japanese",
+      "Other": "Other",
+      "Catoon": "Catoon",
+      "US": "US"
+    }
   },
-
   "Settings": {
     "Title": "Settings",
     "System": {
@@ -51,9 +73,9 @@
       "Title": "Plugin Settings",
       "InstalledPlugin": {
         "Title": "Installed Plugins",
-        "EnablePlugins":"Enable Plugin",
-        "DisablePlugins":"Disable Plugin",
-        "DeletePlugins":"Delete Plugin",
+        "EnablePlugins": "Enable Plugin",
+        "DisablePlugins": "Disable Plugin",
+        "DeletePlugins": "Delete Plugin",
         "Message": {
           "DeletePluginHint": "Are you sure to delete this plugin?",
           "DeletePluginSuccess": "Delete plugin '{0}' success",
@@ -69,12 +91,12 @@
       },
       "PluginRepository": {
         "Title": "Plugin Repository",
-        "AddRepo":"Add Plugin Repository",
-        "DeleteRepo":"Delete Plugin Repository",
-        "RepoUrl":"Plugin Repository Url",
-        "RepoUrlHint":"The url of plugin repository",
-        "RepoName":"Plugin Repository Name",
-        "RepoNameHint":"The name of plugin repository",
+        "AddRepo": "Add Plugin Repository",
+        "DeleteRepo": "Delete Plugin Repository",
+        "RepoUrl": "Plugin Repository Url",
+        "RepoUrlHint": "The url of plugin repository",
+        "RepoName": "Plugin Repository Name",
+        "RepoNameHint": "The name of plugin repository",
         "Message": {
           "AddRepoSuccess": "Add plugin repository '{0}' success",
           "AddRepoFailed": "Add plugin repository '{0}' failed",
@@ -86,14 +108,6 @@
           "DisableRepoFailed": "Disable plugin repository '{0}' failed"
         }
       }
-    }
-  },
-  "Downloads":{
-    "Title":"Downloads",
-    "Tasks":{
-      "Title":"Download Tasks",
-      "AddTask":"Add Download Task",
-      "DeleteTask":"Delete Download Task"
     }
   }
 }

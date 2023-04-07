@@ -1,4 +1,4 @@
-﻿@page "/app/downloads/tasks/{FilterText?}"
+﻿@page "/app/downloads/tasks"
 @using AVOne.Impl.Data
 @inherits ProCompontentBase
 
@@ -14,7 +14,7 @@
                         <MTextField TValue="string"
                                     Class="task-search mx-4"
                                     HideDetails=true
-                                    Placeholder="Search Task" @bind-Value=InputText>
+                                    Placeholder=@T("Download.Search") @bind-Value=InputText>
                             <PrependContent>
                                 <MIcon Small Class="mt-1">fa fa-search</MIcon>
                             </PrependContent>

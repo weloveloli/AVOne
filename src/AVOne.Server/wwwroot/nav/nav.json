@@ -1,12 +1,12 @@
 [
   {
     "Id": 1,
-    "Title": "Downloads.Title",
+    "Title": "Download.Title",
     "Icon": "mdi-download",
     "Children": [
       {
         "Id": 2,
-        "Title": "Downloads.Tasks.Title",
+        "Title": "Download.Tasks.Title",
         "Icon": "mdi-download",
         "Href": "app/downloads/tasks"
       }

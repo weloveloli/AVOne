@@ -21,9 +21,12 @@
   },
   "Download":{
     "Title":"下载",
+    "Search":"搜索任务",
     "Tasks":{
       "Title":"下载任务",
       "AddTask":"添加下载任务",
+      "AddTaskUrl": "下载任务链接",
+      "AddTaskUrlHint": "例如:https://missav.com/fr/cus-1468",
       "DeleteTask":"删除下载任务",
       "Message":{
         "AddTaskSuccess":"添加下载任务'{0}'成功",
@@ -31,7 +34,25 @@
         "DeleteTaskSuccess":"删除下载任务'{0}'成功",
         "DeleteTaskFailed":"删除下载任务'{0}'失败"
       }
-    }
+    },
+      "Tags":{
+        "Censored":"有码",
+        "Uncensored":"无码",
+        "Chinese":"中文",
+        "Taiwanese":"台湾",
+        "Japanese":"日本",
+        "Other": "其他",
+        "Catoon":"卡通",
+        "US":"欧美"
+      },
+      "Status": {
+        "All":"所有任务",
+        "Pending": "等待中",
+        "Running": "下载中",
+        "Completed": "已完成",
+        "Canceled": "已取消",
+        "Failed": "失败"
+      }
   },
   "Settings": {
     "Title": "设置",
@@ -95,14 +116,6 @@
           "DisableRepoFailed":"禁用存储库'{0}'失败"
         }
       }
-    }
-  },
-  "Downloads":{
-    "Title":"下载",
-    "Tasks":{
-      "Title":"下载任务",
-      "AddTask":"添加下载任务",
-      "DeleteTask":"删除下载任务"
     }
   }
 }
