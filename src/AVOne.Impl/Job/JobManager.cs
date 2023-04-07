@@ -70,10 +70,13 @@ namespace AVOne.Impl.Job
 
         public Task ExecuteJob<T>(T job) where T : IAVOneJob
         {
+            job.Status = (int)JobStatus.Running;
+            _jobRepository.UpsertJob(job);
             var cancellationTokenSource = new CancellationTokenSource();
             CancelToken[job.Key] = cancellationTokenSource;
             var task = job.Execute(cancellationTokenSource.Token);
             TaskInstances[job.Key] = task;
+
             var exeTaks = task.ContinueWith((t) =>
             {
                 if (t.IsCompleted)

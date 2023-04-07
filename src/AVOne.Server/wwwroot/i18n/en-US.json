@@ -20,9 +20,14 @@
       "DeleteTask": "Delete Download Task",
       "Message": {
         "AddTaskSuccess": "Add download task '{0}' success",
-        "AddTaskFailed": "Add download task '{0}' failed",
+        "AddTaskFailed": "Add download task '{0}' failed due to '{1}'",
         "DeleteTaskSuccess": "Delete download task '{0}' success",
         "DeleteTaskFailed": "Delete download task '{0}' failed"
+      },
+      "FailedReason":{
+        "NoExtrator":"No extrator for url '{0}'",
+        "NoDownloader":"No downloader for url '{0}'",
+        "GetDownloadItemFailed":"Can't get download item for url '{0}'"
       }
     },
     "Status": {

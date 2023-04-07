@@ -3,6 +3,16 @@
 @using AVOne.Providers;
 @inherits ProCompontentBase
 <MNavigationDrawer Permanent Class="rounded-4" Width="300" Style="overflow: visible;">
+     <MSnackbar @bind-Value="_snackbar">
+        <ChildContent>
+            @_snackbarMessage
+        </ChildContent>
+        <ActionContent>
+            <MButton Color="pink" Text OnClick="() => _snackbar = false">
+                Close
+            </MButton>
+        </ActionContent>
+    </MSnackbar>
     <MDialog @bind-Value="addTaskDialog"
              Width="500">
         <ActivatorContent>
@@ -27,6 +37,7 @@
             </MCard>
 
         </ChildContent>
+        
     </MDialog>
 
     <MList Linkage Dense Class="remover-ripple">
@@ -63,32 +74,36 @@
 
     private AddJobModel _addJobModel = new();
 
-    private void HandleOnValidSubmit()
+    private async Task HandleOnValidSubmit()
     {
-        //valid
-
-        this.AddDownloadJob(_addJobModel);
-        addTaskDialog = false;
+        await InvokeAsync(async ()=>{       
+                addTaskDialog = false;
+                StateHasChanged();
+                await this.AddDownloadJob(_addJobModel);              
+        });
     }
     [Inject]
     public IProviderManager ProviderManager { get; set; }
 
     [Inject]
     public IJobManager JobManager { get; set; }
-
     private async Task AddDownloadJob(AddJobModel addJobModel)
     {
-        var jobItems = ProviderManager.GetMediaExtractorProviders(addJobModel.Url);
+        var jobItems = ProviderManager.GetMediaExtractorProviders(addJobModel.Url!);
         var extractorProvider = jobItems.FirstOrDefault();
         if (extractorProvider is null)
         {
+            var failedReason = T("Download.Tasks.FailedReason.NoExtrator",addJobModel.Url!);
+            ShowSnackbarLocal("Download.Tasks.Message.AddTaskFailed", addJobModel.Url!,failedReason);
             return;
         }
 
-        var item = await extractorProvider.ExtractAsync(addJobModel.Url);
+        var item = await extractorProvider.ExtractAsync(addJobModel.Url!);
         var jobItem = item.FirstOrDefault();
         if (jobItem is null)
         {
+            var failedReason = T("Download.Tasks.FailedReason.GetDownloadItemFailed",addJobModel.Url!);
+            ShowSnackbarLocal("Download.Tasks.Message.AddTaskFailed", addJobModel.Url!,failedReason);
             return;
         }
         var opt = new DownloadOpts { ThreadCount = 4, OutputDir = "D:\\tmp", RetryCount = 1, RetryWait = 500 };

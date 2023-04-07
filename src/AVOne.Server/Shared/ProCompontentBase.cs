@@ -6,17 +6,17 @@ namespace AVOne.Server.Shared
     public abstract class ProCompontentBase : ComponentBase
     {
         private I18n? _languageProvider;
-        private bool _snackbar;
-        private string? message;
+        protected bool _snackbar;
+        protected string? _snackbarMessage;
 
         public void ShowSnackbar(string msg)
         {
-            message = msg;
+            _snackbarMessage = msg;
             _snackbar = true;
         }
         public void ShowSnackbarLocal(string msgKey, params object[] args)
         {
-            message = string.Format(T(msgKey), args);
+            _snackbarMessage = string.Format(T(msgKey), args);
             _snackbar = true;
         }
 
@@ -36,6 +36,10 @@ namespace AVOne.Server.Shared
         public string T(string key)
         {
             return LanguageProvider.T(key) ?? key;
+        }
+        public string T(string key, params object[] args)
+        {
+            return string.Format(T(key), args);
         }
     }
 }

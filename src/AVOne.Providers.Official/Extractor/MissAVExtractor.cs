@@ -5,6 +5,7 @@ namespace AVOne.Providers.Official.Extractor
 {
     using System;
     using System.Collections.Generic;
+    using System.Net;
     using System.Net.Http;
     using System.Text.RegularExpressions;
     using System.Threading;
@@ -48,7 +49,9 @@ namespace AVOne.Providers.Official.Extractor
             var result = new List<BaseDownloadableItem>();
             try
             {
-                var resp = await _httpClient.GetAsync(webPageUrl, token);
+                var req = new HttpRequestMessage(HttpMethod.Get, webPageUrl);
+                req.Version = HttpVersion.Version20;
+                var resp = await _httpClient.SendAsync(req, token);
                 resp.EnsureSuccessStatusCode();
                 var html = await resp.Content.ReadAsStringAsync();
                 var title = GetTitleFromHtml(html, _titleRegex);

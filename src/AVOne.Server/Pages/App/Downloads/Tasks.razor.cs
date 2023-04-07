@@ -34,10 +34,6 @@ namespace AVOne.Server.Pages.App.Downloads
         [SupplyParameterFromQuery(Name = "Tag")]
         public string? Tag { get; set; }
 
-        [Parameter]
-        [SupplyParameterFromQuery(Name = "Filter")]
-        public string? Filter { get; set; }
-
         public List<JobModel> Jobs { get; set; }
 
         public Tasks()
@@ -62,11 +58,27 @@ namespace AVOne.Server.Pages.App.Downloads
             OnTimerCallback(null, null);
         }
 
+        protected override void OnParametersSet()
+        {
+            var pageList = JobRepository.GetJobs(0, 100,
+                (true, (e) => e.Type == "DownloadAVJob"),
+                (Status != null && Status.HasValue, (e) => e.Status == Status!.Value),
+                (!string.IsNullOrEmpty(Tag), (e) => e.Tags.Contains(Tag)),
+                (!string.IsNullOrEmpty(InputText), (e) => e.Name.Contains(InputText!)));
+            var list = new List<JobModel> { };
+            list.AddRange(pageList);
+            this.Jobs = list;
+        }
+
         private async void OnTimerCallback(object? sender, ElapsedEventArgs e)
         {
             await InvokeAsync(() =>
             {
-                var pageList = JobRepository.GetJobs((j) => j.Type == "DownloadAVJob");
+                var pageList = JobRepository.GetJobs(0, 100,
+                    (true, (e) => e.Type == "DownloadAVJob"),
+                    (Status != null && Status.HasValue, (e) => e.Status == Status!.Value),
+                    (!string.IsNullOrEmpty(Tag), (e) => e.Tags.Contains(Tag)),
+                    (!string.IsNullOrEmpty(InputText), (e) => e.Name.Contains(InputText!)));
                 var list = new List<JobModel> { };
                 list.AddRange(pageList);
                 this.Jobs = list;

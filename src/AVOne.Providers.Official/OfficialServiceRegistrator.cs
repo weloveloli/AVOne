@@ -3,12 +3,13 @@
 
 namespace AVOne.Providers.Official
 {
+    using System.Net;
     using System.Net.Http.Headers;
     using AVOne.Abstraction;
     using AVOne.Constants;
     using Microsoft.Extensions.DependencyInjection;
 
-    internal class OffServiceRegistrator : IServiceRegistrator
+    public class OfficialServiceRegistrator : IServiceRegistrator
     {
         public void PostBuildService(IApplicationHost host)
         {
@@ -16,29 +17,24 @@ namespace AVOne.Providers.Official
 
         public void RegisterServices(IServiceCollection serviceCollection)
         {
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls13;
             serviceCollection.AddHttpClient(Constants.Official, (client) =>
             {
                 client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36 Edg/94.0.992.50");
                 client.DefaultRequestHeaders.AcceptLanguage.Clear();
                 client.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue("zh-CN"));
-                client.DefaultRequestHeaders.TryAddWithoutValidation("Accept-Encoding", "gzip, deflate");
-
-            }).ConfigurePrimaryHttpMessageHandler((sp) =>
-            {
-                var handler = new HttpClientHandler();
-                handler.AutomaticDecompression = System.Net.DecompressionMethods.Deflate | System.Net.DecompressionMethods.GZip;
-                return handler;
+                client.DefaultRequestVersion = HttpVersion.Version20;
             });
 
             serviceCollection.AddHttpClient(AVOneConstants.Download, (client) =>
             {
                 client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36 Edg/94.0.992.50");
-                client.DefaultRequestHeaders.AcceptEncoding.ParseAdd("gzip, deflate, br");
             }).ConfigurePrimaryHttpMessageHandler((builder) =>
             {
                 var handler = new HttpClientHandler
                 {
-                    ServerCertificateCustomValidationCallback = (m, c, ch, e) => { return true; }
+                    ServerCertificateCustomValidationCallback = (m, c, ch, e) => { return true; },
+                    AutomaticDecompression = DecompressionMethods.All
                 };
                 return handler;
 
@@ -47,7 +43,6 @@ namespace AVOne.Providers.Official
                 {
                     // Connect Timeout.
                     ConnectTimeout = TimeSpan.FromSeconds(30),
-
                     // TCP Keep Alive.
                     KeepAlivePingPolicy = HttpKeepAlivePingPolicy.Always,
                     KeepAlivePingDelay = TimeSpan.FromSeconds(30),

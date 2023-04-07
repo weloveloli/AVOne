@@ -5,13 +5,11 @@ namespace AVOne.Impl.Data
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
-    using Furion.LinqBuilder;
     using LiteDB;
 
-    public class JobRepository
+    public class JobRepository : RepositoryBase
     {
         /// <summary>
         /// Defines the downloadJobs.
@@ -81,6 +79,19 @@ namespace AVOne.Impl.Data
         }
 
         /// <summary>
+        /// The GetUnfinishedJobs.
+        /// </summary>
+        /// <typeparam name="T">.</typeparam>
+        /// <param name="predicate">The predicate<see cref="BsonExpression"/>.</param>
+        /// <param name="skip">The skip<see cref="int"/>.</param>
+        /// <param name="limit">The limit<see cref="int"/>.</param>
+        /// <returns>The <see cref="List{T}"/>.</returns>
+        public IEnumerable<JobModel> GetJobs(int skip = 0, int limit = int.MaxValue, params (bool condition, Expression<Func<JobModel, bool>> expression)[] conditionPredicates)
+        {
+            var predicate = this.MergeExp(conditionPredicates);
+            return this.Jobs.Find(predicate, skip, limit);
+        }
+        /// <summary>
         /// The Count.
         /// </summary>
         /// <param name="conditionPredicates">The conditionPredicates.</param>
@@ -89,50 +100,6 @@ namespace AVOne.Impl.Data
         {
             var exp = this.MergeExp(conditionPredicates);
             return this.Jobs.Count(exp);
-        }
-
-        /// <summary>
-        /// The MergeExp.
-        /// </summary>
-        /// <param name="conditionPredicates">The conditionPredicates<see cref="(bool condition, Expression{Func{JobModel, bool}} expression)[]"/>.</param>
-        /// <returns>The <see cref="Expression{Func{JobModel, bool}}"/>.</returns>
-        private Expression<Func<JobModel, bool>> MergeExp(params (bool condition, Expression<Func<JobModel, bool>> expression)[] conditionPredicates)
-        {
-            Expression<Func<JobModel, bool>> exp = (e) => true;
-            if (conditionPredicates != null && conditionPredicates.Any())
-            {
-                foreach ((bool condition, Expression<Func<JobModel, bool>> expression) c in conditionPredicates)
-                {
-                    if (c.condition)
-                    {
-                        exp = exp.And(c.expression);
-                    }
-                }
-            }
-            return exp;
-        }
-
-        /// <summary>
-        /// The BuildPageList.
-        /// </summary>
-        /// <param name="totalCount">The totalCount<see cref="int"/>.</param>
-        /// <param name="pageIndex">The pageIndex<see cref="int"/>.</param>
-        /// <param name="pageSize">The pageSize<see cref="int"/>.</param>
-        /// <param name="items">The items<see cref="IEnumerable{TEntity}"/>.</param>
-        /// <returns>The <see cref="PagedList{TEntity}"/>.</returns>
-        private PagedList<T> BuildPageList<T>(int totalCount, int pageIndex, int pageSize, IEnumerable<T> items) where T : new()
-        {
-            var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
-            return new PagedList<T>
-            {
-                TotalCount = totalCount,
-                Items = items,
-                TotalPages = totalPages,
-                HasNextPages = pageIndex < totalPages,
-                HasPrevPages = pageIndex > 1,
-                PageIndex = 1,
-                PageSize = pageSize
-            };
         }
 
         /// <summary>
