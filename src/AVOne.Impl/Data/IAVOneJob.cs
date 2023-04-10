@@ -86,8 +86,9 @@ namespace AVOne.Impl.Data
         /// </summary>
         public abstract string Key { get; }
 
+        public List<string> Tags { get; set; }
 
-        public List<string> Tags {get;set;}
+        public string ErrorMessage { get; set; }
 
         /// <summary>
         /// The ToModel.
@@ -107,7 +108,8 @@ namespace AVOne.Impl.Data
                 Name = this.Name,
                 Description = this.Description,
                 Progress = this.ProgressValue,
-                Tags = this.Tags
+                Tags = this.Tags,
+                Error = this.ErrorMessage
             };
         }
 
@@ -125,6 +127,7 @@ namespace AVOne.Impl.Data
             this.Description = model.Description;
             this.ProgressValue = model.Progress;
             this.Tags = model.Tags;
+            this.ErrorMessage = model.Error;
             FromExtra(model.Extra);
         }
 

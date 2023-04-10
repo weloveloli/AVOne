@@ -66,14 +66,26 @@
                     </MListItemAvatar>
                         <MListItemContent>
                             <MListItemTitle>@job.Name</MListItemTitle>
-                            @if(job.Status == (int)JobStatus.Running){
-                            <MListItemSubtitle>
-
+                            @if(job.Status == (int)JobStatus.Running)
+                            {
+                                <MListItemSubtitle>
                                 <MProgressLinear Striped Value="@(job.Progress)" Height="15" Color="light-blue">
                                 <ChildContent Context="process_bar">
                                     <strong>@($"{job.Progress.ToString("0.00")}%")</strong>
                                         </ChildContent>
                                     </MProgressLinear>
+                                </MListItemSubtitle>
+                            }
+                            @if(job.Status == (int)JobStatus.Completed || job.Status==(int)JobStatus.Canceled)
+                            {
+                                <MListItemSubtitle>
+                                    @job.Modified
+                                </MListItemSubtitle>
+                            }
+                           @if(job.Status == (int)JobStatus.Failed)
+                            {
+                                <MListItemSubtitle>
+                                    <strong class="red--text text--lighten-1">@job.Error</strong>
                                 </MListItemSubtitle>
                             }
                             </MListItemContent>
@@ -82,15 +94,38 @@
                                     {
                                         <MChip Class="mx-1 text-btn" Small TextColor="@GetColorForTag(tag)" Color="@(@GetColorForTag(tag)+"-lighten-5")">@tag</MChip>
                                     }
-                                <MButton Icon @onclick="() => RemoveJob(job)">
-                                    <MIcon Color="red lighten-1">mdi-delete</MIcon>
-                                </MButton>
-                            <MButton Icon>
-                            <MIcon Color="grey lighten-1">mdi-information</MIcon>
-                        </MButton>
+                                    @if(job.Status == (int)JobStatus.Running){
+                                        <MButton Icon @onclick="() => StopJob(job)">
+                                            <MIcon Color="red lighten-1">mdi-stop</MIcon>
+                                        </MButton>
+                                    }
+                                    @if(job.Status == (int)JobStatus.Canceled){
+                                    <MTooltip Top>
+                                        <ActivatorContent Context="tooltip">
+                                            <MButton Icon @attributes="@tooltip.Attrs" @onclick="() => DeleteJob(job)">
+                                                <MIcon Color="red lighten-1">mdi-delete</MIcon>
+                                            </MButton>
+                                        </ActivatorContent>
+                                        <ChildContent>
+                                            <span>@T("Download.Tasks.DeleteTask")</span>
+                                        </ChildContent>
+                                    </MTooltip>
+                                    }
+                           
+                                    <MTooltip Top>
+                                        <ActivatorContent Context="tooltip">
+                                            <MButton Icon @attributes="@tooltip.Attrs" @onclick="() => DeleteJob(job)">
+                                                <MIcon Color="grey lighten-1">mdi-information</MIcon>
+                                            </MButton>
+                                        </ActivatorContent>
+                                        <ChildContent>
+                                            <span>@T("Download.Tasks.ViewDetail")</span>
+                                        </ChildContent>
+                                    </MTooltip>      
                         </MListItemAction>
                     </ItemContent>
                 </MListItem>
+                <MDivider></MDivider>
                         }
                     </MList>
                 </div>

@@ -48,6 +48,30 @@ namespace AVOne.Impl.Data
         }
 
         /// <summary>
+        /// The UpserJob.
+        /// </summary>
+        /// <param name="job">The job<see cref="IAVOneJob"/>.</param>
+        /// <returns>The <see cref="bool"/>.</returns>
+        public bool UpsertJob(JobModel job)
+        {
+            return this.Jobs.Upsert(job);
+        }
+
+        public JobModel GetJobByKey(string key)
+        {
+            return this.Jobs.FindOne(o => o.Key == key);
+        }
+        
+
+        public void DeleteJob(string key){
+
+           var job = this.Jobs.FindOne(o => o.Key == key);
+           if(job!=null)
+           {
+             this.Jobs.Delete(job.Id);
+           }
+        }
+        /// <summary>
         /// The GetJob.
         /// </summary>
         /// <typeparam name="T">.</typeparam>

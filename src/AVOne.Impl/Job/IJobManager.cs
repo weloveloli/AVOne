@@ -11,8 +11,10 @@ namespace AVOne.Impl.Job
 
         public Task ExecuteJob<T>(T job) where T : IAVOneJob;
 
-        public void RemoveJob<T>(T job) where T : IAVOneJob;
+        public void CancelJobByKey(string jobKey);
 
         public void CancelJob<T>(T job) where T : IAVOneJob;
+
+        public void DeleteJob(string jobKey);
     }
 }

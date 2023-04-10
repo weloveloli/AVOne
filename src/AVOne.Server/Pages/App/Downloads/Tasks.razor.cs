@@ -7,6 +7,7 @@ namespace AVOne.Server.Pages.App.Downloads
     using AVOne.Impl.Job;
     using AVOne.Providers;
     using AVOne.Server.Shared;
+    using System.Linq.Expressions;
     using System.Timers;
     using Timer = System.Timers.Timer;
 
@@ -28,7 +29,7 @@ namespace AVOne.Server.Pages.App.Downloads
 
         [Parameter]
         [SupplyParameterFromQuery(Name = "Status")]
-        public int? Status { get; set; }
+        public string? Status { get; set; }
 
         [Parameter]
         [SupplyParameterFromQuery(Name = "Tag")]
@@ -60,30 +61,41 @@ namespace AVOne.Server.Pages.App.Downloads
 
         protected override void OnParametersSet()
         {
-            var pageList = JobRepository.GetJobs(0, 100,
-                (true, (e) => e.Type == "DownloadAVJob"),
-                (Status != null && Status.HasValue, (e) => e.Status == Status!.Value),
-                (!string.IsNullOrEmpty(Tag), (e) => e.Tags.Contains(Tag)),
-                (!string.IsNullOrEmpty(InputText), (e) => e.Name.Contains(InputText!)));
-            var list = new List<JobModel> { };
-            list.AddRange(pageList);
-            this.Jobs = list;
+            this.UpdateJobs();
         }
 
         private async void OnTimerCallback(object? sender, ElapsedEventArgs e)
         {
             await InvokeAsync(() =>
             {
-                var pageList = JobRepository.GetJobs(0, 100,
-                    (true, (e) => e.Type == "DownloadAVJob"),
-                    (Status != null && Status.HasValue, (e) => e.Status == Status!.Value),
-                    (!string.IsNullOrEmpty(Tag), (e) => e.Tags.Contains(Tag)),
-                    (!string.IsNullOrEmpty(InputText), (e) => e.Name.Contains(InputText!)));
-                var list = new List<JobModel> { };
-                list.AddRange(pageList);
-                this.Jobs = list;
+                UpdateJobs();
                 base.StateHasChanged();
             });
+        }
+
+        private void UpdateJobs()
+        {
+            Expression<Func<JobModel, bool>> statusPrecidate = (e) => true;
+            if (Status == "downloading")
+            {
+                statusPrecidate = (e) => e.Status == (int)JobStatus.Pending || e.Status == (int)JobStatus.Running || e.Status == (int)JobStatus.Failed;
+            }
+            else if (Status == "completed")
+            {
+                statusPrecidate = (e) => e.Status == (int)JobStatus.Completed;
+            }
+            else
+            {
+                statusPrecidate = (e) => e.Status == (int)JobStatus.Canceled;
+            }
+            var pageList = JobRepository.GetJobs(0, 100,
+                (true, (e) => e.Type == "DownloadAVJob"),
+                (true, statusPrecidate),
+                (!string.IsNullOrEmpty(Tag), (e) => e.Tags.Contains(Tag)),
+                (!string.IsNullOrEmpty(InputText), (e) => e.Name.Contains(InputText!)));
+            var list = new List<JobModel> { };
+            list.AddRange(pageList);
+            this.Jobs = list;
         }
 
         public string? InputText
@@ -96,10 +108,15 @@ namespace AVOne.Server.Pages.App.Downloads
             }
         }
 
-        private void RemoveJob(JobModel removeJobModel)
+        private void StopJob(JobModel removeJobModel)
         {
-
+            JobManager.CancelJobByKey(removeJobModel.Key);
         }
+        private void DeleteJob(JobModel removeJobModel)
+        {
+            JobManager.DeleteJob(removeJobModel.Key);
+        }
+
         private void ResetSort()
         {
 

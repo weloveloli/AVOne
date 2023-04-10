@@ -28,6 +28,8 @@
       "AddTaskUrl": "下载任务链接",
       "AddTaskUrlHint": "例如:https://missav.com/fr/cus-1468",
       "DeleteTask":"删除下载任务",
+      "StopTask": "停止下载任务",
+      "ViewDetail": "查看任务详情",
       "Message":{
         "AddTaskSuccess":"添加下载任务'{0}'成功",
         "AddTaskFailed":"添加下载任务'{0}'失败,原因'{1}'",
@@ -51,12 +53,9 @@
         "US":"欧美"
       },
       "Status": {
-        "All":"所有任务",
-        "Pending": "等待中",
-        "Running": "下载中",
+        "Downloading":"下载中",
         "Completed": "已完成",
-        "Canceled": "已取消",
-        "Failed": "失败"
+        "Deleted": "回收站"
       }
   },
   "Settings": {

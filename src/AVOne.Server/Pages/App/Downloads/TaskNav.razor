@@ -41,12 +41,11 @@
     </MDialog>
 
     <MList Linkage Dense Class="remover-ripple">
-        <TaskNavItem Icon="mdi-check-all" Title="Download.Status.All"></TaskNavItem>
-        <TaskNavItem Status=0 Icon="mdi-sync" Title="Download.Status.Pending"></TaskNavItem>
-        <TaskNavItem Status=1 Icon="mdi-play-box-outline" Title="Download.Status.Running"></TaskNavItem>
-        <TaskNavItem Status=2 Icon="mdi-check" Title="Download.Status.Completed"></TaskNavItem>
-        <TaskNavItem Status=3 Icon="mdi-playlist-minus" Title="Download.Status.Canceled"></TaskNavItem>
-        <TaskNavItem Status=4 Icon="mdi-delete" Title="Download.Status.Failed"></TaskNavItem>
+        @* <TaskNavItem Icon="mdi-check-all" Title="Download.Status.All"></TaskNavItem> *@
+        @* <TaskNavItem Status=0 Icon="mdi-sync" Title="Download.Status.Pending"></TaskNavItem> *@
+        <TaskNavItem Status="downloading" Icon="mdi-play-box-outline" Title="Download.Status.Downloading"></TaskNavItem>
+        <TaskNavItem Status="completed" Icon="mdi-check" Title="Download.Status.Completed"></TaskNavItem>
+        <TaskNavItem Status="deleted" Icon="mdi-delete" Title="Download.Status.Deleted"></TaskNavItem>
 
         <MRow NoGutters Justify="JustifyTypes.SpaceBetween">
             <MSubheader Class="px-6 my-6 text-subtitle neutral-lighten-4--text">Tags</MSubheader>

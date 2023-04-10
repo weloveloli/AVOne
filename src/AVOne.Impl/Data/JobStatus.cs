@@ -6,33 +6,28 @@ namespace AVOne.Impl.Data
     public enum JobStatus
     {
         /// <summary>
-        ///        /// Defines the Pending.
-        ///               /// </summary>
+        /// Defines the Pending.
+        /// </summary>
         Pending = 0,
-        ///                      
+
         /// <summary>
-        ///        /// Defines the Running.
-        ///               /// </summary>
+        /// Defines the Running.
+        /// </summary>
         Running = 1,
-        ///                      
+
         /// <summary>
-        ///        /// Defines the Completed.
-        ///               /// </summary>
+        /// Defines the Completed.
+        /// </summary>
         Completed = 2,
-        ///                      
+
         /// <summary>
-        ///        /// Defines the Canceled.
-        ///               /// </summary>
+        /// Defines the Canceled.
+        /// </summary>
         Canceled = 3,
-        ///                      
+
         /// <summary>
-        ///        /// Defines the Failed.
-        ///               /// </summary>
+        /// Defines the Failed.
+        /// </summary>
         Failed = 4,
-        ///                      
-        /// <summary>
-        ///        /// Defines the Deleted.
-        ///               /// </summary>
-        Deleted = 5
     }
 }

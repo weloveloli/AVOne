@@ -59,7 +59,11 @@ namespace AVOne.Impl.Job
 
         public void CancelJob<T>(T job) where T : IAVOneJob
         {
-            if (job == null) throw new ArgumentNullException("Job is null");
+            if (job == null)
+            {
+                throw new ArgumentNullException("Job is null");
+            }
+
             if (CancelToken.TryGetValue(job.Key, out var tokenSource))
             {
                 tokenSource.Cancel();
@@ -86,11 +90,12 @@ namespace AVOne.Impl.Job
                 }
                 else if (t.IsCanceled)
                 {
+                    job.Status = (int)JobStatus.Canceled;
                     _logger.LogDebug("Job {0} is Canceled", job.Key);
                 }
                 else if (t.IsFaulted)
                 {
-                    job.Status = (int)JobStatus.Canceled;
+                    job.Status = (int)JobStatus.Failed;
                     _logger.LogWarning(t.Exception, "Job {0} canceld due to exception", job.Key);
                 }
 
@@ -101,18 +106,27 @@ namespace AVOne.Impl.Job
             return exeTaks;
         }
 
-        public void RemoveJob<T>(T job) where T : IAVOneJob
+        public void CancelJobByKey(string jobKey)
         {
-            if (job == null)
+            if (string.IsNullOrEmpty(jobKey))
             {
-                var argumentNullException = new ArgumentNullException("Job is null");
-                throw argumentNullException;
+                return;
             }
-            if (CancelToken.TryGetValue(job.Key, out var tokenSource))
+            if (CancelToken.TryGetValue(jobKey, out var tokenSource))
             {
                 tokenSource.Cancel();
             }
-            job.Status = (int)JobStatus.Deleted;
+            else
+            {
+                var job = _jobRepository.GetJobByKey(jobKey);
+                job.Status = (int)JobStatus.Canceled;
+                _jobRepository.UpsertJob(job);
+            }
+        }
+
+        public void DeleteJob(string jobKey)
+        {
+            _jobRepository.DeleteJob(jobKey);
         }
     }
 

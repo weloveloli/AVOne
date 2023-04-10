@@ -18,6 +18,8 @@
       "AddTaskUrl": "Add Download Task Url",
       "AddTaskUrlHint": "For example :https://missav.com/fr/cus-1468",
       "DeleteTask": "Delete Download Task",
+      "StopTask": "Stop Download Task",
+      "ViewDetail": "View Task Detail",
       "Message": {
         "AddTaskSuccess": "Add download task '{0}' success",
         "AddTaskFailed": "Add download task '{0}' failed due to '{1}'",
@@ -31,12 +33,9 @@
       }
     },
     "Status": {
-      "All":"All",
-      "Pending": "Pending",
-      "Running": "Running",
+      "Downloading":"Downloading",
       "Completed": "Completed",
-      "Canceled": "Canceled",
-      "Failed": "Failed"
+      "Deleted": "Canceled"
     },
     "Tags": {
       "Censored": "JAV Censored",

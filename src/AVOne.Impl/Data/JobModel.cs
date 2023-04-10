@@ -63,7 +63,7 @@ namespace AVOne.Impl.Data
         /// </value>
         public double Progress { get; set; }
 
-        public List<string>Tags {get;set;}
+        public List<string> Tags { get; set; }
 
         /// <summary>
         /// Gets or sets the description.
@@ -72,6 +72,8 @@ namespace AVOne.Impl.Data
         /// The description.
         /// </value>
         public string Description { get; set; }
+
+        public string Error { get; set; }
         /// <summary>
         /// Gets or sets the Extra.
         /// </summary>
