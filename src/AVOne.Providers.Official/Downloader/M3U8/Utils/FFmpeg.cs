@@ -28,10 +28,7 @@ namespace AVOne.Providers.Official.Downloader.M3U8.Utils
             };
             if (!string.IsNullOrWhiteSpace(workingDir))
                 info.WorkingDirectory = workingDir;
-            var process = Process.Start(info);
-            if (process == null)
-                throw new Exception("Process start error.");
-
+            var process = Process.Start(info) ?? throw new Exception("Process start error.");
             try
             {
                 var message = process.StandardError.ReadToEnd();

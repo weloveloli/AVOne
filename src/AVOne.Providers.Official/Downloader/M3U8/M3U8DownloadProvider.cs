@@ -6,6 +6,7 @@ namespace AVOne.Providers.Official.Downloader.M3U8
     using System;
     using System.Net.Http;
     using System.Runtime.CompilerServices;
+    using System.Security.Cryptography;
     using System.Text;
     using System.Text.Json;
     using System.Threading;
@@ -16,11 +17,13 @@ namespace AVOne.Providers.Official.Downloader.M3U8
     using AVOne.Enum;
     using AVOne.Extensions;
     using AVOne.Models.Download;
+    using AVOne.Models.Job;
     using AVOne.Providers.Download;
     using AVOne.Providers.Official.Downloader.M3U8.Parser;
     using AVOne.Providers.Official.Downloader.M3U8.Utils;
     using Furion.FriendlyException;
     using Furion.Localization;
+    using Microsoft.Extensions.Logging;
 
     public class M3U8DownloadProvider : IDownloaderProvider
     {
@@ -29,12 +32,15 @@ namespace AVOne.Providers.Official.Downloader.M3U8
         private readonly HttpClient _client;
         private readonly IConfigurationManager _configurationManager;
 
-        public M3U8DownloadProvider(IApplicationPaths applicationPaths, IStartupOptions options, IHttpClientFactory httpClientFactory, IConfigurationManager configurationManager)
+        private readonly ILogger<M3U8DownloadProvider> logger;
+
+        public M3U8DownloadProvider(ILogger<M3U8DownloadProvider> logger, IApplicationPaths applicationPaths, IStartupOptions options, IHttpClientFactory httpClientFactory, IConfigurationManager configurationManager)
         {
             _applicationPaths = applicationPaths;
             _options = options;
             _client = httpClientFactory.CreateClient(AVOneConstants.Download);
             _configurationManager = configurationManager;
+            this.logger = logger;
         }
 
         public string Name => "Official";
@@ -80,14 +86,16 @@ namespace AVOne.Providers.Official.Downloader.M3U8
             }
 
             DownloadParts(workingDir, mediaPlaylist, opts, m3U8Item, threadCount, token);
-            opts.OnStatusChanged(new DownloadStatusArgs { Status = L.Text["Merge media"] });
+            opts.OnStatusChanged(new JobStatusArgs { Status = L.Text["Merge media"] });
+            logger.LogDebug($"Start merging file");
             var finalPath = await MergeAsync(workingDir, saveDir, saveName, OutputFormat.MP4, token: token);
-
+            logger.LogDebug($"Downloaded file: {finalPath}");
             Directory.Delete(workingDir, true);
         }
 
         private void DownloadParts(string workingDir, MediaPlaylist mediaPlaylist, DownloadOpts opts, M3U8Item m3U8Item, int threadCount, CancellationToken token)
         {
+            logger.LogDebug($"DownloadParts");
             int interval = 1000;
             var downloadBytes = 0L;
             var intervalDownloadBytes = 0L;
@@ -116,6 +124,31 @@ namespace AVOne.Providers.Official.Downloader.M3U8
                     Directory.CreateDirectory(partDir);
                     var list = mediaPlaylist.Parts[index].Segments;
                     var numbers = Enumerable.Range(0, list.Count).ToList();
+
+                    var keyDict = new Dictionary<string, byte[]>();
+                    var keyList = list.Where(e => e.Key.Method != "NONE").Select(e => e.Key.Uri).Distinct();
+
+                    foreach (var key in keyList)
+                    {
+                        var request = new HttpRequestMessage
+                        {
+                            RequestUri = new Uri(key),
+                        };
+
+                        if (m3U8Item.Header != null)
+                        {
+                            foreach (var header in m3U8Item.Header)
+                            {
+                                request.Headers.Add(header.Key, header.Value);
+                            }
+                        }
+
+                        var rsp = _client.Send(request);
+                        var bytes = rsp.Content.ReadAsByteArrayAsync().GetAwaiter().GetResult();
+                        keyDict[key] = bytes;
+
+                    }
+
                     _ = Parallel.ForEach(numbers, new ParallelOptions { MaxDegreeOfParallelism = threadCount, CancellationToken = token }, index =>
                     {
                         var segment = list[index];
@@ -138,14 +171,35 @@ namespace AVOne.Providers.Official.Downloader.M3U8
 
                             var rsp = _client.Send(request);
                             rsp.EnsureSuccessStatusCode();
+
                             var stream = File.OpenWrite(tsTmpPath);
                             using var tsStream = rsp.Content.ReadAsStream();
                             CopyTo(tsStream, stream, token, opts, interval, ref intervalDownloadBytes);
                             stream.Flush();
                             stream.Close();
-                            File.Move(tsTmpPath, tsPath);
+                            if (segment.Key.Method == "AES-128")
+                            {
+                                using var aesAlg = Aes.Create();
+                                aesAlg.Key = keyDict[segment.Key.Uri];
+                                aesAlg.IV = ConvertHexStringToByteArray(segment.Key.IV);
+                                var decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
+                                using var fsCrypt = new FileStream(tsTmpPath, FileMode.Open);
+                                using var cs = new CryptoStream(fsCrypt, decryptor, CryptoStreamMode.Read);
+                                using var fsOut = new FileStream(tsPath, FileMode.Create);
+                                int read;
+                                var buffer = new byte[1048576];
+                                while ((read = cs.Read(buffer, 0, buffer.Length)) > 0)
+                                {
+                                    fsOut.Write(buffer, 0, read);
+                                }
+                            }
+                            else
+                            {
+                                File.Move(tsTmpPath, tsPath);
+                            }
                             var info = new FileInfo(tsPath);
                             Interlocked.Add(ref downloadBytes, info.Length);
+
                         }
                         else
                         {
@@ -163,7 +217,25 @@ namespace AVOne.Providers.Official.Downloader.M3U8
                 throw;
             }
         }
+        public static byte[] ConvertHexStringToByteArray(string hexString)
+        {
+            if (hexString.Length % 2 != 0)
+            {
+                throw new ArgumentException("Invalid length of hex string.");
+            }
+            if (hexString.StartsWith("0x"))
+            {
+                hexString = hexString.Substring(2);
+            }
 
+            byte[] bytes = new byte[hexString.Length / 2];
+            for (int i = 0; i < hexString.Length; i += 2)
+            {
+                bytes[i / 2] = Convert.ToByte(hexString.Substring(i, 2), 16);
+            }
+
+            return bytes;
+        }
         private static long CopyTo(Stream s, Stream d, CancellationToken token, DownloadOpts opts, int interval, ref long intervalDownloadBytes)
         {
             var bytes = 0L;
@@ -266,6 +338,7 @@ namespace AVOne.Providers.Official.Downloader.M3U8
             /// master playlist
             if (parsed.Parts.Count == 1 && parsed.Parts[0].Segments.All(e => e.Uri.EndsWith("m3u8")))
             {
+                logger.LogInformation($"Get master playlist: {url}");
                 return await GetMediaPlaylist(workingDir, parsed.Parts[0].Segments[0].Uri, saveName, m3U8Item, token);
             }
             else
@@ -409,6 +482,7 @@ namespace AVOne.Providers.Official.Downloader.M3U8
                         OutputFormat.SRT => $@"-map 0 -y ""{partOutputPath}.srt""",
                         _ => throw new Exception("OutputFormat not match."),
                     };
+                    logger.LogDebug("arguments:{0}", arguments);
                     var partWorkingDir = Path.GetDirectoryName(partFiles.First());
                     await FFmpeg.ExecuteAsync(ffmpegPath, arguments, partWorkingDir, onMessage, token);
                 }

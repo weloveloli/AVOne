@@ -1,11 +1,11 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // See License in the project root for license information.
 
-namespace AVOne.Providers.Official.Downloader.M3U8.Utils
+namespace AVOne.Models.Download
 {
-    using AVOne.Models.Download;
+    using AVOne.Models.Job;
 
-    public class DownloadProgressEventArgs : DownloadStatusArgs
+    public class DownloadProgressEventArgs : JobStatusArgs
     {
         public int Total { get; set; }
         public int Finish { get; set; }
@@ -35,7 +35,9 @@ namespace AVOne.Providers.Official.Downloader.M3U8.Utils
         public static string FormatTime(int time)
         {
             var ts = new TimeSpan(0, 0, time);
-            var str = (ts.Hours.ToString("00") == "00" ? "" : ts.Hours.ToString("00") + "h") + ts.Minutes.ToString("00") + "m" + ts.Seconds.ToString("00") + "s";
+            var str = (ts.Hours.ToString("00") == "00" ? "" : ts.Hours.ToString("00") + "h")
+                + ts.Minutes.ToString("00") == "00" ? "" : (ts.Minutes.ToString("00") == "00" + "m")
+                + ts.Seconds.ToString("00") + "s";
             return str;
         }
 
@@ -47,15 +49,15 @@ namespace AVOne.Providers.Official.Downloader.M3U8.Utils
             }
             else if (fileSize >= 1024 * 1024 * 1024)
             {
-                return string.Format("{0:########0.00} GB", ((double)fileSize) / (1024 * 1024 * 1024));
+                return string.Format("{0:########0.00} GB", (double)fileSize / (1024 * 1024 * 1024));
             }
             else if (fileSize >= 1024 * 1024)
             {
-                return string.Format("{0:####0.00} MB", ((double)fileSize) / (1024 * 1024));
+                return string.Format("{0:####0.00} MB", (double)fileSize / (1024 * 1024));
             }
             else if (fileSize >= 1024)
             {
-                return string.Format("{0:####0.00} KB", ((double)fileSize) / 1024);
+                return string.Format("{0:####0.00} KB", (double)fileSize / 1024);
             }
             else
             {

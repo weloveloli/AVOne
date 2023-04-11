@@ -13,6 +13,7 @@ namespace AVOne.Impl.Job
     using AVOne.Impl.Data;
     using AVOne.Impl.Json;
     using AVOne.Models.Download;
+    using AVOne.Models.Job;
     using AVOne.Providers;
     using AVOne.Providers.Download;
 
@@ -71,6 +72,9 @@ namespace AVOne.Impl.Job
             }
         }
 
+        public long? Speed { get; set; }
+        public int? Eta { get; set; }
+
         public override Task Execute(CancellationToken cancellationToken)
         {
             if (DownloadableItem == null || DownloadOpts == null)
@@ -97,20 +101,30 @@ namespace AVOne.Impl.Job
             return downloadProvider.CreateTask(DownloadableItem, DownloadOpts, cancellationToken);
         }
 
-        private void DownloadOpts_StatusChanged(object? sender, DownloadStatusArgs e)
+        private void DownloadOpts_StatusChanged(object? sender, JobStatusArgs e)
         {
-            this.Progress?.Report(e.Progress);
+            this.Progress?.Report(e);
         }
 
         protected override Dictionary<string, string> BuildExtra()
         {
-            var extra = new Dictionary<string, string>();
-            extra.Add("ItemType", ItemType);
-            extra.Add("DownloadOpts", JsonSerializer.Serialize(DownloadOpts, JsonDefaults.Options));
-            extra.Add("Item", JsonSerializer.Serialize(DownloadableItem, JsonDefaults.Options));
+            var extra = new Dictionary<string, string>
+            {
+                { "ItemType", ItemType! },
+                { "DownloadOpts", JsonSerializer.Serialize(DownloadOpts, JsonDefaults.Options) },
+                { "Item", JsonSerializer.Serialize(DownloadableItem, JsonDefaults.Options) },
+            };
             if (DownloadProvider != null)
             {
                 extra.Add("DownloadProvider", DownloadProvider);
+            }
+            if (Speed.HasValue)
+            {
+                extra.Add("Speed", Speed.Value.ToString());
+            }
+            if (Eta.HasValue)
+            {
+                extra.Add("Eta", Eta.Value.ToString());
             }
             return extra;
         }
@@ -127,9 +141,26 @@ namespace AVOne.Impl.Job
             {
                 DownloadOpts = JsonSerializer.Deserialize<DownloadOpts>(downloadOpts, JsonDefaults.Options);
             }
-
+            if (extra.TryGetValue("Speed", out var speed))
+            {
+                Speed = long.Parse(speed.ToString());
+            }
+            if (extra.TryGetValue("Eta", out var eta))
+            {
+                Eta = int.Parse(eta.ToString());
+            }
             var type = Assembly.GetAssembly(typeof(BaseDownloadableItem))!.GetType(itemType);
             DownloadableItem = JsonSerializer.Deserialize(item, type, JsonDefaults.Options) as BaseDownloadableItem;
+        }
+
+        public override void UpdateStatus(JobStatusArgs jobStatusArgs)
+        {
+            base.UpdateStatus(jobStatusArgs);
+            if (jobStatusArgs is DownloadProgressEventArgs progressEventArgs)
+            {
+                this.Speed = progressEventArgs.Speed;
+                this.Eta = progressEventArgs.Eta;
+            }
         }
     }
 }

@@ -18,7 +18,7 @@ namespace AVOne.Impl.Data
         {
             this.Tags = new List<string>();
         }
-        
+
         /// <summary>
         /// Gets or sets the Id.
         /// </summary>
@@ -72,6 +72,8 @@ namespace AVOne.Impl.Data
         /// The description.
         /// </value>
         public string Description { get; set; }
+
+        public string JobStatus { get; set; }
 
         public string Error { get; set; }
         /// <summary>

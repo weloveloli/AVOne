@@ -2,9 +2,9 @@
 // See License in the project root for license information.
 #nullable disable
 
-namespace AVOne.Models.Download
+namespace AVOne.Models.Job
 {
-    public class DownloadStatusArgs
+    public class JobStatusArgs
     {
         public virtual string Status { get; set; }
 

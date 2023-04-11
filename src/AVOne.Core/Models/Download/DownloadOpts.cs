@@ -4,6 +4,7 @@
 namespace AVOne.Models.Download
 {
     using AVOne.Enum;
+    using AVOne.Models.Job;
 
     public class DownloadOpts
     {
@@ -24,9 +25,9 @@ namespace AVOne.Models.Download
         /// <summary>
         /// Occurs when [item added].
         /// </summary>
-        public event EventHandler<DownloadStatusArgs>? StatusChanged;
+        public event EventHandler<JobStatusArgs>? StatusChanged;
 
-        public void OnStatusChanged(DownloadStatusArgs e)
+        public void OnStatusChanged(JobStatusArgs e)
         {
             StatusChanged?.Invoke(this, e);
         }

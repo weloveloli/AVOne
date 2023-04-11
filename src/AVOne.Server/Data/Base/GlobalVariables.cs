@@ -5,5 +5,5 @@ namespace AVOne.Server.Data.Base;
 
 public static class GlobalVariables
 {
-    public const string DefaultRoute = "app/downloads/tasks";
+    public const string DefaultRoute = "app/downloads/tasks?Status=downloading";
 }

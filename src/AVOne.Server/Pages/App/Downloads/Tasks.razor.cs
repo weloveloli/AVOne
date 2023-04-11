@@ -51,12 +51,11 @@ namespace AVOne.Server.Pages.App.Downloads
             {
                 Timer = new Timer
                 {
-                    Interval = 2000
+                    Interval = 1000
                 };
                 Timer.Elapsed += OnTimerCallback;
                 Timer.Start();
             }
-            OnTimerCallback(null, null);
         }
 
         protected override void OnParametersSet()

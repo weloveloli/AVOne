@@ -7,6 +7,7 @@ namespace AVOne.Impl.Job
     using System.Collections.Concurrent;
     using System.Linq.Expressions;
     using AVOne.Impl.Data;
+    using AVOne.Models.Job;
     using LiteDB;
     using Microsoft.Extensions.Logging;
 
@@ -52,7 +53,7 @@ namespace AVOne.Impl.Job
             }).ToList();
         }
 
-        public IProgress<double> CreateProcessForJob(IAVOneJob job)
+        public IProgress<JobStatusArgs> CreateProcessForJob(IAVOneJob job)
         {
             return new JobManagerProgress(_jobRepository, job);
         }
@@ -130,7 +131,7 @@ namespace AVOne.Impl.Job
         }
     }
 
-    public class JobManagerProgress : IProgress<double>
+    public class JobManagerProgress : IProgress<JobStatusArgs>
     {
         private readonly JobRepository _jobRepository;
 
@@ -145,13 +146,11 @@ namespace AVOne.Impl.Job
             _jobRepository = jobRepository;
             this.job = job;
         }
-        public void Report(double value)
+
+        public void Report(JobStatusArgs args)
         {
-            job.ProgressValue = value;
-            if (value >= 100)
-            {
-                job.Status = (int)JobStatus.Completed;
-            }
+            var value = args.Progress;
+            job.UpdateStatus(args);
             if (_progress < value)
             {
                 var now = DateTime.UtcNow;

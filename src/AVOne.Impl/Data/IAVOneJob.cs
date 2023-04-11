@@ -9,6 +9,7 @@ namespace AVOne.Impl.Data
     using System.Collections.Generic;
     using AVOne.Abstraction;
     using AVOne.Impl.Job;
+    using AVOne.Models.Job;
     using LiteDB;
 
     /// <summary>
@@ -18,7 +19,7 @@ namespace AVOne.Impl.Data
     {
         public static IApplicationHost ApplicationHost { get; set; }
         public static IJobManager JobManager { get; set; }
-        public IProgress<double> Progress { get; set; }
+        public IProgress<JobStatusArgs> Progress { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="IAVOneJob"/> class.
@@ -90,6 +91,8 @@ namespace AVOne.Impl.Data
 
         public string ErrorMessage { get; set; }
 
+        public string JobStatus { get; set; }
+
         /// <summary>
         /// The ToModel.
         /// </summary>
@@ -109,7 +112,8 @@ namespace AVOne.Impl.Data
                 Description = this.Description,
                 Progress = this.ProgressValue,
                 Tags = this.Tags,
-                Error = this.ErrorMessage
+                Error = this.ErrorMessage,
+                JobStatus = this.JobStatus
             };
         }
 
@@ -128,6 +132,7 @@ namespace AVOne.Impl.Data
             this.ProgressValue = model.Progress;
             this.Tags = model.Tags;
             this.ErrorMessage = model.Error;
+            this.JobStatus = model.JobStatus;
             FromExtra(model.Extra);
         }
 
@@ -144,5 +149,11 @@ namespace AVOne.Impl.Data
         protected abstract void FromExtra(Dictionary<string, string> extra);
 
         public abstract Task Execute(CancellationToken cancellationToken);
+
+        public virtual void UpdateStatus(JobStatusArgs jobStatusArgs)
+        {
+            this.JobStatus = jobStatusArgs.Status;
+            this.ProgressValue = jobStatusArgs.Progress;
+        }
     }
 }

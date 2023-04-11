@@ -1,5 +1,6 @@
 ﻿@page "/app/downloads/tasks"
 @using AVOne.Impl.Data
+@using AVOne.Models.Download
 @inherits ProCompontentBase
 
 <CascadingValue Value="this">
@@ -71,7 +72,8 @@
                                 <MListItemSubtitle>
                                 <MProgressLinear Striped Value="@(job.Progress)" Height="15" Color="light-blue">
                                 <ChildContent Context="process_bar">
-                                    <strong>@($"{job.Progress.ToString("0.00")}%")</strong>
+                                       <strong style="width:80px">@Speed(job)</strong>
+                                       <strong style="width:80px">@Eta(job)</strong>
                                         </ChildContent>
                                     </MProgressLinear>
                                 </MListItemSubtitle>
@@ -154,5 +156,25 @@
         // convert the tagStr to int with hashcode
         var tag = tagStr.GetHashCode() % 6;
         return _tagColorMap[tag];
+    }
+
+    public string Speed(JobModel jobModel)
+    {
+        long speed = 0;
+        if (jobModel.Extra.TryGetValue("Speed", out var speedStr))
+        {
+            speed = long.Parse(speedStr.ToString());
+        }
+        return DownloadProgressEventArgs.FormatFileSize(speed);
+    }
+
+    public string Eta(JobModel jobModel)
+    {
+        int eta = 0;
+        if (jobModel.Extra.TryGetValue("Eta", out var etaStr))
+        {
+            eta = int.Parse(etaStr.ToString());
+        }
+        return DownloadProgressEventArgs.FormatTime(eta);
     }
 }
