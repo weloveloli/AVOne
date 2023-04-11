@@ -165,7 +165,7 @@
         {
             speed = long.Parse(speedStr.ToString());
         }
-        return DownloadProgressEventArgs.FormatFileSize(speed);
+        return $"{DownloadProgressEventArgs.FormatFileSize(speed)}/s";
     }
 
     public string Eta(JobModel jobModel)
