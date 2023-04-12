@@ -3,15 +3,15 @@
 
 namespace AVOne.Providers.Official.Downloader.M3U8.Tests
 {
-    using Xunit;
-    using AVOne.Providers.Official.Downloader.M3U8;
-    using AVOne.Test.Base;
     using AutoFixture;
+    using AVOne.Common.Helper;
     using AVOne.Configuration;
-    using Moq;
     using AVOne.Constants;
     using AVOne.Models.Download;
-    using AVOne.Common.Helper;
+    using AVOne.Providers.Official.Downloader.M3U8;
+    using AVOne.Test.Base;
+    using Moq;
+    using Xunit;
 
     public class M3U8DownloadProviderTests : BaseTestCase
     {

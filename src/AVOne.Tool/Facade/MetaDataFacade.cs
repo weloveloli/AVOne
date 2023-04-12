@@ -16,7 +16,6 @@ namespace AVOne.Tool.Facade
     using AVOne.Configuration;
     using AVOne.Constants;
     using AVOne.Enum;
-    using AVOne.Impl.Configuration;
     using AVOne.IO;
     using AVOne.Library;
     using AVOne.Models.Info;

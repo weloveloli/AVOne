@@ -3,12 +3,12 @@
 
 namespace AVOne.Server.Pages.App.Downloads
 {
+    using System.Linq.Expressions;
+    using System.Timers;
     using AVOne.Impl.Data;
     using AVOne.Impl.Job;
     using AVOne.Providers;
     using AVOne.Server.Shared;
-    using System.Linq.Expressions;
-    using System.Timers;
     using Timer = System.Timers.Timer;
 
     public partial class Tasks : ProCompontentBase, IDisposable
@@ -35,6 +35,14 @@ namespace AVOne.Server.Pages.App.Downloads
         [SupplyParameterFromQuery(Name = "Tag")]
         public string? Tag { get; set; }
 
+        private bool _visible = false;
+        private JobModel _selectItem = new();
+
+        private void ShowDetail(JobModel item)
+        {
+            _visible = true;
+            _selectItem = item;
+        }
         public List<JobModel> Jobs { get; set; }
 
         public Tasks()
@@ -75,17 +83,17 @@ namespace AVOne.Server.Pages.App.Downloads
         private void UpdateJobs()
         {
             Expression<Func<JobModel, bool>> statusPrecidate = (e) => true;
-            if (Status == "downloading")
+            if (string.IsNullOrEmpty(Status) || Status == "downloading")
             {
-                statusPrecidate = (e) => e.Status == (int)JobStatus.Pending || e.Status == (int)JobStatus.Running || e.Status == (int)JobStatus.Failed;
+                statusPrecidate = (e) => e.Status == JobStatus.Pending || e.Status == JobStatus.Running || e.Status == JobStatus.Failed;
             }
             else if (Status == "completed")
             {
-                statusPrecidate = (e) => e.Status == (int)JobStatus.Completed;
+                statusPrecidate = (e) => e.Status == JobStatus.Completed;
             }
             else
             {
-                statusPrecidate = (e) => e.Status == (int)JobStatus.Canceled;
+                statusPrecidate = (e) => e.Status == JobStatus.Canceled;
             }
             var pageList = JobRepository.GetJobs(0, 100,
                 (true, (e) => e.Type == "DownloadAVJob"),

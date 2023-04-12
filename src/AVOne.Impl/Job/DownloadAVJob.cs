@@ -75,6 +75,9 @@ namespace AVOne.Impl.Job
         public long? Speed { get; set; }
         public int? Eta { get; set; }
 
+        public long? TotalBytes { get; set; }
+
+        public string? FinalFilePath { get; set; }
         public override Task Execute(CancellationToken cancellationToken)
         {
             if (DownloadableItem == null || DownloadOpts == null)
@@ -126,6 +129,14 @@ namespace AVOne.Impl.Job
             {
                 extra.Add("Eta", Eta.Value.ToString());
             }
+            if (TotalBytes.HasValue)
+            {
+                extra.Add("TotalBytes", TotalBytes.Value.ToString());
+            }
+            if (!string.IsNullOrEmpty(FinalFilePath))
+            {
+                extra.Add("FinalFilePath", FinalFilePath);
+            }
             return extra;
         }
 
@@ -145,9 +156,17 @@ namespace AVOne.Impl.Job
             {
                 Speed = long.Parse(speed.ToString());
             }
+            if (extra.TryGetValue("TotalBytes", out var totalBytes))
+            {
+                TotalBytes = long.Parse(totalBytes.ToString());
+            }
             if (extra.TryGetValue("Eta", out var eta))
             {
                 Eta = int.Parse(eta.ToString());
+            }
+            if (extra.TryGetValue("FinalFilePath", out var finalFilePath))
+            {
+                FinalFilePath = finalFilePath;
             }
             var type = Assembly.GetAssembly(typeof(BaseDownloadableItem))!.GetType(itemType);
             DownloadableItem = JsonSerializer.Deserialize(item, type, JsonDefaults.Options) as BaseDownloadableItem;
@@ -160,6 +179,10 @@ namespace AVOne.Impl.Job
             {
                 this.Speed = progressEventArgs.Speed;
                 this.Eta = progressEventArgs.Eta;
+            }
+            else if (jobStatusArgs is DownloadFinishEventArgs finishEventArgs)
+            {
+                this.FinalFilePath = finishEventArgs.FinalFilePath;
             }
         }
     }

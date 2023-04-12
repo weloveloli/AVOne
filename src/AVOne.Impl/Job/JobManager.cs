@@ -70,12 +70,12 @@ namespace AVOne.Impl.Job
                 tokenSource.Cancel();
             }
 
-            job.Status = (int)JobStatus.Canceled;
+            job.Status = JobStatus.Canceled;
         }
 
         public Task ExecuteJob<T>(T job) where T : IAVOneJob
         {
-            job.Status = (int)JobStatus.Running;
+            job.Status = JobStatus.Running;
             _jobRepository.UpsertJob(job);
             var cancellationTokenSource = new CancellationTokenSource();
             CancelToken[job.Key] = cancellationTokenSource;
@@ -84,19 +84,19 @@ namespace AVOne.Impl.Job
 
             var exeTaks = task.ContinueWith((t) =>
             {
-                if (t.IsCompleted)
+                if (t.IsCompletedSuccessfully)
                 {
-                    job.Status = (int)JobStatus.Completed;
+                    job.Status = JobStatus.Completed;
                     job.ProgressValue = 100;
                 }
                 else if (t.IsCanceled)
                 {
-                    job.Status = (int)JobStatus.Canceled;
+                    job.Status = JobStatus.Canceled;
                     _logger.LogDebug("Job {0} is Canceled", job.Key);
                 }
                 else if (t.IsFaulted)
                 {
-                    job.Status = (int)JobStatus.Failed;
+                    job.Status = JobStatus.Failed;
                     _logger.LogWarning(t.Exception, "Job {0} canceld due to exception", job.Key);
                 }
 
@@ -120,7 +120,7 @@ namespace AVOne.Impl.Job
             else
             {
                 var job = _jobRepository.GetJobByKey(jobKey);
-                job.Status = (int)JobStatus.Canceled;
+                job.Status = JobStatus.Canceled;
                 _jobRepository.UpsertJob(job);
             }
         }

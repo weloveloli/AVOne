@@ -402,7 +402,7 @@ namespace AVOne.Impl.Plugins
                         _logger.LogError(ex, "Failed to download image to path {Path} on disk.", imagePath);
                         imagePath = string.Empty;
                     }
-                }              
+                }
             }
 
             var manifest = new PluginManifest

@@ -3,10 +3,10 @@
 
 namespace AVOne.Providers.Official.Extractor.Tests
 {
-    using Xunit;
+    using System.Text.RegularExpressions;
     using AVOne.Providers.Official.Extractor;
     using Moq;
-    using System.Text.RegularExpressions;
+    using Xunit;
 
     public class AV51ClubExtratorTests
     {

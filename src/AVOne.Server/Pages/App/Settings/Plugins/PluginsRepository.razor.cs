@@ -4,9 +4,9 @@
 
 namespace AVOne.Server.Pages.App.Settings.Plugins
 {
-    using AVOne.Server.Shared;
-    using AVOne.Models.Updates;
     using AVOne.Configuration;
+    using AVOne.Models.Updates;
+    using AVOne.Server.Shared;
 
     public partial class PluginsRepository : ProCompontentBase
     {

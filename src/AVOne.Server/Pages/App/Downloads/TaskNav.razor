@@ -44,9 +44,9 @@
     <MList Linkage Dense Class="remover-ripple">
         @* <TaskNavItem Icon="mdi-check-all" Title="Download.Status.All"></TaskNavItem> *@
         @* <TaskNavItem Status=0 Icon="mdi-sync" Title="Download.Status.Pending"></TaskNavItem> *@
-        <TaskNavItem Status="downloading" Icon="mdi-play-box-outline" Title="Download.Status.Downloading"></TaskNavItem>
+        <TaskNavItem Status="downloading" Icon="mdi-play-box-outline" Default Title="Download.Status.Downloading"></TaskNavItem>
         <TaskNavItem Status="completed" Icon="mdi-check" Title="Download.Status.Completed"></TaskNavItem>
-        <TaskNavItem Status="deleted" Icon="mdi-delete" Title="Download.Status.Deleted"></TaskNavItem>
+        <TaskNavItem Status="canceled" Icon="mdi-delete" Title="Download.Status.Canceled"></TaskNavItem>
 
         <MRow NoGutters Justify="JustifyTypes.SpaceBetween">
             <MSubheader Class="px-6 my-6 text-subtitle neutral-lighten-4--text">Tags</MSubheader>
@@ -55,11 +55,12 @@
             <TaskNavItem Tag="Censored" Icon="fas fa-circle" IconColor="purple" Title="Download.Tags.Censored"></TaskNavItem>
             <TaskNavItem Tag="Uncensored" Icon="fas fa-circle" IconColor="#05CD99" Title="Download.Tags.Uncensored"></TaskNavItem>
             <TaskNavItem Tag="Chinese" Icon="fas fa-circle" IconColor="#FFB547" Title="Download.Tags.Chinese"></TaskNavItem>
+            <TaskNavItem Tag="ChineseSub" Icon="fas fa-circle" IconColor="warn" Title="Download.Tags.ChineseSub"></TaskNavItem>
             <TaskNavItem Tag="Taiwanese" Icon="fas fa-circle" IconColor="#FF5252" Title="Download.Tags.Taiwanese"></TaskNavItem>
             <TaskNavItem Tag="Japanese" Icon="fas fa-circle" IconColor="#4318FF" Title="Download.Tags.Japanese"></TaskNavItem>    
             <TaskNavItem Tag="Catoon" Icon="fas fa-circle" IconColor="#05CD99" Title="Download.Tags.Catoon"></TaskNavItem>
             <TaskNavItem Tag="US" Icon="fas fa-circle" IconColor="#FFB547" Title="Download.Tags.US"></TaskNavItem>
-            <TaskNavItem Tag="Other" Icon="fas fa-circle" IconColor="purple" Title="Download.Tags.Other"></TaskNavItem>
+            <TaskNavItem Tag="Other" Icon="fas fa-circle" IconColor="cyan" Title="Download.Tags.Other"></TaskNavItem>
     </MList>
 </MNavigationDrawer>
 

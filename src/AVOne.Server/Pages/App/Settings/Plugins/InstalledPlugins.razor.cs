@@ -5,9 +5,9 @@
 namespace AVOne.Server.Pages.App.Settings.Plugins
 {
     using AVOne.Common.Plugins;
-    using AVOne.Server.Shared;
-    using AVOne.Models.Updates;
     using AVOne.Configuration;
+    using AVOne.Models.Updates;
+    using AVOne.Server.Shared;
     using Masa.Blazor.Presets;
 
     public partial class InstalledPlugins : ProCompontentBase

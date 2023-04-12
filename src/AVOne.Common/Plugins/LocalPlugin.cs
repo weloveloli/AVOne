@@ -1,8 +1,10 @@
+// Copyright (c) 2023 Weloveloli. All rights reserved.
+// See License in the project root for license information.
+
 namespace AVOne.Common.Plugins
 {
     using System;
     using System.Collections.Generic;
-    using AVOne.Common.Plugins;
 
     /// <summary>
     /// Local plugin class.

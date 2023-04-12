@@ -4,7 +4,6 @@
 namespace AVOne.Common.Plugins
 {
     using System;
-    using AVOne.Common.Plugins;
 
     /// <summary>
     /// Defines the <see cref="IPlugin" />.

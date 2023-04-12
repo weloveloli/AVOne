@@ -61,15 +61,16 @@ namespace AVOne.Impl.Data
         {
             return this.Jobs.FindOne(o => o.Key == key);
         }
-        
 
-        public void DeleteJob(string key){
 
-           var job = this.Jobs.FindOne(o => o.Key == key);
-           if(job!=null)
-           {
-             this.Jobs.Delete(job.Id);
-           }
+        public void DeleteJob(string key)
+        {
+
+            var job = this.Jobs.FindOne(o => o.Key == key);
+            if (job != null)
+            {
+                this.Jobs.Delete(job.Id);
+            }
         }
         /// <summary>
         /// The GetJob.

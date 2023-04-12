@@ -1,5 +1,6 @@
-﻿// ReSharper disable StringLiteralTypo
-// copy from jellyfin
+﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
+// See License in the project root for license information.
+
 namespace Emby.Naming.Common
 {
 #pragma warning disable CA1819

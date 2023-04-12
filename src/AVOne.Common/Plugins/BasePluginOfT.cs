@@ -11,7 +11,6 @@ namespace AVOne.Common.Plugins
     using System.Runtime.InteropServices;
     using AVOne.Configuration;
     using AVOne.IO;
-    using AVOne.Common.Plugins;
 
     /// <summary>
     /// Provides a common base class for all plugins.

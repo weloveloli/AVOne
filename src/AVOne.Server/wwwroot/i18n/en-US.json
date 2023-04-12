@@ -13,6 +13,18 @@
   "Download": {
     "Title": "Download Tasks",
     "Search":"Search Task",
+    "Detail":{
+      "Info":"Download Task Info",
+      "JobInfo":"Task Info",
+      "Tags":"Task Tags",
+      "Save":"Save",
+      "DownloadSpeedInfo":"Speed Info",
+      "TotalSize":"Total File Size",
+      "Speed":"Average Download Speed",
+      "FileInfo":"File Info",
+      "FinalDir":"File Directory",
+      "FinalFileName":"File Name"      
+    },
     "Tasks": {
       "AddTask": "Add Download Task",
       "AddTaskUrl": "Add Download Task Url",
@@ -20,6 +32,7 @@
       "DeleteTask": "Delete Download Task",
       "StopTask": "Stop Download Task",
       "ViewDetail": "View Task Detail",
+      "Failed":"Download Failed",
       "Message": {
         "AddTaskSuccess": "Add download task '{0}' success",
         "AddTaskFailed": "Add download task '{0}' failed due to '{1}'",
@@ -35,12 +48,13 @@
     "Status": {
       "Downloading":"Downloading",
       "Completed": "Completed",
-      "Deleted": "Canceled"
+      "Canceled": "Canceled"
     },
     "Tags": {
-      "Censored": "JAV Censored",
-      "Uncensored": "JAV Uncensored",
+      "Censored": "Censored",
+      "Uncensored": "Uncensored",
       "Chinese": "Chinese",
+      "ChineseSub": "Chinese Subtitle",
       "Taiwanese": "Taiwanese",
       "Japanese": "Japanese",
       "Other": "Other",

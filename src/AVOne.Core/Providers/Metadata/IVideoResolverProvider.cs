@@ -3,7 +3,6 @@
 
 #nullable disable
 
-using AVOne;
 
 namespace AVOne.Providers.Metadata
 {

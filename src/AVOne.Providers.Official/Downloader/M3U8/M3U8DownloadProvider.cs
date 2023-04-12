@@ -90,6 +90,7 @@ namespace AVOne.Providers.Official.Downloader.M3U8
             logger.LogDebug($"Start merging file");
             var finalPath = await MergeAsync(workingDir, saveDir, saveName, OutputFormat.MP4, token: token);
             logger.LogDebug($"Downloaded file: {finalPath}");
+            opts.OnStatusChanged(new DownloadFinishEventArgs { Status = L.Text["Download finished"], FinalFilePath = finalPath, Progress = 100 });
             Directory.Delete(workingDir, true);
         }
 
@@ -581,10 +582,11 @@ namespace AVOne.Providers.Official.Downloader.M3U8
                     .First();
 
                 var ext = Path.GetExtension(output);
-                var finishPath = Path.Combine(outputPath, $"{saveName}{ext}");
+                var finishPath = Path.Combine(outputDir, $"{saveName}{ext}");
                 if (File.Exists(finishPath))
-                    finishPath = Path.Combine(outputPath,
+                    finishPath = Path.Combine(outputDir,
                         $"{saveName}_{DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss")}{ext}");
+                logger.LogDebug("output is {0}, finishPaht is {1}", output, finishPath);
                 File.Move(output, finishPath);
 
                 foreach (var file in files)

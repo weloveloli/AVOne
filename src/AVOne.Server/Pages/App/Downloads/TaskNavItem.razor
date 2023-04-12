@@ -52,6 +52,8 @@
     [Parameter]
     public string Title { get; set; }
 
+    [Parameter]
+    public bool Default { get; set; } = false;
     private string Href
     {
         get
@@ -100,6 +102,13 @@
             if (!string.IsNullOrEmpty(status))
             {
                 if (status == Status)
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                if(Default)
                 {
                     return true;
                 }

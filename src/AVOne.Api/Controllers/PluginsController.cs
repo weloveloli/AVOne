@@ -3,16 +3,16 @@
 
 namespace AVOne.Api.Controllers
 {
-    using AVOne.Common.Plugins;
+    using System.ComponentModel.DataAnnotations;
+    using System.Text.Json;
+    using AVOne.Api.Attributes;
     using AVOne.Common;
+    using AVOne.Common.Plugins;
     using AVOne.Impl.Json;
     using AVOne.Updates;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
-    using System.ComponentModel.DataAnnotations;
-    using System.Text.Json;
     using Microsoft.AspNetCore.Mvc;
-    using AVOne.Api.Attributes;
 
     /// <summary>
     /// Controllers for plugins

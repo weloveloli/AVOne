@@ -4,10 +4,10 @@
 
 namespace AVOne.Server.Pages.App.Settings.Plugins
 {
-    using AVOne.Server.Shared;
     using AVOne.Models.Updates;
-    using Masa.Blazor.Presets;
+    using AVOne.Server.Shared;
     using AVOne.Updates;
+    using Masa.Blazor.Presets;
 
     public partial class AvaliablePlugins : ProCompontentBase
     {

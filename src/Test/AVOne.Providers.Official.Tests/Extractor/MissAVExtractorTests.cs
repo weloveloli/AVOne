@@ -3,9 +3,9 @@
 
 namespace AVOne.Providers.Official.Extractor.Tests
 {
-    using Xunit;
     using AVOne.Providers.Official.Extractor;
     using Moq;
+    using Xunit;
 
     public class MissAVExtractorTests
     {

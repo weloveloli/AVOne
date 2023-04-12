@@ -53,11 +53,11 @@
                         </MMenu>
                     </MToolbar>
 
-                                <MList Subheader
+                                <MList Subheader ThreeLine 
                TwoLine Class="rounded-4 mt-6" Style="height: calc(100vh - 196px ); overflow-y:auto;">
                        @foreach (var job in Jobs)
                         {
-                    <MListItem key="@job.Id">
+                    <MListItem key="@job.Id" Link OnClick="()=>ShowDetail(job)">
                         <ItemContent>
                             <MListItemAvatar>
                                 <MIcon Class="blue lighten-1"
@@ -66,45 +66,47 @@
                         </MIcon>
                     </MListItemAvatar>
                         <MListItemContent>
-                            <MListItemTitle>@job.Name</MListItemTitle>
-                            @if(job.Status == (int)JobStatus.Running)
+                            <MListItemTitle>
+                                @job.Name
+                            </MListItemTitle>
+                            @if(job.Status == JobStatus.Running)
                             {
                                 <MListItemSubtitle>
-                                <MProgressLinear Striped Value="@(job.Progress)" Height="15" Color="light-blue">
-                                <ChildContent Context="process_bar">
-                                       <strong style="width:80px">@Speed(job)</strong>
-                                       <strong style="width:80px">@Eta(job)</strong>
-                                        </ChildContent>
-                                    </MProgressLinear>
+                                    <div class="d-flex mb-2 justify-space-between">
+                                        <strong>@Speed(job)</strong>
+                                        <strong>@Eta(job)</strong>
+                                    </div>
+                                 
+                                <MProgressLinear Value="@(job.Progress)" Height="10" Color="light-blue"></MProgressLinear>
                                 </MListItemSubtitle>
                             }
-                            @if(job.Status == (int)JobStatus.Completed || job.Status==(int)JobStatus.Canceled)
+                            @if(job.Status == JobStatus.Completed || job.Status==JobStatus.Canceled)
                             {
                                 <MListItemSubtitle>
                                     @job.Modified
                                 </MListItemSubtitle>
                             }
-                           @if(job.Status == (int)JobStatus.Failed)
+                           @if(job.Status == JobStatus.Failed)
                             {
                                 <MListItemSubtitle>
-                                    <strong class="red--text text--lighten-1">@job.Error</strong>
+                                    <strong class="red--text text--lighten-1">@T("Download.Tasks.Failed")</strong>
                                 </MListItemSubtitle>
                             }
                             </MListItemContent>
                             <MListItemAction>
                                     @foreach (var tag in job.Tags)
                                     {
-                                        <MChip Class="mx-1 text-btn" Small TextColor="@GetColorForTag(tag)" Color="@(@GetColorForTag(tag)+"-lighten-5")">@tag</MChip>
+                                        <MChip Class="mx-1 text-btn" Small Style="height:32px;border-radius:32px;" Outlined Color="@GetColorForTag(tag)">@T("Download.Tags."+tag)</MChip>
                                     }
-                                    @if(job.Status == (int)JobStatus.Running){
-                                        <MButton Icon @onclick="() => StopJob(job)">
+                                    @if(job.Status == JobStatus.Running){
+                                        <MButton Icon @onclick="() => StopJob(job)" StopPropagation>
                                             <MIcon Color="red lighten-1">mdi-stop</MIcon>
                                         </MButton>
                                     }
-                                    @if(job.Status == (int)JobStatus.Canceled){
+                                    @if(job.Status != JobStatus.Running){
                                     <MTooltip Top>
                                         <ActivatorContent Context="tooltip">
-                                            <MButton Icon @attributes="@tooltip.Attrs" @onclick="() => DeleteJob(job)">
+                                            <MButton Icon @attributes="@tooltip.Attrs" @onclick="() => DeleteJob(job)" StopPropagation>
                                                 <MIcon Color="red lighten-1">mdi-delete</MIcon>
                                             </MButton>
                                         </ActivatorContent>
@@ -116,7 +118,7 @@
                            
                                     <MTooltip Top>
                                         <ActivatorContent Context="tooltip">
-                                            <MButton Icon @attributes="@tooltip.Attrs" @onclick="() => DeleteJob(job)">
+                                            <MButton Icon @attributes="@tooltip.Attrs" @onclick="() => ShowDetail(job)" StopPropagation>
                                                 <MIcon Color="grey lighten-1">mdi-information</MIcon>
                                             </MButton>
                                         </ActivatorContent>
@@ -134,28 +136,30 @@
             </div>
         </MRow>
     </div>
+    <TaskDetail Value="_visible" ValueChanged="val=>_visible = val" SelectItem=_selectItem></TaskDetail>
 </CascadingValue>
 
 @code {
-    private Dictionary<int, string> _tagColorMap = new Dictionary<int, string>()
+    private Dictionary<string, string> _tagColorMap = new Dictionary<string, string>()
     {
-        { 0, "blue" },
-        { 1, "pry" },
-        { 2, "sample-green" },
-        { 3, "remind" },
-        { 4, "error" },
-        { 5, "info" },
+        { "Censored", "purple" },
+        { "Uncensored", "#05CD99" },
+        { "Chinese", "#FFB547" },
+        { "ChineseSub", "warn" },
+        { "Taiwanese", "#FF5252" },
+        { "Japanese", "#4318FF" },
+        { "Catoon", "#05CD99" },
+        { "US", "#FFB547" },
+        {  "Other", "cyan" }
     };
 
     public string GetColorForTag(string tagStr)
     {
-        if(string.IsNullOrEmpty(tagStr))
+        if (string.IsNullOrEmpty(tagStr) && !_tagColorMap.ContainsKey(tagStr))
         {
             return "grey";
         }
-        // convert the tagStr to int with hashcode
-        var tag = tagStr.GetHashCode() % 6;
-        return _tagColorMap[tag];
+        return _tagColorMap[tagStr];
     }
 
     public string Speed(JobModel jobModel)

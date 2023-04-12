@@ -46,7 +46,7 @@ namespace AVOne.Impl.Data
         /// <summary>
         /// Gets or sets the Status.
         /// </summary>
-        public int Status { get; set; }
+        public JobStatus Status { get; set; }
 
         /// <summary>
         /// Gets or sets the Modified.

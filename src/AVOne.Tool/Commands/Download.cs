@@ -3,16 +3,16 @@
 
 namespace AVOne.Tool.Commands
 {
-    using CommandLine;
-    using System.Threading.Tasks;
     using System.Threading;
+    using System.Threading.Tasks;
+    using AVOne.Impl;
     using AVOne.Models.Download;
-    using AVOne.Tool.Resources;
     using AVOne.Providers;
+    using AVOne.Providers.Download;
+    using AVOne.Tool.Resources;
+    using CommandLine;
     using CommandLine.Text;
     using Spectre.Console;
-    using AVOne.Providers.Download;
-    using AVOne.Impl;
 
     [Verb("download", false, HelpText = nameof(Resource.HelpTextVerbDownload), ResourceType = typeof(Resource))]
     internal class Download : BaseHostOptions

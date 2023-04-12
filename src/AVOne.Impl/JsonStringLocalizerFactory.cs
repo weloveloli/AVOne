@@ -11,8 +11,8 @@ namespace AVOne.Impl
     using Microsoft.Extensions.Localization;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
-    using My.Extensions.Localization.Json.Internal;
     using My.Extensions.Localization.Json;
+    using My.Extensions.Localization.Json.Internal;
 
     public class JsonStringLocalizerFactory : IStringLocalizerFactory
     {

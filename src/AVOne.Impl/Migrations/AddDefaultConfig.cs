@@ -6,7 +6,6 @@ namespace AVOne.Impl.Migrations
     using AVOne.Common.Helper;
     using AVOne.Common.Migrations;
     using AVOne.Configuration;
-    using AVOne.Models.Updates;
 
     public class AddDefaultConfig : IMigrationRoutine
     {
@@ -17,7 +16,7 @@ namespace AVOne.Impl.Migrations
         /// Initializes a new instance of the <see cref="AddMetaTubePluginRepository"/> class.
         /// </summary>
         /// <param name="configurationManager">The configuration manager.</param>
-        public AddDefaultConfig(IConfigurationManager configurationManager,IStartupOptions options)
+        public AddDefaultConfig(IConfigurationManager configurationManager, IStartupOptions options)
         {
             _configurationManager = configurationManager;
             _options = options;
