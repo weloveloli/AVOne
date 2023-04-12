@@ -97,13 +97,26 @@ namespace AVOne.Impl
             if (attribute is not null)
             {
 
-                ApplicationVersion = Version.Parse(attribute.InformationalVersion[..attribute.InformationalVersion.IndexOf('+')]);
+                var versionIndex1 = attribute.InformationalVersion.IndexOf('-');
+                var versionIndex2 = attribute.InformationalVersion.IndexOf('+');
+                var index = Math.Min(versionIndex1,versionIndex2);
+                if (index < 0)
+                {
+                    if (Version.TryParse(attribute.InformationalVersion,out var v))
+                    {
+                        ApplicationVersion = v;
+                    }
+                }
+                else
+                {
+                    if (Version.TryParse(attribute.InformationalVersion[..index], out var v))
+                    {
+                        ApplicationVersion = v;
+                    }
+                }
+            }
 
-            }
-            else
-            {
-                ApplicationVersion = assembly.GetName().Version;
-            }
+            ApplicationVersion ??= assembly.GetName().Version;
 #else
 
             ApplicationVersion = Version.Parse("1.0.0");

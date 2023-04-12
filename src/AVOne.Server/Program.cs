@@ -2,7 +2,7 @@
 // See License in the project root for license information.
 
 using AVOne.Impl;
-using AVOne.Tool.Commands;
+using AVOne.Server;
 using CommandLine;
 using Serilog;
 
@@ -38,6 +38,7 @@ internal class Program
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddGlobalForServer();
         builder.Services.AddControllers().AddInject();
+        builder.Services.AddHealthChecks().AddCheck<SampleHealthCheck>("Sample");
         var app = builder.Build();
 
         // Re-use the host service provider in the app host since ASP.NET doesn't allow a custom service collection.
@@ -59,7 +60,7 @@ internal class Program
         app.UseStaticFiles();
 
         app.UseRouting();
-
+        app.MapHealthChecks("/health");
         app.UseAuthentication();
         app.UseAuthorization();
         app.UseInject();

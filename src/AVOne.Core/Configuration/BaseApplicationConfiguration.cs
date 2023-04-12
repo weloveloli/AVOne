@@ -28,7 +28,7 @@ namespace AVOne.Configuration
 
     public class DownloadConfig
     {
-        public string DefaultDownloadDir { get; set; } = OperatingSystem.IsWindows() ? "d://downloads" : "/tmp";
+        public string DefaultDownloadDir { get; set; } = OperatingSystem.IsWindows() ? "d://downloads" : "/download";
         public int DefaultDownloadThreadCount { get; set; } = 4;
     }
 
