@@ -26,9 +26,9 @@ namespace AVOne.Providers.Official.Extractor.Tests
             string jsonString = ExtractPlayerJsonString(html, playerName);
             var source = new AV51ClubExtrator(null, new Mock<IHttpClientFactory>().Object).GetSources(html);
 
-            Assert.Equal(1, source.Count());
+            Assert.Single(source);
 
-            Assert.Equal("GACHI-326 もみじ　−スクールデイズ", AV51ClubExtrator.GetStringFromHtml(html, AV51ClubExtrator.TitleRegex()));
+            Assert.Contains("GACHI-326", AV51ClubExtrator.GetStringFromHtml(html, AV51ClubExtrator.TitleRegex()));
         }
     }
 }

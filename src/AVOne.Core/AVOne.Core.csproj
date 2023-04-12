@@ -9,7 +9,7 @@
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <Nullable>enable</Nullable>
-        <MinVerTagPrefix>common-</MinVerTagPrefix>
+        <!--<MinVerTagPrefix>common-</MinVerTagPrefix>-->
         <MinVerIgnoreHeight>true</MinVerIgnoreHeight>
     </PropertyGroup>
   <ItemGroup>
