@@ -1,10 +1,10 @@
 ARG DOTNET_VERSION=7.0
 
-FROM mcr.microsoft.com/dotnet/runtime:7.0 as app
+FROM mcr.microsoft.com/dotnet/aspnet:7.0 as app
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y ffmpeg
-RUN mkdir -p /data /media /download\
+RUN mkdir -p /data /media /download \
 && chmod 777 /data
 
 
