@@ -24,6 +24,7 @@ namespace AVOne.Configuration
         public string NameResolveProvider { get; set; } = "Jellyfin";
         public string[] ScanMetaDataProviders { get; set; } = new string[] { "MetaTube", "Jellyfin.Nfo" };
         public string[] ImageMetaDataProviders { get; set; } = new string[] { "MetaTube" };
+        public string Proxy { get; set; }
     }
 
     public class DownloadConfig
@@ -31,6 +32,7 @@ namespace AVOne.Configuration
         public string DefaultDownloadDir { get; set; } = OperatingSystem.IsWindows() ? "d://downloads" : "/download";
         public int DefaultDownloadThreadCount { get; set; } = 4;
         public int DefaultRetryCount { get; set; } = 1;
+        public string Proxy { get; set; }
     }
 
     public class FFmpegConfig
