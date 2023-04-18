@@ -30,6 +30,7 @@ namespace AVOne.Configuration
     {
         public string DefaultDownloadDir { get; set; } = OperatingSystem.IsWindows() ? "d://downloads" : "/download";
         public int DefaultDownloadThreadCount { get; set; } = 4;
+        public int DefaultRetryCount { get; set; } = 1;
     }
 
     public class FFmpegConfig

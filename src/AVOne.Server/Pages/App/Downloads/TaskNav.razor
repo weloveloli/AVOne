@@ -29,6 +29,12 @@
                         <MTextField Class="mt-2" @bind-Value="_addJobModel.Url"
                                     Label='@T("Download.Tasks.AddTaskUrl")' Hint='@T("Download.Tasks.AddTaskUrlHint")' PersistentHint
                                         Outlined></MTextField>
+                        <MTextField Class="mt-2" @bind-Value="_addJobModel.ThreadCount"
+                                    Label='@T("Download.Tasks.AddTaskThreadCount")' PersistentHint
+                                        Outlined></MTextField>
+                        <MTextField Class="mt-2" @bind-Value="_addJobModel.RetryCount"
+                                    Label='@T("Download.Tasks.AddTaskRetryCount")' PersistentHint
+                                        Outlined></MTextField>
                     </MCardText>
                     <MCardActions Class="justify-end">
                         <MButton Type="reset" @onclick="()=> {addTaskDialog = false;}">@T("Common.Cancel")</MButton>
@@ -64,7 +70,7 @@
     </MList>
 </MNavigationDrawer>
 
-@code {
+        @code {
     [Inject]
     private NavigationManager Navigation { get; set; }
     [Inject]
@@ -80,6 +86,18 @@
         [Required]
         [Url]
         public string? Url { get; set; }
+
+        [Range(1, 8)]
+        public int? ThreadCount { get; set; }
+
+        [Range(1, 8)]
+        public int? RetryCount { get; set; }
+    }
+
+    protected override void OnInitialized()
+    {
+        _addJobModel.ThreadCount = ConfigurationManager.CommonConfiguration.DownloadConfig.DefaultDownloadThreadCount;
+        _addJobModel.RetryCount = ConfigurationManager.CommonConfiguration.DownloadConfig.DefaultRetryCount;
     }
 
     private AddJobModel _addJobModel = new();
@@ -114,7 +132,7 @@
         }
         var downloadDir = ConfigurationManager.CommonConfiguration.DownloadConfig.DefaultDownloadDir;
         var threadCount = ConfigurationManager.CommonConfiguration.DownloadConfig.DefaultDownloadThreadCount;
-        var opt = new DownloadOpts { ThreadCount = 4, OutputDir = downloadDir, RetryCount = 1, RetryWait = 500 };
+        var opt = new DownloadOpts { ThreadCount = addJobModel.ThreadCount ?? 4, OutputDir = downloadDir, RetryCount = addJobModel.RetryCount ?? 1, RetryWait = 500 };
         var downloadJob = new DownloadAVJob();
         downloadJob.DownloadableItem = jobItem;
         downloadJob.DownloadOpts = opt;

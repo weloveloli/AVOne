@@ -28,6 +28,8 @@
     "Tasks": {
       "AddTask": "Add Download Task",
       "AddTaskUrl": "Add Download Task Url",
+      "AddTaskThreadCount": "Download Task Thread Count",
+      "AddTaskRetryCount": "Download Task Retry Count",
       "AddTaskUrlHint": "For example :https://missav.com/fr/cus-1468",
       "DeleteTask": "Delete Download Task",
       "StopTask": "Stop Download Task",

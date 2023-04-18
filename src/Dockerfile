@@ -3,7 +3,7 @@ ARG DOTNET_VERSION=7.0
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 as app
 
 ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update && apt-get install -y ffmpeg
+RUN apt-get update && apt-get install -y ffmpeg libbrotli1 libmbedtls12 
 RUN mkdir -p /data /media /download \
 && chmod 777 /data
 
