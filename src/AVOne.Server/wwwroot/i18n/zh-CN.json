@@ -22,6 +22,11 @@
   "Download":{
     "Title":"下载",
     "Search":"搜索任务",
+    "Sort":{
+      "ResetSort":"重置排序",
+      "SortbyName":"按名称排序",
+      "SortbyCreatedDate":"按创建时间排序"
+    },
     "Detail":{
       "Info":"下载信息",
       "JobInfo":"任务信息",

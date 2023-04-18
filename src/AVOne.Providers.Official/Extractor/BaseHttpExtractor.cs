@@ -7,6 +7,7 @@ namespace AVOne.Providers.Official.Extractor
     using System.Net.Http;
     using System.Threading;
     using System.Threading.Tasks;
+    using AVOne.Constants;
     using AVOne.Models.Download;
     using AVOne.Providers.Extractor;
     using Microsoft.Extensions.Logging;
@@ -20,7 +21,7 @@ namespace AVOne.Providers.Official.Extractor
         protected BaseHttpExtractor(ILogger logger, IHttpClientFactory httpClientFactory, string webPageStart)
         {
 
-            this._httpClient = httpClientFactory.CreateClient(Constants.Official);
+            this._httpClient = httpClientFactory.CreateClient(HttpClientNames.Default);
             this._logger = logger;
             _webPageStart = webPageStart;
         }

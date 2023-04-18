@@ -13,6 +13,11 @@
   "Download": {
     "Title": "Download Tasks",
     "Search":"Search Task",
+    "Sort":{
+      "ResetSort":"Reset Sort",
+      "SortbyName":"Sort By Name",
+      "SortbyCreatedDate":"Sort Created Date"
+    },
     "Detail":{
       "Info":"Download Task Info",
       "JobInfo":"Task Info",

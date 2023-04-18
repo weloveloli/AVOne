@@ -92,7 +92,11 @@ namespace AVOne.Providers.Official.Extractor
             var data = GetStringFromHtml(html, _scriptRegex);
             var dataJson = JSON.Deserialize<Dictionary<string, object>>(data);
             var m3u8Link = dataJson["url"];
-            return new List<string> { m3u8Link.ToString() };
+            if (m3u8Link != null)
+            {
+                return new List<string> { m3u8Link!.ToString()! };
+            }
+            return Enumerable.Empty<string>();
         }
     }
 }

@@ -86,7 +86,7 @@ namespace AVOne.Impl.Updates
         {
             try
             {
-                PackageInfo[]? packages = await _httpClientFactory.CreateClient(AVOneConstants.Default)
+                PackageInfo[]? packages = await _httpClientFactory.CreateClient(HttpClientNames.Default)
                         .GetFromJsonAsync<PackageInfo[]>(new Uri(manifest), _jsonSerializerOptions, cancellationToken).ConfigureAwait(false);
 
                 if (packages == null)
@@ -487,7 +487,7 @@ namespace AVOne.Impl.Updates
             // Always override the passed-in target (which is a file) and figure it out again
             var targetDir = Path.Combine(_appPaths.PluginsPath, package.Name);
 
-            using var response = await _httpClientFactory.CreateClient(AVOneConstants.Default)
+            using var response = await _httpClientFactory.CreateClient(HttpClientNames.Default)
                 .GetAsync(new Uri(package.SourceUrl), cancellationToken).ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
             await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);

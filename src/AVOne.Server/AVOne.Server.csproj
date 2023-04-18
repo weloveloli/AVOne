@@ -2,6 +2,7 @@
   <Import Project="../common.props" />
   <PropertyGroup>
 	<AssemblyName>avone</AssemblyName>
+      <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>

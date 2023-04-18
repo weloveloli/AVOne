@@ -5,8 +5,14 @@ namespace AVOne.Constants
 {
     public class HttpClientNames
     {
-        public const string HttpClientDefault = "Default";
-        public const string HttpClientProxyRequired = "Proxy";
-        public const string APIHttpClient = "API";
+        /// <summary>
+        /// Gets the value for the default named http client.
+        /// </summary>
+        public const string Default = nameof(Default);
+
+        /// <summary>
+        /// Gets the value for the named http client for download.
+        /// </summary>
+        public const string Download = nameof(Download);
     }
 }

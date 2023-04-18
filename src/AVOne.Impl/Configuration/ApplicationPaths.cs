@@ -28,6 +28,7 @@ namespace AVOne.Impl.Configuration
         public string ConfigurationDirectoryPath { get; private set; }
         public string CachePath { get; private set; }
 
+        public const string AVONE = "avone";
         /// <summary>
         /// Gets the path to the system folder.
         /// </summary>
@@ -94,7 +95,7 @@ namespace AVOne.Impl.Configuration
                     // LocalApplicationData follows the XDG spec on unix machines
                     dataDir = Path.Combine(
                         Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                        "AVOneTool");
+                        AVONE);
                 }
             }
 
@@ -124,7 +125,7 @@ namespace AVOne.Impl.Configuration
                             ".config");
                     }
 
-                    configDir = Path.Combine(configDir, "AVOneTool");
+                    configDir = Path.Combine(configDir, AVONE);
                 }
             }
 
@@ -156,7 +157,7 @@ namespace AVOne.Impl.Configuration
                             ".cache");
                     }
 
-                    cacheDir = Path.Combine(cacheDir, "AVOneTool");
+                    cacheDir = Path.Combine(cacheDir, AVONE);
                 }
             }
 

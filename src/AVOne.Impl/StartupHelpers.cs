@@ -156,7 +156,7 @@ namespace AVOne.Impl
         {
             // Do nothing if the config file already exists
             var configPath = Path.Combine(appPaths.ConfigurationDirectoryPath, LoggingConfigFileDefault);
-            if (File.Exists(configPath))
+            if (File.Exists(configPath) || IsUseDefaultLogging())
             {
                 return;
             }
@@ -177,6 +177,10 @@ namespace AVOne.Impl
             }
         }
 
+        public static bool IsUseDefaultLogging()
+        {
+            return bool.Parse(Environment.GetEnvironmentVariable($"{AVOnePrefix}_USE_DEFAULT_LOG") ?? "true");
+        }
         /// <summary>
         /// Initialize Serilog using configuration and fall back to defaults on failure.
         /// </summary>
@@ -186,12 +190,16 @@ namespace AVOne.Impl
         {
             try
             {
-                // Serilog.Log is used by SerilogLoggerFactory when no logger is specified
-                Log.Logger = new LoggerConfiguration()
-                    .ReadFrom.Configuration(configuration)
-                    .Enrich.FromLogContext()
-                    .Enrich.WithThreadId()
-                    .CreateLogger();
+                if (!IsUseDefaultLogging())
+                {
+                    // Serilog.Log is used by SerilogLoggerFactory when no logger is specified
+                    Log.Logger = new LoggerConfiguration()
+                        .ReadFrom.Configuration(configuration)
+                        .Enrich.FromLogContext()
+                        .Enrich.WithThreadId()
+                        .CreateLogger();
+                }
+
             }
             catch (Exception ex)
             {

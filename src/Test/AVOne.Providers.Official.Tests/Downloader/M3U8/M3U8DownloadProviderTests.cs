@@ -15,7 +15,7 @@ namespace AVOne.Providers.Official.Downloader.M3U8.Tests
 
     public class M3U8DownloadProviderTests : BaseTestCase
     {
-        private M3U8DownloadProvider _provider;
+        private readonly M3U8DownloadProvider _provider;
         public M3U8DownloadProviderTests()
         {
             var cacheDir = Path.Combine(
@@ -31,7 +31,7 @@ namespace AVOne.Providers.Official.Downloader.M3U8.Tests
 
             var mockHttpClientFactory = fixture.Freeze<Mock<IHttpClientFactory>>();
 
-            mockHttpClientFactory.Setup(e => e.CreateClient(AVOneConstants.Download)).Returns(new HttpClient());
+            mockHttpClientFactory.Setup(e => e.CreateClient(HttpClientNames.Download)).Returns(new HttpClient());
 
             _provider = fixture.Create<M3U8DownloadProvider>();
         }
