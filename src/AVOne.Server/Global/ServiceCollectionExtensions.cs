@@ -7,8 +7,8 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddGlobalForServer(this IServiceCollection services)
         {
-            var basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? throw new Exception("Get the assembly root directory exception!");
-            services.AddNav(Path.Combine(basePath, $"wwwroot/nav/nav.json"));
+            // var basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? throw new Exception("Get the assembly root directory exception!");
+            services.AddNav(Path.Combine(AppContext.BaseDirectory, $"wwwroot/nav/nav.json"));
             services.AddScoped<GlobalConfig>();
 
             return services;

@@ -86,11 +86,11 @@ namespace AVOne.Providers.Official.Downloader.M3U8
             }
 
             DownloadParts(workingDir, mediaPlaylist, opts, m3U8Item, threadCount, token);
-            opts.OnStatusChanged(new JobStatusArgs { Status = L.Text["Merge media"] });
+            opts.OnStatusChanged(new JobStatusArgs { Status = "Merge media" });
             logger.LogDebug($"Start merging file");
             var finalPath = await MergeAsync(workingDir, saveDir, saveName, OutputFormat.MP4, token: token);
             logger.LogDebug($"Downloaded file: {finalPath}");
-            opts.OnStatusChanged(new DownloadFinishEventArgs { Status = L.Text["Download finished"], FinalFilePath = finalPath, Progress = 100 });
+            opts.OnStatusChanged(new DownloadFinishEventArgs { Status = "Download finished", FinalFilePath = finalPath, Progress = 100 });
             Directory.Delete(workingDir, true);
         }
 
