@@ -1,6 +1,6 @@
 ARG DOTNET_VERSION=7.0
 
-FROM jrottenberg/ffmpeg:4.1-alpine as app
+FROM jrottenberg/ffmpeg:4.1-ubuntu as app
 
 RUN mkdir -p /data /media /download \
 && chmod 777 /data
@@ -22,6 +22,7 @@ EXPOSE 8099
 VOLUME /data /media /download
 WORKDIR /avone
 ENTRYPOINT ["./avone", \
-    "--data-dir", "/data"]
+    "--data-dir", "/data", \
+    "--ffmpeg", "/usr/local/bin/ffmpeg"]
 HEALTHCHECK --interval=30s --timeout=30s --start-period=10s --retries=3 \
      CMD curl -Lk -fsS "${HEALTHCHECK_URL}" || exit 1
