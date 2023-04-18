@@ -1,20 +1,16 @@
 ARG DOTNET_VERSION=7.0
 
-FROM mcr.microsoft.com/dotnet/runtime-deps:${DOTNET_VERSION}-alpine as app
+FROM mcr.microsoft.com/dotnet/runtime-deps:${DOTNET_VERSION}-ubuntu as app
 
-RUN apk update
-RUN apk add yasm && apk add ffmpeg
+RUN apt update && apt install ffmpeg
 RUN mkdir -p /data /media /download \
 && chmod 777 /data
 
 
-FROM mcr.microsoft.com/dotnet/sdk:${DOTNET_VERSION}-alpine as builder
+FROM mcr.microsoft.com/dotnet/sdk:${DOTNET_VERSION} as builder
 WORKDIR /repo
 COPY . .
 RUN dotnet publish AVOne.Server --disable-parallel --configuration Release --output="/avone" --self-contained --use-current-runtime -p:PublishSingleFile=true -p:EnableCompressionInSingleFile=true -p:DebugSymbols=false -p:DebugType=none
-ENV LC_ALL en_US.UTF-8
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
 
 FROM app
 ENV HEALTHCHECK_URL=http://localhost:8099/health
