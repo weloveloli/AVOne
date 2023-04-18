@@ -1,7 +1,9 @@
 ARG DOTNET_VERSION=7.0
 
-FROM jrottenberg/ffmpeg:4.1-ubuntu as app
+FROM mcr.microsoft.com/dotnet/runtime-deps:${DOTNET_VERSION}-alpine as app
 
+RUN apk update
+RUN apk add yasm && apk add ffmpeg
 RUN mkdir -p /data /media /download \
 && chmod 777 /data
 
@@ -23,6 +25,6 @@ VOLUME /data /media /download
 WORKDIR /avone
 ENTRYPOINT ["./avone", \
     "--data-dir", "/data", \
-    "--ffmpeg", "/usr/local/bin/ffmpeg"]
+    "--ffmpeg", "/usr/bin/ffmpeg"]
 HEALTHCHECK --interval=30s --timeout=30s --start-period=10s --retries=3 \
      CMD curl -Lk -fsS "${HEALTHCHECK_URL}" || exit 1
