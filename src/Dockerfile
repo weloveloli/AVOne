@@ -2,7 +2,7 @@ ARG DOTNET_VERSION=7.0
 
 FROM mcr.microsoft.com/dotnet/runtime-deps:${DOTNET_VERSION}-jammy as app
 
-RUN apt update && apt install ffmpeg
+RUN apt update && apt install -y ffmpeg
 RUN mkdir -p /data /media /download \
 && chmod 777 /data
 

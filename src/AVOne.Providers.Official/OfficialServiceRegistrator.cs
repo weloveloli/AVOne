@@ -6,6 +6,7 @@ namespace AVOne.Providers.Official
     using System.Net;
     using System.Net.Http.Headers;
     using AVOne.Abstraction;
+    using AVOne.Configuration;
     using AVOne.Constants;
     using Microsoft.Extensions.DependencyInjection;
 
@@ -24,13 +25,21 @@ namespace AVOne.Providers.Official
                 client.DefaultRequestHeaders.AcceptLanguage.Clear();
                 client.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue("zh-CN"));
                 client.DefaultRequestVersion = HttpVersion.Version20;
-            }).ConfigurePrimaryHttpMessageHandler((builder) =>
+            })
+            .ConfigurePrimaryHttpMessageHandler((builder) =>
             {
+                var configManager = builder.GetService<IConfigurationManager>();
+                var proxy = configManager.CommonConfiguration.ProviderConfig.Proxy;
                 var handler = new HttpClientHandler
                 {
                     ServerCertificateCustomValidationCallback = (m, c, ch, e) => { return true; },
                     AutomaticDecompression = DecompressionMethods.All
                 };
+                if(!string.IsNullOrEmpty(proxy) && proxy.StartsWith("http://") || proxy.StartsWith("https://")){
+                    handler.Proxy = new WebProxy(proxy);
+                    handler.UseProxy = true;
+                }
+
                 return handler;
 
             });
@@ -40,11 +49,19 @@ namespace AVOne.Providers.Official
                 client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36 Edg/94.0.992.50");
             }).ConfigurePrimaryHttpMessageHandler((builder) =>
             {
+                var configManager = builder.GetService<IConfigurationManager>();
+                var proxy = configManager.CommonConfiguration.DownloadConfig.Proxy;
+
                 var handler = new HttpClientHandler
                 {
                     ServerCertificateCustomValidationCallback = (m, c, ch, e) => { return true; },
                     AutomaticDecompression = DecompressionMethods.All
                 };
+                if(!string.IsNullOrEmpty(proxy) && proxy.StartsWith("http://") || proxy.StartsWith("https://")){
+                    handler.Proxy = new WebProxy(proxy);
+                    handler.UseProxy = true;
+                }
+
                 return handler;
 
             })

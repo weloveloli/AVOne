@@ -23,6 +23,14 @@
                             <MListItemTitle>@(I18n.T("Settings.System.Paths.Title"))</MListItemTitle>
                     </MListItemContent>
                 </MListItem>
+                <MListItem>
+                    <MListItemIcon>
+                            <MIcon>fas fa-wrench</MIcon>
+                    </MListItemIcon>
+                    <MListItemContent>
+                            <MListItemTitle>@(I18n.T("Settings.System.Proxy.Title"))</MListItemTitle>
+                    </MListItemContent>
+                </MListItem>
             </MListItemGroup>
         </MList>
     </MCol>
@@ -87,6 +95,35 @@
                     </MRow>
                 </MCardText>
              </MCard>
+        }
+        @if (_current == 2)
+        {
+            <MCard>
+                <MCardTitle>
+                    <MList Style="width:100%">
+                        <MRow Class="mt-2">
+                            <MCol Md=12 Sm=12>
+                                <MTextarea @bind-Value="ConfigurationManager.CommonConfiguration.ProviderConfig.Proxy"
+                                Rows="2" Label="@(I18n.T("Settings.System.Proxy.Default.Title"))"
+                                Placeholder="@(I18n.T("Settings.System.Proxy.Default.Placeholder"))" Outlined
+                                                                TValue="string" />
+                                </MCol>
+                                <MCol Md=12 Sm=12>
+                                <MTextarea @bind-Value="ConfigurationManager.CommonConfiguration.DownloadConfig.Proxy"
+                                Rows="2" Label="@(I18n.T("Settings.System.Proxy.Download.Title"))"
+                                Placeholder="@(I18n.T("Settings.System.Proxy.Download.Placeholder"))" Outlined
+                                                                TValue="string" />
+                                </MCol>
+                                </MRow>
+                                <MItem>
+                                <MButton OnClick="SaveConfig" Color="deep-purple white--text font-weight-black">
+                                @(I18n.T("Common.SaveChanges")) </MButton>
+                            <MButton Outlined Class="ml-2 grey--text font-weight-black" OnClick="ResetConfig">
+                            @(I18n.T("Common.Reset")) </MButton>
+                        </MItem>
+                    </MList>
+                </MCardTitle>
+            </MCard>
         }
     </MCol>
 </MRow>

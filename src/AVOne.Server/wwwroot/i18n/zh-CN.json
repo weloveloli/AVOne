@@ -92,6 +92,17 @@
       },
       "Provider": {
         "Title": "Provider配置"
+      },
+      "Proxy":{
+        "Title": "代理设置",
+        "Default":{
+          "Title": "默认代理",
+          "PlaceHolder":"请输入代理地址,如 http://127.0.0.1"
+        },
+        "Download":{
+          "Title": "下载器专用代理",
+          "PlaceHolder":"请输入代理地址,如 http://127.0.0.1"
+        }
       }
     },
     "Library": {
