@@ -8,7 +8,7 @@ RUN mkdir -p /data /media /download \
 && chmod 777 /data
 
 
-FROM mcr.microsoft.com/dotnet/sdk:${DOTNET_VERSION} as builder
+FROM mcr.microsoft.com/dotnet/sdk:${DOTNET_VERSION}-alpine as builder
 WORKDIR /repo
 COPY . .
 RUN dotnet publish AVOne.Server --disable-parallel --configuration Release --output="/avone" --self-contained --use-current-runtime -p:PublishSingleFile=true -p:EnableCompressionInSingleFile=true -p:DebugSymbols=false -p:DebugType=none
