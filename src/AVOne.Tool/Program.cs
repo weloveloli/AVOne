@@ -25,6 +25,7 @@ namespace AVOne.Tool
             {
                 if (parsed.Value is BaseHostOptions option)
                 {
+                    Environment.SetEnvironmentVariable($"{StartupHelpers.AVOnePrefix}_USE_DEFAULT_LOG", "false");
                     var appPaths = StartupHelpers.CreateApplicationPaths(option);
                     var appHost = await StartupHelpers.CreateConsoleAppHost(option, appPaths);
                     var host = CreateHost(args, appHost);

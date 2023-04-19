@@ -24,7 +24,7 @@ namespace AVOne.Server.Pages.App.Settings.Plugins
 
             if (ConfigurationManager.CommonConfiguration.PluginRepositories.Any(x => x.Url == model.RepoUrl))
             {
-                ShowSnackbarLocal("Settings.Plugin.PluginRepository.Message.AddRepoFailed", model.Name);
+                this.Error("Settings.Plugin.PluginRepository.Message.AddRepoFailed", model.Name);
                 return;
             }
             ConfigurationManager.CommonConfiguration.PluginRepositories.Add(new RepositoryInfo
@@ -34,7 +34,7 @@ namespace AVOne.Server.Pages.App.Settings.Plugins
             });
             // save the configuration
             ConfigurationManager.SaveConfiguration();
-            ShowSnackbarLocal("Settings.Plugin.PluginRepository.Message.AddRepoSuccess", model.Name);
+            this.Success("Settings.Plugin.PluginRepository.Message.AddRepoSuccess", model.Name);
         }
 
         private void RemovePluginRepo(RepositoryInfo toRemove)
@@ -42,7 +42,7 @@ namespace AVOne.Server.Pages.App.Settings.Plugins
             ConfigurationManager.CommonConfiguration.PluginRepositories.Remove(toRemove);
             // save the configuration
             ConfigurationManager.SaveConfiguration();
-            ShowSnackbarLocal("Settings.Plugin.PluginRepository.Message.DeleteRepoSuccess", toRemove.Name);
+            this.Success("Settings.Plugin.PluginRepository.Message.DeleteRepoSuccess", toRemove.Name);
         }
 
         private void UpdatePluginRepo(RepositoryInfo toUpdate)
@@ -52,11 +52,11 @@ namespace AVOne.Server.Pages.App.Settings.Plugins
             ConfigurationManager.SaveConfiguration();
             if (toUpdate.Enabled)
             {
-                ShowSnackbarLocal("Settings.Plugin.PluginRepository.Message.EnableRepoSuccess", toUpdate.Name);
+                this.Success("Settings.Plugin.PluginRepository.Message.EnableRepoSuccess", toUpdate.Name);
             }
             else
             {
-                ShowSnackbarLocal("Settings.Plugin.PluginRepository.Message.DisableRepoSuccess", toUpdate.Name);
+                this.Success("Settings.Plugin.PluginRepository.Message.DisableRepoSuccess", toUpdate.Name);
             }
         }
     }

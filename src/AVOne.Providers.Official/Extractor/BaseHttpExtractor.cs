@@ -7,21 +7,20 @@ namespace AVOne.Providers.Official.Extractor
     using System.Net.Http;
     using System.Threading;
     using System.Threading.Tasks;
-    using AVOne.Constants;
+    using AVOne.Common.Helper;
+    using AVOne.Configuration;
     using AVOne.Models.Download;
     using AVOne.Providers.Extractor;
     using Microsoft.Extensions.Logging;
 
-    public abstract class BaseHttpExtractor : IMediaExtractorProvider
+    public abstract class BaseHttpExtractor : HttpClientHelper, IMediaExtractorProvider
     {
-        protected HttpClient _httpClient;
         protected ILogger _logger;
         private readonly string _webPageStart;
 
-        protected BaseHttpExtractor(ILogger logger, IHttpClientFactory httpClientFactory, string webPageStart)
+        protected BaseHttpExtractor(IConfigurationManager manager, ILogger logger, IHttpClientFactory httpClientFactory, string webPageStart)
+            : base(manager, httpClientFactory)
         {
-
-            this._httpClient = httpClientFactory.CreateClient(HttpClientNames.Default);
             this._logger = logger;
             _webPageStart = webPageStart;
         }

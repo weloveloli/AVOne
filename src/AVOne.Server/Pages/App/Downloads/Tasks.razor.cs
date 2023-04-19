@@ -37,7 +37,7 @@ namespace AVOne.Server.Pages.App.Downloads
 
         [Parameter]
         [SupplyParameterFromQuery(Name = "Sort")]
-        public string? Sort{ get; set; }
+        public string? Sort { get; set; }
 
         private bool _visible = false;
         private JobModel _selectItem = new();
@@ -105,15 +105,18 @@ namespace AVOne.Server.Pages.App.Downloads
                 (!string.IsNullOrEmpty(Tag), (e) => e.Tags.Contains(Tag)),
                 (!string.IsNullOrEmpty(InputText), (e) => e.Name.Contains(InputText!)));
 
-            if(!string.IsNullOrEmpty(Sort)){
-                if(Sort == "Created"){
-                    pageList = pageList.OrderByDescending(e=>e.Created);
+            if (!string.IsNullOrEmpty(Sort))
+            {
+                if (Sort == "Created")
+                {
+                    pageList = pageList.OrderByDescending(e => e.Created);
                 }
-                else {
-                    pageList = pageList.OrderBy(e=>e.Name);
+                else
+                {
+                    pageList = pageList.OrderBy(e => e.Name);
                 }
-            }    
-            
+            }
+
             var list = new List<JobModel> { };
             list.AddRange(pageList);
             this.Jobs = list;

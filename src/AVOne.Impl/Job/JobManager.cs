@@ -8,6 +8,7 @@ namespace AVOne.Impl.Job
     using System.Linq.Expressions;
     using AVOne.Impl.Data;
     using AVOne.Models.Job;
+    using Furion.TaskQueue;
     using LiteDB;
     using Microsoft.Extensions.Logging;
 
@@ -15,13 +16,15 @@ namespace AVOne.Impl.Job
     {
         private readonly IDictionary<string, Task> TaskInstances;
         private readonly IDictionary<string, CancellationTokenSource> CancelToken;
+        private readonly ITaskQueue _queue;
         private readonly JobRepository _jobRepository;
         private readonly ILogger<JobManager> _logger;
 
-        public JobManager(JobRepository jobRepository, ILogger<JobManager> logger)
+        public JobManager(ITaskQueue queue, JobRepository jobRepository, ILogger<JobManager> logger)
         {
             TaskInstances = new ConcurrentDictionary<string, Task>();
             CancelToken = new ConcurrentDictionary<string, CancellationTokenSource>();
+            _queue = queue;
             _jobRepository = jobRepository;
             _logger = logger;
         }
@@ -73,38 +76,41 @@ namespace AVOne.Impl.Job
             job.Status = JobStatus.Canceled;
         }
 
-        public Task ExecuteJob<T>(T job) where T : IAVOneJob
+        public async Task EnqueueJob<T>(T job) where T : IAVOneJob
         {
-            job.Status = JobStatus.Running;
-            _jobRepository.UpsertJob(job);
-            var cancellationTokenSource = new CancellationTokenSource();
-            CancelToken[job.Key] = cancellationTokenSource;
-            var task = job.Execute(cancellationTokenSource.Token);
-            TaskInstances[job.Key] = task;
-
-            var exeTaks = task.ContinueWith((t) =>
+            await _queue.EnqueueAsync(async (_, _) =>
             {
-                if (t.IsCompletedSuccessfully)
-                {
-                    job.Status = JobStatus.Completed;
-                    job.ProgressValue = 100;
-                }
-                else if (t.IsCanceled)
-                {
-                    job.Status = JobStatus.Canceled;
-                    _logger.LogDebug("Job {0} is Canceled", job.Key);
-                }
-                else if (t.IsFaulted)
-                {
-                    job.Status = JobStatus.Failed;
-                    _logger.LogWarning(t.Exception, "Job {0} canceld due to exception", job.Key);
-                }
-
+                job.Status = JobStatus.Running;
                 _jobRepository.UpsertJob(job);
-                TaskInstances.Remove(job.Key);
-                CancelToken.Remove(job.Key);
+                var cancellationTokenSource = new CancellationTokenSource();
+                CancelToken[job.Key] = cancellationTokenSource;
+                var task = job.Execute(cancellationTokenSource.Token);
+                TaskInstances[job.Key] = task;
+
+                var exeTaks = task.ContinueWith((t) =>
+                {
+                    if (t.IsCompletedSuccessfully)
+                    {
+                        job.Status = JobStatus.Completed;
+                        job.ProgressValue = 100;
+                    }
+                    else if (t.IsCanceled)
+                    {
+                        job.Status = JobStatus.Canceled;
+                        _logger.LogDebug("Job {0} is Canceled", job.Key);
+                    }
+                    else if (t.IsFaulted)
+                    {
+                        job.Status = JobStatus.Failed;
+                        _logger.LogWarning(t.Exception, "Job {0} canceld due to exception", job.Key);
+                    }
+
+                    _jobRepository.UpsertJob(job);
+                    TaskInstances.Remove(job.Key);
+                    CancelToken.Remove(job.Key);
+                });
+                await exeTaks;
             });
-            return exeTaks;
         }
 
         public void CancelJobByKey(string jobKey)

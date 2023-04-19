@@ -3,22 +3,14 @@
 
 namespace AVOne.Server.Shared
 {
+    using Microsoft.JSInterop;
+
     public abstract class ProCompontentBase : ComponentBase
     {
         private I18n? _languageProvider;
-        protected bool _snackbar;
-        protected string? _snackbarMessage;
 
-        public void ShowSnackbar(string msg)
-        {
-            _snackbarMessage = msg;
-            _snackbar = true;
-        }
-        public void ShowSnackbarLocal(string msgKey, params object[] args)
-        {
-            _snackbarMessage = string.Format(T(msgKey), args);
-            _snackbar = true;
-        }
+        [Inject]
+        public IJSRuntime JS { get; set; }
 
         [CascadingParameter]
         public I18n LanguageProvider
@@ -40,6 +32,40 @@ namespace AVOne.Server.Shared
         public string T(string key, params object[] args)
         {
             return string.Format(T(key), args);
+        }
+
+        public void Success(string message, params object[] args)
+        {
+            var msg = T(message, args);
+            JS?.InvokeVoidAsync("Qmsg.success", msg);
+        }
+        public void Info(string message, params object[] args)
+        {
+            var msg = T(message, args);
+            JS?.InvokeVoidAsync("Qmsg.info", msg);
+        }
+
+        public void Error(string message, params object[] args)
+        {
+            var msg = T(message, args);
+            JS?.InvokeVoidAsync("Qmsg.error", msg);
+        }
+
+        public void Warning(string message, params object[] args)
+        {
+            var msg = T(message, args);
+            JS?.InvokeVoidAsync("Qmsg.warning", msg);
+        }
+
+        public void ShowLoading(string message, bool autoClose, int timeout, params object[] args)
+        {
+            var msg = T(message, args);
+            JS?.InvokeVoidAsync("Qmsg.loading", msg, autoClose, timeout);
+        }
+
+        public void CloseLoading()
+        {
+            JS?.InvokeVoidAsync("Qmsg.QmsgCloseLoading");
         }
     }
 }

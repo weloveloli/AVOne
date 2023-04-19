@@ -23,15 +23,16 @@ namespace AVOne.Impl.Registrator
     using AVOne.Providers.Metadata;
     using AVOne.Resolvers;
     using AVOne.Updates;
+    using Furion.TaskQueue;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
 
     public class ImplRegistrator : IServiceRegistrator
     {
-        public void RegisterServices(IServiceCollection serviceCollection)
+        public void RegisterServices(IServiceCollection service)
         {
             // ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls13;
-            serviceCollection.AddHttpClient(HttpClientNames.Default, (client) =>
+            service.AddHttpClient(HttpClientNames.Default, (client) =>
             {
                 client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36 Edg/94.0.992.50");
                 client.DefaultRequestHeaders.AcceptLanguage.Clear();
@@ -41,13 +42,13 @@ namespace AVOne.Impl.Registrator
             .ConfigurePrimaryHttpMessageHandler((builder) =>
             {
                 var configManager = builder.GetService<IConfigurationManager>();
-                var proxy = configManager.CommonConfiguration.ProviderConfig.Proxy;
+                var proxy = configManager!.CommonConfiguration.ProviderConfig.Proxy;
                 var handler = new HttpClientHandler
                 {
                     ServerCertificateCustomValidationCallback = (m, c, ch, e) => { return true; },
                     AutomaticDecompression = DecompressionMethods.All
                 };
-                if (!string.IsNullOrEmpty(proxy) && proxy.StartsWith("http://") || proxy.StartsWith("https://"))
+                if (!string.IsNullOrEmpty(proxy) && (proxy.StartsWith("http://") || proxy.StartsWith("https://")))
                 {
                     handler.Proxy = new WebProxy(proxy);
                     handler.UseProxy = true;
@@ -57,20 +58,20 @@ namespace AVOne.Impl.Registrator
 
             });
 
-            serviceCollection.AddHttpClient(HttpClientNames.Download, (client) =>
+            service.AddHttpClient(HttpClientNames.Download, (client) =>
             {
                 client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36 Edg/94.0.992.50");
             }).ConfigurePrimaryHttpMessageHandler((builder) =>
             {
                 var configManager = builder.GetService<IConfigurationManager>();
-                var proxy = configManager.CommonConfiguration.DownloadConfig.Proxy;
+                var proxy = configManager!.CommonConfiguration.DownloadConfig.Proxy;
 
                 var handler = new HttpClientHandler
                 {
                     ServerCertificateCustomValidationCallback = (m, c, ch, e) => { return true; },
                     AutomaticDecompression = DecompressionMethods.All
                 };
-                if (!string.IsNullOrEmpty(proxy) && proxy.StartsWith("http://") || proxy.StartsWith("https://"))
+                if (!string.IsNullOrEmpty(proxy) && (proxy.StartsWith("http://") || proxy.StartsWith("https://")))
                 {
                     handler.Proxy = new WebProxy(proxy);
                     handler.UseProxy = true;
@@ -92,17 +93,22 @@ namespace AVOne.Impl.Registrator
                     PooledConnectionLifetime = TimeSpan.FromMinutes(10),
                     PooledConnectionIdleTimeout = TimeSpan.FromSeconds(90),
                 });
-            serviceCollection.AddSingleton<IProviderManager, ProviderManager>();
-            serviceCollection.AddSingleton<ILibraryManager, LibraryManager>();
-            serviceCollection.AddSingleton<IInstallationManager, InstallationManager>();
-            serviceCollection.AddSingleton<IFileSystem, ManagedFileSystem>();
-            serviceCollection.AddSingleton<IDirectoryService, DirectoryService>();
-            serviceCollection.AddSingleton(sp =>
+            service.AddSingleton<IProviderManager, ProviderManager>();
+            service.AddSingleton<ILibraryManager, LibraryManager>();
+            service.AddSingleton<IInstallationManager, InstallationManager>();
+            service.AddSingleton<IFileSystem, ManagedFileSystem>();
+            service.AddSingleton<IDirectoryService, DirectoryService>();
+            service.AddSingleton(sp =>
             {
                 return ApplicationDbContext.Create(sp.GetService<IApplicationPaths>());
             })
             .AddSingleton<JobRepository>()
+            .AddTaskQueue((builder) =>
+            {
+                builder.ChannelCapacity = 1;
+            })
             .AddSingleton<IJobManager, JobManager>();
+
         }
 
         public void PostBuildService(IApplicationHost host)

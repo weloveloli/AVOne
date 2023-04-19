@@ -9,7 +9,7 @@ namespace AVOne.Impl.Job
     {
         public void AddJob<T>(T job) where T : IAVOneJob;
 
-        public Task ExecuteJob<T>(T job) where T : IAVOneJob;
+        public Task EnqueueJob<T>(T job) where T : IAVOneJob;
 
         public void CancelJobByKey(string jobKey);
 

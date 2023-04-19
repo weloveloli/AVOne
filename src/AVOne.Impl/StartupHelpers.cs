@@ -38,7 +38,7 @@ namespace AVOne.Impl
         /// </summary>
         internal const string LoggingConfigFileSystem = "logging.json";
 
-        internal const string AVOnePrefix = "AVONE";
+        public const string AVOnePrefix = "AVONE";
         internal const string AVONE_NAME = "avone";
         internal static readonly string[] RelevantEnvVarPrefixes = { AVOnePrefix, "DOTNET_", "ASPNETCORE_" };
         internal static string RealRootContentPath => AppContext.BaseDirectory;

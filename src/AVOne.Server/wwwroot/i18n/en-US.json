@@ -39,17 +39,18 @@
       "DeleteTask": "Delete Download Task",
       "StopTask": "Stop Download Task",
       "ViewDetail": "View Task Detail",
-      "Failed":"Download Failed",
+      "Failed": "Download Failed",
+      "ExtractingMedia": "Extracting Media from '{0}'",
       "Message": {
         "AddTaskSuccess": "Add download task '{0}' success",
         "AddTaskFailed": "Add download task '{0}' failed due to '{1}'",
         "DeleteTaskSuccess": "Delete download task '{0}' success",
         "DeleteTaskFailed": "Delete download task '{0}' failed"
       },
-      "FailedReason":{
-        "NoExtrator":"No extrator for url '{0}'",
-        "NoDownloader":"No downloader for url '{0}'",
-        "GetDownloadItemFailed":"Can't get download item for url '{0}'"
+      "FailedReason": {
+        "NoExtrator": "No extrator for url '{0}'",
+        "NoDownloader": "No downloader for url '{0}'",
+        "GetDownloadItemFailed": "Can't get download item for url '{0}'"
       }
     },
     "Status": {
@@ -71,6 +72,9 @@
   },
   "Settings": {
     "Title": "Settings",
+    "Common": {
+      "SaveSuccess": "Save Settings Success"
+    },
     "System": {
       "Title": "System Settings",
       "Scaning": {

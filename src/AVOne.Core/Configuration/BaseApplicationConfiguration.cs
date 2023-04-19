@@ -99,5 +99,7 @@ namespace AVOne.Configuration
         public bool EnableCaseSensitiveItemIds { get; set; } = true;
 
         public List<RepositoryInfo> PluginRepositories { get; set; } = new List<RepositoryInfo>();
+
+        public long Verion { get; set; } = DateTimeOffset.Now.ToUnixTimeSeconds();
     }
 }

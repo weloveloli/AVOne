@@ -20,6 +20,7 @@ namespace AVOne.Server.Pages.App.Settings
         private void SaveConfig()
         {
             this.ConfigurationManager.SaveConfiguration();
+            this.Success("Settings.Common.SaveSuccess");
         }
         private void ResetConfig()
         {

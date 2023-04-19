@@ -9,6 +9,7 @@ namespace AVOne.Providers.Official.Extractor
     using System.Text.RegularExpressions;
     using System.Threading;
     using System.Threading.Tasks;
+    using AVOne.Configuration;
     using AVOne.Enum;
     using AVOne.Models.Download;
     using Furion.JsonSerialization;
@@ -16,7 +17,7 @@ namespace AVOne.Providers.Official.Extractor
 
     public partial class AV51ClubExtrator : BaseHttpExtractor
     {
-        public AV51ClubExtrator(ILogger<AV51ClubExtrator> logger, IHttpClientFactory httpClientFactory) : base(logger, httpClientFactory, "https://51av.club")
+        public AV51ClubExtrator(IConfigurationManager manager, ILogger<AV51ClubExtrator> logger, IHttpClientFactory httpClientFactory) : base(manager, logger, httpClientFactory, "https://51av.club")
         {
             _titleRegex = TitleRegex();
             _scriptRegex = ScriptRegex();
@@ -33,7 +34,7 @@ namespace AVOne.Providers.Official.Extractor
             var result = new List<BaseDownloadableItem>();
             try
             {
-                var resp = await _httpClient.GetAsync(webPageUrl, token);
+                var resp = await GetHttpClient().GetAsync(webPageUrl, token);
                 resp.EnsureSuccessStatusCode();
                 var html = await resp.Content.ReadAsStringAsync();
                 var title = GetStringFromHtml(html, _titleRegex);

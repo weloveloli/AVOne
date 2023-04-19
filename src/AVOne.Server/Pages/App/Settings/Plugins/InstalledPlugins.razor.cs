@@ -33,7 +33,7 @@ namespace AVOne.Server.Pages.App.Settings.Plugins
             // save the configuration
             ConfigurationManager.SaveConfiguration();
 
-            ShowSnackbarLocal("Settings.Plugin.InstalledPlugin.Message.DisablePluginsSuccess", plugin.Name);
+            this.Success("Settings.Plugin.InstalledPlugin.Message.DisablePluginsSuccess", plugin.Name);
         }
 
         // create a function to enable plugin
@@ -44,7 +44,7 @@ namespace AVOne.Server.Pages.App.Settings.Plugins
             // save the configuration
             ConfigurationManager.SaveConfiguration();
 
-            ShowSnackbarLocal("Settings.Plugin.InstalledPlugin.Message.EnablePluginsSuccess", plugin.Name);
+            this.Success("Settings.Plugin.InstalledPlugin.Message.EnablePluginsSuccess", plugin.Name);
         }
 
         // create a function to delete plugin
@@ -56,7 +56,7 @@ namespace AVOne.Server.Pages.App.Settings.Plugins
             // save the configuration
             ConfigurationManager.SaveConfiguration();
 
-            ShowSnackbarLocal("Settings.Plugin.InstalledPlugin.Message.DeletePluginsSuccess", plugin.Name);
+            this.Success("Settings.Plugin.InstalledPlugin.Message.DeletePluginsSuccess", plugin.Name);
         }
 
         // create a function to get url of the plugin

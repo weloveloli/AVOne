@@ -9,6 +9,7 @@ namespace AVOne.Impl.Updates
     using System.Security.Cryptography;
     using System.Text.Json;
     using AVOne.Abstraction;
+    using AVOne.Common.Helper;
     using AVOne.Common.Plugins;
     using AVOne.Configuration;
     using AVOne.Constants;
@@ -20,14 +21,13 @@ namespace AVOne.Impl.Updates
     /// <summary>
     /// Manages all install, uninstall, and update operations for the system and individual plugins.
     /// </summary>
-    public class InstallationManager : IInstallationManager
+    public class InstallationManager : HttpClientHelper, IInstallationManager
     {
         /// <summary>
         /// The logger.
         /// </summary>
         private readonly ILogger<InstallationManager> _logger;
         private readonly IApplicationPaths _appPaths;
-        private readonly IHttpClientFactory _httpClientFactory;
         private readonly IConfigurationManager _config;
         private readonly JsonSerializerOptions _jsonSerializerOptions;
         private readonly IPluginManager _pluginManager;
@@ -64,7 +64,7 @@ namespace AVOne.Impl.Updates
             IApplicationPaths appPaths,
             IHttpClientFactory httpClientFactory,
             IConfigurationManager config,
-            IPluginManager pluginManager)
+            IPluginManager pluginManager) : base(config, httpClientFactory)
         {
             _currentInstallations = new List<(InstallationInfo, CancellationTokenSource)>();
             _completedInstallationsInternal = new ConcurrentBag<InstallationInfo>();
@@ -72,7 +72,6 @@ namespace AVOne.Impl.Updates
             _logger = logger;
             _applicationHost = appHost;
             _appPaths = appPaths;
-            _httpClientFactory = httpClientFactory;
             _config = config;
             _jsonSerializerOptions = JsonDefaults.Options;
             _pluginManager = pluginManager;
@@ -86,7 +85,7 @@ namespace AVOne.Impl.Updates
         {
             try
             {
-                PackageInfo[]? packages = await _httpClientFactory.CreateClient(HttpClientNames.Default)
+                PackageInfo[]? packages = await GetHttpClient(HttpClientNames.Default)
                         .GetFromJsonAsync<PackageInfo[]>(new Uri(manifest), _jsonSerializerOptions, cancellationToken).ConfigureAwait(false);
 
                 if (packages == null)
@@ -487,7 +486,7 @@ namespace AVOne.Impl.Updates
             // Always override the passed-in target (which is a file) and figure it out again
             var targetDir = Path.Combine(_appPaths.PluginsPath, package.Name);
 
-            using var response = await _httpClientFactory.CreateClient(HttpClientNames.Default)
+            using var response = await GetHttpClient(HttpClientNames.Default)
                 .GetAsync(new Uri(package.SourceUrl), cancellationToken).ConfigureAwait(false);
             response.EnsureSuccessStatusCode();
             await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);

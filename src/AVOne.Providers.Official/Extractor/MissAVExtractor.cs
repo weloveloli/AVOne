@@ -10,6 +10,7 @@ namespace AVOne.Providers.Official.Extractor
     using System.Text.RegularExpressions;
     using System.Threading;
     using System.Threading.Tasks;
+    using AVOne.Configuration;
     using AVOne.Enum;
     using AVOne.Models.Download;
     using Jint;
@@ -31,8 +32,8 @@ namespace AVOne.Providers.Official.Extractor
         public override string Name => "Official";
 
         public override int Order => 1;
-        public MissAVExtractor(IHttpClientFactory httpClientFactory, ILogger<MissAVExtractor> logger)
-        : base(logger, httpClientFactory, "https://missav.com")
+        public MissAVExtractor(IConfigurationManager manager, IHttpClientFactory httpClientFactory, ILogger<MissAVExtractor> logger)
+        : base(manager, logger, httpClientFactory, "https://missav.com")
         {
             // The regex pattern to match lines starting with eval
             var pattern = @"^eval\((.*)\)$";
@@ -51,7 +52,7 @@ namespace AVOne.Providers.Official.Extractor
             {
                 var req = new HttpRequestMessage(HttpMethod.Get, webPageUrl);
                 req.Version = HttpVersion.Version20;
-                var resp = await _httpClient.SendAsync(req, token);
+                var resp = await GetHttpClient().SendAsync(req, token);
                 resp.EnsureSuccessStatusCode();
                 var html = await resp.Content.ReadAsStringAsync();
                 var title = GetTitleFromHtml(html, _titleRegex);
