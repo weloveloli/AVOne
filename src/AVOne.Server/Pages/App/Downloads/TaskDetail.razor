@@ -11,11 +11,23 @@
             <MCardText class="pl-4 pr-4">
                 <MDivider></MDivider>
                 <div class="text-subtitle-1 mt-3 mb-3">@T("Download.Detail.JobInfo")</div>
+                <MListItem ThreeLine>
+                    <MListItemTitle class="text-caption">@T("Download.Detail.DisplayName")</MListItemTitle>
+                    <MListItemSubtitle class="text-right text-btn neutral-lighten-1--text"> @_job?.DownloadableItem?.SaveName </MListItemSubtitle>
+                </MListItem>
+                <MListItem>
+                    <MListItemTitle class="text-caption">@T("Download.Detail.OutputDir")</MListItemTitle>
+                    <MListItemSubtitle class="text-right text-btn neutral-lighten-1--text"> @_job?.DownloadOpts?.OutputDir </MListItemSubtitle>
+                </MListItem>
+                <MListItem ThreeLine>
+                    <MListItemTitle class="text-caption">@T("Download.Detail.OrignalLink")</MListItemTitle>
+                    <MListItemSubtitle class="text-right text-btn neutral-lighten-1--text"> @_job?.DownloadableItem?.OrignalLink </MListItemSubtitle>
+                </MListItem>
                 <MSelect Outlined Label=@T("Download.Detail.Tags") Multiple @bind-Value=SelectItem.Tags TItem="SelectData"
                          TValue="List<string>" TItemValue="string" Items=@_tagList ItemText="i => i.Label"
                          ItemValue="i => i.Value">
                     <SelectionContent Context="_context">
-                        <MChip Style="height:32px;border-radius:32px;" Outlined Close CloseIcon="mdi-close" TextColor="@GetColorForTag(_context.Item.Value)"
+                        <MChip Style="height:32px;border-radius:32px;" Outlined Close CloseIcon="mdi-close" TextColor="@Tasks.GetColorForTag(_context.Item.Value)"
                                OnCloseClick="()=>HandleCloseClick(_context.Item.Label)">@_context.Item.Label</MChip>
                     </SelectionContent>
                     </MSelect>
@@ -95,28 +107,6 @@
             _job = new DownloadAVJob();
             _job.FromModel(SelectItem);
         }
-    }
-
-    private Dictionary<string, string> _tagColorMap = new Dictionary<string, string>()
-    {
-        { "Censored", "purple" },
-        { "Uncensored", "#05CD99" },
-        { "Chinese", "#FFB547" },
-        { "ChineseSub", "warn" },
-        { "Taiwanese", "#FF5252" },
-        { "Japanese", "#4318FF" },
-        { "Catoon", "#05CD99" },
-        { "US", "#FFB547" },
-        {  "Other", "cyan" }
-    };
-
-    public string GetColorForTag(string tagStr)
-    {
-        if (string.IsNullOrEmpty(tagStr) && !_tagColorMap.ContainsKey(tagStr))
-        {
-            return "grey";
-        }
-        return _tagColorMap[tagStr];
     }
 
     private List<SelectData> _tagList = new List<SelectData>();

@@ -8,6 +8,9 @@ namespace AVOne.Models.Download
 
     public class M3U8Item : BaseDownloadableItem
     {
+        public M3U8Item()
+        {
+        }
         public M3U8Item(string saveName, string url, Dictionary<string, string>? header, MediaQuality quality, string title)
         {
             SaveName = saveName;

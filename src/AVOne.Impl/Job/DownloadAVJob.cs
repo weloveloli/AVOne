@@ -6,6 +6,7 @@ namespace AVOne.Impl.Job
     using System;
     using System.Collections.Generic;
     using System.Reflection;
+    using System.Runtime.CompilerServices;
     using System.Text.Json;
     using System.Threading;
     using System.Threading.Tasks;
@@ -183,7 +184,15 @@ namespace AVOne.Impl.Job
             else if (jobStatusArgs is DownloadFinishEventArgs finishEventArgs)
             {
                 this.FinalFilePath = finishEventArgs.FinalFilePath;
+                this.TotalBytes = finishEventArgs.TotalFileBytes;
+                this.Speed = (long?)Div(finishEventArgs.TotalFileBytes, DateTime.UtcNow.Subtract(this.Created).TotalSeconds);
             }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Div(double a, double b)
+        {
+            return b == 0 ? 0 : a / b;
         }
     }
 }

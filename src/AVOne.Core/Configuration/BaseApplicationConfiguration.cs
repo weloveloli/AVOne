@@ -30,8 +30,9 @@ namespace AVOne.Configuration
     public class DownloadConfig
     {
         public string DefaultDownloadDir { get; set; } = OperatingSystem.IsWindows() ? "d://downloads" : "/download";
-        public int DefaultDownloadThreadCount { get; set; } = 4;
-        public int DefaultRetryCount { get; set; } = 1;
+        public int DefaultDownloadThreadCount { get; set; } = 8;
+        public int DefaultRetryCount { get; set; } = 4;
+        public int DefaultRetryWait { get; set; } = 500;
         public string Proxy { get; set; }
     }
 

@@ -75,7 +75,7 @@ namespace AVOne.Providers.Official.Extractor
                         quality = MediaQuality.VeryHigh;
                     }
 
-                    result.Add(new M3U8Item(avId, source, HeaderForMissAV, quality, title));
+                    result.Add(new M3U8Item(avId, source, HeaderForMissAV, quality, title) { OrignalLink = webPageUrl });
                 }
             }
             catch (Exception ex)

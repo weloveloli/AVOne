@@ -10,5 +10,7 @@ namespace AVOne.Models.Download
     public class DownloadFinishEventArgs : JobStatusArgs
     {
         public string FinalFilePath { get; set; }
+
+        public long TotalFileBytes { get; set; }
     }
 }

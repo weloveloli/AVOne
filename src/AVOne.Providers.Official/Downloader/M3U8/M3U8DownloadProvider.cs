@@ -90,6 +90,8 @@ namespace AVOne.Providers.Official.Downloader.M3U8
             logger.LogDebug($"Start merging file");
             var finalPath = await MergeAsync(workingDir, saveDir, saveName, OutputFormat.MP4, token: token);
             logger.LogDebug($"Downloaded file: {finalPath}");
+            var finalFileInfo = new FileInfo(finalPath);
+
             opts.OnStatusChanged(new DownloadFinishEventArgs { Status = "Download finished", FinalFilePath = finalPath, Progress = 100 });
             Directory.Delete(workingDir, true);
         }
@@ -116,118 +118,122 @@ namespace AVOne.Providers.Official.Downloader.M3U8
                 }
             };
             timer.Enabled = true;
-            var i = 1;
-            while (i++ <= opts.RetryCount)
+
+            try
             {
-                try
+                foreach (var (part, index) in mediaPlaylist.Parts.Select((e, i) => (e, i)))
                 {
+                    var partDir = Path.Combine(workingDir, $"Part_{index}");
+                    Directory.CreateDirectory(partDir);
+                    var list = mediaPlaylist.Parts[index].Segments;
+                    var numbers = Enumerable.Range(0, list.Count).ToList();
 
-                    foreach (var (part, index) in mediaPlaylist.Parts.Select((e, i) => (e, i)))
+                    var keyDict = new Dictionary<string, byte[]>();
+                    var keyList = list.Where(e => e.Key.Method != "NONE").Select(e => e.Key.Uri).Distinct();
+
+                    foreach (var key in keyList)
                     {
-                        var partDir = Path.Combine(workingDir, $"Part_{index}");
-                        Directory.CreateDirectory(partDir);
-                        var list = mediaPlaylist.Parts[index].Segments;
-                        var numbers = Enumerable.Range(0, list.Count).ToList();
-
-                        var keyDict = new Dictionary<string, byte[]>();
-                        var keyList = list.Where(e => e.Key.Method != "NONE").Select(e => e.Key.Uri).Distinct();
-
-                        foreach (var key in keyList)
+                        var request = new HttpRequestMessage
                         {
-                            var request = new HttpRequestMessage
-                            {
-                                RequestUri = new Uri(key),
-                            };
+                            RequestUri = new Uri(key),
+                        };
 
-                            if (m3U8Item.Header != null)
+                        if (m3U8Item.Header != null)
+                        {
+                            foreach (var header in m3U8Item.Header)
                             {
-                                foreach (var header in m3U8Item.Header)
-                                {
-                                    request.Headers.Add(header.Key, header.Value);
-                                }
+                                request.Headers.Add(header.Key, header.Value);
                             }
-
-                            var rsp = _client.Send(request);
-                            var bytes = rsp.Content.ReadAsByteArrayAsync().GetAwaiter().GetResult();
-                            keyDict[key] = bytes;
-
                         }
 
-                        _ = Parallel.ForEach(numbers, new ParallelOptions { MaxDegreeOfParallelism = threadCount, CancellationToken = token }, index =>
+                        var rsp = _client.Send(request);
+                        var bytes = rsp.Content.ReadAsByteArrayAsync().GetAwaiter().GetResult();
+                        keyDict[key] = bytes;
+
+                    }
+
+                    _ = Parallel.ForEach(numbers, new ParallelOptions { MaxDegreeOfParallelism = threadCount, CancellationToken = token }, index =>
+                    {
+                        var i = 1;
+                        while (i < opts.RetryCount)
                         {
-                            var segment = list[index];
-                            var tsPath = Path.Combine(partDir, $"{index}.ts");
-                            var tsTmpPath = Path.Combine(partDir, $"{index}.tmp");
-                            if (!File.Exists(tsPath))
+                            try
                             {
-                                var request = new HttpRequestMessage
+                                var segment = list[index];
+                                var tsPath = Path.Combine(partDir, $"{index}.ts");
+                                var tsTmpPath = Path.Combine(partDir, $"{index}.tmp");
+                                if (!File.Exists(tsPath))
                                 {
-                                    RequestUri = new Uri(segment.Uri),
-                                };
-
-                                if (m3U8Item.Header != null)
-                                {
-                                    foreach (var header in m3U8Item.Header)
+                                    var request = new HttpRequestMessage
                                     {
-                                        request.Headers.Add(header.Key, header.Value);
-                                    }
-                                }
+                                        RequestUri = new Uri(segment.Uri),
+                                    };
 
-                                var rsp = _client.Send(request);
-                                rsp.EnsureSuccessStatusCode();
-
-                                var stream = File.OpenWrite(tsTmpPath);
-                                using var tsStream = rsp.Content.ReadAsStream();
-                                CopyTo(tsStream, stream, token, opts, interval, ref intervalDownloadBytes);
-                                stream.Flush();
-                                stream.Close();
-                                if (segment.Key.Method == "AES-128")
-                                {
-                                    using var aesAlg = Aes.Create();
-                                    aesAlg.Key = keyDict[segment.Key.Uri];
-                                    aesAlg.IV = ConvertHexStringToByteArray(segment.Key.IV);
-                                    var decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
-                                    using var fsCrypt = new FileStream(tsTmpPath, FileMode.Open);
-                                    using var cs = new CryptoStream(fsCrypt, decryptor, CryptoStreamMode.Read);
-                                    using var fsOut = new FileStream(tsPath, FileMode.Create);
-                                    int read;
-                                    var buffer = new byte[1048576];
-                                    while ((read = cs.Read(buffer, 0, buffer.Length)) > 0)
+                                    if (m3U8Item.Header != null)
                                     {
-                                        fsOut.Write(buffer, 0, read);
+                                        foreach (var header in m3U8Item.Header)
+                                        {
+                                            request.Headers.Add(header.Key, header.Value);
+                                        }
                                     }
+
+                                    var rsp = _client.Send(request);
+                                    rsp.EnsureSuccessStatusCode();
+
+                                    var stream = File.OpenWrite(tsTmpPath);
+                                    using var tsStream = rsp.Content.ReadAsStream();
+                                    CopyTo(tsStream, stream, token, opts, interval, ref intervalDownloadBytes);
+                                    stream.Flush();
+                                    stream.Close();
+                                    if (segment.Key.Method == "AES-128")
+                                    {
+                                        using var aesAlg = Aes.Create();
+                                        aesAlg.Key = keyDict[segment.Key.Uri];
+                                        aesAlg.IV = ConvertHexStringToByteArray(segment.Key.IV);
+                                        var decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
+                                        using var fsCrypt = new FileStream(tsTmpPath, FileMode.Open);
+                                        using var cs = new CryptoStream(fsCrypt, decryptor, CryptoStreamMode.Read);
+                                        using var fsOut = new FileStream(tsPath, FileMode.Create);
+                                        int read;
+                                        var buffer = new byte[1048576];
+                                        while ((read = cs.Read(buffer, 0, buffer.Length)) > 0)
+                                        {
+                                            fsOut.Write(buffer, 0, read);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        File.Move(tsTmpPath, tsPath);
+                                    }
+                                    var info = new FileInfo(tsPath);
+                                    Interlocked.Add(ref downloadBytes, info.Length);
                                 }
                                 else
                                 {
-                                    File.Move(tsTmpPath, tsPath);
+                                    var info = new FileInfo(tsPath);
+                                    Interlocked.Add(ref downloadBytes, info.Length);
                                 }
-                                var info = new FileInfo(tsPath);
-                                Interlocked.Add(ref downloadBytes, info.Length);
-
+                                var done = Interlocked.Increment(ref finish);
                             }
-                            else
+                            catch (Exception)
                             {
-                                var info = new FileInfo(tsPath);
-                                Interlocked.Add(ref downloadBytes, info.Length);
+                                Thread.Sleep(opts.RetryWait ?? 1000);
+                                if (i == opts.RetryCount)
+                                {
+                                    stop = true;
+                                    timer.Enabled = false;
+                                    throw;
+                                }
                             }
-                            var done = Interlocked.Increment(ref finish);
-                        });
-                    }
-                }
-                catch (Exception e)
-                {
-                    logger.LogError(e, "Download Parts Failed");
-                    Thread.Sleep(opts.RetryWait ?? 1000);
-                    if (i == opts.RetryCount)
-                    {
-                        stop = true;
-                        timer.Enabled = false;
-                        throw;
-                    }
-
+                        }
+                    });
                 }
             }
-
+            catch (Exception e)
+            {
+                logger.LogError(e, "Download Parts Failed");
+                throw;
+            }
         }
         public static byte[] ConvertHexStringToByteArray(string hexString)
         {

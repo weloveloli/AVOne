@@ -44,7 +44,7 @@ namespace AVOne.Providers.Official.Extractor
                 var sourceLinks = GetSources(html);
                 foreach (var sourceLink in sourceLinks)
                 {
-                    result.Add(new M3U8Item(avId, sourceLink, null, MediaQuality.Low, title));
+                    result.Add(new M3U8Item(avId, sourceLink, null, MediaQuality.Low, title) { OrignalLink = webPageUrl });
                 }
             }
             catch (Exception ex)

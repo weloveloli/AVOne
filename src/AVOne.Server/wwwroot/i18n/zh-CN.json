@@ -27,17 +27,20 @@
       "SortbyName":"按名称排序",
       "SortbyCreatedDate":"按创建时间排序"
     },
-    "Detail":{
-      "Info":"下载信息",
-      "JobInfo":"任务信息",
-      "Save":"保存",
-      "Tags":"任务标签",
-      "DownloadSpeedInfo":"速度信息",
-      "TotalSize":"文件大小",
-      "Speed":"下载平均速度",
-      "FileInfo":"文件信息",
-      "FinalDir":"文件目录",
-      "FinalFileName":"文件名"      
+    "Detail": {
+      "Info": "下载信息",
+      "JobInfo": "任务信息",
+      "Save": "保存",
+      "Tags": "任务标签",
+      "DownloadSpeedInfo": "速度信息",
+      "TotalSize": "文件大小",
+      "Speed": "下载平均速度",
+      "FileInfo": "文件信息",
+      "FinalDir": "文件目录",
+      "FinalFileName": "文件名",
+      "DisplayName": "名称",
+      "OutputDir": "目标下载路劲",
+      "OrignalLink": "原始地址"
     },
     "Tasks": {
       "Title": "下载任务",
@@ -51,6 +54,7 @@
       "ViewDetail": "查看任务详情",
       "Failed": "下载失败",
       "ExtractingMedia": "正在从'{0}'提取媒体信息",
+      "AdvancedOption": "高级选项",
       "Message": {
         "AddTaskSuccess": "添加下载任务'{0}'成功",
         "AddTaskFailed": "添加下载任务'{0}'失败,原因'{1}'",

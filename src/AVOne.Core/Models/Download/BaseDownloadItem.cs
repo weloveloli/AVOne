@@ -8,7 +8,7 @@ namespace AVOne.Models.Download
     {
         public string SaveName { get; set; }
         public abstract string DisplayName { get; }
-
         public abstract string Key { get; }
+        public string OrignalLink { get; set; }
     }
 }

@@ -160,5 +160,27 @@ namespace AVOne.Server.Pages.App.Downloads
         {
             Timer?.Dispose();
         }
+
+        private static Dictionary<string, string> _tagColorMap = new Dictionary<string, string>()
+    {
+        { "Censored", "purple" },
+        { "Uncensored", "#05CD99" },
+        { "Chinese", "#FFB547" },
+        { "ChineseSub", "warn" },
+        { "Taiwanese", "#FF5252" },
+        { "Japanese", "#4318FF" },
+        { "Catoon", "#05CD99" },
+        { "US", "#FFB547" },
+        {  "Other", "cyan" }
+    };
+
+        public static string GetColorForTag(string tagStr)
+        {
+            if (string.IsNullOrEmpty(tagStr) && !_tagColorMap.ContainsKey(tagStr))
+            {
+                return "grey";
+            }
+            return _tagColorMap[tagStr];
+        }
     }
 }

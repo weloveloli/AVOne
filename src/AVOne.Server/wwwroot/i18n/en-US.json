@@ -18,17 +18,20 @@
       "SortbyName":"Sort By Name",
       "SortbyCreatedDate":"Sort Created Date"
     },
-    "Detail":{
-      "Info":"Download Task Info",
-      "JobInfo":"Task Info",
-      "Tags":"Task Tags",
-      "Save":"Save",
-      "DownloadSpeedInfo":"Speed Info",
-      "TotalSize":"Total File Size",
-      "Speed":"Average Download Speed",
-      "FileInfo":"File Info",
-      "FinalDir":"File Directory",
-      "FinalFileName":"File Name"      
+    "Detail": {
+      "Info": "Download Task Info",
+      "JobInfo": "Task Info",
+      "Tags": "Task Tags",
+      "Save": "Save",
+      "DownloadSpeedInfo": "Speed Info",
+      "TotalSize": "Total File Size",
+      "Speed": "Average Download Speed",
+      "FileInfo": "File Info",
+      "FinalDir": "File Directory",
+      "FinalFileName": "File Name",
+      "DisplayName": "Name",
+      "OutputDir": "Target Directory",
+      "OrignalLink": "Orignal Link"
     },
     "Tasks": {
       "AddTask": "Add Download Task",
@@ -40,6 +43,7 @@
       "StopTask": "Stop Download Task",
       "ViewDetail": "View Task Detail",
       "Failed": "Download Failed",
+      "AdvancedOption": "Advanced Option",
       "ExtractingMedia": "Extracting Media from '{0}'",
       "Message": {
         "AddTaskSuccess": "Add download task '{0}' success",

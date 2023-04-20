@@ -20,15 +20,31 @@
                         <MTextField Class="mt-2" @bind-Value="_addJobModel.Url"
                                     Label='@T("Download.Tasks.AddTaskUrl")' Hint='@T("Download.Tasks.AddTaskUrlHint")' PersistentHint
                                         Outlined></MTextField>
-                        <MTextField Class="mt-2" @bind-Value="_addJobModel.ThreadCount"
-                                    Label='@T("Download.Tasks.AddTaskThreadCount")' PersistentHint
-                                        Outlined></MTextField>
-                        <MTextField Class="mt-2" @bind-Value="_addJobModel.RetryCount"
-                                    Label='@T("Download.Tasks.AddTaskRetryCount")' PersistentHint
-                                        Outlined></MTextField>
+                        <MSelect Outlined Label=@T("Download.Detail.Tags") Multiple @bind-Value=_addJobModel.Tags TItem="SelectData"
+                                 TValue="List<string>" TItemValue="string" Items=@_tagList ItemText="i => i.Label"
+                                 ItemValue="i => i.Value">
+                            <SelectionContent Context="_context">
+                                <MChip Style="height:32px;border-radius:32px;" Outlined Close CloseIcon="mdi-close" TextColor="@Tasks.GetColorForTag(_context.Item.Value)"
+                                       OnCloseClick="()=>HandleCloseClick(_context.Item.Label)">@_context.Item.Label</MChip>
+                            </SelectionContent>
+                            </MSelect>
+                        <div class='@(showAdvancedDownloadOpt?"":"d-none")'>
+                            <MTextField Class="mt-2" @bind-Value="_addJobModel.ThreadCount"
+                                        Label='@T("Download.Tasks.AddTaskThreadCount")' PersistentHint
+                                                Outlined></MTextField>
+                            <MTextField Class="mt-2" @bind-Value="_addJobModel.RetryCount"
+                                        Label='@T("Download.Tasks.AddTaskRetryCount")' PersistentHint
+                                                Outlined></MTextField>
+                        </div>
+
                     </MCardText>
                     <MCardActions Class="justify-end">
-                        <MButton Type="reset" @onclick="()=> {addTaskDialog = false;}">@T("Common.Cancel")</MButton>
+                        <MButton Color="secondary" @onclick="()=> {showAdvancedDownloadOpt = !showAdvancedDownloadOpt;}">
+                            <MIcon>
+                                @(showAdvancedDownloadOpt?"mdi-menu-up":"mdi-menu-down")
+                            </MIcon>@(T("Download.Tasks.AdvancedOption"))
+                        </MButton>
+                        <MButton Type="reset" @onclick="()=> {addTaskDialog = false;_addJobModel = new();showAdvancedDownloadOpt = false;}">@T("Common.Cancel")</MButton>
                         <MButton Type="submit" Color="primary">@T("Common.Submit")</MButton>
                     </MCardActions>
                 </MForm>
@@ -76,23 +92,49 @@
     public IJobManager JobManager { get; set; }
 
     bool addTaskDialog;
+    bool showAdvancedDownloadOpt;
+
+    static int? defaultThreadCount;
+    static int? defaultRetryCount;
+    static string? defaultOutputDir;
     class AddJobModel
     {
         [Required]
         [Url]
         public string? Url { get; set; }
 
-        [Range(1, 8)]
-        public int? ThreadCount { get; set; }
+        [Range(1, 16)]
+        public int? ThreadCount { get; set; } = defaultThreadCount;
 
         [Range(1, 8)]
-        public int? RetryCount { get; set; }
+        public int? RetryCount { get; set; } = defaultRetryCount;
+
+        public string? DownloadDir { get; set; } = defaultOutputDir;
+
+        public List<string> Tags { get; set; } = new List<string>();
     }
-
+    private List<SelectData> _tagList = new List<SelectData>();
+    private void HandleCloseClick(string lable)
+    {
+        _addJobModel.Tags.Remove(lable);
+    }
     protected override void OnInitialized()
     {
-        _addJobModel.ThreadCount = ConfigurationManager.CommonConfiguration.DownloadConfig.DefaultDownloadThreadCount;
-        _addJobModel.RetryCount = ConfigurationManager.CommonConfiguration.DownloadConfig.DefaultRetryCount;
+        defaultThreadCount = ConfigurationManager.CommonConfiguration.DownloadConfig.DefaultDownloadThreadCount;
+        defaultRetryCount = ConfigurationManager.CommonConfiguration.DownloadConfig.DefaultRetryCount;
+        defaultOutputDir = ConfigurationManager.CommonConfiguration.DownloadConfig.DefaultDownloadDir;
+        _addJobModel = new();
+        _tagList = new List<SelectData>{
+            new SelectData() { Label = T("Download.Tags.Censored"), Value = "Censored" },
+            new SelectData() { Label = T("Download.Tags.Uncensored"), Value = "Uncensored" },
+            new SelectData() { Label = T("Download.Tags.Chinese"), Value = "Chinese" },
+            new SelectData() { Label = T("Download.Tags.ChineseSub"), Value = "ChineseSub" },
+            new SelectData() { Label = T("Download.Tags.Taiwanese"), Value = "Taiwanese" },
+            new SelectData() { Label = T("Download.Tags.Japanese"), Value = "Japanese" },
+            new SelectData() { Label = T("Download.Tags.Catoon"), Value = "Catoon" },
+            new SelectData() { Label = T("Download.Tags.US"), Value = "US" },
+            new SelectData() { Label = T("Download.Tags.Other"), Value = "Other" },
+        };
     }
 
     private AddJobModel _addJobModel = new();
@@ -102,8 +144,10 @@
         await InvokeAsync(async () =>
         {
             addTaskDialog = false;
+            showAdvancedDownloadOpt = false;
             StateHasChanged();
             await this.AddDownloadJob(_addJobModel);
+            _addJobModel = new AddJobModel();
         });
     }
 
@@ -128,12 +172,15 @@
             return;
         }
         this.CloseLoading();
-        var downloadDir = ConfigurationManager.CommonConfiguration.DownloadConfig.DefaultDownloadDir;
-        var threadCount = ConfigurationManager.CommonConfiguration.DownloadConfig.DefaultDownloadThreadCount;
-        var opt = new DownloadOpts { ThreadCount = addJobModel.ThreadCount ?? 4, OutputDir = downloadDir, RetryCount = addJobModel.RetryCount ?? 1, RetryWait = 500 };
+        var downloadDir = addJobModel.DownloadDir ?? ConfigurationManager.CommonConfiguration.DownloadConfig.DefaultDownloadDir;
+        var threadCount = addJobModel.ThreadCount ?? ConfigurationManager.CommonConfiguration.DownloadConfig.DefaultDownloadThreadCount;
+        var retryCount = addJobModel.ThreadCount ?? ConfigurationManager.CommonConfiguration.DownloadConfig.DefaultRetryCount;
+        var retryWait = addJobModel.ThreadCount ?? ConfigurationManager.CommonConfiguration.DownloadConfig.DefaultRetryWait;
+        var opt = new DownloadOpts { ThreadCount = threadCount, OutputDir = downloadDir, RetryCount = retryCount, RetryWait = retryWait };
         var downloadJob = new DownloadAVJob();
         downloadJob.DownloadableItem = jobItem;
         downloadJob.DownloadOpts = opt;
+        downloadJob.Tags = addJobModel.Tags;
         JobManager.AddJob(downloadJob);
         await JobManager.EnqueueJob(downloadJob);
         Navigation.NavigateTo(GlobalVariables.DefaultRoute, true);
