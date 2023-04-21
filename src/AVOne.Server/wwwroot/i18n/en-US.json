@@ -70,7 +70,7 @@
       "Taiwanese": "Taiwanese",
       "Japanese": "Japanese",
       "Other": "Other",
-      "Catoon": "Catoon",
+      "Anime": "Anime",
       "US": "US"
     }
   },
@@ -87,6 +87,12 @@
         "IgnoreFolder": "Folder name to ingore when scanning",
         "IgnoreRegex": "Ignore Regex of media title",
         "IgnoreWholeWord": "Whole word cleaner of media title"
+      },
+      "Download": {
+        "Title": "Download Settings",
+        "RetryCount": "Default Download Task Retry Count",
+        "ThreadCount": "Default Download Task Thread Count",
+        "DownloadDir": "Default Download Target Dir"
       },
       "Paths": {
         "Title": "System Path",

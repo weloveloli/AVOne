@@ -29,9 +29,8 @@ namespace AVOne.Providers.Official.Extractor
                 { "origin", "https://missav.com" }
             };
 
-        public override string Name => "Official";
+        public override string Name => "MissAV";
 
-        public override int Order => 1;
         public MissAVExtractor(IConfigurationManager manager, IHttpClientFactory httpClientFactory, ILogger<MissAVExtractor> logger)
         : base(manager, logger, httpClientFactory, "https://missav.com")
         {
@@ -46,7 +45,6 @@ namespace AVOne.Providers.Official.Extractor
 
         public override async Task<IEnumerable<BaseDownloadableItem>> ExtractAsync(string webPageUrl, CancellationToken token = default)
         {
-            var sources = Enumerable.Empty<string>();
             var result = new List<BaseDownloadableItem>();
             try
             {
@@ -58,7 +56,7 @@ namespace AVOne.Providers.Official.Extractor
                 var title = GetTitleFromHtml(html, _titleRegex);
                 var isChineseSub = html.Contains("<a href=\"https://missav.com/chinese-subtitle\" class=\"text-nord13 font-medium\">中文字幕</a>");
                 var avId = title[..title.IndexOf(" ")] + (isChineseSub ? "-C" : string.Empty);
-                sources = GetSources(html);
+                var sources = GetSources(html);
                 foreach (var source in sources)
                 {
                     var quality = MediaQuality.Low;
@@ -80,7 +78,7 @@ namespace AVOne.Providers.Official.Extractor
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "failed to fetach downloadable in webpage {0}", webPageUrl);
+                _logger.LogError(ex, message: "failed to fetach downloadable in webpage {webPageUrl}", webPageUrl);
             }
 
             return result;

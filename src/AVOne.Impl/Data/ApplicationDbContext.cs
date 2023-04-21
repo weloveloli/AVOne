@@ -28,14 +28,8 @@ namespace AVOne.Impl.Data
         /// <returns>.</returns>
         public static ApplicationDbContext Create(IApplicationPaths applicationPaths)
         {
-            try
-            {
-                var path = Path.Combine(applicationPaths.DataPath, "avone.db");
-                return new ApplicationDbContext(path);
-            }
-            catch { }
-
-            return default;
+            var path = Path.Combine(applicationPaths.DataPath, "avone.db");
+            return new ApplicationDbContext(path);
         }
     }
 }

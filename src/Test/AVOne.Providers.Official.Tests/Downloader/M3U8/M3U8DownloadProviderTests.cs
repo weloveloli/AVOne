@@ -40,7 +40,7 @@ namespace AVOne.Providers.Official.Downloader.M3U8.Tests
         public async Task CreateTaskTest()
         {
             var ffmpeg = ExecutableHelper.FindExecutable("ffmpeg");
-            Skip.If(string.IsNullOrEmpty(ffmpeg));
+            Skip.If(string.IsNullOrEmpty(ffmpeg) || string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ALLOW_FFMPEG_TEST")));
             var opts = new DownloadOpts
             {
                 ThreadCount = 4,

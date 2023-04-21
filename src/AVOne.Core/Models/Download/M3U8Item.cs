@@ -1,6 +1,8 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // See License in the project root for license information.
 
+#nullable disable
+
 namespace AVOne.Models.Download
 {
     using AVOne.Enum;
@@ -11,7 +13,7 @@ namespace AVOne.Models.Download
         public M3U8Item()
         {
         }
-        public M3U8Item(string saveName, string url, Dictionary<string, string>? header, MediaQuality quality, string title)
+        public M3U8Item(string saveName, string url, Dictionary<string, string> header, MediaQuality quality, string title)
         {
             SaveName = saveName;
             Url = url;
@@ -21,7 +23,7 @@ namespace AVOne.Models.Download
         }
 
         public string Url { get; set; }
-        public Dictionary<string, string>? Header { get; set; }
+        public Dictionary<string, string> Header { get; set; }
 
         public MediaQuality Quality { get; set; } = MediaQuality.Low;
 

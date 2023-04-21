@@ -170,7 +170,7 @@ namespace AVOne.Impl.Job
                 FinalFilePath = finalFilePath;
             }
             var type = Assembly.GetAssembly(typeof(BaseDownloadableItem))!.GetType(itemType);
-            DownloadableItem = JsonSerializer.Deserialize(item, type, JsonDefaults.Options) as BaseDownloadableItem;
+            DownloadableItem = JsonSerializer.Deserialize(item, type!, JsonDefaults.Options) as BaseDownloadableItem;
         }
 
         public override void UpdateStatus(JobStatusArgs jobStatusArgs)

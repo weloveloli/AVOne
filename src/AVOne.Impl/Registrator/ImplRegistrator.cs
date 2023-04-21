@@ -100,7 +100,7 @@ namespace AVOne.Impl.Registrator
             service.AddSingleton<IDirectoryService, DirectoryService>();
             service.AddSingleton(sp =>
             {
-                return ApplicationDbContext.Create(sp.GetService<IApplicationPaths>());
+                return ApplicationDbContext.Create(sp.GetService<IApplicationPaths>()!);
             })
             .AddSingleton<JobRepository>()
             .AddTaskQueue((builder) =>

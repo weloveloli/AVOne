@@ -9,6 +9,7 @@ namespace AVOne.Providers.Official.Extractor
     using System.Threading.Tasks;
     using AVOne.Common.Helper;
     using AVOne.Configuration;
+    using AVOne.Enum;
     using AVOne.Models.Download;
     using AVOne.Providers.Extractor;
     using Microsoft.Extensions.Logging;
@@ -16,22 +17,21 @@ namespace AVOne.Providers.Official.Extractor
     public abstract class BaseHttpExtractor : HttpClientHelper, IMediaExtractorProvider
     {
         protected ILogger _logger;
-        private readonly string _webPageStart;
+        private readonly string[] _webPagePrefixArray;
 
-        protected BaseHttpExtractor(IConfigurationManager manager, ILogger logger, IHttpClientFactory httpClientFactory, string webPageStart)
+        protected BaseHttpExtractor(IConfigurationManager manager, ILogger logger, IHttpClientFactory httpClientFactory, string webPagePrefix)
             : base(manager, httpClientFactory)
         {
             this._logger = logger;
-            _webPageStart = webPageStart;
+            _webPagePrefixArray = webPagePrefix.Split(';').Where(e => !string.IsNullOrEmpty(e)).ToArray();
         }
 
         public abstract string Name { get; }
-        public abstract int Order { get; }
-
+        public virtual int Order => (int)ProviderOrder.Default;
         public abstract Task<IEnumerable<BaseDownloadableItem>> ExtractAsync(string webPageUrl, CancellationToken token = default);
         public virtual bool Support(string webPage)
         {
-            return !string.IsNullOrEmpty(webPage) && webPage.StartsWith(_webPageStart);
+            return !string.IsNullOrEmpty(webPage) && _webPagePrefixArray.Any(webPage.StartsWith);
         }
     }
 }

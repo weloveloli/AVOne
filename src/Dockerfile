@@ -19,7 +19,7 @@ ENV ASPNETCORE_URLS=http://+:8099
 EXPOSE 8099
 VOLUME /data /media /download
 WORKDIR /avone
-ENTRYPOINT ["./avone", \
+ENTRYPOINT ["./AVOneServer", \
     "--data-dir", "/data", \
     "--ffmpeg", "/usr/bin/ffmpeg"]
 HEALTHCHECK --interval=30s --timeout=30s --start-period=10s --retries=3 \

@@ -210,7 +210,7 @@ namespace AVOne.Impl
             yield return typeof(ImplRegistrator).Assembly;
             yield return typeof(MigrationsFactory).Assembly;
             yield return typeof(JellyfinNamingOptionProvider).Assembly;
-            yield return typeof(ImageSaverProvider).Assembly;
+            yield return typeof(DefaultImageSaverProvider).Assembly;
         }
 
         private IEnumerable<Type> GetTypes(IEnumerable<Assembly> assemblies)

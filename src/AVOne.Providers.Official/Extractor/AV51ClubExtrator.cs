@@ -22,15 +22,11 @@ namespace AVOne.Providers.Official.Extractor
             _titleRegex = TitleRegex();
             _scriptRegex = ScriptRegex();
         }
-
         public override string Name => "51AV";
-
-        public override int Order => 1;
         private readonly Regex _titleRegex;
         private readonly Regex _scriptRegex;
         public override async Task<IEnumerable<BaseDownloadableItem>> ExtractAsync(string webPageUrl, CancellationToken token = default)
         {
-            var sources = Enumerable.Empty<string>();
             var result = new List<BaseDownloadableItem>();
             try
             {
@@ -49,7 +45,7 @@ namespace AVOne.Providers.Official.Extractor
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "failed to fetach downloadable in webpage {0}", webPageUrl);
+                _logger.LogError(ex, "failed to fetach downloadable in webpage {webPageUrl}", webPageUrl);
             }
 
             return result;

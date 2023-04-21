@@ -1,5 +1,6 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // See License in the project root for license information.
+#nullable disable
 
 namespace AVOne.Server.Shared
 {
@@ -7,7 +8,7 @@ namespace AVOne.Server.Shared
 
     public abstract class ProCompontentBase : ComponentBase
     {
-        private I18n? _languageProvider;
+        private I18n _languageProvider;
 
         [Inject]
         public IJSRuntime JS { get; set; }
@@ -37,35 +38,35 @@ namespace AVOne.Server.Shared
         public void Success(string message, params object[] args)
         {
             var msg = T(message, args);
-            JS?.InvokeVoidAsync("Qmsg.success", msg);
+            _ = (JS?.InvokeVoidAsync("Qmsg.success", msg));
         }
         public void Info(string message, params object[] args)
         {
             var msg = T(message, args);
-            JS?.InvokeVoidAsync("Qmsg.info", msg);
+            _ = (JS?.InvokeVoidAsync("Qmsg.info", msg));
         }
 
         public void Error(string message, params object[] args)
         {
             var msg = T(message, args);
-            JS?.InvokeVoidAsync("Qmsg.error", msg);
+            _ = (JS?.InvokeVoidAsync("Qmsg.error", msg));
         }
 
         public void Warning(string message, params object[] args)
         {
             var msg = T(message, args);
-            JS?.InvokeVoidAsync("Qmsg.warning", msg);
+            _ = (JS?.InvokeVoidAsync("Qmsg.warning", msg));
         }
 
         public void ShowLoading(string message, bool autoClose, int timeout, params object[] args)
         {
             var msg = T(message, args);
-            JS?.InvokeVoidAsync("Qmsg.loading", msg, autoClose, timeout);
+            _ = (JS?.InvokeVoidAsync("Qmsg.loading", msg, autoClose, timeout));
         }
 
         public void CloseLoading()
         {
-            JS?.InvokeVoidAsync("Qmsg.QmsgCloseLoading");
+            _ = (JS?.InvokeVoidAsync("Qmsg.QmsgCloseLoading"));
         }
     }
 }

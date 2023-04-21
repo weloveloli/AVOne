@@ -67,17 +67,17 @@
         "GetDownloadItemFailed": "无法从'{0}'中提取可下载的媒体"
       }
     },
-      "Tags":{
-        "Censored":"有码",
-        "Uncensored":"无码",
-        "Chinese":"国产",
-        "ChineseSub":"中文字幕",
-        "Taiwanese":"台湾",
-        "Japanese":"日本",
-        "Other": "其他",
-        "Catoon":"卡通",
-        "US":"欧美"
-      },
+    "Tags": {
+      "Censored": "有码",
+      "Uncensored": "无码",
+      "Chinese": "国产",
+      "ChineseSub": "中文字幕",
+      "Taiwanese": "台湾",
+      "Japanese": "日本",
+      "Other": "其他",
+      "Anime": "动画",
+      "US": "欧美"
+    },
       "Status": {
         "Downloading":"下载中",
         "Completed": "已完成",
@@ -97,6 +97,12 @@
         "IgnoreFolder": "忽略的扫描文件夹名称",
         "IgnoreRegex": "媒体标题清理正则表达式",
         "IgnoreWholeWord": "媒体标题忽略字符"
+      },
+      "Download": {
+        "Title": "下载设置",
+        "RetryCount": "默认重试次数",
+        "ThreadCount": "默认线程数",
+        "DownloadDir": "默认下载路劲"
       },
       "Paths": {
         "Title": "系统路径",

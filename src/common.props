@@ -10,13 +10,12 @@
     <IsPackable>false</IsPackable>
     <RepositoryType>git</RepositoryType>
     <LangResourcePath>$(MSBuildThisFileDirectory)/Lang</LangResourcePath>
+    <MinVerTagPrefix>v</MinVerTagPrefix>
+    <MinVerIgnoreHeight>true</MinVerIgnoreHeight>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-    <!-- <DebugType>full</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-    <Optimize>false</Optimize>
-    <DefineConstants>DEBUG;TRACE</DefineConstants> -->
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <MinVerSkip>true</MinVerSkip>
   </PropertyGroup>
   <PropertyGroup Label="Common NuGet Properties">
     <Copyright>Copyright (c) 2023 Weloveloli</Copyright>   

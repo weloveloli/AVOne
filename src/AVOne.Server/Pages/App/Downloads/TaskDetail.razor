@@ -23,7 +23,7 @@
                     <MListItemTitle class="text-caption">@T("Download.Detail.OrignalLink")</MListItemTitle>
                     <MListItemSubtitle class="text-right text-btn neutral-lighten-1--text"> @_job?.DownloadableItem?.OrignalLink </MListItemSubtitle>
                 </MListItem>
-                <MSelect Outlined Label=@T("Download.Detail.Tags") Multiple @bind-Value=SelectItem.Tags TItem="SelectData"
+                <MSelect Outlined Label=@T("Download.Detail.Tags") Multiple @bind-Value=SelectItem!.Tags TItem="SelectData"
                          TValue="List<string>" TItemValue="string" Items=@_tagList ItemText="i => i.Label"
                          ItemValue="i => i.Value">
                     <SelectionContent Context="_context">
@@ -82,7 +82,7 @@
     private DownloadAVJob? _job;
 
     [Inject]
-    public JobRepository JobRepository { get; set; }
+    public JobRepository? JobRepository { get; set; }
 
     protected override void OnInitialized()
     {
@@ -93,7 +93,7 @@
             new SelectData() { Label = T("Download.Tags.ChineseSub"), Value = "ChineseSub" },
             new SelectData() { Label = T("Download.Tags.Taiwanese"), Value = "Taiwanese" },
             new SelectData() { Label = T("Download.Tags.Japanese"), Value = "Japanese" },
-            new SelectData() { Label = T("Download.Tags.Catoon"), Value = "Catoon" },
+            new SelectData() { Label = T("Download.Tags.Anime"), Value = "Anime" },
             new SelectData() { Label = T("Download.Tags.US"), Value = "US" },
             new SelectData() { Label = T("Download.Tags.Other"), Value = "Other" },
         };
@@ -112,12 +112,12 @@
     private List<SelectData> _tagList = new List<SelectData>();
     private void HandleCloseClick(string lable)
     {
-        SelectItem.Tags.Remove(lable);
+        SelectItem!.Tags.Remove(lable);
     }
 
     private async Task SaveTask()
     {
-        JobRepository.UpsertJob(SelectItem);
+        JobRepository!.UpsertJob(SelectItem!);
         if (ValueChanged.HasDelegate)
         {
             await ValueChanged.InvokeAsync(false);

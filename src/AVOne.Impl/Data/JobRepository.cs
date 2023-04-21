@@ -62,7 +62,6 @@ namespace AVOne.Impl.Data
             return this.Jobs.FindOne(o => o.Key == key);
         }
 
-
         public void DeleteJob(string key)
         {
 
@@ -78,7 +77,7 @@ namespace AVOne.Impl.Data
         /// <typeparam name="T">.</typeparam>
         /// <param name="key">The key<see cref="string"/>.</param>
         /// <returns>The <see cref="T"/>.</returns>
-        public T GetJob<T>(string key) where T : IAVOneJob, new()
+        public T? GetJob<T>(string key) where T : IAVOneJob, new()
         {
             var t = new T();
             var job = this.Jobs.FindOne(j => j.Type == t.Type && j.Key == key);

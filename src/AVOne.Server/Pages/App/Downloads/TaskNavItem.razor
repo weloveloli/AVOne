@@ -8,7 +8,7 @@
             <MIcon Color="@ListItemIconColor(IsActive())" Size=18>@Icon</MIcon>
         </MListItemIcon>
         <MListItemContent>
-            <MListItemTitle Class="@ListItemTitleClass(IsActive())">@T(Title)</MListItemTitle>
+            <MListItemTitle Class="@ListItemTitleClass(IsActive())">@T(Title!)</MListItemTitle>
         </MListItemContent>
     </ItemContent>
 </MListItem>
@@ -18,7 +18,7 @@
     string ListItemIconColor(bool active) => IconColor ?? (active ? "primary" : "neutral-lighten-4");
     static string ListItemTitleClass(bool active) => active ? "text-subtitle primary--text" : "text-body neutral-lighten-4--text";
     @inject NavigationManager Navigation
-    private string url = null;
+    private string? url = null;
     protected override void OnInitialized()
     {
         base.OnInitialized();
@@ -44,13 +44,13 @@
     public string? Status { get; set; }
 
     [Parameter]
-    public string Icon { get; set; }
+    public string? Icon { get; set; }
 
     [Parameter]
     public string? IconColor { get; set; }
 
     [Parameter]
-    public string Title { get; set; }
+    public string? Title { get; set; }
 
     [Parameter]
     public bool Default { get; set; } = false;

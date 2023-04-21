@@ -14,7 +14,7 @@ namespace AVOne.Providers.Official.Extractor.Tests
         {
             var html = File.ReadAllText(Path.Combine("websites", "missav.txt"));
 
-            var source = new MissAVExtractor(new Mock<IHttpClientFactory>().Object, null).GetSources(html);
+            var source = new MissAVExtractor(null, new Mock<IHttpClientFactory>().Object, null).GetSources(html);
 
             Assert.Equal(3, source.Count());
 

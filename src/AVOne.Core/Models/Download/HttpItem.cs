@@ -9,7 +9,7 @@ namespace AVOne.Models.Download
     {
         public string Url { get; set; }
 
-        public Dictionary<string, string>? Header { get; set; }
+        public Dictionary<string, string> Header { get; set; }
 
         public override string DisplayName => SaveName;
 

@@ -14,18 +14,19 @@ namespace AVOne.Server.Pages.App.Downloads
     public partial class Tasks : ProCompontentBase, IDisposable
     {
         [Inject]
-        protected IJobManager JobManager { get; set; }
+        protected IJobManager? JobManager { get; set; }
         [Inject]
-        protected IProviderManager ProviderManager { get; set; }
+        protected IProviderManager? ProviderManager { get; set; }
+
         private string? _inputText;
         [Inject]
-        protected JobRepository JobRepository { get; set; }
+        protected JobRepository? JobRepository { get; set; }
         [Inject]
-        protected ILogger<Tasks> Logger { get; set; }
+        protected ILogger<Tasks>? Logger { get; set; }
 
-        private void InputTextChanged(string? text)
-        {
-        }
+        //private void InputTextChanged(string? text)
+        //{
+        //}
 
         [Parameter]
         [SupplyParameterFromQuery(Name = "Status")]
@@ -54,7 +55,7 @@ namespace AVOne.Server.Pages.App.Downloads
             Jobs = new List<JobModel>();
         }
 
-        protected Timer Timer { get; set; }
+        protected Timer? Timer { get; set; }
 
         protected override void OnInitialized()
         {
@@ -99,7 +100,7 @@ namespace AVOne.Server.Pages.App.Downloads
             {
                 statusPrecidate = (e) => e.Status == JobStatus.Canceled;
             }
-            var pageList = JobRepository.GetJobs(0, 100,
+            var pageList = JobRepository!.GetJobs(0, 100,
                 (true, (e) => e.Type == "DownloadAVJob"),
                 (true, statusPrecidate),
                 (!string.IsNullOrEmpty(Tag), (e) => e.Tags.Contains(Tag)),
@@ -128,17 +129,17 @@ namespace AVOne.Server.Pages.App.Downloads
             set
             {
                 _inputText = value;
-                InputTextChanged(_inputText);
+                //InputTextChanged(_inputText);
             }
         }
 
         private void StopJob(JobModel removeJobModel)
         {
-            JobManager.CancelJobByKey(removeJobModel.Key);
+            JobManager!.CancelJobByKey(removeJobModel.Key);
         }
         private void DeleteJob(JobModel removeJobModel)
         {
-            JobManager.DeleteJob(removeJobModel.Key);
+            JobManager!.DeleteJob(removeJobModel.Key);
         }
 
         private void ResetSort()
@@ -161,7 +162,7 @@ namespace AVOne.Server.Pages.App.Downloads
             Timer?.Dispose();
         }
 
-        private static Dictionary<string, string> _tagColorMap = new Dictionary<string, string>()
+        private static readonly Dictionary<string, string> s_tagColorMap = new Dictionary<string, string>()
     {
         { "Censored", "purple" },
         { "Uncensored", "#05CD99" },
@@ -169,18 +170,18 @@ namespace AVOne.Server.Pages.App.Downloads
         { "ChineseSub", "warn" },
         { "Taiwanese", "#FF5252" },
         { "Japanese", "#4318FF" },
-        { "Catoon", "#05CD99" },
+        { "Anime", "#05CD99" },
         { "US", "#FFB547" },
-        {  "Other", "cyan" }
+        { "Other", "cyan" }
     };
 
         public static string GetColorForTag(string tagStr)
         {
-            if (string.IsNullOrEmpty(tagStr) && !_tagColorMap.ContainsKey(tagStr))
+            if (string.IsNullOrEmpty(tagStr) && !s_tagColorMap.ContainsKey(tagStr))
             {
                 return "grey";
             }
-            return _tagColorMap[tagStr];
+            return s_tagColorMap[tagStr];
         }
     }
 }

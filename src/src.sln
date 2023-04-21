@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "解决方案项", "解决�
 		common.props = common.props
 		commontest.props = commontest.props
 		Directory.Packages.props = Directory.Packages.props
+		..\Dockerfile = ..\Dockerfile
+		dotnet-releaser.toml = dotnet-releaser.toml
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AVOne.Tool", "AVOne.Tool\AVOne.Tool.csproj", "{01919D4A-184C-4CD0-A800-0878124E7B4B}"

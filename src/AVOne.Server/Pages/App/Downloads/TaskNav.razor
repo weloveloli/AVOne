@@ -3,6 +3,7 @@
 @using AVOne.Providers;
 @using AVOne.Configuration;
 @using Furion.TaskQueue;
+@using TaskNavItem=AVOne.Server.Pages.App.Downloads.TaskNavItem;
 @inherits ProCompontentBase
 <MNavigationDrawer Permanent Class="rounded-4" Width="300" Style="overflow: visible;">
     <MDialog @bind-Value="addTaskDialog"
@@ -71,7 +72,7 @@
         <TaskNavItem Tag="ChineseSub" Icon="fas fa-circle" IconColor="warn" Title="Download.Tags.ChineseSub"></TaskNavItem>
         <TaskNavItem Tag="Taiwanese" Icon="fas fa-circle" IconColor="#FF5252" Title="Download.Tags.Taiwanese"></TaskNavItem>
         <TaskNavItem Tag="Japanese" Icon="fas fa-circle" IconColor="#4318FF" Title="Download.Tags.Japanese"></TaskNavItem>
-        <TaskNavItem Tag="Catoon" Icon="fas fa-circle" IconColor="#05CD99" Title="Download.Tags.Catoon"></TaskNavItem>
+        <TaskNavItem Tag="Anime" Icon="fas fa-circle" IconColor="#05CD99" Title="Download.Tags.Anime"></TaskNavItem>
         <TaskNavItem Tag="US" Icon="fas fa-circle" IconColor="#FFB547" Title="Download.Tags.US"></TaskNavItem>
         <TaskNavItem Tag="Other" Icon="fas fa-circle" IconColor="cyan" Title="Download.Tags.Other"></TaskNavItem>
         </MList>
@@ -80,16 +81,16 @@
         @code {
 
     [Inject]
-    private NavigationManager Navigation { get; set; }
+    private NavigationManager? Navigation { get; set; }
 
     [Inject]
-    private IConfigurationManager ConfigurationManager { get; set; }
+    private IConfigurationManager? ConfigurationManager { get; set; }
 
     [Inject]
-    public IProviderManager ProviderManager { get; set; }
+    public IProviderManager? ProviderManager { get; set; }
 
     [Inject]
-    public IJobManager JobManager { get; set; }
+    public IJobManager? JobManager { get; set; }
 
     bool addTaskDialog;
     bool showAdvancedDownloadOpt;
@@ -120,9 +121,9 @@
     }
     protected override void OnInitialized()
     {
-        defaultThreadCount = ConfigurationManager.CommonConfiguration.DownloadConfig.DefaultDownloadThreadCount;
-        defaultRetryCount = ConfigurationManager.CommonConfiguration.DownloadConfig.DefaultRetryCount;
-        defaultOutputDir = ConfigurationManager.CommonConfiguration.DownloadConfig.DefaultDownloadDir;
+        defaultThreadCount = ConfigurationManager?.CommonConfiguration.DownloadConfig.DefaultDownloadThreadCount;
+        defaultRetryCount = ConfigurationManager?.CommonConfiguration.DownloadConfig.DefaultRetryCount;
+        defaultOutputDir = ConfigurationManager?.CommonConfiguration.DownloadConfig.DefaultDownloadDir;
         _addJobModel = new();
         _tagList = new List<SelectData>{
             new SelectData() { Label = T("Download.Tags.Censored"), Value = "Censored" },
@@ -131,7 +132,7 @@
             new SelectData() { Label = T("Download.Tags.ChineseSub"), Value = "ChineseSub" },
             new SelectData() { Label = T("Download.Tags.Taiwanese"), Value = "Taiwanese" },
             new SelectData() { Label = T("Download.Tags.Japanese"), Value = "Japanese" },
-            new SelectData() { Label = T("Download.Tags.Catoon"), Value = "Catoon" },
+            new SelectData() { Label = T("Download.Tags.Anime"), Value = "Anime" },
             new SelectData() { Label = T("Download.Tags.US"), Value = "US" },
             new SelectData() { Label = T("Download.Tags.Other"), Value = "Other" },
         };
@@ -154,8 +155,8 @@
     private async Task AddDownloadJob(AddJobModel addJobModel)
     {
         this.ShowLoading("Download.Tasks.ExtractingMedia", false, 5000, addJobModel.Url!);
-        var jobItems = ProviderManager.GetMediaExtractorProviders(addJobModel.Url!);
-        var extractorProvider = jobItems.FirstOrDefault();
+        var jobItems = ProviderManager?.GetMediaExtractorProviders(addJobModel.Url!);
+        var extractorProvider = jobItems?.FirstOrDefault();
         if (extractorProvider is null)
         {
             var failedReason = T("Download.Tasks.FailedReason.NoExtrator", addJobModel.Url!);
@@ -172,17 +173,17 @@
             return;
         }
         this.CloseLoading();
-        var downloadDir = addJobModel.DownloadDir ?? ConfigurationManager.CommonConfiguration.DownloadConfig.DefaultDownloadDir;
-        var threadCount = addJobModel.ThreadCount ?? ConfigurationManager.CommonConfiguration.DownloadConfig.DefaultDownloadThreadCount;
-        var retryCount = addJobModel.ThreadCount ?? ConfigurationManager.CommonConfiguration.DownloadConfig.DefaultRetryCount;
-        var retryWait = addJobModel.ThreadCount ?? ConfigurationManager.CommonConfiguration.DownloadConfig.DefaultRetryWait;
+        var downloadDir = addJobModel.DownloadDir ?? ConfigurationManager?.CommonConfiguration.DownloadConfig.DefaultDownloadDir;
+        var threadCount = addJobModel.ThreadCount ?? ConfigurationManager?.CommonConfiguration.DownloadConfig.DefaultDownloadThreadCount;
+        var retryCount = addJobModel.ThreadCount ?? ConfigurationManager?.CommonConfiguration.DownloadConfig.DefaultRetryCount;
+        var retryWait = addJobModel.ThreadCount ?? ConfigurationManager?.CommonConfiguration.DownloadConfig.DefaultRetryWait;
         var opt = new DownloadOpts { ThreadCount = threadCount, OutputDir = downloadDir, RetryCount = retryCount, RetryWait = retryWait };
         var downloadJob = new DownloadAVJob();
         downloadJob.DownloadableItem = jobItem;
         downloadJob.DownloadOpts = opt;
         downloadJob.Tags = addJobModel.Tags;
-        JobManager.AddJob(downloadJob);
-        await JobManager.EnqueueJob(downloadJob);
-        Navigation.NavigateTo(GlobalVariables.DefaultRoute, true);
+        JobManager?.AddJob(downloadJob);
+        await JobManager!.EnqueueJob(downloadJob);
+        Navigation?.NavigateTo(GlobalVariables.DefaultRoute, true);
     }
 }

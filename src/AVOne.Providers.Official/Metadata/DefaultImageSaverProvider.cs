@@ -13,10 +13,11 @@ namespace AVOne.Providers.Official.Metadata
     using AVOne.Models.Item;
     using AVOne.Providers.Metadata;
 
-    public class ImageSaverProvider : IImageSaverProvider
+    public class DefaultImageSaverProvider : IImageSaverProvider
     {
-        public string Name => "Official";
+        public string Name => "DefaultImageSaver";
 
+        /// <inheritdoc/>
         public async Task SaveImage(BaseItem item, Stream source, string mimeType, ImageType type, int? imageIndex, CancellationToken cancellationToken)
         {
             ArgumentException.ThrowIfNullOrEmpty(mimeType);
