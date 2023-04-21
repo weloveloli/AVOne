@@ -2,10 +2,15 @@
 // See License in the project root for license information.
 
 using System.Reflection;
+using AVOne.Impl;
+using AVOne.Impl.Migrations;
 using AVOne.Tool.Commands;
+using AVOne.Tool.Resources;
 using CommandLine;
 using CommandLine.Text;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace AVOne.Tool
 {
@@ -20,9 +25,11 @@ namespace AVOne.Tool
             {
                 if (parsed.Value is BaseHostOptions option)
                 {
+                    Environment.SetEnvironmentVariable($"{StartupHelpers.AVOnePrefix}_USE_DEFAULT_LOG", "false");
                     var appPaths = StartupHelpers.CreateApplicationPaths(option);
                     var appHost = await StartupHelpers.CreateConsoleAppHost(option, appPaths);
-                    var host = StartupHelpers.CreateHost(args, appHost);
+                    var host = CreateHost(args, appHost);
+                    Cli.Logger = StartupHelpers.Logger;
                     try
                     {
                         await option.ExecuteAsync(appHost, StartupHelpers.TokenSource.Token).ConfigureAwait(false);
@@ -33,9 +40,9 @@ namespace AVOne.Tool
                         var type = option.GetType();
                         var cmdName = type.GetCustomAttribute<VerbAttribute>()?.Name ?? type.Name;
 
-                        Cli.Error("Command {0} execute failed", cmdName);
-                        Cli.Error(e.ErrorMessage.ToString());
-
+                        Cli.Error(Resource.ErrorCommand, cmdName);
+                        Cli.Error(e.ErrorMessage?.ToString() ?? string.Empty);
+                        StartupHelpers.Logger.LogError(e, Resource.ErrorCommand, cmdName);
                         Environment.Exit(1);
                     }
                     catch (Exception e)
@@ -43,7 +50,7 @@ namespace AVOne.Tool
                         var type = option.GetType();
                         var cmdName = type.GetCustomAttribute<VerbAttribute>()?.Name ?? type.Name;
 
-                        StartupHelpers.Logger.LogCritical(e, "Command {0} execute error due to Exception", cmdName);
+                        StartupHelpers.Logger.LogCritical(e, Resource.ErrorCommand, cmdName);
                         Cli.Info("See error logs in {0}", appPaths.LogDirectoryPath);
                         Environment.Exit(1);
                     }
@@ -57,6 +64,32 @@ namespace AVOne.Tool
         {
             return Assembly.GetExecutingAssembly().GetTypes()
                 .Where(t => t.GetCustomAttribute<VerbAttribute>() != null).ToArray();
+        }
+
+        public static IHost CreateHost(string[] args, ApplicationAppHost appHost)
+        {
+            var options =
+                GenericRunOptions.Default
+                .WithArgs(args)
+                .Silence(true, false)
+                .ConfigureBuilder((builder) =>
+                {
+                    _ = builder.ConfigureLogging((logging) =>
+                    {
+                        _ = logging.ClearProviders();
+                        _ = logging.AddSerilog(Serilog.Log.Logger);
+                    });
+
+                    //return builder.UseContentRoot(StartupHelpers.RealRootContentPath);
+                    return builder;
+                })
+                .ConfigureServices(appHost.Init);
+            var host = Serve.Run(options);
+            // Re-use the host service provider in the app host since ASP.NET doesn't allow a custom service collection.
+            appHost.ServiceProvider = host.Services;
+            appHost.PostBuildService();
+            MigrationRunner.Run(appHost, StartupHelpers.LoggerFactory);
+            return host;
         }
     }
 }

@@ -1,0 +1,23 @@
+﻿@page "/app/settings/plugin"
+@inherits ProCompontentBase
+
+<MCard>
+    <MCardText>
+        <MTabs Color="blue accent-4">
+                <MTab>@T("Settings.Plugin.InstalledPlugin.Title")</MTab>
+                <MTab>@T("Settings.Plugin.AvaliablePlugin.Title")</MTab>
+                <MTab>@T("Settings.Plugin.PluginRepository.Title")</MTab>
+            <MTabItem>
+                 <InstalledPlugins></InstalledPlugins>
+            </MTabItem>
+            <MTabItem>
+                <AvaliablePlugins></AvaliablePlugins>
+            </MTabItem>
+            <MTabItem>
+                <PluginsRepository></PluginsRepository>
+            </MTabItem>
+        </MTabs>
+    </MCardText>
+</MCard>
+
+

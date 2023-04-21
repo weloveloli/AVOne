@@ -6,6 +6,7 @@ namespace AVOne.Tool.Commands
     using System.Threading;
     using System.Threading.Tasks;
     using AVOne.Common.Enum;
+    using AVOne.Impl;
     using AVOne.Models.Item;
     using AVOne.Tool.Facade;
     using AVOne.Tool.Models;
@@ -32,7 +33,7 @@ namespace AVOne.Tool.Commands
         [Option('f', "file", Group = "target", Required = false, HelpText = nameof(Resource.HelpTextScanPath), ResourceType = typeof(Resource))]
         public string? FilePath { get; set; }
 
-        public override Task ExecuteAsync(ConsoleAppHost host, CancellationToken token)
+        public override Task ExecuteAsync(ApplicationAppHost host, CancellationToken token)
         {
             if (TargetFolder is not null)
             {
@@ -55,7 +56,7 @@ namespace AVOne.Tool.Commands
             }
         }
 
-        private async Task ScanFile(ConsoleAppHost host, CancellationToken token)
+        private async Task ScanFile(ApplicationAppHost host, CancellationToken token)
         {
             if (string.IsNullOrEmpty(FilePath) || !File.Exists(FilePath))
             {
@@ -100,7 +101,7 @@ namespace AVOne.Tool.Commands
             });
         }
 
-        private async Task ScanFolder(ConsoleAppHost host, CancellationToken token)
+        private async Task ScanFolder(ApplicationAppHost host, CancellationToken token)
         {
             if (string.IsNullOrEmpty(Dir) || !Directory.Exists(Dir))
             {

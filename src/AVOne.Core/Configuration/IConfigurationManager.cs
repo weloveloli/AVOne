@@ -11,6 +11,11 @@ namespace AVOne.Configuration
         void SaveConfiguration();
 
         /// <summary>
+        /// Reload the configuration.
+        /// </summary>
+        void ReloadConfiguration();
+
+        /// <summary>
         /// Gets the application paths.
         /// </summary>
         /// <value>The application paths.</value>

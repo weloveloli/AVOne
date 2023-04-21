@@ -3,7 +3,6 @@
 
 namespace AVOne.Common.Migrations
 {
-    using AVOne.Common.Migrations;
     using AVOne.Configuration;
 
     /// <summary>

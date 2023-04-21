@@ -12,8 +12,8 @@ namespace AVOne.Abstraction
         /// <summary>
         /// Registers the module or plugin's services with the service collection.
         /// </summary>
-        /// <param name="serviceCollection">The service collection.</param>
-        void RegisterServices(IServiceCollection serviceCollection);
+        /// <param name="service">The service collection.</param>
+        void RegisterServices(IServiceCollection service);
 
         void PostBuildService(IApplicationHost host);
     }

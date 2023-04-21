@@ -5,7 +5,6 @@ namespace AVOne.Providers.Metadata
 {
 #nullable disable
 
-    using AVOne;
     using AVOne.Models.Item;
 
     /// <summary>

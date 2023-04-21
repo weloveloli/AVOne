@@ -3,11 +3,17 @@
 
 namespace AVOne.Configuration
 {
+    using Microsoft.Extensions.DependencyInjection;
+
     public interface IStartupOptions
     {
         /// <summary>
         /// Gets the value of the --ffmpeg command line option.
         /// </summary>
         string? FFmpegPath { get; }
+
+        public string? DataDir { get; set; }
+
+        public void InitService(IServiceCollection collection);
     }
 }

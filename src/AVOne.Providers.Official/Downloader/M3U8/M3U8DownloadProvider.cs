@@ -6,6 +6,7 @@ namespace AVOne.Providers.Official.Downloader.M3U8
     using System;
     using System.Net.Http;
     using System.Runtime.CompilerServices;
+    using System.Security.Cryptography;
     using System.Text;
     using System.Text.Json;
     using System.Threading;
@@ -16,23 +17,30 @@ namespace AVOne.Providers.Official.Downloader.M3U8
     using AVOne.Enum;
     using AVOne.Extensions;
     using AVOne.Models.Download;
+    using AVOne.Models.Job;
     using AVOne.Providers.Download;
     using AVOne.Providers.Official.Downloader.M3U8.Parser;
     using AVOne.Providers.Official.Downloader.M3U8.Utils;
     using Furion.FriendlyException;
     using Furion.Localization;
+    using Microsoft.Extensions.Logging;
 
     public class M3U8DownloadProvider : IDownloaderProvider
     {
         private readonly IApplicationPaths _applicationPaths;
         private readonly IStartupOptions _options;
         private readonly HttpClient _client;
+        private readonly IConfigurationManager _configurationManager;
 
-        public M3U8DownloadProvider(IApplicationPaths applicationPaths, IStartupOptions options, IHttpClientFactory httpClientFactory)
+        private readonly ILogger<M3U8DownloadProvider> logger;
+
+        public M3U8DownloadProvider(ILogger<M3U8DownloadProvider> logger, IApplicationPaths applicationPaths, IStartupOptions options, IHttpClientFactory httpClientFactory, IConfigurationManager configurationManager)
         {
             _applicationPaths = applicationPaths;
             _options = options;
-            _client = httpClientFactory.CreateClient(AVOneConstants.Download);
+            _client = httpClientFactory.CreateClient(HttpClientNames.Download);
+            _configurationManager = configurationManager;
+            this.logger = logger;
         }
 
         public string Name => "Official";
@@ -60,12 +68,13 @@ namespace AVOne.Providers.Official.Downloader.M3U8
             var playMetaDataFile = $"{saveName}-{md5}.meta.json";
 
             // check if playList exists
-            MediaPlaylist mediaPlaylist;
+            MediaPlaylist? mediaPlaylist = null;
             if (File.Exists(Path.Combine(workingDir, playMetaDataFile)))
             {
                 mediaPlaylist = JsonSerializer.Deserialize<MediaPlaylist>(File.ReadAllText(Path.Combine(workingDir, playMetaDataFile)));
             }
-            else
+
+            if (mediaPlaylist is null)
             {
                 mediaPlaylist = await GetMediaPlaylist(workingDir, url, saveName, m3U8Item, token);
                 File.WriteAllText(Path.Combine(workingDir, playMetaDataFile), JsonSerializer.Serialize(mediaPlaylist));
@@ -77,14 +86,19 @@ namespace AVOne.Providers.Official.Downloader.M3U8
             }
 
             DownloadParts(workingDir, mediaPlaylist, opts, m3U8Item, threadCount, token);
-            opts.OnStatusChanged(new DownloadStatusArgs { Status = L.Text["Merge media"] });
+            opts.OnStatusChanged(new JobStatusArgs { Status = "Merge media" });
+            logger.LogDebug($"Start merging file");
             var finalPath = await MergeAsync(workingDir, saveDir, saveName, OutputFormat.MP4, token: token);
+            logger.LogDebug($"Downloaded file: {finalPath}");
+            var finalFileInfo = new FileInfo(finalPath);
 
+            opts.OnStatusChanged(new DownloadFinishEventArgs { Status = "Download finished", FinalFilePath = finalPath, Progress = 100 });
             Directory.Delete(workingDir, true);
         }
 
         private void DownloadParts(string workingDir, MediaPlaylist mediaPlaylist, DownloadOpts opts, M3U8Item m3U8Item, int threadCount, CancellationToken token)
         {
+            logger.LogDebug($"DownloadParts");
             int interval = 1000;
             var downloadBytes = 0L;
             var intervalDownloadBytes = 0L;
@@ -103,69 +117,153 @@ namespace AVOne.Providers.Official.Downloader.M3U8
                     Interlocked.Exchange(ref intervalDownloadBytes, 0);
                 }
             };
+            timer.Enabled = true;
 
             try
             {
-                timer.Enabled = true;
                 foreach (var (part, index) in mediaPlaylist.Parts.Select((e, i) => (e, i)))
                 {
                     var partDir = Path.Combine(workingDir, $"Part_{index}");
                     Directory.CreateDirectory(partDir);
                     var list = mediaPlaylist.Parts[index].Segments;
                     var numbers = Enumerable.Range(0, list.Count).ToList();
-                    Parallel.ForEach(numbers, new ParallelOptions { MaxDegreeOfParallelism = threadCount, CancellationToken = token }, index =>
-                    {
-                        var segment = list[index];
-                        var tsPath = Path.Combine(partDir, $"{index}.ts");
-                        var tsTmpPath = Path.Combine(partDir, $"{index}.tmp");
-                        if (!File.Exists(tsPath))
-                        {
-                            var request = new HttpRequestMessage
-                            {
-                                RequestUri = new Uri(segment.Uri),
-                            };
 
+                    var keyDict = new Dictionary<string, byte[]>();
+                    var keyList = list.Where(e => e.Key.Method != "NONE").Select(e => e.Key.Uri).Distinct();
+
+                    foreach (var key in keyList)
+                    {
+                        var request = new HttpRequestMessage
+                        {
+                            RequestUri = new Uri(key),
+                        };
+
+                        if (m3U8Item.Header != null)
+                        {
                             foreach (var header in m3U8Item.Header)
                             {
                                 request.Headers.Add(header.Key, header.Value);
                             }
-                            var rsp = _client.Send(request);
-                            rsp.EnsureSuccessStatusCode();
-                            var stream = File.OpenWrite(tsTmpPath);
-                            using var tsStream = rsp.Content.ReadAsStream();
-                            CopyTo(tsStream, stream, token, opts, interval, ref intervalDownloadBytes);
-                            stream.Flush();
-                            stream.Close();
-                            File.Move(tsTmpPath, tsPath);
-                            var info = new FileInfo(tsPath);
-                            Interlocked.Add(ref downloadBytes, info.Length);
                         }
-                        else
+
+                        var rsp = _client.Send(request);
+                        var bytes = rsp.Content.ReadAsByteArrayAsync().GetAwaiter().GetResult();
+                        keyDict[key] = bytes;
+
+                    }
+
+                    _ = Parallel.ForEach(numbers, new ParallelOptions { MaxDegreeOfParallelism = threadCount, CancellationToken = token }, index =>
+                    {
+                        var i = 0;
+                        while (i++ < opts.RetryCount)
                         {
-                            var info = new FileInfo(tsPath);
-                            Interlocked.Add(ref downloadBytes, info.Length);
+                            try
+                            {
+                                var segment = list[index];
+                                var tsPath = Path.Combine(partDir, $"{index}.ts");
+                                var tsTmpPath = Path.Combine(partDir, $"{index}.tmp");
+                                if (!File.Exists(tsPath))
+                                {
+                                    var request = new HttpRequestMessage
+                                    {
+                                        RequestUri = new Uri(segment.Uri),
+                                    };
+
+                                    if (m3U8Item.Header != null)
+                                    {
+                                        foreach (var header in m3U8Item.Header)
+                                        {
+                                            request.Headers.Add(header.Key, header.Value);
+                                        }
+                                    }
+
+                                    var rsp = _client.Send(request);
+                                    rsp.EnsureSuccessStatusCode();
+
+                                    var stream = File.OpenWrite(tsTmpPath);
+                                    using var tsStream = rsp.Content.ReadAsStream();
+                                    CopyTo(tsStream, stream, token, opts, interval, ref intervalDownloadBytes);
+                                    stream.Flush();
+                                    stream.Close();
+                                    if (segment.Key.Method == "AES-128")
+                                    {
+                                        using var aesAlg = Aes.Create();
+                                        aesAlg.Key = keyDict[segment.Key.Uri];
+                                        aesAlg.IV = ConvertHexStringToByteArray(segment.Key.IV);
+                                        var decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
+                                        using var fsCrypt = new FileStream(tsTmpPath, FileMode.Open);
+                                        using var cs = new CryptoStream(fsCrypt, decryptor, CryptoStreamMode.Read);
+                                        using var fsOut = new FileStream(tsPath, FileMode.Create);
+                                        int read;
+                                        var buffer = new byte[1048576];
+                                        while ((read = cs.Read(buffer, 0, buffer.Length)) > 0)
+                                        {
+                                            fsOut.Write(buffer, 0, read);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        File.Move(tsTmpPath, tsPath);
+                                    }
+                                    var info = new FileInfo(tsPath);
+                                    Interlocked.Add(ref downloadBytes, info.Length);
+                                }
+                                else
+                                {
+                                    var info = new FileInfo(tsPath);
+                                    Interlocked.Add(ref downloadBytes, info.Length);
+                                }
+                                var done = Interlocked.Increment(ref finish);
+                                break;
+                            }
+                            catch (Exception)
+                            {
+                                Thread.Sleep(opts.RetryWait ?? 1000);
+                                if (i == opts.RetryCount)
+                                {
+                                    stop = true;
+                                    timer.Enabled = false;
+                                    throw;
+                                }
+                            }
                         }
-                        var done = Interlocked.Increment(ref finish);
                     });
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                stop = true;
-                timer.Enabled = false;
+                logger.LogError(e, "Download Parts Failed");
                 throw;
             }
         }
+        public static byte[] ConvertHexStringToByteArray(string hexString)
+        {
+            if (hexString.Length % 2 != 0)
+            {
+                throw new ArgumentException("Invalid length of hex string.");
+            }
+            if (hexString.StartsWith("0x"))
+            {
+                hexString = hexString.Substring(2);
+            }
 
+            byte[] bytes = new byte[hexString.Length / 2];
+            for (int i = 0; i < hexString.Length; i += 2)
+            {
+                bytes[i / 2] = Convert.ToByte(hexString.Substring(i, 2), 16);
+            }
+
+            return bytes;
+        }
         private static long CopyTo(Stream s, Stream d, CancellationToken token, DownloadOpts opts, int interval, ref long intervalDownloadBytes)
         {
             var bytes = 0L;
             var buffer = new byte[4096];
             var size = 0;
             var limit = 0L;
-            if (opts.MaxSpeed != null)
+            if (opts.MaxSpeed != null && opts.MaxSpeed > 0 && opts.ThreadCount > 0)
             {
-                limit = (long)((0.001 * interval * opts.MaxSpeed) - opts.ThreadCount * 1024);
+                limit = (long)((0.001 * interval * opts.MaxSpeed!) - opts.ThreadCount * 1024);
             }
 
             while (true)
@@ -201,7 +299,7 @@ namespace AVOne.Providers.Official.Downloader.M3U8
                     DownloadBytes = downloadBytes,
                     MaxRetry = opts.RetryCount ?? 1,
                     Retry = 0,
-                    Percentage = percentage,
+                    Precentage = percentage,
                     TotalBytes = totalBytes,
                     Speed = speed,
                     Eta = eta
@@ -236,9 +334,13 @@ namespace AVOne.Providers.Official.Downloader.M3U8
                 RequestUri = new Uri(url),
             };
 
-            foreach (var header in m3U8Item.Header)
+            if (m3U8Item.Header != null)
             {
-                request.Headers.Add(header.Key, header.Value);
+
+                foreach (var header in m3U8Item.Header)
+                {
+                    request.Headers.Add(header.Key, header.Value);
+                }
             }
 
             var rsp = await _client.SendAsync(request, token);
@@ -250,7 +352,18 @@ namespace AVOne.Providers.Official.Downloader.M3U8
             }
             File.WriteAllText(Path.Combine(workingDir, playListName), m3u8);
             var parser = new MediaPlaylistParser();
-            return parser.Parse(m3u8, url);
+            var parsed = parser.Parse(m3u8, url);
+
+            /// master playlist
+            if (parsed.Parts.Count == 1 && parsed.Parts[0].Segments.All(e => e.Uri.EndsWith("m3u8")))
+            {
+                logger.LogInformation($"Get master playlist: {url}");
+                return await GetMediaPlaylist(workingDir, parsed.Parts[0].Segments[0].Uri, saveName, m3U8Item, token);
+            }
+            else
+            {
+                return parsed;
+            }
         }
 
         /// <summary>
@@ -277,7 +390,7 @@ namespace AVOne.Providers.Official.Downloader.M3U8
             bool genpts = false, bool igndts = false, bool ignidx = false, Action<string>? onMessage = null,
             CancellationToken token = default)
         {
-            var ffmpegPath = _options.FFmpegPath ?? "ffmepge";
+            var ffmpegPath = _options.FFmpegPath ?? _configurationManager.CommonConfiguration.FFmpegConfig.FFmpegPath ?? "ffmepge";
             if (string.IsNullOrWhiteSpace(workDir))
                 throw new Exception("Parameter workDir cannot be empty.");
             if (string.IsNullOrWhiteSpace(saveName))
@@ -388,6 +501,7 @@ namespace AVOne.Providers.Official.Downloader.M3U8
                         OutputFormat.SRT => $@"-map 0 -y ""{partOutputPath}.srt""",
                         _ => throw new Exception("OutputFormat not match."),
                     };
+                    logger.LogDebug("arguments:{0}", arguments);
                     var partWorkingDir = Path.GetDirectoryName(partFiles.First());
                     await FFmpeg.ExecuteAsync(ffmpegPath, arguments, partWorkingDir, onMessage, token);
                 }
@@ -486,10 +600,11 @@ namespace AVOne.Providers.Official.Downloader.M3U8
                     .First();
 
                 var ext = Path.GetExtension(output);
-                var finishPath = Path.Combine(outputPath, $"{saveName}{ext}");
+                var finishPath = Path.Combine(outputDir, $"{saveName}{ext}");
                 if (File.Exists(finishPath))
-                    finishPath = Path.Combine(outputPath,
+                    finishPath = Path.Combine(outputDir,
                         $"{saveName}_{DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss")}{ext}");
+                logger.LogDebug("output is {0}, finishPaht is {1}", output, finishPath);
                 File.Move(output, finishPath);
 
                 foreach (var file in files)

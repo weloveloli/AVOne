@@ -24,6 +24,21 @@ namespace AVOne.Configuration
         public string NameResolveProvider { get; set; } = "Jellyfin";
         public string[] ScanMetaDataProviders { get; set; } = new string[] { "MetaTube", "Jellyfin.Nfo" };
         public string[] ImageMetaDataProviders { get; set; } = new string[] { "MetaTube" };
+        public string Proxy { get; set; }
+    }
+
+    public class DownloadConfig
+    {
+        public string DefaultDownloadDir { get; set; } = OperatingSystem.IsWindows() ? "d://downloads" : "/download";
+        public int DefaultDownloadThreadCount { get; set; } = 8;
+        public int DefaultRetryCount { get; set; } = 4;
+        public int DefaultRetryWait { get; set; } = 500;
+        public string Proxy { get; set; }
+    }
+
+    public class FFmpegConfig
+    {
+        public string FFmpegPath { get; set; }
     }
 
     /// <summary>
@@ -64,6 +79,8 @@ namespace AVOne.Configuration
             File = new FileConfig();
             MetadataOptions = Array.Empty<MetadataOptions>();
             ProviderConfig = new ProviderConfig();
+            DownloadConfig = new DownloadConfig();
+            FFmpegConfig = new FFmpegConfig();
         }
         public MovieID MovieID { get; set; }
 
@@ -72,7 +89,8 @@ namespace AVOne.Configuration
         public MetadataOptions[] MetadataOptions { get; set; }
 
         public ProviderConfig ProviderConfig { get; set; }
-
+        public DownloadConfig DownloadConfig { get; set; }
+        public FFmpegConfig FFmpegConfig { get; set; }
         public NameValue[] ContentTypes { get; set; } = Array.Empty<NameValue>();
 
         /// <summary>
@@ -82,5 +100,7 @@ namespace AVOne.Configuration
         public bool EnableCaseSensitiveItemIds { get; set; } = true;
 
         public List<RepositoryInfo> PluginRepositories { get; set; } = new List<RepositoryInfo>();
+
+        public long Verion { get; set; } = DateTimeOffset.Now.ToUnixTimeSeconds();
     }
 }

@@ -3,8 +3,8 @@
 
 namespace AVOne.Impl.Extensions
 {
-    using Furion.Localization;
     using Furion;
+    using Furion.Localization;
     using Microsoft.Extensions.DependencyInjection;
 
     public static class IServiceCollectionExtensions

@@ -9,8 +9,6 @@
   "PLUGIN_NOT_EXIST": "Plugin '{0}' not exists.",
   "PLUGIN_IS_ALREADY_ENABLE": "Plugin '{0}' is already enable.",
   "PLUGIN_IS_ALREADY_DISABLE": "Plugin '{0}' is already disable.",
-
-
   "Searching Metadata": "Searching metadata for files ...",
   "Moving file": "Moving file {0} ...",
   "Saving metadata": "Saving file metadata for {0} ...",
@@ -25,8 +23,5 @@
   "Can not download media": "Can not download media '{0}'.",
   "Download video example": "Download video to {0} from {1}.",
   "Merge media": "Merging media.",
-
-
-
   "Official M3U8 Donwloader": "Official M3U8 Donwloader"
 }

@@ -1,0 +1,35 @@
+﻿@inherits LayoutComponentBase
+@inject I18n I18n
+
+<MApp>
+    <CascadingValue Value="I18n">
+        <MAppBar Elevation=0 App MaxHeight=60
+            Class="mx-6">
+@*            <Favorite />*@
+            <MSpacer />
+            <Search />
+            <Language OnLanguageChanged="OnLanguageChanged" />
+            <div class="text-center border-left-solid" style="width:88px;">
+                <MAvatar Size=40>
+                    <MImage Src="/img/avatar/2.svg"></MImage>
+                </MAvatar>
+            </div>
+        </MAppBar>
+
+        <Navigation />
+
+        <MMain Class="fill-lighten-1" Style="padding-top:60px">
+                <PageTabs>
+                    @Body
+                </PageTabs>
+        </MMain>
+    </CascadingValue>
+</MApp>
+
+@code {
+    void OnLanguageChanged(CultureInfo culture)
+    {
+        I18n.SetCulture(culture);
+    }
+
+}

@@ -9,6 +9,7 @@ namespace AVOne.Tool.Commands
     using AVOne.Common.Enum;
     using AVOne.Common.Plugins;
     using AVOne.Configuration;
+    using AVOne.Impl;
     using AVOne.Tool.Resources;
     using AVOne.Updates;
     using CommandLine;
@@ -48,7 +49,7 @@ namespace AVOne.Tool.Commands
             }
         }
 
-        public override Task ExecuteAsync(ConsoleAppHost host, CancellationToken token)
+        public override Task ExecuteAsync(ApplicationAppHost host, CancellationToken token)
         {
             return Task.Run(async () =>
             {
@@ -69,7 +70,7 @@ namespace AVOne.Tool.Commands
                 }
                 else if (!string.IsNullOrEmpty(RemovePluginOption))
                 {
-                    await RemovePlugin(RemovePluginOption, token);
+                    RemovePlugin(RemovePluginOption);
                 }
                 else if (!string.IsNullOrEmpty(EnablePluginOption))
                 {
@@ -82,49 +83,55 @@ namespace AVOne.Tool.Commands
             }, token);
         }
 
-        private async Task EnablePlugin(string pluginName, CancellationToken token)
+        private Task EnablePlugin(string pluginName, CancellationToken token)
         {
-            var plugins = pluginManager.Plugins;
-            var plugin = pluginManager.Plugins.FirstOrDefault(p => p.Name == pluginName);
-            if (plugin is null)
+            return Task.Run(() =>
             {
-                throw Oops.Oh(ErrorCodes.PLUGIN_NOT_EXIST);
-            }
-            if (plugin.IsEnabledAndSupported)
-            {
-                throw Oops.Oh(ErrorCodes.PLUGIN_IS_ALREADY_ENABLE, pluginName);
-
-            }
-            // Asynchronous
-            AnsiConsole.Status()
-                .Start(Resource.InfoSearchingPlugins, ctx =>
+                var plugins = pluginManager.Plugins;
+                var plugin = pluginManager.Plugins.FirstOrDefault(p => p.Name == pluginName);
+                if (plugin is null)
                 {
-                    this.pluginManager.EnablePlugin(plugin);
-                });
+                    throw Oops.Oh(ErrorCodes.PLUGIN_NOT_EXIST);
+                }
+                if (plugin.IsEnabledAndSupported)
+                {
+                    throw Oops.Oh(ErrorCodes.PLUGIN_IS_ALREADY_ENABLE, pluginName);
+
+                }
+                // Asynchronous
+                AnsiConsole.Status()
+                    .Start(Resource.InfoSearchingPlugins, ctx =>
+                    {
+                        this.pluginManager.EnablePlugin(plugin);
+                    });
+            }, token);
         }
 
-        private async Task DisablePlugin(string pluginName, CancellationToken token)
+        private Task DisablePlugin(string pluginName, CancellationToken token)
         {
-            var plugins = pluginManager.Plugins;
-            var plugin = pluginManager.Plugins.FirstOrDefault(p => p.Name == pluginName);
-            if (plugin is null)
+            return Task.Run(() =>
             {
-                throw Oops.Oh(ErrorCodes.PLUGIN_NOT_EXIST);
-            }
-            if (!plugin.IsEnabledAndSupported)
-            {
-                throw Oops.Oh(ErrorCodes.PLUGIN_IS_ALREADY_DISABLE, pluginName);
-
-            }
-            // Asynchronous
-            await AnsiConsole.Status()
-                .StartAsync(Resource.InfoSearchingPlugins, async ctx =>
+                var plugins = pluginManager.Plugins;
+                var plugin = pluginManager.Plugins.FirstOrDefault(p => p.Name == pluginName);
+                if (plugin is null)
                 {
-                    this.pluginManager.DisablePlugin(plugin);
-                });
+                    throw Oops.Oh(ErrorCodes.PLUGIN_NOT_EXIST);
+                }
+                if (!plugin.IsEnabledAndSupported)
+                {
+                    throw Oops.Oh(ErrorCodes.PLUGIN_IS_ALREADY_DISABLE, pluginName);
+
+                }
+                // Asynchronous
+                AnsiConsole.Status()
+                   .Start(Resource.InfoSearchingPlugins, ctx =>
+                   {
+                       this.pluginManager.DisablePlugin(plugin);
+                   });
+            }, token);
         }
 
-        private async Task RemovePlugin(string removePluginOption, CancellationToken token)
+        private void RemovePlugin(string removePluginOption)
         {
             var plugins = pluginManager.Plugins;
             var plugin = pluginManager.Plugins.FirstOrDefault(p => p.Name == removePluginOption);
@@ -134,7 +141,7 @@ namespace AVOne.Tool.Commands
             }
             // Asynchronous
             AnsiConsole.Status()
-                .Start(Resource.InfoSearchingPlugins,  ctx =>
+                .Start(Resource.InfoSearchingPlugins, ctx =>
                 {
                     this.pluginManager.DisablePlugin(plugin);
                     this.pluginManager.RemovePlugin(plugin);

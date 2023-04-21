@@ -1,0 +1,170 @@
+﻿@page "/app/settings/system"
+@inherits ProCompontentBase
+@using BlazorComponent.I18n
+@inject I18n I18n
+
+<MRow>
+    <MCol Md=3 Sm=12>
+        <MList>
+            <MListItemGroup Mandatory @bind-Value="_current" ActiveClass="deep-purple white--text elevation-6">
+                <MListItem>
+                    <MListItemIcon>
+                        <MIcon>fas fa-sync</MIcon>
+                    </MListItemIcon>
+                    <MListItemContent>
+                        <MListItemTitle>@(I18n.T("Settings.System.Scaning.Title"))</MListItemTitle>
+                    </MListItemContent>
+                </MListItem>
+                <MListItem>
+                    <MListItemIcon>
+                            <MIcon>fas fa-wrench</MIcon>
+                    </MListItemIcon>
+                    <MListItemContent>
+                            <MListItemTitle>@(I18n.T("Settings.System.Paths.Title"))</MListItemTitle>
+                    </MListItemContent>
+                </MListItem>
+                <MListItem>
+                    <MListItemIcon>
+                            <MIcon>fas fa-wifi</MIcon>
+                    </MListItemIcon>
+                    <MListItemContent>
+                            <MListItemTitle>@(I18n.T("Settings.System.Proxy.Title"))</MListItemTitle>
+                    </MListItemContent>
+                </MListItem>
+                    <MListItem>
+                        <MListItemIcon>
+                            <MIcon>fas fa-download</MIcon>
+                        </MListItemIcon>
+                        <MListItemContent>
+                            <MListItemTitle>@(I18n.T("Settings.System.Download.Title"))</MListItemTitle>
+                        </MListItemContent>
+                    </MListItem>
+            </MListItemGroup>
+        </MList>
+    </MCol>
+    <MCol Md=9 Sm=12>
+        @if (_current == 0)
+        {
+            <MCard>
+                <MCardTitle>
+                    <MList Style="width:100%">
+                        <MRow Class="mt-2">
+                            <MCol Md=12 Sm=12>
+                                <MTextarea @bind-Value="ConfigurationManager.CommonConfiguration.MovieID.ignore_regex"
+                                Rows="2" Label="@(I18n.T("Settings.System.Scaning.IgnoreRegex"))"
+                                Placeholder="@(I18n.T("Settings.System.Scaning.IgnoreRegex"))" Outlined
+                                                                TValue="string" />
+                                </MCol>
+                                <MCol Md=12 Sm=12>
+                                <MTextarea @bind-Value="ConfigurationManager.CommonConfiguration.MovieID.ignore_whole_word"
+                                Rows="2" Label="@(I18n.T("Settings.System.Scaning.IgnoreWholeWord"))"
+                                Placeholder="@(I18n.T("Settings.System.Scaning.IgnoreWholeWord"))" Outlined
+                                                                TValue="string" />
+                                </MCol>
+                                <MCol Md=12 Sm=12>
+                                <MTextField @bind-Value="ConfigurationManager.CommonConfiguration.File.media_ext"
+                                Label="@(I18n.T("Settings.System.Scaning.MediaExt"))"
+                                Placeholder="@(I18n.T("Settings.System.Scaning.MediaExt"))" Outlined TValue="string" />
+                                </MCol>
+                                <MCol Md=12 Sm=12>
+                                <MTextField @bind-Value="ConfigurationManager.CommonConfiguration.File.ignore_folder"
+                                Label="@(I18n.T("Settings.System.Scaning.IgnoreFolder"))"
+                                Placeholder="@(I18n.T("Settings.System.Scaning.IgnoreFolder"))" Outlined
+                                TValue="string" />
+                                </MCol>
+                                </MRow>
+                                <MItem>
+                                <MButton OnClick="SaveConfig" Color="deep-purple white--text font-weight-black">
+                                @(I18n.T("Common.SaveChanges")) </MButton>
+                            <MButton Outlined Class="ml-2 grey--text font-weight-black" OnClick="ResetConfig">
+                            @(I18n.T("Common.Reset")) </MButton>
+                        </MItem>
+                    </MList>
+                </MCardTitle>
+            </MCard>
+        }
+        @if (_current == 1)
+        {
+            <MCard>
+                <MCardText>
+                    <MRow>
+                        <MCol Md=12 Sm=12>
+                            <MTextField Disabled Value="@(ApplicationPaths.DataPath)" Label="@(I18n.T("Settings.System.Paths.DataPath"))" Outlined Readonly TValue="string" />
+                        </MCol>
+                        <MCol Md=12 Sm=12>
+                            <MTextField Disabled Value="@(ApplicationPaths.PluginsPath)" Label="@(I18n.T("Settings.System.Paths.PluginsPath"))" Outlined Readonly TValue="string" />
+                        </MCol>
+                        <MCol Md=12 Sm=12>
+                            <MTextField Disabled Value="@(ApplicationPaths.LogDirectoryPath)" Label="@(I18n.T("Settings.System.Paths.LogDirectoryPath"))" Outlined Readonly TValue="string" />
+                        </MCol>
+                        <MCol Md=12 Sm=12>
+                            <MTextField Disabled Value="@(ApplicationPaths.CachePath)" Label="@(I18n.T("Settings.System.Paths.CachePath"))" Outlined Readonly TValue="string" />
+                        </MCol>
+                    </MRow>
+                </MCardText>
+             </MCard>
+        }
+        @if (_current == 2)
+        {
+            <MCard>
+                <MCardTitle>
+                    <MList Style="width:100%">
+                        <MRow Class="mt-2">
+                            <MCol Md=12 Sm=12>
+                                <MTextarea @bind-Value="ConfigurationManager.CommonConfiguration.ProviderConfig.Proxy"
+                                Rows="2" Label="@(I18n.T("Settings.System.Proxy.Default.Title"))"
+                                Placeholder="@(I18n.T("Settings.System.Proxy.Default.Placeholder"))" Outlined
+                                                                TValue="string" />
+                                </MCol>
+                                <MCol Md=12 Sm=12>
+                                <MTextarea @bind-Value="ConfigurationManager.CommonConfiguration.DownloadConfig.Proxy"
+                                Rows="2" Label="@(I18n.T("Settings.System.Proxy.Download.Title"))"
+                                Placeholder="@(I18n.T("Settings.System.Proxy.Download.Placeholder"))" Outlined
+                                                                TValue="string" />
+                                </MCol>
+                                </MRow>
+                                <MItem>
+                                <MButton OnClick="SaveConfig" Color="deep-purple white--text font-weight-black">
+                                @(I18n.T("Common.SaveChanges")) </MButton>
+                            <MButton Outlined Class="ml-2 grey--text font-weight-black" OnClick="ResetConfig">
+                            @(I18n.T("Common.Reset")) </MButton>
+                        </MItem>
+                    </MList>
+                </MCardTitle>
+            </MCard>
+        }
+        @if (_current == 3)
+        {
+            <MCard>
+                <MCardTitle>
+                    <MList Style="width:100%">
+                        <MRow Class="mt-2">
+                            <MCol Md=12 Sm=12>
+                                <MCol Md=12 Sm=12>
+                                    <MTextField @bind-Value="ConfigurationManager.CommonConfiguration.DownloadConfig.DefaultDownloadThreadCount"
+                                            Label="@(I18n.T("Settings.System.Download.ThreadCount"))" Outlined TValue="int" />
+                                    </MCol>
+                                </MCol>
+                                <MCol Md=12 Sm=12>
+                                    <MTextField @bind-Value="ConfigurationManager.CommonConfiguration.DownloadConfig.DefaultRetryCount"
+                                        Label="@(I18n.T("Settings.System.Download.RetryCount"))" Outlined TValue="int" />
+                                </MCol>
+                                <MCol Md=12 Sm=12>
+                                <MTextField @bind-Value="ConfigurationManager.CommonConfiguration.DownloadConfig.DefaultDownloadDir"
+                                        Label="@(I18n.T("Settings.System.Download.DownloadDir"))" Outlined TValue="string" />
+                                </MCol>
+                                </MRow>
+                                <MItem>
+                                <MButton OnClick="SaveConfig" Color="deep-purple white--text font-weight-black">
+                                @(I18n.T("Common.SaveChanges"))
+                            </MButton>
+                            <MButton Outlined Class="ml-2 grey--text font-weight-black" OnClick="ResetConfig">
+                            @(I18n.T("Common.Reset"))
+                            </MButton>
+                        </MItem>
+                    </MList>
+                </MCardTitle>
+            </MCard>
+        }
+    </MCol>
+</MRow>

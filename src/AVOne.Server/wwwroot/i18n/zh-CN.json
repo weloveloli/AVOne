@@ -1,0 +1,171 @@
+{
+  "$DefaultLanguage": "true",
+  "$Text": "中文简体",
+  "Dashboard": "仪表盘",
+  "Library": "视频库",
+  "LocalLibrary": "本地视频库",
+  "Common": {
+    "SaveChanges": "保存变更",
+    "Reset": "重置",
+    "Cancel": "取消",
+    "Submit": "提交",
+    "Disabled":"已禁用",
+    "Active":"已启用",
+    "NotSupported":"不支持",
+    "Malfunctioned":"已禁用",
+    "Restart":"待重启",
+    "On":"开启",
+    "Off":"关闭",
+    "Disable":"禁用",
+    "Enable":"启用"
+  },
+  "Download":{
+    "Title":"下载",
+    "Search":"搜索任务",
+    "Sort":{
+      "ResetSort":"重置排序",
+      "SortbyName":"按名称排序",
+      "SortbyCreatedDate":"按创建时间排序"
+    },
+    "Detail": {
+      "Info": "下载信息",
+      "JobInfo": "任务信息",
+      "Save": "保存",
+      "Tags": "任务标签",
+      "DownloadSpeedInfo": "速度信息",
+      "TotalSize": "文件大小",
+      "Speed": "下载平均速度",
+      "FileInfo": "文件信息",
+      "FinalDir": "文件目录",
+      "FinalFileName": "文件名",
+      "DisplayName": "名称",
+      "OutputDir": "目标下载路劲",
+      "OrignalLink": "原始地址"
+    },
+    "Tasks": {
+      "Title": "下载任务",
+      "AddTask": "添加下载任务",
+      "AddTaskThreadCount": "最大线程数",
+      "AddTaskRetryCount": "重试次数",
+      "AddTaskUrl": "下载任务链接",
+      "AddTaskUrlHint": "例如:https://missav.com/fr/cus-1468",
+      "DeleteTask": "删除下载任务",
+      "StopTask": "停止下载任务",
+      "ViewDetail": "查看任务详情",
+      "Failed": "下载失败",
+      "ExtractingMedia": "正在从'{0}'提取媒体信息",
+      "AdvancedOption": "高级选项",
+      "Message": {
+        "AddTaskSuccess": "添加下载任务'{0}'成功",
+        "AddTaskFailed": "添加下载任务'{0}'失败,原因'{1}'",
+        "DeleteTaskSuccess": "删除下载任务'{0}'成功",
+        "DeleteTaskFailed": "删除下载任务'{0}'失败"
+      },
+      "FailedReason": {
+        "NoExtrator": "未找到适用于 '{0}' 的提取器",
+        "NoDownloader": "未找到适用于'{0}' 的下载器",
+        "GetDownloadItemFailed": "无法从'{0}'中提取可下载的媒体"
+      }
+    },
+    "Tags": {
+      "Censored": "有码",
+      "Uncensored": "无码",
+      "Chinese": "国产",
+      "ChineseSub": "中文字幕",
+      "Taiwanese": "台湾",
+      "Japanese": "日本",
+      "Other": "其他",
+      "Anime": "动画",
+      "US": "欧美"
+    },
+      "Status": {
+        "Downloading":"下载中",
+        "Completed": "已完成",
+        "Canceled": "已取消"
+      }
+  },
+  "Settings": {
+    "Title": "设置",
+    "Common": {
+      "SaveSuccess": "保存配置成功"
+    },
+    "System": {
+      "Title": "系统设置",
+      "Scaning": {
+        "Title": "扫描配置",
+        "MediaExt": "媒体拓展名列表",
+        "IgnoreFolder": "忽略的扫描文件夹名称",
+        "IgnoreRegex": "媒体标题清理正则表达式",
+        "IgnoreWholeWord": "媒体标题忽略字符"
+      },
+      "Download": {
+        "Title": "下载设置",
+        "RetryCount": "默认重试次数",
+        "ThreadCount": "默认线程数",
+        "DownloadDir": "默认下载路劲"
+      },
+      "Paths": {
+        "Title": "系统路径",
+        "CachePath": "系统缓存文件夹",
+        "DataPath": "系统数据文件夹",
+        "PluginsPath": "系统插件文件夹",
+        "LogDirectoryPath": "系统日志文件夹"
+      },
+      "Provider": {
+        "Title": "Provider配置"
+      },
+      "Proxy": {
+        "Title": "代理设置",
+        "Default": {
+          "Title": "默认代理",
+          "PlaceHolder": "请输入代理地址,如 http://127.0.0.1"
+        },
+        "Download": {
+          "Title": "下载器专用代理",
+          "PlaceHolder": "请输入代理地址,如 http://127.0.0.1"
+        }
+      }
+    },
+    "Library": {
+      "Title": "库设置"
+    },
+    "Plugin": {
+      "Title": "插件设置",
+      "InstalledPlugin": {
+        "Title": "我的插件",
+        "EnablePlugins": "启用插件",
+        "DisablePlugins": "禁用插件",
+        "DeletePlugins": "删除插件",
+        "Message": {
+          "EnablePluginsSuccess": "启用插件'{0}'成功",
+          "EnablePluginsFailed": "启用插件'{0}'失败",
+          "DisablePluginsSuccess": "禁用插件'{0}'成功",
+          "DisablePluginsFailed": "禁用插件'{0}'失败",
+          "DeletePluginsSuccess": "删除插件'{0}'成功",
+          "DeletePluginsFailed": "删除插件'{0}'失败"
+        }
+      },
+      "AvaliablePlugin": {
+        "Title": "插件目录"
+      },
+      "PluginRepository": {
+        "Title": "插件仓库",
+        "AddRepo": "添加仓库",
+        "RepoUrl": "存储库 URL",
+        "RepoUrlHint": "您要添加的存储库清单的位置",
+        "RepoName": "存储库名称",
+        "RepoNameHint": "一个自定义名称，用于区分该存储库和添加到服务器的任何其他存储库",
+        "Message": {
+          "AddRepoSuccess": "添加存储库'{0}'成功",
+          "AddRepoFailed": "添加存储库'{0}'失败",
+          "DeleteRepoSuccess": "删除存储库'{0}'成功",
+          "DeleteRepoFailed": "删除存储库'{0}'失败",
+          "EnableRepoSuccess": "启用存储库'{0}'成功",
+          "EnableRepoFailed": "启用存储库'{0}'失败",
+          "DisableRepoSuccess": "禁用存储库'{0}'成功",
+          "DisableRepoFailed": "禁用存储库'{0}'失败"
+        }
+      }
+    }
+  }
+}

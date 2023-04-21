@@ -3,16 +3,17 @@
 
 namespace AVOne.Tool.Commands
 {
-    using System.Threading.Tasks;
-    using CommandLine;
     using System.Threading;
-    using Spectre.Console.Rendering;
-    using CommandLine.Text;
-    using AVOne.Tool.Resources;
+    using System.Threading.Tasks;
     using AVOne.Common.Plugins;
-    using AVOne.Models.Updates;
-    using AVOne.Updates;
     using AVOne.Configuration;
+    using AVOne.Impl;
+    using AVOne.Models.Updates;
+    using AVOne.Tool.Resources;
+    using AVOne.Updates;
+    using CommandLine;
+    using CommandLine.Text;
+    using Spectre.Console.Rendering;
 
     [Verb("plugin-repo", false, HelpText = nameof(Resource.HelpTextVerbPluginRepo), ResourceType = typeof(Resource))]
     internal class PluginRepo : BaseHostOptions
@@ -37,7 +38,7 @@ namespace AVOne.Tool.Commands
             }
         }
 
-        public override Task ExecuteAsync(ConsoleAppHost host, CancellationToken token)
+        public override Task ExecuteAsync(ApplicationAppHost host, CancellationToken token)
         {
             return Task.Run(async () =>
             {

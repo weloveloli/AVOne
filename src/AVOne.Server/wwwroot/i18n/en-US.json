@@ -1,0 +1,152 @@
+{
+  "$Text": "English",
+  "Dashboard": "Dashboard",
+  "Library": "Media Library",
+  "LocalLibrary": "Local Media Library",
+  "Common": {
+    "SaveChanges": "Save changes",
+    "Reset": "Reset",
+    "Submit": "Submit",
+    "On": "On",
+    "Off": "Off"
+  },
+  "Download": {
+    "Title": "Download Tasks",
+    "Search":"Search Task",
+    "Sort":{
+      "ResetSort":"Reset Sort",
+      "SortbyName":"Sort By Name",
+      "SortbyCreatedDate":"Sort Created Date"
+    },
+    "Detail": {
+      "Info": "Download Task Info",
+      "JobInfo": "Task Info",
+      "Tags": "Task Tags",
+      "Save": "Save",
+      "DownloadSpeedInfo": "Speed Info",
+      "TotalSize": "Total File Size",
+      "Speed": "Average Download Speed",
+      "FileInfo": "File Info",
+      "FinalDir": "File Directory",
+      "FinalFileName": "File Name",
+      "DisplayName": "Name",
+      "OutputDir": "Target Directory",
+      "OrignalLink": "Orignal Link"
+    },
+    "Tasks": {
+      "AddTask": "Add Download Task",
+      "AddTaskUrl": "Add Download Task Url",
+      "AddTaskThreadCount": "Download Task Thread Count",
+      "AddTaskRetryCount": "Download Task Retry Count",
+      "AddTaskUrlHint": "For example :https://missav.com/fr/cus-1468",
+      "DeleteTask": "Delete Download Task",
+      "StopTask": "Stop Download Task",
+      "ViewDetail": "View Task Detail",
+      "Failed": "Download Failed",
+      "AdvancedOption": "Advanced Option",
+      "ExtractingMedia": "Extracting Media from '{0}'",
+      "Message": {
+        "AddTaskSuccess": "Add download task '{0}' success",
+        "AddTaskFailed": "Add download task '{0}' failed due to '{1}'",
+        "DeleteTaskSuccess": "Delete download task '{0}' success",
+        "DeleteTaskFailed": "Delete download task '{0}' failed"
+      },
+      "FailedReason": {
+        "NoExtrator": "No extrator for url '{0}'",
+        "NoDownloader": "No downloader for url '{0}'",
+        "GetDownloadItemFailed": "Can't get download item for url '{0}'"
+      }
+    },
+    "Status": {
+      "Downloading":"Downloading",
+      "Completed": "Completed",
+      "Canceled": "Canceled"
+    },
+    "Tags": {
+      "Censored": "Censored",
+      "Uncensored": "Uncensored",
+      "Chinese": "Chinese",
+      "ChineseSub": "Chinese Subtitle",
+      "Taiwanese": "Taiwanese",
+      "Japanese": "Japanese",
+      "Other": "Other",
+      "Anime": "Anime",
+      "US": "US"
+    }
+  },
+  "Settings": {
+    "Title": "Settings",
+    "Common": {
+      "SaveSuccess": "Save Settings Success"
+    },
+    "System": {
+      "Title": "System Settings",
+      "Scaning": {
+        "Title": "Scaning Settings",
+        "MediaExt": "Extensions of media files",
+        "IgnoreFolder": "Folder name to ingore when scanning",
+        "IgnoreRegex": "Ignore Regex of media title",
+        "IgnoreWholeWord": "Whole word cleaner of media title"
+      },
+      "Download": {
+        "Title": "Download Settings",
+        "RetryCount": "Default Download Task Retry Count",
+        "ThreadCount": "Default Download Task Thread Count",
+        "DownloadDir": "Default Download Target Dir"
+      },
+      "Paths": {
+        "Title": "System Path",
+        "CachePath": "System cache path",
+        "DataPath": "System data path",
+        "PluginsPath": "System plugins path",
+        "LogDirectoryPath": "System log path"
+      },
+      "Provider": {
+        "Title": "Provider Settings"
+      }
+    },
+    "Library": {
+      "Title": "Library Settings"
+    },
+    "Plugin": {
+      "Title": "Plugin Settings",
+      "InstalledPlugin": {
+        "Title": "Installed Plugins",
+        "EnablePlugins": "Enable Plugin",
+        "DisablePlugins": "Disable Plugin",
+        "DeletePlugins": "Delete Plugin",
+        "Message": {
+          "DeletePluginHint": "Are you sure to delete this plugin?",
+          "DeletePluginSuccess": "Delete plugin '{0}' success",
+          "DeletePluginFailed": "Delete plugin '{0}' failed",
+          "EnablePluginSuccess": "Enable plugin '{0}' success",
+          "EnablePluginFailed": "Enable plugin '{0}' failed",
+          "DisablePluginSuccess": "Disable plugin '{0}' success",
+          "DisablePluginFailed": "Disable plugin '{0}' failed"
+        }
+      },
+      "AvaliablePlugin": {
+        "Title": "Avaliable Plugins"
+      },
+      "PluginRepository": {
+        "Title": "Plugin Repository",
+        "AddRepo": "Add Plugin Repository",
+        "DeleteRepo": "Delete Plugin Repository",
+        "RepoUrl": "Plugin Repository Url",
+        "RepoUrlHint": "The url of plugin repository",
+        "RepoName": "Plugin Repository Name",
+        "RepoNameHint": "The name of plugin repository",
+        "Message": {
+          "AddRepoSuccess": "Add plugin repository '{0}' success",
+          "AddRepoFailed": "Add plugin repository '{0}' failed",
+          "DeleteRepoSuccess": "Delete plugin repository '{0}' success",
+          "DeleteRepoFailed": "Delete plugin repository '{0}' failed",
+          "EnableRepoSuccess": "Enable plugin repository '{0}' success",
+          "EnableRepoFailed": "Enable plugin repository '{0}' failed",
+          "DisableRepoSuccess": "Disable plugin repository '{0}' success",
+          "DisableRepoFailed": "Disable plugin repository '{0}' failed"
+        }
+      }
+    }
+  }
+}

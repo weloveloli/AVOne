@@ -10,6 +10,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "解决方案项", "解决�
 		.editorconfig = .editorconfig
 		common.props = common.props
 		commontest.props = commontest.props
+		Directory.Packages.props = Directory.Packages.props
+		..\Dockerfile = ..\Dockerfile
+		dotnet-releaser.toml = dotnet-releaser.toml
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AVOne.Tool", "AVOne.Tool\AVOne.Tool.csproj", "{01919D4A-184C-4CD0-A800-0878124E7B4B}"
@@ -33,6 +36,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AVOne.Common", "AVOne.Common\AVOne.Common.csproj", "{80E706D4-BFEE-4A4F-AC59-E1DFEE91C3B4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Providers", "Providers", "{C1A3C964-84A7-4486-B157-7D8010192F75}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AVOne.Api", "AVOne.Api\AVOne.Api.csproj", "{7B234718-14C7-45FA-AAF8-201604E8B7DD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AVOne.Server", "AVOne.Server\AVOne.Server.csproj", "{9E03B4AF-7A4A-486B-B860-736AB1A88DFF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -80,6 +87,14 @@ Global
 		{80E706D4-BFEE-4A4F-AC59-E1DFEE91C3B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{80E706D4-BFEE-4A4F-AC59-E1DFEE91C3B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{80E706D4-BFEE-4A4F-AC59-E1DFEE91C3B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B234718-14C7-45FA-AAF8-201604E8B7DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B234718-14C7-45FA-AAF8-201604E8B7DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B234718-14C7-45FA-AAF8-201604E8B7DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B234718-14C7-45FA-AAF8-201604E8B7DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E03B4AF-7A4A-486B-B860-736AB1A88DFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E03B4AF-7A4A-486B-B860-736AB1A88DFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E03B4AF-7A4A-486B-B860-736AB1A88DFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E03B4AF-7A4A-486B-B860-736AB1A88DFF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

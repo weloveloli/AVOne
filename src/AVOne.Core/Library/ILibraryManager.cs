@@ -4,7 +4,6 @@
 #nullable disable
 namespace AVOne.Library
 {
-    using AVOne.Configuration;
     using AVOne.IO;
     using AVOne.Models.Item;
     using AVOne.Resolvers;

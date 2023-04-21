@@ -6,7 +6,6 @@
 namespace AVOne.Extensions
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
 
     /// <summary>

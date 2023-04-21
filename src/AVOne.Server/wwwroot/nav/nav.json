@@ -1,0 +1,34 @@
+[
+  {
+    "Id": 1,
+    "Title": "Download.Title",
+    "Icon": "mdi-download",
+    "Children": [
+      {
+        "Id": 2,
+        "Title": "Download.Tasks.Title",
+        "Icon": "mdi-download",
+        "Href": "app/downloads/tasks"
+      }
+    ]
+  },
+  {
+    "Id": 5,
+    "Title": "Settings.Title",
+    "Icon": "mdi-cog",
+    "Children": [
+      {
+        "Id": 6,
+        "Title": "Settings.System.Title",
+        "Icon": "mdi-cog",
+        "Href": "app/settings/system"
+      },
+      {
+        "Id": 8,
+        "Title": "Settings.Plugin.Title",
+        "Icon": "mdi-cog",
+        "Href": "app/settings/plugin"
+      }
+    ]
+  }
+]

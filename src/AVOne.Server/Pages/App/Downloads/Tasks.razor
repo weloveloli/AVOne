@@ -1,0 +1,162 @@
+﻿@page "/app/downloads/tasks"
+@using AVOne.Impl.Data
+@using AVOne.Models.Download
+@inherits ProCompontentBase
+
+<CascadingValue Value="this">
+    <div>
+        <MRow Class="no-gutters">
+            <div style="height:calc(100vh - 112px );">
+                <TaskNav />
+            </div>
+            <div class="pl-6 rounded-2" style="height:calc(100vh - 112px ); width: calc(100% - 300px); overflow: hidden; display:block;">
+                <div>
+                    <MToolbar Dense Elevation="0" Class="rounded-2" Height="60">
+                        <MTextField TValue="string"
+                                    Class="task-search mx-4"
+                                    HideDetails=true
+                                    Placeholder=@T("Download.Search") @bind-Value=InputText>
+                            <PrependContent>
+                                <MIcon Small Class="mt-1">fa fa-search</MIcon>
+                            </PrependContent>
+
+                        </MTextField>
+                        <MMenu OffsetX Left OffsetY>
+                            <ActivatorContent>
+                                <MButton Class="mr-5" Icon Large @attributes="context.Attrs"><MIcon>mdi-dots-horizontal</MIcon></MButton>
+                            </ActivatorContent>
+                            <ChildContent>
+                                <MList Dense>
+                                    <MListItem Link OnClick=ResetSort>
+                                        <MListItemContent>
+                                            <MListItemTitle>
+                                                @T("Download.Sort.ResetSort")
+                                            </MListItemTitle>
+                                        </MListItemContent>
+                                    </MListItem>
+                                    <MListItem Link OnClick=SortbyName>
+                                        <MListItemContent>
+                                            <MListItemTitle>
+                                                @T("Download.Sort.SortbyName")
+                                            </MListItemTitle>
+                                        </MListItemContent>
+                                    </MListItem>
+                                    <MListItem Link OnClick=SortbyCreatedDate>
+                                        <MListItemContent>
+                                            <MListItemTitle>
+                                                @T("Download.Sort.SortbyCreatedDate")
+                                            </MListItemTitle>
+                                        </MListItemContent>
+                                    </MListItem>
+                                </MList>
+                            </ChildContent>
+                        </MMenu>
+                    </MToolbar>
+
+                                <MList Subheader ThreeLine 
+               TwoLine Class="rounded-4 mt-6" Style="height: calc(100vh - 196px ); overflow-y:auto;">
+                       @foreach (var job in Jobs)
+                        {
+                    <MListItem key="@job.Id" Link OnClick="()=>ShowDetail(job)">
+                        <ItemContent>
+                            <MListItemAvatar>
+                                <MIcon Class="blue lighten-1"
+                                        Dark>
+                            mdi-movie
+                        </MIcon>
+                    </MListItemAvatar>
+                        <MListItemContent>
+                            <MListItemTitle>
+                                @job.Name
+                            </MListItemTitle>
+                            @if(job.Status == JobStatus.Running)
+                            {
+                                <MListItemSubtitle>
+                                    <div class="d-flex mb-2 justify-space-between">
+                                        <strong>@Speed(job)</strong>
+                                        <strong>@Eta(job)</strong>
+                                    </div>
+                                 
+                                <MProgressLinear Value="@(job.Progress)" Height="10" Color="light-blue"></MProgressLinear>
+                                </MListItemSubtitle>
+                            }
+                            @if(job.Status == JobStatus.Completed || job.Status==JobStatus.Canceled)
+                            {
+                                <MListItemSubtitle>
+                                    @job.Modified
+                                </MListItemSubtitle>
+                            }
+                           @if(job.Status == JobStatus.Failed)
+                            {
+                                <MListItemSubtitle>
+                                    <strong class="red--text text--lighten-1">@T("Download.Tasks.Failed")</strong>
+                                </MListItemSubtitle>
+                            }
+                            </MListItemContent>
+                            <MListItemAction>
+                                    @foreach (var tag in job.Tags)
+                                    {
+                                        <MChip Class="mx-1 text-btn" Small Style="height:32px;border-radius:32px;" Outlined Color="@GetColorForTag(tag)">@T("Download.Tags."+tag)</MChip>
+                                    }
+                                    @if(job.Status == JobStatus.Running){
+                                        <MButton Icon @onclick="() => StopJob(job)" StopPropagation>
+                                            <MIcon Color="red lighten-1">mdi-stop</MIcon>
+                                        </MButton>
+                                    }
+                                    @if(job.Status != JobStatus.Running){
+                                    <MTooltip Top>
+                                        <ActivatorContent Context="tooltip">
+                                            <MButton Icon @attributes="@tooltip.Attrs" @onclick="() => DeleteJob(job)" StopPropagation>
+                                                <MIcon Color="red lighten-1">mdi-delete</MIcon>
+                                            </MButton>
+                                        </ActivatorContent>
+                                        <ChildContent>
+                                            <span>@T("Download.Tasks.DeleteTask")</span>
+                                        </ChildContent>
+                                    </MTooltip>
+                                    }
+                           
+                                    <MTooltip Top>
+                                        <ActivatorContent Context="tooltip">
+                                            <MButton Icon @attributes="@tooltip.Attrs" @onclick="() => ShowDetail(job)" StopPropagation>
+                                                <MIcon Color="grey lighten-1">mdi-information</MIcon>
+                                            </MButton>
+                                        </ActivatorContent>
+                                        <ChildContent>
+                                            <span>@T("Download.Tasks.ViewDetail")</span>
+                                        </ChildContent>
+                                    </MTooltip>      
+                        </MListItemAction>
+                    </ItemContent>
+                </MListItem>
+                <MDivider></MDivider>
+                        }
+                    </MList>
+                </div>
+            </div>
+        </MRow>
+    </div>
+    <TaskDetail Value="_visible" ValueChanged="val=>_visible = val" SelectItem=_selectItem></TaskDetail>
+</CascadingValue>
+
+@code {
+    public string Speed(JobModel jobModel)
+    {
+        long speed = 0;
+        if (jobModel.Extra.TryGetValue("Speed", out var speedStr))
+        {
+            speed = long.Parse(speedStr.ToString());
+        }
+        return $"{DownloadProgressEventArgs.FormatFileSize(speed)}/s";
+    }
+
+    public string Eta(JobModel jobModel)
+    {
+        int eta = 0;
+        if (jobModel.Extra.TryGetValue("Eta", out var etaStr))
+        {
+            eta = int.Parse(etaStr.ToString());
+        }
+        return DownloadProgressEventArgs.FormatTime(eta);
+    }
+}

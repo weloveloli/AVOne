@@ -3,15 +3,16 @@
 
 namespace AVOne.Tool.Commands
 {
-    using CommandLine;
-    using System.Threading.Tasks;
     using System.Threading;
+    using System.Threading.Tasks;
+    using AVOne.Impl;
     using AVOne.Models.Download;
-    using AVOne.Tool.Resources;
     using AVOne.Providers;
+    using AVOne.Providers.Download;
+    using AVOne.Tool.Resources;
+    using CommandLine;
     using CommandLine.Text;
     using Spectre.Console;
-    using AVOne.Providers.Download;
 
     [Verb("download", false, HelpText = nameof(Resource.HelpTextVerbDownload), ResourceType = typeof(Resource))]
     internal class Download : BaseHostOptions
@@ -38,16 +39,12 @@ namespace AVOne.Tool.Commands
                 };
             }
         }
-        public override async Task ExecuteAsync(ConsoleAppHost host, CancellationToken token)
+        public override async Task ExecuteAsync(ApplicationAppHost host, CancellationToken token)
         {
             var providerManager = host.Resolve<IProviderManager>();
             if (!string.IsNullOrEmpty(Web))
             {
-                var extractor = providerManager.GetMediaExtractorProviders(Web).FirstOrDefault();
-                if (extractor is null)
-                {
-                    throw Oops.Oh("Can not find extractor for web url", Web);
-                }
+                var extractor = providerManager.GetMediaExtractorProviders(Web).FirstOrDefault() ?? throw Oops.Oh("Can not find extractor for web url", Web);
                 var items = await extractor!.ExtractAsync(Web, token);
                 var count = items.Count();
                 BaseDownloadableItem? downloadableItem = null;

@@ -3,4 +3,25 @@ project = "src.sln"
 [github]
 user = "weloveloli"
 repo = "AVOne"
-branches=["tool-*","common-*"]
+version_prefix = "v"
+[msbuild.properties]
+PublishTrimmed = false
+PublishReadyToRun = false
+
+profile = "custom"
+# Create zip files only for Windows platforms
+[[pack]]
+rid = ["win-x64"]
+kinds = ["zip"]
+# Default targets for Linux/Ubuntu Debian compatible distro with debian and tar packages
+[[pack]]
+rid = ["linux-x64"]
+kinds = ["tar"]
+# Default targets for macOS, only tar files for this platform
+[[pack]]
+rid = ["osx-x64","osx-arm64"]
+kinds = ["tar"]
+[[pack]]
+publish =false
+rid = ["win-arm","win-arm64","linux-arm","linux-arm64","rhel-x64"]
+kinds = ["tar"]

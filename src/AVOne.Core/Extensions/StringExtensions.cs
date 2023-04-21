@@ -146,7 +146,7 @@ namespace AVOne.Extensions
 
         public static string ToStringInvariant<T>(this T value)
         {
-            return Convert.ToString(value, CultureInfo.InvariantCulture);
+            return Convert.ToString(value, CultureInfo.InvariantCulture) ?? string.Empty;
         }
 
     }
