@@ -154,8 +154,8 @@ namespace AVOne.Providers.Official.Downloader.M3U8
 
                     _ = Parallel.ForEach(numbers, new ParallelOptions { MaxDegreeOfParallelism = threadCount, CancellationToken = token }, index =>
                     {
-                        var i = 1;
-                        while (i < opts.RetryCount)
+                        var i = 0;
+                        while (i++ < opts.RetryCount)
                         {
                             try
                             {
@@ -214,6 +214,7 @@ namespace AVOne.Providers.Official.Downloader.M3U8
                                     Interlocked.Add(ref downloadBytes, info.Length);
                                 }
                                 var done = Interlocked.Increment(ref finish);
+                                break;
                             }
                             catch (Exception)
                             {

@@ -1,8 +1,12 @@
 {
     "Serilog": {
-        "MinimumLevel": {
-            "Default": "Information"
-        },
+      "MinimumLevel": {
+        "Default": "Information",
+        "Override": {
+          "Microsoft": "Warning",
+          "Microsoft.Hosting.Lifetime": "Information"
+        }
+      },
       "WriteTo": [
         {
           "Name": "Console",

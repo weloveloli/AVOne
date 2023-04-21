@@ -179,7 +179,7 @@ namespace AVOne.Impl
 
         public static bool IsUseDefaultLogging()
         {
-            return bool.Parse(Environment.GetEnvironmentVariable($"{AVOnePrefix}_USE_DEFAULT_LOG") ?? "true");
+            return bool.Parse(Environment.GetEnvironmentVariable($"{AVOnePrefix}_USE_DEFAULT_LOG") ?? "false");
         }
         /// <summary>
         /// Initialize Serilog using configuration and fall back to defaults on failure.
@@ -199,7 +199,6 @@ namespace AVOne.Impl
                         .Enrich.WithThreadId()
                         .CreateLogger();
                 }
-
             }
             catch (Exception ex)
             {
