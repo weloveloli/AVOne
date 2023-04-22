@@ -9,7 +9,8 @@ README.md
 deployment/*/dist
 deployment/*/pkg-dist
 deployment/collect-dist/
-ci/
-Test/
-artifacts-dotnet-releaser
-publish
+src/ci/
+src/Test/
+*/artifacts-dotnet-releaser
+*/publish
+*.toml

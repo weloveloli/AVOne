@@ -350,4 +350,5 @@ MigrationBackup/
 .ionide/
 /source/AVOne.Tool/Properties/launchSettings.json
 /src/AVOne.Tool/Properties/launchSettings.json
-/src/artifacts-dotnet-releaser
+artifacts-dotnet-releaser
+
