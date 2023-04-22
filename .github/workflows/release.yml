@@ -1,8 +1,9 @@
 name: Act on release created
 
 on:
-  release:
-    types: [created]
+  push:
+    tags:
+    - 'v*'
     
 jobs:
   build:
