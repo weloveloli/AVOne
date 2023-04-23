@@ -12,6 +12,7 @@ namespace AVOne.Providers.Official.Downloader.M3U8
     using System.Threading;
     using System.Threading.Tasks;
     using AVOne.Common.Enum;
+    using AVOne.Common.Helper;
     using AVOne.Configuration;
     using AVOne.Constants;
     using AVOne.Enum;
@@ -25,7 +26,7 @@ namespace AVOne.Providers.Official.Downloader.M3U8
     using Furion.Localization;
     using Microsoft.Extensions.Logging;
 
-    public class M3U8DownloadProvider : IDownloaderProvider
+    public class M3U8DownloadProvider : HttpClientHelper, IDownloaderProvider
     {
         private readonly IApplicationPaths _applicationPaths;
         private readonly IStartupOptions _options;
@@ -35,10 +36,11 @@ namespace AVOne.Providers.Official.Downloader.M3U8
         private readonly ILogger<M3U8DownloadProvider> logger;
 
         public M3U8DownloadProvider(ILogger<M3U8DownloadProvider> logger, IApplicationPaths applicationPaths, IStartupOptions options, IHttpClientFactory httpClientFactory, IConfigurationManager configurationManager)
+            : base(configurationManager, httpClientFactory)
         {
             _applicationPaths = applicationPaths;
             _options = options;
-            _client = httpClientFactory.CreateClient(HttpClientNames.Download);
+            _client = GetHttpClient(HttpClientNames.Download);
             _configurationManager = configurationManager;
             this.logger = logger;
         }

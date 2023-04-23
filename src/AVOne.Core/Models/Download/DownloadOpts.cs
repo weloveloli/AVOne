@@ -3,12 +3,13 @@
 
 namespace AVOne.Models.Download
 {
+    using AVOne.Constants;
     using AVOne.Enum;
     using AVOne.Models.Job;
 
     public class DownloadOpts
     {
-        public string? HttpClientName { get; set; }
+        public string? HttpClientName { get; set; } = HttpClientNames.Default;
         public string? PreferName { get; set; }
         public OutputFormat? PreferOutPutFormat { get; set; }
         public MuxOutputFormat? PreferMuxOutPutFormat { get; set; }

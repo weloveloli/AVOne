@@ -6,6 +6,9 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
     <ItemGroup>
+      <PackageReference Include="Fizzler.Systems.HtmlAgilityPack" />
+    </ItemGroup>
+    <ItemGroup>
         <ProjectReference Include="..\AVOne.Core\AVOne.Core.csproj" />
         <ProjectReference Include="..\AVOne.Common\AVOne.Common.csproj" />
     </ItemGroup>

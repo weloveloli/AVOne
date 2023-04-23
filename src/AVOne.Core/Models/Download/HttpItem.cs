@@ -14,5 +14,11 @@ namespace AVOne.Models.Download
         public override string DisplayName => SaveName;
 
         public override string Key => $"HttpItem:{Url}";
+
+        public HttpRangeSupport HttpRangeSupport { get; set; } = HttpRangeSupport.Unknown;
+
+        public string Extension { get; set; }
+
+        public long? Size { get; set; }
     }
 }

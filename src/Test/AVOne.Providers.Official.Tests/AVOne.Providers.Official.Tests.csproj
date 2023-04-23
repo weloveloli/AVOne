@@ -13,6 +13,9 @@
      <None Update="websites\avple.txt">
        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
      </None>
+     <None Update="websites\hanime1.txt">
+       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+     </None>
      <None Update="websites\missav.txt">
        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
      </None>
