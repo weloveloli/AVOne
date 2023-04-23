@@ -1,13 +1,14 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // See License in the project root for license information.
 
-namespace AVOne.Providers.Official.Extractor
+namespace AVOne.Providers.Official.Extractor.Base
 {
+    using AVOne.Models.Download;
     using HtmlAgilityPack;
 
     public interface IDOMExtractor
     {
-        public IEnumerable<string> GetM3U8Sources(HtmlNode dom);
         public string GetTitle(HtmlNode dom);
+        public IEnumerable<BaseDownloadableItem> GetItems(string title, HtmlNode node, string url);
     }
 }

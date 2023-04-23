@@ -8,6 +8,9 @@ namespace AVOne.Providers.Official.Extractor
     using System.Net.Http;
     using System.Text.RegularExpressions;
     using AVOne.Configuration;
+    using AVOne.Enum;
+    using AVOne.Models.Download;
+    using AVOne.Providers.Official.Extractor.Base;
     using Jint;
     using Microsoft.Extensions.Logging;
 
@@ -104,7 +107,7 @@ namespace AVOne.Providers.Official.Extractor
             }
         }
 
-        public string GetTitleFromHtml(string html)
+        public string GetTitle(string html)
         {
             return GetTitleFromHtml(html, _titleRegex);
         }
@@ -112,6 +115,35 @@ namespace AVOne.Providers.Official.Extractor
         protected override Dictionary<string, string> GetRequestHeader(string html)
         {
             return HeaderForMissAV;
+        }
+
+        public IEnumerable<BaseDownloadableItem> GetItems(string title, string html, string url)
+        {
+            var m3u8Sources = GetM3U8Sources(html);
+
+            foreach (var source in m3u8Sources)
+            {
+                if (string.IsNullOrEmpty(source))
+                {
+                    continue;
+                }
+
+                var quality = MediaQuality.Low;
+                if (source.Contains("480"))
+                {
+                    quality = MediaQuality.Medium;
+                }
+                else if (source.Contains("720"))
+                {
+                    quality = MediaQuality.High;
+                }
+                else if (source.Contains("1080"))
+                {
+                    quality = MediaQuality.VeryHigh;
+                }
+
+                yield return new M3U8Item(title, source, GetRequestHeader(html), quality, title) { OrignalLink = url };
+            }
         }
     }
 }

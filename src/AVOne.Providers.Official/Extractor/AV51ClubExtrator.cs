@@ -7,6 +7,9 @@ namespace AVOne.Providers.Official.Extractor
     using System.Net.Http;
     using System.Text.RegularExpressions;
     using AVOne.Configuration;
+    using AVOne.Enum;
+    using AVOne.Models.Download;
+    using AVOne.Providers.Official.Extractor.Base;
     using Furion.JsonSerialization;
     using Microsoft.Extensions.Logging;
 
@@ -53,18 +56,6 @@ namespace AVOne.Providers.Official.Extractor
             }
         }
 
-        public IEnumerable<string> GetSources(string html)
-        {
-            var data = GetStringFromHtml(html, _scriptRegex);
-            var dataJson = JSON.Deserialize<Dictionary<string, object>>(data);
-            var m3u8Link = dataJson["url"];
-            if (m3u8Link != null)
-            {
-                return new List<string> { m3u8Link!.ToString()! };
-            }
-            return Enumerable.Empty<string>();
-        }
-
         public IEnumerable<string> GetM3U8Sources(string html)
         {
             var data = GetStringFromHtml(html, _scriptRegex);
@@ -77,9 +68,19 @@ namespace AVOne.Providers.Official.Extractor
             return Enumerable.Empty<string>();
         }
 
-        public string GetTitleFromHtml(string html)
+        public string GetTitle(string html)
         {
             return GetStringFromHtml(html, _titleRegex);
+        }
+
+        public IEnumerable<BaseDownloadableItem> GetItems(string title, string html, string url)
+        {
+            var m3u8Sources = GetM3U8Sources(html);
+
+            foreach (var source in m3u8Sources)
+            {
+                yield return new M3U8Item(title, source, GetRequestHeader(html), MediaQuality.None, title) { OrignalLink = url };
+            }
         }
     }
 }

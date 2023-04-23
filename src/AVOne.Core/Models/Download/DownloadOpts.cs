@@ -20,8 +20,8 @@ namespace AVOne.Models.Download
         public int? RetryWait { get; set; }
         public long? MaxSpeed { get; set; }
         public int? Timeout { get; set; }
-        public bool? Overwrite { get; set; }
-        public bool? CheckComplete { get; set; }
+        public bool Overwrite { get; set; } = false;
+        public bool CheckComplete { get; set; } = false;
 
         /// <summary>
         /// Occurs when [item added].

@@ -93,7 +93,7 @@ namespace AVOne.Providers.Official.Downloader.Http
                 var extension = MimeTypesHelper.ToExtension(mimeType);
                 httpItem.Extension = extension;
                 httpItem.Size = resp.Content.Headers.ContentLength;
-                if (acceptRanges != null && acceptRanges.Contains("bytes"))
+                if (acceptRanges != null && acceptRanges.Contains("bytes") && httpItem.Size.HasValue)
                 {
                     httpRangeSupport = HttpRangeSupport.Yes;
                 }
@@ -103,22 +103,31 @@ namespace AVOne.Providers.Official.Downloader.Http
                 }
             }
             var outputFilePath = Path.Combine(opts.OutputDir, fileName + httpItem.Extension);
-            if (opts.Overwrite == false && File.Exists(outputFilePath))
+            if (!opts.Overwrite && File.Exists(outputFilePath))
             {
                 logger.LogWarning($"The file {outputFilePath} already exists.");
                 return Task.CompletedTask;
             }
-            if (httpRangeSupport == HttpRangeSupport.Yes)
+            else if (opts.Overwrite && File.Exists(outputFilePath))
             {
-                /// call the multithread downloader.
-                var downloader = new MultiThreadDownloader(_configurationManager, _client, logger, _applicationPaths);
-                return downloader.CreateTask(item, opts, outputFilePath, token);
+                File.Delete(outputFilePath);
             }
             else
             {
+                outputFilePath = Path.Combine(opts.OutputDir, $"{fileName}_{DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss")}{httpItem.Extension}");
+            }
+            if (httpRangeSupport == HttpRangeSupport.Yes)
+            {
+                /// call the multithread downloader.
+                var downloader = new MultiThreadDownloader(_configurationManager, _client, _applicationPaths);
+                return downloader.CreateTask(httpItem, opts, outputFilePath, token);
+            }
+            else
+            {
+                opts.ThreadCount = 1;
                 /// call the single thread downloader.
-                var downloader = new SingleThreadDownloader(_configurationManager, _client, logger, _applicationPaths);
-                return downloader.CreateTask(item, opts, outputFilePath, token);
+                var downloader = new MultiThreadDownloader(_configurationManager, _client, _applicationPaths);
+                return downloader.CreateTask(httpItem, opts, outputFilePath, token);
             }
         }
 
