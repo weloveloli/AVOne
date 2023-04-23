@@ -1,5 +1,5 @@
 ARG DOTNET_VERSION=7.0
-
+LABEL org.opencontainers.image.description AVOneServer
 FROM mcr.microsoft.com/dotnet/runtime-deps:${DOTNET_VERSION}-jammy as app
 
 RUN apt update && apt install -y ffmpeg
