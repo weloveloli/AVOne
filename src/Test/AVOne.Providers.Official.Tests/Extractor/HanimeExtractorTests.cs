@@ -3,12 +3,12 @@
 
 namespace AVOne.Providers.Official.Extractor.Tests
 {
-    using Xunit;
-    using AVOne.Providers.Official.Extractor;
-    using Moq;
     using AVOne.Configuration;
-    using Microsoft.Extensions.Logging;
+    using AVOne.Providers.Official.Extractor;
     using HtmlAgilityPack;
+    using Microsoft.Extensions.Logging;
+    using Moq;
+    using Xunit;
 
     public class HanimeExtractorTests
     {
@@ -31,7 +31,7 @@ namespace AVOne.Providers.Official.Extractor.Tests
         [Fact()]
         public void GetM3U8SourcesTest()
         {
-            var sources = extractor.GetM3U8Sources(domNode);
+            var sources = extractor.GetSources(domNode);
             Assert.Single(sources, "https://vstream.hembed.com/hls/39686-sc.m3u8?token=5FaPI_sSD8zIFeYd1ZFZoxwWMewL1HgsIOPt4DlCDZQ&expires=1682254805");
         }
 
