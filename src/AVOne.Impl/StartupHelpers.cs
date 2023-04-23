@@ -156,23 +156,21 @@ namespace AVOne.Impl
         {
             // Do nothing if the config file already exists
             var configPath = Path.Combine(appPaths.ConfigurationDirectoryPath, LoggingConfigFileDefault);
-            if (File.Exists(configPath) || !IsUseDefaultLogging())
+            if (!File.Exists(configPath) && !IsUseDefaultLogging())
             {
-                return;
-            }
-
-            // Get a stream of the resource contents
-            // NOTE: The .csproj name is used instead of the assembly name in the resource path
-            const string ResourcePath = "AVOne.Impl.Configuration.logging.json";
-            var resource = typeof(StartupHelpers).Assembly.GetManifestResourceStream(ResourcePath)
-                              ?? throw new InvalidOperationException($"Invalid resource path: '{ResourcePath}'");
-            await using (resource.ConfigureAwait(false))
-            {
-                Stream dst = new FileStream(configPath, FileMode.CreateNew, FileAccess.Write, FileShare.None, AVOneConstants.FileStreamBufferSize, FileOptions.Asynchronous);
-                await using (dst.ConfigureAwait(false))
+                // Get a stream of the resource contents
+                // NOTE: The .csproj name is used instead of the assembly name in the resource path
+                const string ResourcePath = "AVOne.Impl.Configuration.logging.json";
+                var resource = typeof(StartupHelpers).Assembly.GetManifestResourceStream(ResourcePath)
+                                  ?? throw new InvalidOperationException($"Invalid resource path: '{ResourcePath}'");
+                await using (resource.ConfigureAwait(false))
                 {
-                    // Copy the resource contents to the expected file path for the config file
-                    await resource.CopyToAsync(dst).ConfigureAwait(false);
+                    Stream dst = new FileStream(configPath, FileMode.CreateNew, FileAccess.Write, FileShare.None, AVOneConstants.FileStreamBufferSize, FileOptions.Asynchronous);
+                    await using (dst.ConfigureAwait(false))
+                    {
+                        // Copy the resource contents to the expected file path for the config file
+                        await resource.CopyToAsync(dst).ConfigureAwait(false);
+                    }
                 }
             }
         }
