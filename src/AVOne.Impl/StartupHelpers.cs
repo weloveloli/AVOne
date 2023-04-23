@@ -156,7 +156,7 @@ namespace AVOne.Impl
         {
             // Do nothing if the config file already exists
             var configPath = Path.Combine(appPaths.ConfigurationDirectoryPath, LoggingConfigFileDefault);
-            if (File.Exists(configPath) || IsUseDefaultLogging())
+            if (File.Exists(configPath) || !IsUseDefaultLogging())
             {
                 return;
             }
