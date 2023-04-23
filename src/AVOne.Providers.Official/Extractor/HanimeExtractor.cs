@@ -55,7 +55,12 @@ namespace AVOne.Providers.Official.Extractor
         {
             var content = dom.QuerySelector("script[type='application/ld+json']").InnerHtml;
             var VideoObject = JsonConvert.DeserializeObject<Dictionary<string, object>>(content);
-            return VideoObject?["name"].ToString() ?? string.Empty;
+            var title = VideoObject?["name"].ToString() ?? string.Empty;
+            if (title.Length > 30)
+            {
+                title = title.Substring(0, 30);
+            }
+            return title.Replace("/", " ").Replace("\\", " ");
         }
     }
 }

@@ -27,6 +27,12 @@ namespace AVOne.Providers.Official.Extractor.Tests
             domNode = dom.DocumentNode;
 
         }
+        [Fact()]
+
+        public void SupportTest()
+        {
+            Assert.True(extractor.Support("https://hanime1.me/watch?v=39137"));
+        }
 
         [Fact()]
         public void GetM3U8SourcesTest()
