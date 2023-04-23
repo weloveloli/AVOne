@@ -24,7 +24,7 @@ namespace AVOne.Providers.Official.Extractor.Tests
             var html = File.ReadAllText(Path.Combine("websites", "51av.txt"));
             string playerName = "player_aaaa";
             string jsonString = ExtractPlayerJsonString(html, playerName);
-            var source = new AV51ClubExtrator(null, null, new Mock<IHttpClientFactory>().Object).GetSources(html);
+            var source = new AV51ClubExtrator(null, null, new Mock<IHttpClientFactory>().Object).GetM3U8Sources(html);
 
             Assert.Single(source);
 

@@ -3,19 +3,17 @@
 
 namespace AVOne.Providers.Official.Extractor
 {
-    using System;
     using System.Collections.Generic;
     using System.Net.Http;
     using System.Text.RegularExpressions;
-    using System.Threading;
-    using System.Threading.Tasks;
     using AVOne.Configuration;
     using AVOne.Enum;
     using AVOne.Models.Download;
+    using AVOne.Providers.Official.Extractor.Base;
     using Furion.JsonSerialization;
     using Microsoft.Extensions.Logging;
 
-    public partial class AV51ClubExtrator : BaseHttpExtractor
+    public partial class AV51ClubExtrator : BaseHttpExtractor, IRegexExtractor
     {
         public AV51ClubExtrator(IConfigurationManager manager, ILogger<AV51ClubExtrator> logger, IHttpClientFactory httpClientFactory) : base(manager, logger, httpClientFactory, "https://51av.club")
         {
@@ -25,32 +23,6 @@ namespace AVOne.Providers.Official.Extractor
         public override string Name => "51AV";
         private readonly Regex _titleRegex;
         private readonly Regex _scriptRegex;
-        public override async Task<IEnumerable<BaseDownloadableItem>> ExtractAsync(string webPageUrl, CancellationToken token = default)
-        {
-            var result = new List<BaseDownloadableItem>();
-            try
-            {
-                var resp = await GetHttpClient().GetAsync(webPageUrl, token);
-                resp.EnsureSuccessStatusCode();
-                var html = await resp.Content.ReadAsStringAsync();
-                var title = GetStringFromHtml(html, _titleRegex);
-
-                var avId = title[..title.IndexOf(" ")];
-
-                var sourceLinks = GetSources(html);
-                foreach (var sourceLink in sourceLinks)
-                {
-                    result.Add(new M3U8Item(avId, sourceLink, null, MediaQuality.Low, title) { OrignalLink = webPageUrl });
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "failed to fetach downloadable in webpage {webPageUrl}", webPageUrl);
-            }
-
-            return result;
-        }
-
         [GeneratedRegex("<p class=\"name\">(.*?)<i class=.*", RegexOptions.IgnoreCase, "en-US")]
         public static partial Regex TitleRegex();
 
@@ -84,7 +56,7 @@ namespace AVOne.Providers.Official.Extractor
             }
         }
 
-        public IEnumerable<string> GetSources(string html)
+        public IEnumerable<string> GetM3U8Sources(string html)
         {
             var data = GetStringFromHtml(html, _scriptRegex);
             var dataJson = JSON.Deserialize<Dictionary<string, object>>(data);
@@ -94,6 +66,21 @@ namespace AVOne.Providers.Official.Extractor
                 return new List<string> { m3u8Link!.ToString()! };
             }
             return Enumerable.Empty<string>();
+        }
+
+        public string GetTitle(string html)
+        {
+            return GetStringFromHtml(html, _titleRegex);
+        }
+
+        public IEnumerable<BaseDownloadableItem> GetItems(string title, string html, string url)
+        {
+            var m3u8Sources = GetM3U8Sources(html);
+
+            foreach (var source in m3u8Sources)
+            {
+                yield return new M3U8Item(title, source, GetRequestHeader(html), MediaQuality.None, title) { OrignalLink = url };
+            }
         }
     }
 }

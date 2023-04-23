@@ -3,12 +3,13 @@
 
 namespace AVOne.Models.Download
 {
+    using AVOne.Constants;
     using AVOne.Enum;
     using AVOne.Models.Job;
 
     public class DownloadOpts
     {
-        public string? HttpClientName { get; set; }
+        public string? HttpClientName { get; set; } = HttpClientNames.Default;
         public string? PreferName { get; set; }
         public OutputFormat? PreferOutPutFormat { get; set; }
         public MuxOutputFormat? PreferMuxOutPutFormat { get; set; }
@@ -19,8 +20,8 @@ namespace AVOne.Models.Download
         public int? RetryWait { get; set; }
         public long? MaxSpeed { get; set; }
         public int? Timeout { get; set; }
-        public bool? Overwrite { get; set; }
-        public bool? CheckComplete { get; set; }
+        public bool Overwrite { get; set; } = false;
+        public bool CheckComplete { get; set; } = false;
 
         /// <summary>
         /// Occurs when [item added].

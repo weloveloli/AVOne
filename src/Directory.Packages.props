@@ -8,6 +8,7 @@
     <PackageVersion Include="AutoFixture.AutoMoq" Version="4.17.0" />
     <PackageVersion Include="coverlet.collector" Version="3.2.0" />
     <PackageVersion Include="DotNet.Glob" Version="3.1.3" />
+    <PackageVersion Include="Fizzler.Systems.HtmlAgilityPack" Version="1.2.1" />
     <PackageVersion Include="Furion" Version="4.8.7.11" />
     <PackageVersion Include="Furion.Xunit" Version="4.8.7.11" />
     <PackageVersion Include="HttpToSocks5Proxy" Version="1.4.0" />

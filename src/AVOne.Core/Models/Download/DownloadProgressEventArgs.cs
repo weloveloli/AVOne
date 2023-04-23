@@ -27,7 +27,7 @@ namespace AVOne.Models.Download
                 var downloadSize = FormatFileSize(DownloadBytes);
                 var speed = FormatFileSize(Speed);
                 var eta = FormatTime(Eta);
-                var print = $"{Finish}/{Total} ({percentage} %) -- {downloadSize}/{totalSize} ({speed}/s @ {eta}) -- Retry ({Retry}/{MaxRetry})";
+                var print = $"({percentage} %) -- {downloadSize}/{totalSize} ({speed}/s @ {eta}))";
                 return print;
             }
         }

@@ -12,6 +12,7 @@ namespace AVOne.Providers.Official.Downloader.M3U8
     using System.Threading;
     using System.Threading.Tasks;
     using AVOne.Common.Enum;
+    using AVOne.Common.Helper;
     using AVOne.Configuration;
     using AVOne.Constants;
     using AVOne.Enum;
@@ -19,13 +20,14 @@ namespace AVOne.Providers.Official.Downloader.M3U8
     using AVOne.Models.Download;
     using AVOne.Models.Job;
     using AVOne.Providers.Download;
+    using AVOne.Providers.Official.Downloader.M3U8.Extensions;
     using AVOne.Providers.Official.Downloader.M3U8.Parser;
     using AVOne.Providers.Official.Downloader.M3U8.Utils;
     using Furion.FriendlyException;
     using Furion.Localization;
     using Microsoft.Extensions.Logging;
 
-    public class M3U8DownloadProvider : IDownloaderProvider
+    public class M3U8DownloadProvider : HttpClientHelper, IDownloaderProvider
     {
         private readonly IApplicationPaths _applicationPaths;
         private readonly IStartupOptions _options;
@@ -35,10 +37,11 @@ namespace AVOne.Providers.Official.Downloader.M3U8
         private readonly ILogger<M3U8DownloadProvider> logger;
 
         public M3U8DownloadProvider(ILogger<M3U8DownloadProvider> logger, IApplicationPaths applicationPaths, IStartupOptions options, IHttpClientFactory httpClientFactory, IConfigurationManager configurationManager)
+            : base(configurationManager, httpClientFactory)
         {
             _applicationPaths = applicationPaths;
             _options = options;
-            _client = httpClientFactory.CreateClient(HttpClientNames.Download);
+            _client = GetHttpClient(HttpClientNames.Download);
             _configurationManager = configurationManager;
             this.logger = logger;
         }
@@ -346,22 +349,23 @@ namespace AVOne.Providers.Official.Downloader.M3U8
             var rsp = await _client.SendAsync(request, token);
             rsp.EnsureSuccessStatusCode();
             var m3u8 = await rsp.Content.ReadAsStringAsync(token);
-            if (string.IsNullOrEmpty(m3u8))
+            if (string.IsNullOrEmpty(m3u8) || !m3u8.IsM3U8())
             {
                 throw Oops.Oh(ErrorCodes.INVALID_DOWNLOADABLE_ITEM);
             }
-            File.WriteAllText(Path.Combine(workingDir, playListName), m3u8);
-            var parser = new MediaPlaylistParser();
-            var parsed = parser.Parse(m3u8, url);
-
-            /// master playlist
-            if (parsed.Parts.Count == 1 && parsed.Parts[0].Segments.All(e => e.Uri.EndsWith("m3u8")))
+            if (m3u8.IsMaster())
             {
                 logger.LogInformation($"Get master playlist: {url}");
-                return await GetMediaPlaylist(workingDir, parsed.Parts[0].Segments[0].Uri, saveName, m3U8Item, token);
+                var parser = new MasterPlaylistParser();
+                var parsed = parser.Parse(m3u8, url);
+                var streamUri = parsed.StreamInfos[0].Uri;
+                return await GetMediaPlaylist(workingDir, streamUri, saveName, m3U8Item, token);
             }
             else
             {
+                File.WriteAllText(Path.Combine(workingDir, playListName), m3u8);
+                var parser = new MediaPlaylistParser();
+                var parsed = parser.Parse(m3u8, url);
                 return parsed;
             }
         }

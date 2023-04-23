@@ -5,18 +5,16 @@ namespace AVOne.Providers.Official.Extractor
 {
     using System;
     using System.Collections.Generic;
-    using System.Net;
     using System.Net.Http;
     using System.Text.RegularExpressions;
-    using System.Threading;
-    using System.Threading.Tasks;
     using AVOne.Configuration;
     using AVOne.Enum;
     using AVOne.Models.Download;
+    using AVOne.Providers.Official.Extractor.Base;
     using Jint;
     using Microsoft.Extensions.Logging;
 
-    public partial class MissAVExtractor : BaseHttpExtractor
+    public partial class MissAVExtractor : BaseHttpExtractor, IRegexExtractor
     {
         private const string ExtraTitle = " - MissAV.com | 免費高清AV在線看";
         private readonly Regex _regex;
@@ -43,48 +41,7 @@ namespace AVOne.Providers.Official.Extractor
             _titleRegex = TitleRegex();
         }
 
-        public override async Task<IEnumerable<BaseDownloadableItem>> ExtractAsync(string webPageUrl, CancellationToken token = default)
-        {
-            var result = new List<BaseDownloadableItem>();
-            try
-            {
-                var req = new HttpRequestMessage(HttpMethod.Get, webPageUrl);
-                req.Version = HttpVersion.Version20;
-                var resp = await GetHttpClient().SendAsync(req, token);
-                resp.EnsureSuccessStatusCode();
-                var html = await resp.Content.ReadAsStringAsync();
-                var title = GetTitleFromHtml(html, _titleRegex);
-                var isChineseSub = html.Contains("<a href=\"https://missav.com/chinese-subtitle\" class=\"text-nord13 font-medium\">中文字幕</a>");
-                var avId = title[..title.IndexOf(" ")] + (isChineseSub ? "-C" : string.Empty);
-                var sources = GetSources(html);
-                foreach (var source in sources)
-                {
-                    var quality = MediaQuality.Low;
-                    if (source.Contains("480"))
-                    {
-                        quality = MediaQuality.Medium;
-                    }
-                    else if (source.Contains("720"))
-                    {
-                        quality = MediaQuality.High;
-                    }
-                    else if (source.Contains("1080"))
-                    {
-                        quality = MediaQuality.VeryHigh;
-                    }
-
-                    result.Add(new M3U8Item(avId, source, HeaderForMissAV, quality, title) { OrignalLink = webPageUrl });
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, message: "failed to fetach downloadable in webpage {webPageUrl}", webPageUrl);
-            }
-
-            return result;
-        }
-
-        public IEnumerable<string> GetSources(string html)
+        public IEnumerable<string> GetM3U8Sources(string html)
         {
             var lines = html.Split('\n');
             var script = string.Empty;
@@ -147,6 +104,45 @@ namespace AVOne.Providers.Official.Extractor
             {
                 // Return an empty string if no match is found
                 return "";
+            }
+        }
+
+        public string GetTitle(string html)
+        {
+            return GetTitleFromHtml(html, _titleRegex);
+        }
+
+        protected override Dictionary<string, string> GetRequestHeader(string html)
+        {
+            return HeaderForMissAV;
+        }
+
+        public IEnumerable<BaseDownloadableItem> GetItems(string title, string html, string url)
+        {
+            var m3u8Sources = GetM3U8Sources(html);
+
+            foreach (var source in m3u8Sources)
+            {
+                if (string.IsNullOrEmpty(source))
+                {
+                    continue;
+                }
+
+                var quality = MediaQuality.Low;
+                if (source.Contains("480"))
+                {
+                    quality = MediaQuality.Medium;
+                }
+                else if (source.Contains("720"))
+                {
+                    quality = MediaQuality.High;
+                }
+                else if (source.Contains("1080"))
+                {
+                    quality = MediaQuality.VeryHigh;
+                }
+
+                yield return new M3U8Item(title, source, GetRequestHeader(html), quality, title) { OrignalLink = url };
             }
         }
     }
