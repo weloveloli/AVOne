@@ -1,3 +1,4 @@
+profile = "custom"
 [msbuild]
 project = "src.sln"
 
@@ -16,7 +17,6 @@ publish = false
 [scoop]
 publish = false
 
-profile = "custom"
 # Create zip files only for Windows platforms
 [[pack]]
 rid = ["win-x64"]
