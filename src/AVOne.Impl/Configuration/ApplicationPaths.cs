@@ -69,7 +69,7 @@ namespace AVOne.Impl.Configuration
         /// Gets the path to the system configuration file.
         /// </summary>
         /// <value>The system configuration file path.</value>
-        public string SystemConfigurationFilePath => Path.Combine(ConfigurationDirectoryPath, "console.xml");
+        public string SystemConfigurationFilePath => Path.Combine(ConfigurationDirectoryPath, $"{AVONE}.xml");
 
         public string RootFolderPath => Path.Join(ProgramDataPath, "root");
 

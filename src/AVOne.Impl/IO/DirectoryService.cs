@@ -27,20 +27,36 @@ namespace AVOne.Impl.IO
             return _cache.GetOrAdd(path, static (p, fileSystem) => fileSystem.GetFileSystemEntries(p).ToArray(), _fileSystem);
         }
 
-        public List<FileSystemMetadata> GetFiles(string path)
+        public List<FileSystemMetadata> GetFiles(string path, string seachOption = null)
         {
             var list = new List<FileSystemMetadata>();
-            var items = GetFileSystemEntries(path);
-            for (var i = 0; i < items.Length; i++)
+            if (seachOption == null)
             {
-                var item = items[i];
-                if (!item.IsDirectory)
+                var items = GetFileSystemEntries(path);
+                for (var i = 0; i < items.Length; i++)
                 {
-                    list.Add(item);
+                    var item = items[i];
+                    if (!item.IsDirectory)
+                    {
+                        list.Add(item);
+                    }
                 }
+
+                return list;
+            }
+            else
+            {
+                var items = _fileSystem.GetFileSystemEntries(path, seachOption);
+                foreach (var item in items)
+                {
+                    if (!item.IsDirectory)
+                    {
+                        list.Add(item);
+                    }
+                }
+                return list;
             }
 
-            return list;
         }
 
         public FileSystemMetadata GetFile(string path)

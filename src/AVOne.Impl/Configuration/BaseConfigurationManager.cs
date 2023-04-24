@@ -108,7 +108,8 @@ namespace AVOne.Impl.Configuration
 
         public void SaveConfiguration()
         {
-            Logger.LogInformation("Saving system configuration");
+            CommonConfiguration.Verion = DateTimeOffset.Now.ToUnixTimeSeconds();
+            Logger.LogInformation("Saving system configuration {0}", CommonConfiguration.Verion);
             var path = ApplicationPaths.SystemConfigurationFilePath;
             lock (_configurationSyncLock)
             {

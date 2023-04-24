@@ -12,6 +12,7 @@ namespace AVOne.Tool.Commands
     using AVOne.Tool.Models;
     using AVOne.Tool.Resources;
     using CommandLine;
+    using CommandLine.Text;
     using Spectre.Console;
     using Spectre.Console.Rendering;
 
@@ -30,8 +31,22 @@ namespace AVOne.Tool.Commands
         [Option('d', "dir", Group = "target", Required = false, HelpText = nameof(Resource.HelpTextScanDir), ResourceType = typeof(Resource))]
         public string? Dir { get; set; }
 
+        [Option('p', "search-pattern", Required = false, HelpText = nameof(Resource.HelpTextScanDirSearchPattern), ResourceType = typeof(Resource))]
+        public string? SearchPattern { get; set; }
+
         [Option('f', "file", Group = "target", Required = false, HelpText = nameof(Resource.HelpTextScanPath), ResourceType = typeof(Resource))]
         public string? FilePath { get; set; }
+
+        [Usage(ApplicationAlias = ToolAlias)]
+        public static IEnumerable<Example> Examples
+        {
+            get
+            {
+                return new List<Example>() {
+                    new Example(string.Format(Resource.ScanSingleExample,"d:/movie/abc.mp4","d:/jav" ), new Scan { TargetFolder = "d:/jav", SaveMetadata = true, FilePath ="d:/movie/abc.mp4", FFmpegPath = null })
+                };
+            }
+        }
 
         public override Task ExecuteAsync(ApplicationAppHost host, CancellationToken token)
         {
@@ -76,7 +91,7 @@ namespace AVOne.Tool.Commands
 
                 if (!item.HasMetaData)
                 {
-                    Cli.WarnLocale("Can't find metadata", item.Movie.Name);
+                    Cli.WarnLocale("Can't find metadata", item.Movie.Path);
                     return;
                 }
 
@@ -84,18 +99,17 @@ namespace AVOne.Tool.Commands
                 {
                     PrintMetaData(item);
                 }
+
                 var orignalName = item.Movie.FileNameWithoutExtension;
-                item.StatusChanged += (object? sender, StatusChangeArgs e) => ctx.Status(e.StatusMessage);
+                item.StatusChanged += (object? sender, StatusChangeArgs e) => ctx.Status(Markup.Escape(e.StatusMessage));
+                var itemValid = false;
                 if (!string.IsNullOrEmpty(TargetFolder))
                 {
-
-                    ctx.Status(string.Format(L.Text["Moving file"], orignalName));
-                    MoveFile(item);
-                    Cli.SuccessLocale("Moving file successfully", orignalName, item.Result.TargetPath);
+                    itemValid = MoveFile(item);
                 }
-                if (SaveMetadata)
+                if (SaveMetadata && itemValid)
                 {
-                    ctx.Status(string.Format(L.Text["Saving metadata"], orignalName));
+                    ctx.Status(Markup.Escape(string.Format(L.Text["Saving metadata"], item.Movie.Path)));
                     await facade.SaveMetaDataToLocal(item);
                 }
             });
@@ -112,25 +126,29 @@ namespace AVOne.Tool.Commands
                 async ctx =>
                 {
                     IMetaDataFacade? facade = host.Resolve<IMetaDataFacade>();
-                    var items = await facade.ResolveAsMovies(dir: Dir, token);
-                    if (!SaveMetadata && string.IsNullOrEmpty(TargetFolder))
+                    var items = facade.ResolveAsMovies(dir: Dir, SearchPattern, token);
+                    await foreach (var item in items)
                     {
-                        PrintMetaData(items.ToArray());
-                    }
-                    foreach (var item in items)
-                    {
+                        if (!item.HasMetaData)
+                        {
+                            Cli.WarnLocale("Can't find metadata", item.Movie.Path);
+                            continue;
+                        }
+                        if (!SaveMetadata && string.IsNullOrEmpty(TargetFolder))
+                        {
+                            PrintMetaData(item);
+                        }
+
                         var orignalName = item.Movie.FileNameWithoutExtension;
-                        item.StatusChanged += (object? sender, StatusChangeArgs e) => ctx.Status(e.StatusMessage);
+                        item.StatusChanged += (object? sender, StatusChangeArgs e) => ctx.Status(Markup.Escape(e.StatusMessage));
+                        var itemValid = false;
                         if (!string.IsNullOrEmpty(TargetFolder))
                         {
-
-                            ctx.Status(string.Format(L.Text["Moving file"], orignalName));
-                            MoveFile(item);
-                            Cli.SuccessLocale("Moving file successfully", orignalName, item.Result.TargetPath);
+                            itemValid = MoveFile(item);
                         }
-                        if (SaveMetadata)
+                        if (SaveMetadata && itemValid)
                         {
-                            ctx.Status(string.Format(L.Text["Saving metadata"], orignalName));
+                            ctx.Status(Markup.Escape(string.Format(L.Text["Saving metadata"], item.Movie.Path)));
                             await facade.SaveMetaDataToLocal(item);
                         }
                     }
@@ -160,19 +178,25 @@ namespace AVOne.Tool.Commands
             return table;
         }
 
-        private void MoveFile(MoveMetaDataItem item)
+        private bool MoveFile(MoveMetaDataItem item)
         {
             string folder = TargetFolder!;
             if (!item.HasMetaData || item.Result is null)
             {
                 Cli.WarnLocale(nameof(ErrorCodes.SKIP_METADATA_NOT_EXIST), item.Movie.Path);
-                return;
+                return false;
             }
             PornMovie movie = item.Result!;
             string newName = movie.PornMovieInfo.Id!;
+            if (string.IsNullOrEmpty(newName))
+            {
+                Cli.WarnLocale(nameof(ErrorCodes.SKIP_METADATA_NOT_VALID), item.Movie.Path);
+                return false;
+            }
+
             if (UseContainer)
             {
-                folder = Path.Combine(folder, item.Result.PornMovieInfo.Id);
+                folder = Path.Combine(folder, newName);
             }
             var newFileName = newName + Path.GetExtension(movie.Path);
             Directory.CreateDirectory(folder);
@@ -182,7 +206,7 @@ namespace AVOne.Tool.Commands
             if (File.Exists(targetPath))
             {
                 Cli.WarnLocale(nameof(ErrorCodes.SKIP_FILE_DUE_TO_TARGET_FILE_AREADY_EXIST), movie.Path, targetPath);
-                return;
+                return false;
             }
 
             if (targetPath != movie.Path)
@@ -195,6 +219,8 @@ namespace AVOne.Tool.Commands
             movie.TargetName = newName;
             movie.Name = newName;
 
+            Cli.SuccessLocale("Moving file successfully", movie.Path, item.Result.TargetPath);
+            return true;
         }
     }
 }

@@ -27,6 +27,10 @@ namespace AVOne.Tool.Commands
             ResourceType = typeof(Resource))]
         public string? FFmpegPath { get; set; } = ExecutableHelper.FindExecutable("ffmpeg");
 
+        /// <inheritdoc />
+        [Option("proxy", Required = false, HelpText = "proxy for example http://127.0.0.1:8000")]
+        public string? Proxy { get; set; }
+
         public virtual void InitService(IServiceCollection collection)
         {
             _ = collection.AddSingleton<IMetaDataFacade, MetaDataFacade>();

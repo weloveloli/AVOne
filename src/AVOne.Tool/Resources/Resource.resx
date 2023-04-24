@@ -186,6 +186,9 @@
   <data name="HelpTextScanDir" xml:space="preserve">
     <value>Path of directory to be scanned.</value>
   </data>
+  <data name="HelpTextScanDirSearchPattern" xml:space="preserve">
+    <value>The search string to match against the names of files in path. </value>
+  </data>
   <data name="HelpTextScanPath" xml:space="preserve">
     <value>Path of file to be scanned.</value>
   </data>
@@ -251,6 +254,9 @@
   </data>
   <data name="InvalidMoviePath" xml:space="preserve">
     <value>File path '{0}' not valid media file.</value>
+  </data>
+  <data name="ScanSingleExample" xml:space="preserve">
+    <value>Scan metadata of {1} and move the file to {0}.</value>
   </data>
   <data name="SentenceBadFormatConversionErrorOption" xml:space="preserve">
     <value>Možnost '{0}' je definována ve špatném formátu.</value>

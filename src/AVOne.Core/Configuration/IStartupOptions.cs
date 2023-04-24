@@ -14,6 +14,8 @@ namespace AVOne.Configuration
 
         public string? DataDir { get; set; }
 
+        public string? Proxy { get; set; }
+
         public void InitService(IServiceCollection collection);
     }
 }

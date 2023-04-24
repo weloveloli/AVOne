@@ -23,7 +23,6 @@ namespace AVOne.Impl.Registrator
     using AVOne.Providers.Metadata;
     using AVOne.Resolvers;
     using AVOne.Updates;
-    using Furion.TaskQueue;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
 
@@ -39,10 +38,11 @@ namespace AVOne.Impl.Registrator
                 client.DefaultRequestHeaders.AcceptLanguage.Add(new StringWithQualityHeaderValue("zh-CN"));
                 client.DefaultRequestVersion = HttpVersion.Version20;
             })
-            .ConfigurePrimaryHttpMessageHandler((builder) =>
+            .ConfigurePrimaryHttpMessageHandler((sp) =>
             {
-                var configManager = builder.GetService<IConfigurationManager>();
-                var proxy = configManager!.CommonConfiguration.ProviderConfig.Proxy;
+                var opts = sp.GetService<IStartupOptions>();
+                var configManager = sp.GetService<IConfigurationManager>();
+                var proxy = opts?.Proxy ?? configManager!.CommonConfiguration.ProviderConfig.Proxy;
                 var handler = new HttpClientHandler
                 {
                     ServerCertificateCustomValidationCallback = (m, c, ch, e) => { return true; },
@@ -53,18 +53,17 @@ namespace AVOne.Impl.Registrator
                     handler.Proxy = new WebProxy(proxy);
                     handler.UseProxy = true;
                 }
-
                 return handler;
-
             });
 
             service.AddHttpClient(HttpClientNames.Download, (client) =>
             {
                 client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36 Edg/94.0.992.50");
-            }).ConfigurePrimaryHttpMessageHandler((builder) =>
+            }).ConfigurePrimaryHttpMessageHandler((sp) =>
             {
-                var configManager = builder.GetService<IConfigurationManager>();
-                var proxy = configManager!.CommonConfiguration.DownloadConfig.Proxy;
+                var opts = sp.GetService<IStartupOptions>();
+                var configManager = sp.GetService<IConfigurationManager>();
+                var proxy = opts?.Proxy ?? configManager!.CommonConfiguration.DownloadConfig.Proxy;
 
                 var handler = new HttpClientHandler
                 {
@@ -102,13 +101,15 @@ namespace AVOne.Impl.Registrator
             {
                 return ApplicationDbContext.Create(sp.GetService<IApplicationPaths>()!);
             })
-            .AddSingleton<JobRepository>()
-            .AddTaskQueue((builder) =>
+            .AddSingleton<JobRepository>();
+            if (!StartupHelpers.IsTool())
             {
-                builder.ChannelCapacity = 1;
-            })
-            .AddSingleton<IJobManager, JobManager>();
-
+                service.AddTaskQueue((builder) =>
+                {
+                    builder.ChannelCapacity = 1;
+                })
+                .AddSingleton<IJobManager, JobManager>();
+            }
         }
 
         public void PostBuildService(IApplicationHost host)

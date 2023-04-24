@@ -7,6 +7,7 @@ namespace AVOne.Tool.Facade
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Net;
     using System.Security.Cryptography;
     using System.Text;
@@ -66,17 +67,16 @@ namespace AVOne.Tool.Facade
                 _directoryService,
                 parent,
                 CollectionType.PornMovies);
-            var movies = await GetMovie(items, token);
-            return movies.FirstOrDefault();
+            return await GetMovie(items, token).FirstOrDefaultAsync(token);
         }
 
-        public Task<IEnumerable<MoveMetaDataItem>> ResolveAsMovies(string dir, CancellationToken token = default)
+        public IAsyncEnumerable<MoveMetaDataItem> ResolveAsMovies(string dir, string? searchPattern = null, CancellationToken token = default)
         {
             if (string.IsNullOrEmpty(dir) || !Directory.Exists(dir))
             {
-                return Task.FromResult(Enumerable.Empty<MoveMetaDataItem>());
+                return AsyncEnumerable.Empty<MoveMetaDataItem>();
             }
-            var fileInfos = _directoryService.GetFiles(dir);
+            var fileInfos = _directoryService.GetFiles(dir, searchPattern);
             var parent = new Folder { Path = dir };
             var items = _libraryManager.ResolvePaths(
                 fileInfos,
@@ -86,11 +86,11 @@ namespace AVOne.Tool.Facade
             return GetMovie(items, token);
         }
 
-        private async Task<IEnumerable<MoveMetaDataItem>> GetMovie(IEnumerable<BaseItem> items, CancellationToken token = default)
+        private async IAsyncEnumerable<MoveMetaDataItem> GetMovie(IEnumerable<BaseItem> items, CancellationToken token = default)
         {
             if (items == null || !items.Any())
             {
-                return Enumerable.Empty<MoveMetaDataItem>();
+                yield break;
             }
 
             var movis = items.OfType<PornMovie>().Select(movieItem =>
@@ -127,11 +127,11 @@ namespace AVOne.Tool.Facade
                 return m;
             });
 
-            var tasks = movis.Select(e => ExecuteMetaData(e, token));
-
-            var movieItems = await Task.WhenAll(tasks);
-
-            return movieItems.Select(MergeMetaData);
+            foreach (var e in movis)
+            {
+                var item = await ExecuteMetaData(e, token);
+                yield return MergeMetaData(item);
+            }
         }
 
         private async Task<MoveMetaDataItem> ExecuteMetaData(MoveMetaDataItem dataItem, CancellationToken token = default)
@@ -198,6 +198,10 @@ namespace AVOne.Tool.Facade
                             continue;
                         }
                         var imageCachePath = await DownloadRemoteImageToCache(item.RemoteImageProvider, image, token);
+                        if (imageCachePath == null)
+                        {
+                            continue;
+                        }
                         imagsList.Add(new LocalImageInfo
                         {
                             FileInfo = _directoryService.GetFile(imageCachePath),

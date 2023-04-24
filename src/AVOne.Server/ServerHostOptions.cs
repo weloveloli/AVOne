@@ -21,6 +21,9 @@ namespace AVOne.Server
         [Option("ffmpeg", Required = false, HelpText = "ffmpeg path")]
         public string? FFmpegPath { get; set; } = ExecutableHelper.FindExecutable("ffmpeg");
 
+        /// <inheritdoc />
+        [Option("proxy", Required = false, HelpText = "proxy for example http://127.0.0.1:8000")]
+        public string? Proxy { get; set; }
         public void InitService(IServiceCollection collection)
         {
         }
