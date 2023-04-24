@@ -115,7 +115,7 @@ namespace AVOne.Providers.Official.Downloader.Http
             var response = await _client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, token);
             response.EnsureSuccessStatusCode();
             using var fs = new FileStream(tmpFile, FileMode.OpenOrCreate, FileAccess.Write, FileShare.ReadWrite);
-            fs.Seek(start.Value, SeekOrigin.Begin);
+            fs.Seek(start ?? 0L, SeekOrigin.Begin);
             // use buffer to improve performance
             var buffer = new byte[64 * 1024];
             var stream = await response.Content.ReadAsStreamAsync();

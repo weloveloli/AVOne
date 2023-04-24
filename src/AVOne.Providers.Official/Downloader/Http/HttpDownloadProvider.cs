@@ -77,31 +77,7 @@ namespace AVOne.Providers.Official.Downloader.Http
 
             /// Use multithread to download the file.
             /// Check if the downloadUrl support multithread.
-            var httpRangeSupport = httpItem.HttpRangeSupport;
-            if (httpRangeSupport == null)
-            {
-                httpRangeSupport = HttpRangeSupport.Unknown;
-            }
-            if (httpRangeSupport == HttpRangeSupport.Unknown || string.IsNullOrEmpty(httpItem.Extension) || !httpItem.Size.HasValue)
-            {
-                var req = new HttpRequestMessage(HttpMethod.Head, downloadUrl);
-                var resp = _client.SendAsync(req, token).Result;
-                resp.EnsureSuccessStatusCode();
-
-                var acceptRanges = resp.Headers.AcceptRanges;
-                var mimeType = resp.Content.Headers.ContentType?.MediaType;
-                var extension = MimeTypesHelper.ToExtension(mimeType);
-                httpItem.Extension = extension;
-                httpItem.Size = resp.Content.Headers.ContentLength;
-                if (acceptRanges != null && acceptRanges.Contains("bytes") && httpItem.Size.HasValue)
-                {
-                    httpRangeSupport = HttpRangeSupport.Yes;
-                }
-                else
-                {
-                    httpRangeSupport = HttpRangeSupport.No;
-                }
-            }
+            httpItem.HttpRangeSupport = CheckDownloadLink(httpItem, downloadUrl, token);
             var outputFilePath = Path.Combine(opts.OutputDir, fileName + httpItem.Extension);
             if (!opts.Overwrite && File.Exists(outputFilePath))
             {
@@ -116,7 +92,7 @@ namespace AVOne.Providers.Official.Downloader.Http
             {
                 outputFilePath = Path.Combine(opts.OutputDir, $"{fileName}_{DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss")}{httpItem.Extension}");
             }
-            if (httpRangeSupport == HttpRangeSupport.Yes)
+            if (httpItem.HttpRangeSupport == HttpRangeSupport.Yes)
             {
                 /// call the multithread downloader.
                 var downloader = new MultiThreadDownloader(_configurationManager, _client, _applicationPaths);
@@ -129,6 +105,37 @@ namespace AVOne.Providers.Official.Downloader.Http
                 var downloader = new MultiThreadDownloader(_configurationManager, _client, _applicationPaths);
                 return downloader.CreateTask(httpItem, opts, outputFilePath, token);
             }
+        }
+
+        private HttpRangeSupport CheckDownloadLink(HttpItem httpItem, string downloadUrl, CancellationToken token)
+        {
+            var httpRangeSupport = httpItem.HttpRangeSupport;
+            if (httpRangeSupport == HttpRangeSupport.Unknown || string.IsNullOrEmpty(httpItem.Extension) || !httpItem.Size.HasValue)
+            {
+                var req = new HttpRequestMessage(HttpMethod.Head, downloadUrl);
+                var resp = _client.SendAsync(req, token).Result;
+                resp.EnsureSuccessStatusCode();
+
+                var acceptRanges = resp.Headers.AcceptRanges;
+                var mimeType = resp.Content.Headers.ContentType?.MediaType;
+                if (string.IsNullOrEmpty(mimeType))
+                {
+                    throw new ArgumentException("Can not detect mime type of download link");
+                }
+                var extension = MimeTypesHelper.ToExtension(mimeType);
+                httpItem.Extension = extension;
+                httpItem.Size = resp.Content.Headers.ContentLength;
+                if (acceptRanges != null && acceptRanges.Contains("bytes") && httpItem.Size.HasValue)
+                {
+                    httpRangeSupport = HttpRangeSupport.Yes;
+                }
+                else
+                {
+                    httpRangeSupport = HttpRangeSupport.No;
+                }
+            }
+
+            return httpRangeSupport;
         }
 
         public bool Support(BaseDownloadableItem item)

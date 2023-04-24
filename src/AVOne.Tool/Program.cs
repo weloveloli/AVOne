@@ -8,6 +8,7 @@ using AVOne.Tool.Commands;
 using AVOne.Tool.Resources;
 using CommandLine;
 using CommandLine.Text;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
@@ -25,10 +26,10 @@ namespace AVOne.Tool
             {
                 if (parsed.Value is BaseHostOptions option)
                 {
-                    Environment.SetEnvironmentVariable($"{StartupHelpers.AVOnePrefix}_USE_DEFAULT_LOG", "false");
+                    Environment.SetEnvironmentVariable($"{StartupHelpers.AVOnePrefix}_TOOL", "true");
                     var appPaths = StartupHelpers.CreateApplicationPaths(option);
                     var appHost = await StartupHelpers.CreateConsoleAppHost(option, appPaths);
-                    var host = CreateHost(args, appHost);
+                    var host = CreateHost(args, appHost, appPaths);
                     Cli.Logger = StartupHelpers.Logger;
                     try
                     {
@@ -50,8 +51,9 @@ namespace AVOne.Tool
                         var type = option.GetType();
                         var cmdName = type.GetCustomAttribute<VerbAttribute>()?.Name ?? type.Name;
 
-                        StartupHelpers.Logger.LogCritical(e, Resource.ErrorCommand, cmdName);
+                        StartupHelpers.Logger.LogError(e, Resource.ErrorCommand, cmdName);
                         Cli.Info("See error logs in {0}", appPaths.LogDirectoryPath);
+                        Cli.Error(e.Message?.ToString() ?? string.Empty);
                         Environment.Exit(1);
                     }
                 }
@@ -66,7 +68,7 @@ namespace AVOne.Tool
                 .Where(t => t.GetCustomAttribute<VerbAttribute>() != null).ToArray();
         }
 
-        public static IHost CreateHost(string[] args, ApplicationAppHost appHost)
+        public static IHost CreateHost(string[] args, ApplicationAppHost appHost, Impl.Configuration.ApplicationPaths appPaths)
         {
             var options =
                 GenericRunOptions.Default
@@ -76,14 +78,32 @@ namespace AVOne.Tool
                 {
                     _ = builder.ConfigureLogging((logging) =>
                     {
-                        _ = logging.ClearProviders();
-                        _ = logging.AddSerilog(Serilog.Log.Logger);
+                        if (!StartupHelpers.IsUseDefaultLogging())
+                        {
+                            _ = logging.ClearProviders();
+                            _ = logging.AddSerilog(Serilog.Log.Logger);
+                        }
+
                     });
 
                     //return builder.UseContentRoot(StartupHelpers.RealRootContentPath);
                     return builder;
                 })
-                .ConfigureServices(appHost.Init);
+                .ConfigureServices((service) =>
+                {
+                    appHost.Init(service);
+                    if (StartupHelpers.IsUseDefaultLogging())
+                    {
+                        service.AddFileLogging(Path.Combine(appPaths.LogDirectoryPath, "avone-console-{0:yyyy}-{0:MM}-{0:dd}.log"), options =>
+                     {
+                         options.FileNameRule = fileName =>
+                         {
+                             return string.Format(fileName, DateTime.UtcNow);
+                         };
+                     });
+                    }
+                });
+
             var host = Serve.Run(options);
             // Re-use the host service provider in the app host since ASP.NET doesn't allow a custom service collection.
             appHost.ServiceProvider = host.Services;
