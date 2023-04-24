@@ -1,40 +1,40 @@
 {
-    "Serilog": {
-      "MinimumLevel": {
-        "Default": "Information",
-        "Override": {
-          "Microsoft": "Warning",
-          "Microsoft.Hosting.Lifetime": "Information"
+  "Serilog": {
+    "MinimumLevel": {
+      "Default": "Information",
+      "Override": {
+        "Microsoft": "Warning",
+        "Microsoft.Hosting.Lifetime": "Information"
+      }
+    },
+    "WriteTo": [
+      {
+        "Name": "Console",
+        "Args": {
+          "outputTemplate": "[{Timestamp:HH:mm:ss}] [{Level:u3}] [{ThreadId}] {SourceContext}: {Message:lj}{NewLine}",
+          "restrictedToMinimumLevel": "Information"
         }
       },
-      "WriteTo": [
-        {
-          "Name": "Console",
-          "Args": {
-            "outputTemplate": "[{Timestamp:HH:mm:ss}] [{Level:u3}] [{ThreadId}] {SourceContext}: {Message:lj}{NewLine}",
-            "restrictedToMinimumLevel": "Information"
-          }
-        },
-        {
-          "Name": "Async",
-          "Args": {
-            "configure": [
-              {
-                "Name": "File",
-                "Args": {
-                  "path": "%AVONETOOL_LOG_DIR%//log_.log",
-                  "rollingInterval": "Day",
-                  "retainedFileCountLimit": 7,
-                  "rollOnFileSizeLimit": true,
-                  "fileSizeLimitBytes": 100000000,
-                  "outputTemplate": "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz}] [{Level:u3}] [{ThreadId}] {SourceContext}: {Message}{NewLine}{Exception}",
-                  "restrictedToMinimumLevel": "Information"
-                }
+      {
+        "Name": "Async",
+        "Args": {
+          "configure": [
+            {
+              "Name": "File",
+              "Args": {
+                "path": "%AVONETOOL_LOG_DIR%//log_.log",
+                "rollingInterval": "Day",
+                "retainedFileCountLimit": 7,
+                "rollOnFileSizeLimit": true,
+                "fileSizeLimitBytes": 100000000,
+                "outputTemplate": "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz}] [{Level:u3}] [{ThreadId}] {SourceContext}: {Message}{NewLine}{Exception}",
+                "restrictedToMinimumLevel": "Information"
               }
-            ]
-          }
+            }
+          ]
         }
-      ],
-        "Enrich": [ "FromLogContext", "WithThreadId" ]
-    }
+      }
+    ],
+    "Enrich": [ "FromLogContext", "WithThreadId" ]
+  }
 }

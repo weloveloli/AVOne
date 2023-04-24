@@ -31,7 +31,7 @@ namespace AVOne.Impl
         /// <summary>
         /// The name of logging configuration file containing application defaults.
         /// </summary>
-        internal const string LoggingConfigFileDefault = "logging.default.json";
+        internal static string LoggingConfigFileDefault => (IsTool() ? "logging.console.default.json" : "logging.default.json");
 
         /// <summary>
         /// The name of the logging configuration file containing the system-specific override settings.
@@ -160,7 +160,7 @@ namespace AVOne.Impl
             {
                 // Get a stream of the resource contents
                 // NOTE: The .csproj name is used instead of the assembly name in the resource path
-                const string ResourcePath = "AVOne.Impl.Configuration.logging.json";
+                var ResourcePath = IsTool() ? "AVOne.Impl.Configuration.logging.console.json" : "AVOne.Impl.Configuration.logging.json";
                 var resource = typeof(StartupHelpers).Assembly.GetManifestResourceStream(ResourcePath)
                                   ?? throw new InvalidOperationException($"Invalid resource path: '{ResourcePath}'");
                 await using (resource.ConfigureAwait(false))
@@ -173,6 +173,10 @@ namespace AVOne.Impl
                     }
                 }
             }
+        }
+        public static bool IsTool()
+        {
+            return bool.Parse(Environment.GetEnvironmentVariable($"{AVOnePrefix}_TOOL") ?? "false");
         }
 
         public static bool IsUseDefaultLogging()

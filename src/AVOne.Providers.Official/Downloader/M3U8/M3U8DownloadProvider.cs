@@ -155,10 +155,11 @@ namespace AVOne.Providers.Official.Downloader.M3U8
 
                     }
 
+                    var retryCount = opts.RetryCount ?? 1;
                     _ = Parallel.ForEach(numbers, new ParallelOptions { MaxDegreeOfParallelism = threadCount, CancellationToken = token }, index =>
                     {
                         var i = 0;
-                        while (i++ < opts.RetryCount)
+                        while (i++ < retryCount)
                         {
                             try
                             {

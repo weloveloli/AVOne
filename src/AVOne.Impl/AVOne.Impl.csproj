@@ -35,6 +35,7 @@
     </ItemGroup>
     <ItemGroup>
         <None Remove="appsettings.json" />
+        <None Remove="Configuration\logging.console.json" />
         <None Remove="Configuration\logging.json" />
     </ItemGroup>
     <ItemGroup>
@@ -43,6 +44,7 @@
         </Content>
     </ItemGroup>
     <ItemGroup>
+      <EmbeddedResource Include="Configuration\logging.console.json" />
       <EmbeddedResource Include="Configuration\logging.json" />
     </ItemGroup>
 </Project>

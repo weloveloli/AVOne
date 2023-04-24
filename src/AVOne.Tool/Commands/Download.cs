@@ -41,6 +41,10 @@ namespace AVOne.Tool.Commands
         }
         public override async Task ExecuteAsync(ApplicationAppHost host, CancellationToken token)
         {
+            if (!Directory.Exists(TargetFolder))
+            {
+                throw Oops.Oh("DIR_NOT_EXIST", TargetFolder);
+            }
             var providerManager = host.Resolve<IProviderManager>();
             if (!string.IsNullOrEmpty(Web))
             {
@@ -61,6 +65,10 @@ namespace AVOne.Tool.Commands
                             .UseConverter(item => Markup.Escape(item.DisplayName))
                             .PageSize(10)
                             .AddChoices(items));
+                }
+                else
+                {
+                    downloadableItem = items.FirstOrDefault();
                 }
 
                 var downloadProviders = providerManager.GetDownloaderProviders(downloadableItem!);
@@ -90,7 +98,7 @@ namespace AVOne.Tool.Commands
                 await AnsiConsole.Status()
                     .StartAsync(L.Text["Start downloading"], async ctx =>
                     {
-                        var opt = new DownloadOpts { ThreadCount = ThreadCount, OutputDir = TargetFolder, RetryCount = RetryCount, RetryWait = 500, PreferName = PreferName };
+                        var opt = new DownloadOpts { ThreadCount = ThreadCount, OutputDir = TargetFolder, RetryCount = RetryCount ?? 1, RetryWait = 500, PreferName = PreferName };
                         opt.StatusChanged += (o, e) => ctx.Status(e.Status);
                         await downloaderProvider.CreateTask(downloadableItem!, opt, token);
                     });

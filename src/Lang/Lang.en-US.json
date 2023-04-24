@@ -23,5 +23,6 @@
   "Can not download media": "Can not download media '{0}'.",
   "Download video example": "Download video to {0} from {1}.",
   "Merge media": "Merging media.",
-  "Official M3U8 Donwloader": "Official M3U8 Donwloader"
+  "Official M3U8 Donwloader": "Official M3U8 Donwloader",
+  "Target folder is not exist": "Target folder is not exist."
 }

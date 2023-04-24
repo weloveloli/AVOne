@@ -1,0 +1,32 @@
+{
+    "Serilog": {
+      "MinimumLevel": {
+        "Default": "Information",
+        "Override": {
+          "AVOne": "Information"
+        }
+      },
+      "WriteTo": [
+        {
+          "Name": "Console",
+          "Args": {
+            "outputTemplate": "[{Timestamp:HH:mm:ss}] [{Level:u3}] [{ThreadId}] {SourceContext}: {Message:lj}{NewLine}",
+            "restrictedToMinimumLevel": "Warning"
+          }
+        },
+        {
+          "Name": "File",
+          "Args": {
+            "path": "%AVONETOOL_LOG_DIR%//log_console_.log",
+            "rollingInterval": "Day",
+            "retainedFileCountLimit": 7,
+            "rollOnFileSizeLimit": true,
+            "fileSizeLimitBytes": 100000000,
+            "outputTemplate": "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz}] [{Level:u3}] [{ThreadId}] {SourceContext}: {Message}{NewLine}{Exception}",
+            "restrictedToMinimumLevel": "Information"
+          }
+        }
+      ],
+        "Enrich": [ "FromLogContext", "WithThreadId" ]
+    }
+}

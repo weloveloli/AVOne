@@ -1,6 +1,7 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // See License in the project root for license information.
 
+using System.Diagnostics;
 using AVOne.Impl;
 using AVOne.Server;
 using CommandLine;
@@ -16,11 +17,22 @@ internal class Program
             Environment.Exit(1);
             return;
         }
+        var pathToContentRoot = string.Empty;
 
+        var pathToExe = Process.GetCurrentProcess().MainModule!.FileName;
+        pathToContentRoot = Path.GetDirectoryName(pathToExe!)!;
+        Directory.SetCurrentDirectory(pathToContentRoot!);
         var option = parsed.Value;
-        var builder = WebApplication.CreateBuilder(args).Inject();
         var appPaths = StartupHelpers.CreateApplicationPaths(option!);
         var appHost = StartupHelpers.CreateConsoleAppHost(option!, appPaths).Result;
+        var options = new WebApplicationOptions
+        {
+            ContentRootPath = pathToContentRoot
+        };
+        var builder = WebApplication
+            .CreateBuilder(options)
+            .Inject();
+
         if (!StartupHelpers.IsUseDefaultLogging())
         {
             builder.Logging.ClearProviders();
