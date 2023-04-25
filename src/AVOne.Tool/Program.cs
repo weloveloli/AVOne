@@ -52,8 +52,13 @@ namespace AVOne.Tool
                         var cmdName = type.GetCustomAttribute<VerbAttribute>()?.Name ?? type.Name;
 
                         StartupHelpers.Logger.LogError(e, Resource.ErrorCommand, cmdName);
+
+#if DEBUG
+                        Cli.Exception(e, "Unexpected Error");
+#else
                         Cli.Info("See error logs in {0}", appPaths.LogDirectoryPath);
                         Cli.Error(e.Message?.ToString() ?? string.Empty);
+#endif
                         Environment.Exit(1);
                     }
                 }

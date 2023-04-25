@@ -189,6 +189,9 @@
   <data name="HelpTextScanDir" xml:space="preserve">
     <value>待扫描的文件夹路劲.</value>
   </data>
+  <data name="HelpTextScanDirSearchPattern" xml:space="preserve">
+    <value>要与 path 中的文件名匹配的搜索字符串。 此参数可以包含有效文本路径和通配符（* 和 ?）的组合，但不支持正则表达式。</value>
+  </data>
   <data name="HelpTextScanPath" xml:space="preserve">
     <value>待扫描的文件路劲.</value>
   </data>
@@ -251,6 +254,9 @@
   </data>
   <data name="InvalidMoviePath" xml:space="preserve">
     <value>指定文件路劲'{0}' 不是一个合法的媒体路径.</value>
+  </data>
+  <data name="ScanSingleExample" xml:space="preserve">
+    <value>扫描{1}并将其移动到{0}.</value>
   </data>
   <data name="SentenceBadFormatConversionErrorOption" xml:space="preserve">
     <value>Možnost '{0}' je definována ve špatném formátu.</value>

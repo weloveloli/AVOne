@@ -41,6 +41,7 @@ namespace AVOne.Tool.Commands
         }
         public override async Task ExecuteAsync(ApplicationAppHost host, CancellationToken token)
         {
+            TargetFolder ??= Directory.GetCurrentDirectory();
             if (!Directory.Exists(TargetFolder))
             {
                 throw Oops.Oh("DIR_NOT_EXIST", TargetFolder);
@@ -99,7 +100,7 @@ namespace AVOne.Tool.Commands
                     .StartAsync(L.Text["Start downloading"], async ctx =>
                     {
                         var opt = new DownloadOpts { ThreadCount = ThreadCount, OutputDir = TargetFolder, RetryCount = RetryCount ?? 1, RetryWait = 500, PreferName = PreferName };
-                        opt.StatusChanged += (o, e) => ctx.Status(e.Status);
+                        opt.StatusChanged += (o, e) => ctx.Status(e.Status ?? string.Empty);
                         await downloaderProvider.CreateTask(downloadableItem!, opt, token);
                     });
             }

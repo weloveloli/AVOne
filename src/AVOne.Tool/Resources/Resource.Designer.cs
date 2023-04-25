@@ -268,6 +268,15 @@ namespace AVOne.Tool.Resources {
         }
         
         /// <summary>
+        ///   查找类似 The search string to match against the names of files in path.  的本地化字符串。
+        /// </summary>
+        public static string HelpTextScanDirSearchPattern {
+            get {
+                return ResourceManager.GetString("HelpTextScanDirSearchPattern", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Path of file to be scanned. 的本地化字符串。
         /// </summary>
         public static string HelpTextScanPath {
@@ -462,6 +471,15 @@ namespace AVOne.Tool.Resources {
         public static string InvalidMoviePath {
             get {
                 return ResourceManager.GetString("InvalidMoviePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Scan metadata of {1} and move the file to {0}. 的本地化字符串。
+        /// </summary>
+        public static string ScanSingleExample {
+            get {
+                return ResourceManager.GetString("ScanSingleExample", resourceCulture);
             }
         }
         

@@ -23,6 +23,8 @@ namespace AVOne.Common.Enum
 
         [ErrorCodeItemMetadata("SKIP_METADATA_NOT_EXIST")]
         SKIP_METADATA_NOT_EXIST,
+        [ErrorCodeItemMetadata("SKIP_METADATA_NOT_VALID")]
+        SKIP_METADATA_NOT_VALID,
         [ErrorCodeItemMetadata("SKIP_FILE_DUE_TO_TARGET_FILE_AREADY_EXIST")]
         SKIP_FILE_DUE_TO_TARGET_FILE_AREADY_EXIST,
 

@@ -145,7 +145,7 @@ namespace AVOne.IO
         /// <param name="path">The path.</param>
         /// <param name="recursive">if set to <c>true</c> [recursive].</param>
         /// <returns>IEnumerable&lt;FileSystemMetadata&gt;.</returns>
-        IEnumerable<FileSystemMetadata> GetFileSystemEntries(string path, bool recursive = false);
+        IEnumerable<FileSystemMetadata> GetFileSystemEntries(string path, string searchPattern = null, bool recursive = false);
 
         /// <summary>
         /// Gets the directory paths.

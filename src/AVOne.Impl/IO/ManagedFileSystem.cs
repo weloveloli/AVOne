@@ -536,12 +536,12 @@ namespace AVOne.Impl.IO
         }
 
         /// <inheritdoc />
-        public virtual IEnumerable<FileSystemMetadata> GetFileSystemEntries(string path, bool recursive = false)
+        public virtual IEnumerable<FileSystemMetadata> GetFileSystemEntries(string path, string searchPattern = null, bool recursive = false)
         {
             var directoryInfo = new DirectoryInfo(path);
             var enumerationOptions = GetEnumerationOptions(recursive);
 
-            return ToMetadata(directoryInfo.EnumerateFileSystemInfos("*", enumerationOptions));
+            return ToMetadata(directoryInfo.EnumerateFileSystemInfos(searchPattern ?? "*", enumerationOptions));
         }
 
         private IEnumerable<FileSystemMetadata> ToMetadata(IEnumerable<FileSystemInfo> infos)
