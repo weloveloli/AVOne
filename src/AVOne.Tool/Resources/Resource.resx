@@ -141,6 +141,9 @@
   <data name="HelpTextAddRepo" xml:space="preserve">
     <value>Add plugin repository.</value>
   </data>
+  <data name="HelpTextCleanUpAfterScan" xml:space="preserve">
+    <value>If delete the source folder if no more files.</value>
+  </data>
   <data name="HelpTextCollectionType" xml:space="preserve">
     <value>Collection Type, could be PornMovie,default is PornMovie.</value>
   </data>
@@ -202,7 +205,7 @@
     <value>Show plugin repository list.</value>
   </data>
   <data name="HelpTextUseContainer" xml:space="preserve">
-    <value>If use create a new container to hold all the media, image, nfo files.</value>
+    <value>If use create a new folder shares same name with media file in the target to hold all the media, image, nfo files.</value>
   </data>
   <data name="HelpTextVerbDownload" xml:space="preserve">
     <value>Download media.</value>
@@ -254,6 +257,12 @@
   </data>
   <data name="InvalidMoviePath" xml:space="preserve">
     <value>File path '{0}' not valid media file.</value>
+  </data>
+  <data name="ScanSearchPatternExample" xml:space="preserve">
+    <value>Scan all the mp4 file start with fc under the folder {0} and move them to {1}.</value>
+  </data>
+  <data name="ScanSearchPatternExample1" xml:space="preserve">
+    <value>Scan all the mp4 file start with fc under the folder {0} and print their metadata.</value>
   </data>
   <data name="ScanSingleExample" xml:space="preserve">
     <value>Scan metadata of {1} and move the file to {0}.</value>

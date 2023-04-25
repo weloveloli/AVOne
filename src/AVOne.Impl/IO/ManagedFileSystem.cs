@@ -536,7 +536,7 @@ namespace AVOne.Impl.IO
         }
 
         /// <inheritdoc />
-        public virtual IEnumerable<FileSystemMetadata> GetFileSystemEntries(string path, string searchPattern = null, bool recursive = false)
+        public virtual IEnumerable<FileSystemMetadata> GetFileSystemEntries(string path, string? searchPattern = null, bool recursive = false)
         {
             var directoryInfo = new DirectoryInfo(path);
             var enumerationOptions = GetEnumerationOptions(recursive);

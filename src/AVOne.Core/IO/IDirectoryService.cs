@@ -6,7 +6,7 @@ namespace AVOne.IO
     public interface IDirectoryService
     {
         FileSystemMetadata[] GetFileSystemEntries(string path);
-        List<FileSystemMetadata> GetFiles(string path, string seachOption = null);
+        List<FileSystemMetadata> GetFiles(string path, string? seachOption = null);
 
         FileSystemMetadata GetFile(string path);
 

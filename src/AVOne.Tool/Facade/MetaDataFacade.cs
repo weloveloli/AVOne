@@ -9,6 +9,7 @@ namespace AVOne.Tool.Facade
     using System.IO;
     using System.Linq;
     using System.Net;
+    using System.Runtime.CompilerServices;
     using System.Security.Cryptography;
     using System.Text;
     using System.Threading;
@@ -70,7 +71,7 @@ namespace AVOne.Tool.Facade
             return await GetMovie(items, token).FirstOrDefaultAsync(token);
         }
 
-        public IAsyncEnumerable<MoveMetaDataItem> ResolveAsMovies(string dir, string? searchPattern = null, CancellationToken token = default)
+        public IAsyncEnumerable<MoveMetaDataItem> ResolveAsMovies(string dir, string searchPattern = null, CancellationToken token = default)
         {
             if (string.IsNullOrEmpty(dir) || !Directory.Exists(dir))
             {
@@ -86,7 +87,7 @@ namespace AVOne.Tool.Facade
             return GetMovie(items, token);
         }
 
-        private async IAsyncEnumerable<MoveMetaDataItem> GetMovie(IEnumerable<BaseItem> items, CancellationToken token = default)
+        private async IAsyncEnumerable<MoveMetaDataItem> GetMovie(IEnumerable<BaseItem> items, [EnumeratorCancellation] CancellationToken token = default)
         {
             if (items == null || !items.Any())
             {
@@ -95,7 +96,7 @@ namespace AVOne.Tool.Facade
 
             var movis = items.OfType<PornMovie>().Select(movieItem =>
             {
-                var m = new MoveMetaDataItem { Movie = movieItem };
+                var m = new MoveMetaDataItem { Source = movieItem };
                 var providers = _providerManager
                     .GetMetadataProviders<PornMovie>(movieItem)
                     .Where(e => _config.ScanMetaDataProviders.Contains(e.Name));
@@ -129,6 +130,7 @@ namespace AVOne.Tool.Facade
 
             foreach (var e in movis)
             {
+                token.ThrowIfCancellationRequested();
                 var item = await ExecuteMetaData(e, token);
                 yield return MergeMetaData(item);
             }
@@ -138,7 +140,7 @@ namespace AVOne.Tool.Facade
         {
             var item = new MoveMetaDataItem
             {
-                Movie = dataItem.Movie,
+                Source = dataItem.Source,
                 HasMetaData = false,
                 LocalImageProvider = dataItem.LocalImageProvider,
                 RemoteImageProvider = dataItem.RemoteImageProvider,
@@ -149,32 +151,32 @@ namespace AVOne.Tool.Facade
             };
 
             var metaDataResult = await item.LocalMetadataProvider
-                .GetMetadata(new ItemInfo(item.Movie), _directoryService, token);
+                .GetMetadata(new ItemInfo(item.Source), _directoryService, token);
             if (metaDataResult.HasMetadata)
             {
                 item.HasMetaData = true;
                 item.MetadataResult = metaDataResult;
-                item.Result = metaDataResult.Item;
-                item.Result.Path = item.Movie.Path;
+                item.MovieWithMetaData = metaDataResult.Item;
+                item.MovieWithMetaData.Path = item.Source.Path;
             }
             else
             {
                 try
                 {
-                    metaDataResult = await item.RemoteMetadataProvider.GetMetadata(item.Movie.GetLookupInfo(), token);
+                    metaDataResult = await item.RemoteMetadataProvider.GetMetadata(item.Source.GetLookupInfo(), token);
                     if (metaDataResult.HasMetadata)
                     {
                         item.HasMetaData = true;
                         item.MetadataResult = metaDataResult;
-                        item.Result = metaDataResult.Item;
-                        item.Result.Path = item.Movie.Path;
-                        item.Result.People?.Clear();
-                        item.Result.People.AddRange(metaDataResult.People);
+                        item.MovieWithMetaData = metaDataResult.Item;
+                        item.MovieWithMetaData.Path = item.Source.Path;
+                        item.MovieWithMetaData.People?.Clear();
+                        item.MovieWithMetaData.People.AddRange(metaDataResult.People);
                     }
                 }
                 catch (Exception e)
                 {
-                    _logger.LogInformation(e, "Fetch metadata for media {0} error", item.Movie.Name);
+                    _logger.LogInformation(e, "Fetch metadata for media {0} error", item.Source.Name);
                 }
 
             }
@@ -182,10 +184,10 @@ namespace AVOne.Tool.Facade
             {
                 return item;
             }
-            item.LocalImageInfos = item.LocalImageProvider.GetImages(item.Result, _directoryService);
+            item.LocalImageInfos = item.LocalImageProvider.GetImages(item.MovieWithMetaData, _directoryService);
             if (!item.LocalImageInfos.Any())
             {
-                item.RemoteImageInfos = await item.RemoteImageProvider.GetImages(item.Result, token);
+                item.RemoteImageInfos = await item.RemoteImageProvider.GetImages(item.MovieWithMetaData, token);
 
                 if (item.RemoteImageInfos != null && item.RemoteImageInfos.Any())
                 {
@@ -278,7 +280,7 @@ namespace AVOne.Tool.Facade
                 return item;
             }
 
-            item.Result = item.MetadataResult.Item;
+            item.MovieWithMetaData = item.MetadataResult.Item;
             if (item.LocalImageInfos?.Any() ?? false)
             {
                 foreach (var imageInfo in item.LocalImageInfos)
@@ -288,7 +290,7 @@ namespace AVOne.Tool.Facade
                         Path = imageInfo.FileInfo.FullName,
                         Type = imageInfo.Type
                     };
-                    item.Result.AddImage(itemImageInfo);
+                    item.MovieWithMetaData.AddImage(itemImageInfo);
                 }
             }
             if (item.LocalRemoteImageInfos?.Any() ?? false)
@@ -300,29 +302,33 @@ namespace AVOne.Tool.Facade
                         Path = imageInfo.FileInfo.FullName,
                         Type = imageInfo.Type
                     };
-                    item.Result.AddImage(itemImageInfo);
+                    item.MovieWithMetaData.AddImage(itemImageInfo);
                 }
             }
             return item;
         }
 
-        public async Task SaveMetaDataToLocal(MoveMetaDataItem item, CancellationToken token = default)
+        public async Task SaveMetaDataToLocal(MoveMetaDataItem item, bool container = false, CancellationToken token = default)
         {
             if (item.LocalImageInfos != null && item.LocalImageInfos.Any())
             {
                 foreach (var image in item.LocalImageInfos)
                 {
                     var oldPath = image.FileInfo.FullName;
-                    var newPath = Path.Combine(Directory.GetParent(item.Result.TargetPath).FullName, image.FileInfo.Name);
+                    var newPath = Path.Combine(Directory.GetParent(item.MovieWithMetaData.TargetPath).FullName, image.FileInfo.Name);
                     if (oldPath != newPath)
                     {
                         File.Move(oldPath, newPath);
+                    }
+                    if (image.Type == ImageType.Backdrop && container)
+                    {
+                        newPath = Path.Combine(Directory.GetParent(item.MovieWithMetaData.TargetPath).FullName, "folder" + Path.GetExtension(oldPath));
                     }
                 }
             }
             else if (item.RemoteImageInfos != null && item.RemoteImageInfos.Any())
             {
-                item.UpdateStatus(L.Text["Downloading Remote Image"], item.Movie.Name);
+                item.UpdateStatus(L.Text["Downloading Remote Image"], item.Source.Name);
                 foreach (var image in item.RemoteImageInfos)
                 {
                     var url = image.Url;
@@ -344,12 +350,12 @@ namespace AVOne.Tool.Facade
 
                         using var source = response.Content.ReadAsStream();
                         var mimeType = response.Content.Headers.ContentType?.MediaType;
-                        await item.ImageSaverProvider.SaveImage(item.Result, source, mimeType, image.Type, null, token);
+                        await item.ImageSaverProvider.SaveImage(item.MovieWithMetaData, source, mimeType, image.Type, null, token);
                     }, 3, 1000, false);
                 }
             }
-            item.UpdateStatus(L.Text["Saving metadata"], item.Movie.Name);
-            await item.MetadataFileSaverProvider.SaveAsync(item.Result, token);
+            item.UpdateStatus(L.Text["Saving metadata"], item.Source.Name);
+            await item.MetadataFileSaverProvider.SaveAsync(item.MovieWithMetaData, token);
         }
     }
 }

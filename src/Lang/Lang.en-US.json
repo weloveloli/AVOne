@@ -14,6 +14,7 @@
   "Moving file": "Moving file {0} ...",
   "Saving metadata": "Saving file metadata for {0} ...",
   "Moving file successfully": "Moving file {0} successfully to {1}",
+  "Moving additional part successfully": "Moving  additional part {0} successfully to {1}",
   "Downloading Remote Image": "Downloading images for '{0}'",
   "Not a movie": "'{0}' is not a video file.",
   "Can't find metadata": "Can't get metadata for '{0}'.",

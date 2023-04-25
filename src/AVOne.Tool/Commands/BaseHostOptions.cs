@@ -3,7 +3,6 @@
 
 namespace AVOne.Tool.Commands
 {
-    using AVOne.Common.Helper;
     using AVOne.Configuration;
     using AVOne.Impl;
     using AVOne.Tool.Facade;
@@ -25,7 +24,7 @@ namespace AVOne.Tool.Commands
         /// <inheritdoc />
         [Option("ffmpeg", Required = false, HelpText = "HelpTextffmpeg",
             ResourceType = typeof(Resource))]
-        public string? FFmpegPath { get; set; } = ExecutableHelper.FindExecutable("ffmpeg");
+        public string? FFmpegPath { get; set; }
 
         /// <inheritdoc />
         [Option("proxy", Required = false, HelpText = "proxy for example http://127.0.0.1:8000")]

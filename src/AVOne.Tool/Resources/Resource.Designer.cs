@@ -133,6 +133,15 @@ namespace AVOne.Tool.Resources {
         }
         
         /// <summary>
+        ///   查找类似 If delete the source folder if no more files. 的本地化字符串。
+        /// </summary>
+        public static string HelpTextCleanUpAfterScan {
+            get {
+                return ResourceManager.GetString("HelpTextCleanUpAfterScan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查找类似 Collection Type, could be PornMovie,default is PornMovie. 的本地化字符串。
         /// </summary>
         public static string HelpTextCollectionType {
@@ -313,7 +322,7 @@ namespace AVOne.Tool.Resources {
         }
         
         /// <summary>
-        ///   查找类似 If use create a new container to hold all the media, image, nfo files. 的本地化字符串。
+        ///   查找类似 If use create a new folder shares same name with media file in the target to hold all the media, image, nfo files. 的本地化字符串。
         /// </summary>
         public static string HelpTextUseContainer {
             get {
@@ -471,6 +480,24 @@ namespace AVOne.Tool.Resources {
         public static string InvalidMoviePath {
             get {
                 return ResourceManager.GetString("InvalidMoviePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Scan all the mp4 file start with fc under the folder {0} and move them to {1}. 的本地化字符串。
+        /// </summary>
+        public static string ScanSearchPatternExample {
+            get {
+                return ResourceManager.GetString("ScanSearchPatternExample", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 Scan all the mp4 file start with fc under the folder {0} and print their metadata. 的本地化字符串。
+        /// </summary>
+        public static string ScanSearchPatternExample1 {
+            get {
+                return ResourceManager.GetString("ScanSearchPatternExample1", resourceCulture);
             }
         }
         
