@@ -221,17 +221,19 @@ namespace AVOne.Impl.Library
             }
         }
 
-        public IEnumerable<BaseItem> ResolvePaths(IEnumerable<FileSystemMetadata> files, IDirectoryService directoryService, Folder parent, string collectionType = null)
+        public IEnumerable<BaseItem> ResolvePaths(IEnumerable<FileSystemMetadata> files,
+                                                  IDirectoryService directoryService,
+                                                  Folder parent,
+                                                  string collectionType = null)
         {
             return ResolvePaths(files, directoryService, parent, collectionType, ItemResolvers);
         }
 
-        public IEnumerable<BaseItem> ResolvePaths(
-            IEnumerable<FileSystemMetadata> files,
-            IDirectoryService directoryService,
-            Folder parent,
-            string collectionType,
-            IItemResolver[] resolvers)
+        public IEnumerable<BaseItem> ResolvePaths(IEnumerable<FileSystemMetadata> files,
+                                                  IDirectoryService directoryService,
+                                                  Folder parent,
+                                                  string collectionType,
+                                                  IItemResolver[] resolvers)
         {
             var fileList = files.Where(i => !IgnoreFile(i, parent)).ToList();
 

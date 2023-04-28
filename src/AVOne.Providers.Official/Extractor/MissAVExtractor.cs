@@ -73,7 +73,7 @@ namespace AVOne.Providers.Official.Extractor
                 yield return line.Substring(start, end - start + 1);
             }
         }
-        [GeneratedRegex("<title>(.*?)</title>", RegexOptions.IgnoreCase, "en-US")]
+        [GeneratedRegex("<meta property=\"og:title\" content=\"(.*?)\" />", RegexOptions.IgnoreCase, "en-US")]
         public static partial Regex TitleRegex();
         // A method to fetch the title from a HTML string
         public static string GetTitleFromHtml(string html, Regex regex)

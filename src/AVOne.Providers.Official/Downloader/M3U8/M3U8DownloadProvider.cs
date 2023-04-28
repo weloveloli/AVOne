@@ -60,15 +60,19 @@ namespace AVOne.Providers.Official.Downloader.M3U8
             }
 
             var saveName = opts.PreferName ?? item.SaveName!;
+
+            // escape save name to be a valid filename
+            saveName = EscapeFileName(saveName);
+
             var url = m3U8Item.Url!;
             var md5 = url.GetMD5();
             var threadCount = opts.ThreadCount ?? 4;
             var retryCount = opts.RetryCount ?? 3;
             var saveDir = opts.OutputDir ?? Directory.GetCurrentDirectory();
             var tmpDir = _applicationPaths.CachePath;
-            var workingDir = Path.Combine(tmpDir, $"{saveName}-{md5}");
+            var workingDir = Path.Combine(tmpDir, $"{md5}");
             Directory.CreateDirectory(workingDir);
-            var playMetaDataFile = $"{saveName}-{md5}.meta.json";
+            var playMetaDataFile = $"{md5}.meta.json";
 
             // check if playList exists
             MediaPlaylist? mediaPlaylist = null;
@@ -621,6 +625,12 @@ namespace AVOne.Providers.Official.Downloader.M3U8
         public bool Support(BaseDownloadableItem item)
         {
             return item is not null && item is M3U8Item;
+        }
+
+        // add function to escape the string to be a valid filename
+        protected string EscapeFileName(string fileName)
+        {
+            return string.Join("_", fileName.Split(Path.GetInvalidFileNameChars()));
         }
     }
 }
