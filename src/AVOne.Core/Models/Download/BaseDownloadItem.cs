@@ -4,11 +4,14 @@
 #nullable disable
 namespace AVOne.Models.Download
 {
-    public abstract class BaseDownloadableItem
+    using AVOne.Models.Item;
+
+    public abstract class BaseDownloadableItem : MetaDataItem
     {
         public string SaveName { get; set; }
-        public abstract string DisplayName { get; }
+        public virtual string DisplayName { get; set; }
         public abstract string Key { get; }
         public string OrignalLink { get; set; }
+        public bool HasMetaData { get; set; } = false;
     }
 }

@@ -399,7 +399,7 @@ namespace AVOne.Providers.Official.Downloader.M3U8
             bool genpts = false, bool igndts = false, bool ignidx = false, Action<string>? onMessage = null,
             CancellationToken token = default)
         {
-            var ffmpegPath = _options.FFmpegPath ?? _configurationManager.CommonConfiguration.FFmpegConfig.FFmpegPath ?? "ffmepge";
+            var ffmpegPath = _options.FFmpegPath ?? _configurationManager.CommonConfiguration.FFmpegConfig.FFmpegPath ?? ExecutableHelper.FindExecutable("ffmpeg");
             if (string.IsNullOrWhiteSpace(workDir))
                 throw new Exception("Parameter workDir cannot be empty.");
             if (string.IsNullOrWhiteSpace(saveName))
