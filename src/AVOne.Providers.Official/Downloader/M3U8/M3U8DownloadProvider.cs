@@ -400,6 +400,10 @@ namespace AVOne.Providers.Official.Downloader.M3U8
             CancellationToken token = default)
         {
             var ffmpegPath = _options.FFmpegPath ?? _configurationManager.CommonConfiguration.FFmpegConfig.FFmpegPath ?? ExecutableHelper.FindExecutable("ffmpeg");
+
+            if (string.IsNullOrWhiteSpace(ffmpegPath))
+                throw new Exception("Not found ffmpeg.");
+
             if (string.IsNullOrWhiteSpace(workDir))
                 throw new Exception("Parameter workDir cannot be empty.");
             if (string.IsNullOrWhiteSpace(saveName))

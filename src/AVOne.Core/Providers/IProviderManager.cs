@@ -24,8 +24,8 @@ namespace AVOne.Providers
             IEnumerable<IMediaExtractorProvider> mediaExtractorProviders
             );
 
-        MetadataOptions GetMetadataOptions(BaseItem item);
-        IEnumerable<IMetadataProvider<T>> GetMetadataProviders<T>(BaseItem item) where T : BaseItem;
+        MetadataOptions GetMetadataOptions(BaseItem? item);
+        IEnumerable<IMetadataProvider<T>> GetMetadataProviders<T>(BaseItem? item) where T : BaseItem;
         IVideoResolverProvider GetVideoResolverProvider();
         INamingOptionProvider GetNamingOptionProvider();
 

@@ -28,6 +28,7 @@ namespace AVOne.Providers.Official.Extractor.Base
         public virtual int Order => (int)ProviderOrder.Default;
         public virtual async Task<IEnumerable<BaseDownloadableItem>> ExtractAsync(string webPageUrl, CancellationToken token = default)
         {
+            webPageUrl = GetWebPageUrl(webPageUrl);
             var result = new List<BaseDownloadableItem>();
             try
             {
@@ -70,6 +71,11 @@ namespace AVOne.Providers.Official.Extractor.Base
         protected string EscapeFileName(string fileName)
         {
             return string.Join("_", fileName.Split(Path.GetInvalidFileNameChars()));
+        }
+
+        protected virtual string GetWebPageUrl(string webPageUrl)
+        {
+            return webPageUrl;
         }
     }
 }

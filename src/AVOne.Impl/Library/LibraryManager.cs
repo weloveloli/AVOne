@@ -50,6 +50,9 @@ namespace AVOne.Impl.Library
         /// <value>The entity resolvers enumerable.</value>
         private IItemResolver[] ItemResolvers { get; set; } = Array.Empty<IItemResolver>();
 
+        /// <summary>
+        /// Gets or sets the list of currently registered multi-item resolvers.
+        /// </summary>
         private IMultiItemResolver[] MultiItemResolvers { get; set; } = Array.Empty<IMultiItemResolver>();
 
         /// <summary>

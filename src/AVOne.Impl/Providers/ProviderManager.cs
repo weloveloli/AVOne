@@ -85,6 +85,10 @@ namespace AVOne.Impl.Providers
         /// <inheritdoc/>
         public MetadataOptions GetMetadataOptions(BaseItem item)
         {
+            if(item == null)
+            {
+                return new MetadataOptions();
+            }
             var type = item.GetType().Name;
 
             return _configurationManager.CommonConfiguration.MetadataOptions
