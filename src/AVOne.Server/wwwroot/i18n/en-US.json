@@ -37,6 +37,7 @@
       "Title": "Download Task",
       "AddTask": "Add Download Task",
       "AddTaskUrl": "Add Download Task Url",
+      "DownloadItemIndex":"Download Content",
       "AddTaskThreadCount": "Download Task Thread Count",
       "AddTaskRetryCount": "Download Task Retry Count",
       "AddTaskUrlHint": "For example :https://missav.com/fr/cus-1468",
