@@ -64,7 +64,7 @@ namespace AVOne.Impl.Providers
         /// <param name="libraryOptions">The library options.</param>
         /// <typeparam name="T">The type of metadata provider.</typeparam>
         /// <returns>The metadata providers.</returns>
-        public IEnumerable<IMetadataProvider<T>> GetMetadataProviders<T>(BaseItem item)
+        public IEnumerable<IMetadataProvider<T>> GetMetadataProviders<T>(BaseItem? item)
             where T : BaseItem
         {
             var globalMetadataOptions = GetMetadataOptions(item);
@@ -83,7 +83,7 @@ namespace AVOne.Impl.Providers
         }
 
         /// <inheritdoc/>
-        public MetadataOptions GetMetadataOptions(BaseItem item)
+        public MetadataOptions GetMetadataOptions(BaseItem? item)
         {
             if(item == null)
             {
@@ -96,7 +96,7 @@ namespace AVOne.Impl.Providers
                 new MetadataOptions();
         }
 
-        private IEnumerable<IMetadataProvider<T>> GetMetadataProvidersInternal<T>(BaseItem item, MetadataOptions globalMetadataOptions, bool includeDisabled, bool forceEnableInternetMetadata)
+        private IEnumerable<IMetadataProvider<T>> GetMetadataProvidersInternal<T>(BaseItem? item, MetadataOptions globalMetadataOptions, bool includeDisabled, bool forceEnableInternetMetadata)
             where T : BaseItem
         {
             // Avoid implicitly captured closure
@@ -172,6 +172,12 @@ namespace AVOne.Impl.Providers
         public IEnumerable<IImageSaverProvider> GetImageSaverProvider()
         {
             return _imageSaverProviders.OrderBy(GetDefaultOrder);
+        }
+
+        public IMetadataProvider GetMetadataProvider(string name)
+        {
+            return _metadataProviders.Where(i => i.Name == name)
+                .OrderBy(GetDefaultOrder).First();
         }
     }
 }

@@ -7,9 +7,9 @@ namespace AVOne.Tool.Commands
     using System.Threading.Tasks;
     using AVOne.Common.Enum;
     using AVOne.Impl;
+    using AVOne.Impl.Facade;
+    using AVOne.Impl.Models;
     using AVOne.Models.Item;
-    using AVOne.Tool.Facade;
-    using AVOne.Tool.Models;
     using AVOne.Tool.Resources;
     using CommandLine;
     using CommandLine.Text;

@@ -3,7 +3,7 @@
 
 #nullable disable
 
-namespace AVOne.Tool.Models
+namespace AVOne.Impl.Models
 {
     using AVOne.Models.Info;
     using AVOne.Models.Item;
@@ -32,8 +32,6 @@ namespace AVOne.Tool.Models
 
         public IEnumerable<LocalImageInfo> LocalImageInfos { get; set; }
         public IEnumerable<RemoteImageInfo> RemoteImageInfos { get; set; }
-
-        public IEnumerable<LocalImageInfo> LocalRemoteImageInfos { get; set; }
 
         public bool HasMetaData { get; set; } = false;
 

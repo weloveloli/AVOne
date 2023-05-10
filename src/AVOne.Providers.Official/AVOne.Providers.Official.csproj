@@ -12,5 +12,4 @@
         <ProjectReference Include="..\AVOne.Core\AVOne.Core.csproj" />
         <ProjectReference Include="..\AVOne.Common\AVOne.Common.csproj" />
     </ItemGroup>
-
 </Project>

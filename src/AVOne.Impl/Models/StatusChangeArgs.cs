@@ -2,7 +2,8 @@
 // See License in the project root for license information.
 
 #nullable disable
-namespace AVOne.Tool.Models
+
+namespace AVOne.Impl.Models
 {
     public class StatusChangeArgs
     {

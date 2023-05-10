@@ -3,7 +3,9 @@
       "MinimumLevel": {
         "Default": "Information",
         "Override": {
-          "AVOne": "Information"
+          "Microsoft": "Warning",
+          "System": "Warning",
+          "Microsoft.Hosting.Lifetime": "Information"
         }
       },
       "WriteTo": [

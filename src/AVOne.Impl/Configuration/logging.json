@@ -4,6 +4,7 @@
       "Default": "Information",
       "Override": {
         "Microsoft": "Warning",
+        "System": "Warning",
         "Microsoft.Hosting.Lifetime": "Information"
       }
     },

@@ -5,7 +5,6 @@ namespace AVOne.Tool.Commands
 {
     using AVOne.Configuration;
     using AVOne.Impl;
-    using AVOne.Tool.Facade;
     using AVOne.Tool.Resources;
     using CommandLine;
     using Microsoft.Extensions.DependencyInjection;
@@ -32,7 +31,7 @@ namespace AVOne.Tool.Commands
 
         public virtual void InitService(IServiceCollection collection)
         {
-            _ = collection.AddSingleton<IMetaDataFacade, MetaDataFacade>();
+
         }
 
         public abstract Task ExecuteAsync(ApplicationAppHost host, CancellationToken token);

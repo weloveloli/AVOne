@@ -2,7 +2,7 @@
 // See License in the project root for license information.
 
 #nullable disable
-namespace AVOne.Tool.Facade
+namespace AVOne.Impl.Facade
 {
     using System;
     using System.Collections.Generic;
@@ -18,13 +18,14 @@ namespace AVOne.Tool.Facade
     using AVOne.Configuration;
     using AVOne.Constants;
     using AVOne.Enum;
+    using AVOne.Extensions;
+    using AVOne.Impl.Models;
     using AVOne.IO;
     using AVOne.Library;
     using AVOne.Models.Info;
     using AVOne.Models.Item;
     using AVOne.Providers;
     using AVOne.Providers.Metadata;
-    using AVOne.Tool.Models;
     using Furion.FriendlyException;
     using Microsoft.Extensions.Logging;
 
@@ -55,7 +56,7 @@ namespace AVOne.Tool.Facade
             _configurationManager = configurationManager;
             _serverApplicationPaths = serverApplicationPaths;
         }
-        public async Task<MoveMetaDataItem> ResolveAsMovie(string path, CancellationToken token = default)
+        public async Task<MoveMetaDataItem> ResolveAsMovie(string path, CancellationToken token = default, MetadataOpt? opt = default)
         {
             if (!File.Exists(path))
             {
@@ -68,6 +69,14 @@ namespace AVOne.Tool.Facade
                 _directoryService,
                 parent,
                 CollectionType.PornMovies);
+            if (opt != null)
+            {
+                var item = items.FirstOrDefault();
+                if (item != null)
+                {
+                    item.SetProviderId(opt.ProviderName, opt.ProviderId);
+                }
+            }
             return await GetMovie(items, token).FirstOrDefaultAsync(token);
         }
 
@@ -184,33 +193,48 @@ namespace AVOne.Tool.Facade
             {
                 return item;
             }
-            item.LocalImageInfos = item.LocalImageProvider.GetImages(item.MovieWithMetaData, _directoryService);
+
+            if (metaDataResult != null)
+            {
+                if (metaDataResult.Images.Any())
+                {
+                    item.LocalImageInfos = metaDataResult.Images;
+                }
+                else
+                {
+                    item.LocalImageInfos = item.LocalImageProvider.GetImages(item.MovieWithMetaData, _directoryService);
+                }
+            }
+
             if (!item.LocalImageInfos.Any())
             {
-                item.RemoteImageInfos = await item.RemoteImageProvider.GetImages(item.MovieWithMetaData, token);
-
-                if (item.RemoteImageInfos != null && item.RemoteImageInfos.Any())
+                if (metaDataResult.RemoteImages.Any())
                 {
-                    var imagsList = new List<LocalImageInfo>();
-                    item.LocalRemoteImageInfos = imagsList;
-                    foreach (var image in item.RemoteImageInfos)
-                    {
-                        if (image.Type != ImageType.Primary)
-                        {
-                            continue;
-                        }
-                        var imageCachePath = await DownloadRemoteImageToCache(item.RemoteImageProvider, image, token);
-                        if (imageCachePath == null)
-                        {
-                            continue;
-                        }
-                        imagsList.Add(new LocalImageInfo
-                        {
-                            FileInfo = _directoryService.GetFile(imageCachePath),
-                            Type = image.Type
-                        });
-                    }
+                    item.RemoteImageInfos = metaDataResult.RemoteImages.Select(e => new RemoteImageInfo { Url = e.Url, Type = e.Type });
                 }
+                else
+                {
+                    item.RemoteImageInfos = await item.RemoteImageProvider.GetImages(item.MovieWithMetaData, token);
+                }
+
+                //if (item.RemoteImageInfos != null && item.RemoteImageInfos.Any())
+                //{
+                //    var imagsList = new List<LocalImageInfo>();
+                //    item.LocalImageInfos = imagsList;
+                //    foreach (var image in item.RemoteImageInfos)
+                //    {
+                //        var imageCachePath = await DownloadRemoteImageToCache(item.RemoteImageProvider, image, token);
+                //        if (imageCachePath == null)
+                //        {
+                //            continue;
+                //        }
+                //        imagsList.Add(new LocalImageInfo
+                //        {
+                //            FileInfo = _directoryService.GetFile(imageCachePath),
+                //            Type = image.Type
+                //        });
+                //    }
+                //}
             }
 
             return item;
@@ -281,21 +305,10 @@ namespace AVOne.Tool.Facade
             }
 
             item.MovieWithMetaData = item.MetadataResult.Item;
+            item.MovieWithMetaData.ImageInfos = Array.Empty<ItemImageInfo>();
             if (item.LocalImageInfos?.Any() ?? false)
             {
                 foreach (var imageInfo in item.LocalImageInfos)
-                {
-                    var itemImageInfo = new ItemImageInfo
-                    {
-                        Path = imageInfo.FileInfo.FullName,
-                        Type = imageInfo.Type
-                    };
-                    item.MovieWithMetaData.AddImage(itemImageInfo);
-                }
-            }
-            if (item.LocalRemoteImageInfos?.Any() ?? false)
-            {
-                foreach (var imageInfo in item.LocalRemoteImageInfos)
                 {
                     var itemImageInfo = new ItemImageInfo
                     {
@@ -320,17 +333,27 @@ namespace AVOne.Tool.Facade
                     {
                         File.Move(oldPath, newPath);
                     }
-                    if (image.Type == ImageType.Backdrop && container)
+                    if (image.Type == ImageType.Primary && container)
                     {
-                        newPath = Path.Combine(Directory.GetParent(item.MovieWithMetaData.TargetPath).FullName, "folder" + Path.GetExtension(oldPath));
+                        var folderNewPath = Path.Combine(Directory.GetParent(item.MovieWithMetaData.TargetPath).FullName, "folder" + Path.GetExtension(newPath));
+                        File.Copy(newPath, folderNewPath);
                     }
                 }
             }
             else if (item.RemoteImageInfos != null && item.RemoteImageInfos.Any())
             {
                 item.UpdateStatus(L.Text["Downloading Remote Image"], item.Source.Name);
+                var imageSet = new HashSet<ImageType>();
                 foreach (var image in item.RemoteImageInfos)
                 {
+                    if (imageSet.Contains(image.Type))
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        imageSet.Add(image.Type);
+                    }
                     var url = image.Url;
                     await Retry.InvokeAsync(async () =>
                     {
@@ -350,7 +373,9 @@ namespace AVOne.Tool.Facade
 
                         using var source = response.Content.ReadAsStream();
                         var mimeType = response.Content.Headers.ContentType?.MediaType;
+
                         await item.ImageSaverProvider.SaveImage(item.MovieWithMetaData, source, mimeType, image.Type, null, token);
+                        _logger.LogInformation("SaveImage {Type} {Url}", image.Type, url);
                     }, 3, 1000, false);
                 }
             }

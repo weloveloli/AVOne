@@ -18,9 +18,6 @@
         <None Remove="Helper\**" />
     </ItemGroup>
     <ItemGroup>
-      <PackageReference Include="System.Linq.Async" />
-    </ItemGroup>
-    <ItemGroup>
         <ProjectReference Include="..\AVOne.Core\AVOne.Core.csproj" />
         <ProjectReference Include="..\AVOne.Impl\AVOne.Impl.csproj" />
     </ItemGroup>

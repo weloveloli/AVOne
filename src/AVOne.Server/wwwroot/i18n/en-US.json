@@ -43,6 +43,9 @@
       "AddTaskDownloadTarget":"Download Folder",
       "AddTaskPreferName":"File Name",
       "MetaDataSearchName":"Search Name",
+      "PreferName":"File Name",
+      "MetaDataProvider":"Meta Data Provider",
+      "SaveMetaDataAfterDownload":"Save Meta Data After Download",
       "AddTaskThreadCount": "Download Task Thread Count",
       "AddTaskRetryCount": "Download Task Retry Count",
       "AutoSaveMetaData": "Save Meta Data automatically",
@@ -50,6 +53,7 @@
       "DeleteTask": "Delete Download Task",
       "StopTask": "Stop Download Task",
       "ViewDetail": "View Task Detail",
+      "SearchingMetaData": "Searching Meta Data for '{0}'",
       "Failed": "Download Failed",
       "AdvancedOption": "Advanced Option",
       "ExtractingMedia": "Extracting Media from '{0}'",
@@ -57,12 +61,14 @@
         "AddTaskSuccess": "Add download task '{0}' success",
         "AddTaskFailed": "Add download task '{0}' failed due to '{1}'",
         "DeleteTaskSuccess": "Delete download task '{0}' success",
-        "DeleteTaskFailed": "Delete download task '{0}' failed"
+        "DeleteTaskFailed": "Delete download task '{0}' failed",
+        "FileHasBeenMovedOrRemoved": "File has been moved or removed"
       },
       "FailedReason": {
         "NoExtrator": "No extrator for url '{0}'",
         "NoDownloader": "No downloader for url '{0}'",
-        "GetDownloadItemFailed": "Can't get download item for url '{0}'"
+        "GetDownloadItemFailed": "Can't get download item for url '{0}'",
+        "CannotCreateDir" : "Cannot create directory '{0}'"
       }
     },
     "Status": {

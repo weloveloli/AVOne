@@ -58,15 +58,15 @@ namespace AVOne.Server.Shared
             _ = (JS?.InvokeVoidAsync("Qmsg.warning", msg));
         }
 
-        public void ShowLoading(string message, bool autoClose, int timeout, params object[] args)
+        public void ShowLoading(string message, bool autoClose, int? timeout, params object[] args)
         {
             var msg = T(message, args);
-            _ = (JS?.InvokeVoidAsync("Qmsg.loading", msg, autoClose, timeout));
+            _ = (JS?.InvokeVoidAsync("QmsgShowLoading", msg, autoClose, timeout));
         }
 
         public void CloseLoading()
         {
-            _ = (JS?.InvokeVoidAsync("Qmsg.QmsgCloseLoading"));
+            _ = (JS?.InvokeVoidAsync("QmsgCloseLoading"));
         }
     }
 }

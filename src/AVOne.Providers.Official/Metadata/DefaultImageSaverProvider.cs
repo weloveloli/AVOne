@@ -40,7 +40,7 @@ namespace AVOne.Providers.Official.Metadata
                 ImageType.Backdrop => "-backdrop",
                 _ => "-" + type.ToString().ToLowerInvariant(),
             };
-            var path = Path.Join(Directory.GetParent(item.TargetPath)!.FullName, item.TargetName + filename + extension);
+            var path = Path.Join(Directory.GetParent(item.TargetPath)!.FullName, Path.GetFileNameWithoutExtension(item.TargetPath) + filename + extension);
             var fileStreamOptions = FileOptionsHelper.AsyncWriteOptions;
             fileStreamOptions.Mode = FileMode.Create;
             fileStreamOptions.PreallocationSize = source.Length;
