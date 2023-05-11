@@ -9,6 +9,7 @@ namespace AVOne.Impl.Registrator
     using AVOne.Configuration;
     using AVOne.Constants;
     using AVOne.Impl.Data;
+    using AVOne.Impl.Facade;
     using AVOne.Impl.IO;
     using AVOne.Impl.Job;
     using AVOne.Impl.Library;
@@ -97,6 +98,7 @@ namespace AVOne.Impl.Registrator
             service.AddSingleton<IInstallationManager, InstallationManager>();
             service.AddSingleton<IFileSystem, ManagedFileSystem>();
             service.AddSingleton<IDirectoryService, DirectoryService>();
+            service.AddSingleton<IMetaDataFacade, MetaDataFacade>();
             service.AddSingleton(sp =>
             {
                 return ApplicationDbContext.Create(sp.GetService<IApplicationPaths>()!);

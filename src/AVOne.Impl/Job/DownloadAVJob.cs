@@ -12,6 +12,7 @@ namespace AVOne.Impl.Job
     using System.Threading.Tasks;
     using AVOne.Extensions;
     using AVOne.Impl.Data;
+    using AVOne.Impl.Facade;
     using AVOne.Impl.Json;
     using AVOne.Models.Download;
     using AVOne.Models.Job;
@@ -23,6 +24,10 @@ namespace AVOne.Impl.Job
         public BaseDownloadableItem? DownloadableItem { get; set; }
 
         public DownloadOpts? DownloadOpts { get; set; }
+
+        public string MetaDataProviderName { get; set; } = string.Empty;
+
+        public string MetaDataProviderId { get; set; } = string.Empty;
 
         public string? ItemType => DownloadableItem?.GetType().FullName;
 
@@ -79,30 +84,46 @@ namespace AVOne.Impl.Job
         public long? TotalBytes { get; set; }
 
         public string? FinalFilePath { get; set; }
-        public override Task Execute(CancellationToken cancellationToken)
+
+        public bool FinalFileExists => !string.IsNullOrEmpty(FinalFilePath) && System.IO.File.Exists(FinalFilePath);
+        public override async Task Execute(CancellationToken cancellationToken)
         {
             if (DownloadableItem == null || DownloadOpts == null)
             {
-                return Task.CompletedTask;
-            }
-            var providerManager = ApplicationHost.Resolve<IProviderManager>();
-            var providers = providerManager.GetDownloaderProviders(DownloadableItem);
-            IDownloaderProvider? downloadProvider;
-            if (DownloadProvider == null)
-            {
-                downloadProvider = providers.FirstOrDefault();
-            }
-            else
-            {
-                downloadProvider = providers.Where(e => e.Name == DownloadProvider).FirstOrDefault();
+                return;
             }
 
-            if (downloadProvider == null)
+            if (!FinalFileExists)
             {
-                throw new Exception("No download provider");
+                var providerManager = ApplicationHost.Resolve<IProviderManager>();
+                var providers = providerManager.GetDownloaderProviders(DownloadableItem);
+                IDownloaderProvider? downloadProvider;
+                if (DownloadProvider == null)
+                {
+                    downloadProvider = providers.FirstOrDefault();
+                }
+                else
+                {
+                    downloadProvider = providers.Where(e => e.Name == DownloadProvider).FirstOrDefault();
+                }
+
+                if (downloadProvider == null)
+                {
+                    throw new Exception("No download provider");
+                }
+                DownloadOpts.StatusChanged += DownloadOpts_StatusChanged;
+                var task = downloadProvider.CreateTask(DownloadableItem, DownloadOpts, cancellationToken);
+                await task;
             }
-            DownloadOpts.StatusChanged += DownloadOpts_StatusChanged;
-            return downloadProvider.CreateTask(DownloadableItem, DownloadOpts, cancellationToken);
+
+            if (!string.IsNullOrEmpty(MetaDataProviderId) && !string.IsNullOrEmpty(MetaDataProviderName) && !string.IsNullOrEmpty(FinalFilePath) && File.Exists(FinalFilePath))
+            {
+                var facade = ApplicationHost.Resolve<IMetaDataFacade>();
+                var item = await facade.ResolveAsMovie(FinalFilePath, cancellationToken, new Models.MetadataOpt { ProviderId = MetaDataProviderId, ProviderName = MetaDataProviderName });
+                item.MovieWithMetaData.TargetPath = FinalFilePath;
+                var container = Path.GetDirectoryName(FinalFilePath) == Path.GetFileNameWithoutExtension(FinalFilePath);
+                await facade.SaveMetaDataToLocal(item, container, cancellationToken);
+            }
         }
 
         private void DownloadOpts_StatusChanged(object? sender, JobStatusArgs e)
@@ -138,6 +159,14 @@ namespace AVOne.Impl.Job
             {
                 extra.Add("FinalFilePath", FinalFilePath);
             }
+            if (!string.IsNullOrEmpty(MetaDataProviderName))
+            {
+                extra.Add("MetaDataProviderName", MetaDataProviderName);
+            }
+            if (!string.IsNullOrEmpty(MetaDataProviderId))
+            {
+                extra.Add("MetaDataProviderId", MetaDataProviderId);
+            }
             return extra;
         }
 
@@ -168,6 +197,14 @@ namespace AVOne.Impl.Job
             if (extra.TryGetValue("FinalFilePath", out var finalFilePath))
             {
                 FinalFilePath = finalFilePath;
+            }
+            if (extra.TryGetValue("MetaDataProviderName", out var metaDataProviderName))
+            {
+                MetaDataProviderName = metaDataProviderName;
+            }
+            if (extra.TryGetValue("MetaDataProviderId", out var metaDataProviderId))
+            {
+                MetaDataProviderId = metaDataProviderId;
             }
             var type = Assembly.GetAssembly(typeof(BaseDownloadableItem))!.GetType(itemType);
             DownloadableItem = JsonSerializer.Deserialize(item, type!, JsonDefaults.Options) as BaseDownloadableItem;

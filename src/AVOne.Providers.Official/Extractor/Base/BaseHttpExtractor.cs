@@ -28,6 +28,7 @@ namespace AVOne.Providers.Official.Extractor.Base
         public virtual int Order => (int)ProviderOrder.Default;
         public virtual async Task<IEnumerable<BaseDownloadableItem>> ExtractAsync(string webPageUrl, CancellationToken token = default)
         {
+            webPageUrl = GetWebPageUrl(webPageUrl);
             var result = new List<BaseDownloadableItem>();
             try
             {
@@ -39,14 +40,14 @@ namespace AVOne.Providers.Official.Extractor.Base
                 var html = await resp.Content.ReadAsStringAsync(token);
                 if (this is IRegexExtractor regex)
                 {
-                    var title = regex.GetTitle(html);
+                    var title = EscapeFileName(regex.GetTitle(html));
                     return regex.GetItems(title, html, webPageUrl);
                 }
                 else if (this is IDOMExtractor dOMExtractor)
                 {
                     var htmlDoc = new HtmlDocument();
                     htmlDoc.LoadHtml(html);
-                    var title = dOMExtractor.GetTitle(htmlDoc.DocumentNode);
+                    var title = EscapeFileName(dOMExtractor.GetTitle(htmlDoc.DocumentNode));
                     return dOMExtractor.GetItems(title, htmlDoc.DocumentNode, webPageUrl);
                 }
             }
@@ -64,6 +65,17 @@ namespace AVOne.Providers.Official.Extractor.Base
         public virtual bool Support(string webPage)
         {
             return !string.IsNullOrEmpty(webPage) && _webPagePrefixArray.Any(webPage.StartsWith);
+        }
+
+        // add function to escape the string to be a valid filename
+        protected string EscapeFileName(string fileName)
+        {
+            return string.Join("_", fileName.Split(Path.GetInvalidFileNameChars()));
+        }
+
+        protected virtual string GetWebPageUrl(string webPageUrl)
+        {
+            return webPageUrl;
         }
     }
 }

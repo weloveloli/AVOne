@@ -60,15 +60,19 @@ namespace AVOne.Providers.Official.Downloader.M3U8
             }
 
             var saveName = opts.PreferName ?? item.SaveName!;
+
+            // escape save name to be a valid filename
+            saveName = EscapeFileName(saveName);
+
             var url = m3U8Item.Url!;
             var md5 = url.GetMD5();
             var threadCount = opts.ThreadCount ?? 4;
             var retryCount = opts.RetryCount ?? 3;
             var saveDir = opts.OutputDir ?? Directory.GetCurrentDirectory();
             var tmpDir = _applicationPaths.CachePath;
-            var workingDir = Path.Combine(tmpDir, $"{saveName}-{md5}");
+            var workingDir = Path.Combine(tmpDir, $"{md5}");
             Directory.CreateDirectory(workingDir);
-            var playMetaDataFile = $"{saveName}-{md5}.meta.json";
+            var playMetaDataFile = $"{md5}.meta.json";
 
             // check if playList exists
             MediaPlaylist? mediaPlaylist = null;
@@ -395,7 +399,11 @@ namespace AVOne.Providers.Official.Downloader.M3U8
             bool genpts = false, bool igndts = false, bool ignidx = false, Action<string>? onMessage = null,
             CancellationToken token = default)
         {
-            var ffmpegPath = _options.FFmpegPath ?? _configurationManager.CommonConfiguration.FFmpegConfig.FFmpegPath ?? "ffmepge";
+            var ffmpegPath = _options.FFmpegPath ?? _configurationManager.CommonConfiguration.FFmpegConfig.FFmpegPath ?? ExecutableHelper.FindExecutable("ffmpeg");
+
+            if (string.IsNullOrWhiteSpace(ffmpegPath))
+                throw new Exception("Not found ffmpeg.");
+
             if (string.IsNullOrWhiteSpace(workDir))
                 throw new Exception("Parameter workDir cannot be empty.");
             if (string.IsNullOrWhiteSpace(saveName))
@@ -549,6 +557,7 @@ namespace AVOne.Providers.Official.Downloader.M3U8
                     if (File.Exists(finishPath))
                         finishPath = Path.Combine(outputDir,
                             $"{saveName}_{DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss")}{ext}");
+                    logger.LogInformation("output is {file}, finishPaht is {finishPath}", file, finishPath);
                     File.Move(file, finishPath);
                     return finishPath;
                 }
@@ -608,8 +617,8 @@ namespace AVOne.Providers.Official.Downloader.M3U8
                 var finishPath = Path.Combine(outputDir, $"{saveName}{ext}");
                 if (File.Exists(finishPath))
                     finishPath = Path.Combine(outputDir,
-                        $"{saveName}_{DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss")}{ext}");
-                logger.LogDebug("output is {0}, finishPaht is {1}", output, finishPath);
+                        $"{saveName}_{DateTime.Now:yyyy_MM_dd_HH_mm_ss}{ext}");
+                logger.LogInformation("output is {output}, finishPaht is {finishPath}", output, finishPath);
                 File.Move(output, finishPath);
 
                 foreach (var file in files)
@@ -621,6 +630,12 @@ namespace AVOne.Providers.Official.Downloader.M3U8
         public bool Support(BaseDownloadableItem item)
         {
             return item is not null && item is M3U8Item;
+        }
+
+        // add function to escape the string to be a valid filename
+        protected string EscapeFileName(string fileName)
+        {
+            return string.Join("_", fileName.Split(Path.GetInvalidFileNameChars()));
         }
     }
 }

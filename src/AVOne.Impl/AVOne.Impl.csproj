@@ -26,6 +26,7 @@
         <PackageReference Include="CommandLineParser" />
         <PackageReference Include="Microsoft.Extensions.Configuration" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+        <PackageReference Include="System.Linq.Async" />
     </ItemGroup>
     <ItemGroup>
         <None Include="$(LangResourcePath)/**/*.json">

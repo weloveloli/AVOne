@@ -162,5 +162,42 @@ namespace AVOne.Impl.Library.Tests
             Assert.NotNull(movie.AdditionalParts);
             Assert.Equal(2, movie.AdditionalParts.Length);
         }
+
+        /// Create Test to detect the movie extra
+        /// 
+
+        [Fact]
+        public void FindMovieExtra2()
+        {
+            var paths = new List<string>
+            {
+                "/movies/FC2PPV-1570076-cd1.mp4",
+                "/movies/FC2PPV-1570076-cd2.mp4",
+            };
+            var folder = new Folder { Name = "movies", Path = "/movies" };
+            var files = paths.Select(p => new FileSystemMetadata
+            {
+                FullName = p,
+                IsDirectory = false,
+                Name = Path.GetFileNameWithoutExtension(p),
+                CreationTimeUtc = DateTime.UtcNow,
+                LastWriteTimeUtc = DateTime.UtcNow,
+                Exists = true,
+            }).ToList();
+
+            var filesMap = files.ToDictionary(f => f.FullName, f => f);
+            _fileSystemMock.Setup(e => e.GetFileInfo(It.IsAny<string>())).Returns<string>(p => filesMap[p]);
+            var items = _libraryManager.ResolvePaths(files, new DirectoryService(_fileSystemMock.Object), folder, CollectionType.PornMovies);
+            var itemList = new List<BaseItem>(items);
+
+            Assert.Single(items);
+            var item = items.FirstOrDefault();
+            Assert.IsType<PornMovie>(item);
+
+            var movie = item as PornMovie;
+
+            Assert.NotNull(movie.AdditionalParts);
+            Assert.Single(movie.AdditionalParts, "/movies/FC2PPV-1570076-cd2.mp4");
+        }
     }
 }

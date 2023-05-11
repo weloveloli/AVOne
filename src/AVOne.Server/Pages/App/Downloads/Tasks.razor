@@ -67,7 +67,14 @@
                     </MListItemAvatar>
                         <MListItemContent>
                             <MListItemTitle>
+                            @if((job.Status == JobStatus.Completed || job.Status==JobStatus.Canceled) && !FileExists(job))
+                            {
+                                <span class="grey--text">@job.Name</span>
+                            }
+                            else
+                            {
                                 @job.Name
+                            }                              
                             </MListItemTitle>
                             @if(job.Status == JobStatus.Running)
                             {
@@ -83,7 +90,10 @@
                             @if(job.Status == JobStatus.Completed || job.Status==JobStatus.Canceled)
                             {
                                 <MListItemSubtitle>
-                                    @job.Modified
+                                    <span class="grey--text">@job.Modified</span>
+                                    @if(!FileExists(job)){
+                                        <strong class="ml-8 grey--text">@T("Download.Tasks.Message.FileHasBeenMovedOrRemoved")</strong>
+                                    }
                                 </MListItemSubtitle>
                             }
                            @if(job.Status == JobStatus.Failed)
@@ -158,5 +168,14 @@
             eta = int.Parse(etaStr.ToString());
         }
         return DownloadProgressEventArgs.FormatTime(eta);
+    }
+
+    public bool FileExists(JobModel jobModel)
+    {
+        if (jobModel.Extra.TryGetValue("FinalFilePath", out var FinalFilePath))
+        {
+            return File.Exists(FinalFilePath);
+        }
+        return false;
     }
 }

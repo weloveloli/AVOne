@@ -34,6 +34,7 @@
             }
         }
         window.QmsgShowLoading = function (message, autoClose, timeout) {
+            console.log('show loading', message, autoClose, timeout);
             window.QmsgDefaultLoader = Qmsg.loading(message, {
                 autoClose: autoClose,
                 timeout:timeout
@@ -41,9 +42,16 @@
         }
 
         window.QmsgCloseLoading = function () {
+            console.log('close loading');
             window.QmsgDefaultLoader.close();
+            Qmsg.closeAll();
         }
-
+    </script>
+    <script>
+        // disable context menu
+        document.addEventListener('contextmenu', function (e) {
+            e.preventDefault();
+        });
     </script>
 </body>
 

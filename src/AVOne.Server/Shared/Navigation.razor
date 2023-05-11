@@ -2,10 +2,10 @@
 @inject NavHelper NavHelper
 @inject GlobalConfig GlobalConfig;
 
-<MNavigationDrawer @bind-Value="Visible" Class="navigation" Width=300 MiniVariantWidth=80 Fixed
+<MNavigationDrawer @bind-Value="Visible" Class="navigation" Width=250 MiniVariantWidth=80 Fixed
     ExpandOnHover="GlobalConfig.ExpandOnHover" @bind-MiniVariant="GlobalConfig.NavigationMini" App>
 
-    <div style="height:104px" class="@($"block-center {(GlobalConfig.NavigationMini?"px-4":"px-12")}")"
+    <div style="height:104px" class="@($"block-center {(GlobalConfig.NavigationMini?"px-4":"px-8")}")"
         @onclick="()=>NavHelper.NavigateTo(GlobalVariables.DefaultRoute)">
         @if (GlobalConfig.NavigationMini)
         {
@@ -13,7 +13,7 @@
         }
         else
         {
-            <img class="hover-pointer" src="/img/logo/avone.png" style="object-fit: fill;" width="200"/>
+            <img class="hover-pointer" src="/img/logo/avone.png" style="object-fit: fill;" width="180"/>
         }
     </div>
 

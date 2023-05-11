@@ -141,6 +141,9 @@
   <data name="HelpTextAddRepo" xml:space="preserve">
     <value>添加插件仓库.</value>
   </data>
+  <data name="HelpTextCleanUpAfterScan" xml:space="preserve">
+    <value>是否在扫描并移动文件之后，在源文件夹为空时自动删除文件夹.</value>
+  </data>
   <data name="HelpTextCollectionType" xml:space="preserve">
     <value>媒体类型, 可以为 PornMovie, 默认值为PornMovie.</value>
   </data>
@@ -254,6 +257,12 @@
   </data>
   <data name="InvalidMoviePath" xml:space="preserve">
     <value>指定文件路劲'{0}' 不是一个合法的媒体路径.</value>
+  </data>
+  <data name="ScanSearchPatternExample" xml:space="preserve">
+    <value>扫描{0}下所有以fc开头的MP4并将其移动到{1}，并为其单独创建一个问题夹并其添加元数据.</value>
+  </data>
+  <data name="ScanSearchPatternExample1" xml:space="preserve">
+    <value>扫描{0}下所有以fc开头的MP4并打印他们的元数据信息.</value>
   </data>
   <data name="ScanSingleExample" xml:space="preserve">
     <value>扫描{1}并将其移动到{0}.</value>

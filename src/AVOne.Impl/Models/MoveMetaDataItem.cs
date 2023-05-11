@@ -3,7 +3,7 @@
 
 #nullable disable
 
-namespace AVOne.Tool.Models
+namespace AVOne.Impl.Models
 {
     using AVOne.Models.Info;
     using AVOne.Models.Item;
@@ -17,7 +17,7 @@ namespace AVOne.Tool.Models
         /// </summary>
         public event EventHandler<StatusChangeArgs> StatusChanged;
 
-        public PornMovie Movie { get; set; }
+        public PornMovie Source { get; set; }
 
         public ILocalMetadataProvider<PornMovie> LocalMetadataProvider { get; set; }
         public IRemoteMetadataProvider<PornMovie, PornMovieInfo> RemoteMetadataProvider { get; set; }
@@ -33,13 +33,11 @@ namespace AVOne.Tool.Models
         public IEnumerable<LocalImageInfo> LocalImageInfos { get; set; }
         public IEnumerable<RemoteImageInfo> RemoteImageInfos { get; set; }
 
-        public IEnumerable<LocalImageInfo> LocalRemoteImageInfos { get; set; }
-
         public bool HasMetaData { get; set; } = false;
 
-        public PornMovie Result { get; set; }
+        public PornMovie MovieWithMetaData { get; set; }
 
-        public string Name => HasMetaData ? Result.Name : Movie.Name;
+        public string Name => HasMetaData ? MovieWithMetaData.Name : Source.Name;
 
         public void UpdateStatus(string message, params object[] args) => StatusChanged?.Invoke(this, new StatusChangeArgs { StatusMessage = string.Format(message, args) });
 

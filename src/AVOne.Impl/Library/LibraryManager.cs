@@ -50,6 +50,9 @@ namespace AVOne.Impl.Library
         /// <value>The entity resolvers enumerable.</value>
         private IItemResolver[] ItemResolvers { get; set; } = Array.Empty<IItemResolver>();
 
+        /// <summary>
+        /// Gets or sets the list of currently registered multi-item resolvers.
+        /// </summary>
         private IMultiItemResolver[] MultiItemResolvers { get; set; } = Array.Empty<IMultiItemResolver>();
 
         /// <summary>
@@ -221,17 +224,19 @@ namespace AVOne.Impl.Library
             }
         }
 
-        public IEnumerable<BaseItem> ResolvePaths(IEnumerable<FileSystemMetadata> files, IDirectoryService directoryService, Folder parent, string collectionType = null)
+        public IEnumerable<BaseItem> ResolvePaths(IEnumerable<FileSystemMetadata> files,
+                                                  IDirectoryService directoryService,
+                                                  Folder parent,
+                                                  string collectionType = null)
         {
             return ResolvePaths(files, directoryService, parent, collectionType, ItemResolvers);
         }
 
-        public IEnumerable<BaseItem> ResolvePaths(
-            IEnumerable<FileSystemMetadata> files,
-            IDirectoryService directoryService,
-            Folder parent,
-            string collectionType,
-            IItemResolver[] resolvers)
+        public IEnumerable<BaseItem> ResolvePaths(IEnumerable<FileSystemMetadata> files,
+                                                  IDirectoryService directoryService,
+                                                  Folder parent,
+                                                  string collectionType,
+                                                  IItemResolver[] resolvers)
         {
             var fileList = files.Where(i => !IgnoreFile(i, parent)).ToList();
 

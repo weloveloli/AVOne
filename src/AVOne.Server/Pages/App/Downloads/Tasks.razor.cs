@@ -117,6 +117,9 @@ namespace AVOne.Server.Pages.App.Downloads
                     pageList = pageList.OrderBy(e => e.Name);
                 }
             }
+            else{
+                pageList = pageList.OrderByDescending(e => e.Created);
+            }
 
             var list = new List<JobModel> { };
             list.AddRange(pageList);
