@@ -19,7 +19,7 @@ namespace AVOne.Impl.Models
 
         public PornMovie Source { get; set; }
 
-        public ILocalMetadataProvider<PornMovie> LocalMetadataProvider { get; set; }
+        public List<ILocalMetadataProvider<PornMovie>> LocalMetadataProviders { get; set; }
         public IRemoteMetadataProvider<PornMovie, PornMovieInfo> RemoteMetadataProvider { get; set; }
 
         public ILocalImageProvider LocalImageProvider { get; set; }

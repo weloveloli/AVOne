@@ -47,7 +47,7 @@ namespace AVOne.Impl.Job
                 {
                     if (DownloadableItem is not null)
                     {
-                        _name = DownloadableItem.SaveName;
+                        _name = DownloadableItem.Name;
                     }
                 }
                 return _name ?? string.Empty;

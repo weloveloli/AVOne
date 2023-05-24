@@ -149,5 +149,10 @@ namespace AVOne.Extensions
             return Convert.ToString(value, CultureInfo.InvariantCulture) ?? string.Empty;
         }
 
+        // add function to escape the string to be a valid filename
+        public static string EscapeFileName(this string fileName)
+        {
+            return string.Join("_", fileName.Split(Path.GetInvalidFileNameChars()));
+        }
     }
 }

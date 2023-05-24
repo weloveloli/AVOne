@@ -9,7 +9,6 @@ namespace AVOne.Models.Item
     using AVOne.Abstraction;
     using AVOne.Configuration;
     using AVOne.Enum;
-    using AVOne.Helper;
     using AVOne.IO;
     using AVOne.Models.Info;
     using Microsoft.Extensions.Logging;
@@ -46,20 +45,6 @@ namespace AVOne.Models.Item
         public Dictionary<string, string> ProviderIds { get; set; }
 
         /// <summary>
-        /// Gets or sets the name.
-        /// </summary>
-        /// <value>The name.</value>
-        [JsonIgnore]
-        public virtual string Name { get; set; }
-
-        /// <summary>
-        /// Gets or sets the OriginalTitle.
-        /// </summary>
-        /// <value>The OriginalTitle.</value>
-        [JsonIgnore]
-        public string OriginalTitle { get; set; }
-
-        /// <summary>
         /// Gets or sets the path.
         /// </summary>
         /// <value>The path.</value>
@@ -82,9 +67,6 @@ namespace AVOne.Models.Item
         [JsonIgnore]
         public DateTime DateModified { get; set; }
 
-        [JsonIgnore]
-        public string Tagline { get; set; }
-
         public abstract ItemLookupInfo GetLookupInfo();
 
         /// <summary>
@@ -95,17 +77,6 @@ namespace AVOne.Models.Item
         public string SortName { get; set; }
 
         public string ForcedSortName { get; set; }
-
-        [JsonIgnore]
-        public string PreferredMetadataLanguage { get; set; }
-        public string PreferredMetadataCountryCode { get; set; }
-        public string[] ProductionLocations { get; set; }
-
-        /// <summary>
-        /// Gets or sets the remote trailers.
-        /// </summary>
-        /// <value>The remote trailers.</value>
-        public IReadOnlyList<MediaUrl> RemoteTrailers { get; set; }
 
         /// <summary>
         /// Gets or sets the date that the item first debuted. For movies this could be premiere date, episodes would be first aired.
