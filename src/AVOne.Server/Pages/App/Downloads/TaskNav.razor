@@ -4,8 +4,8 @@
 @using AVOne.Configuration;
 @using AVOne.Providers.Metadata;
 @using AVOne.Models.Info;
-@using AVOne.Common.Extensions;
 @using Furion.TaskQueue;
+
 @using TaskNavItem=AVOne.Server.Pages.App.Downloads.TaskNavItem;
 @inherits ProCompontentBase
 <MNavigationDrawer Permanent Class="rounded-4" Width="250" Style="overflow: visible;">
@@ -34,9 +34,7 @@
                                  TValue="string" TItemValue="string" Items=@DownloadableItems ItemText="i => i.DisplayName"
                                  ItemValue="i => i.Key">
                             </MSelect>                   
-                        }
-
-                        
+                        }                        
                         @if (_addJobModel.Step == 2)
                         {
                              <MTextField Class="mt-2" @bind-Value="_addJobModel.PreferName"
@@ -59,8 +57,18 @@
                                 <LabelContent><span>@T("Download.Tasks.SaveMetaDataAfterDownload")</span></LabelContent>
                             </MCheckbox> 
                             @if (_addJobModel.SaveMetaData) 
-                        {
-                             <MTextField Class="mt-2" @bind-Value="_addJobModel.MetaDataSearchName"
+                            {
+                                        @if (_addJobModel.AllowInternelMetaData)
+                                        {
+                                            <MCheckbox Class="md-2" @bind-Value="_addJobModel.UseInternelMetaData">
+                                                <LabelContent><span>@T("Download.Tasks.UseMetaDataFromDownloadItem")</span></LabelContent>
+                                            </MCheckbox>
+                                        }
+                                        @if (!_addJobModel.AllowInternelMetaData || !_addJobModel.UseInternelMetaData)
+                            {
+                                            
+                                        
+                                        <MTextField Class="mt-2" @bind-Value="_addJobModel.MetaDataSearchName"
                                         Label='@T("Download.Tasks.MetaDataSearchName")' PersistentHint
                                                     Outlined></MTextField>
                             <MRow>
@@ -103,9 +111,11 @@
                         </div>
                     </MCard>
                                  </MCol>
+                                            
                                 }
                              </MRow> 
                                <MDivider  Class="mt-2"></MDivider>   
+                        }
                         }  
                                 <MTextField Class="mt-4" @bind-Value="_addJobModel.ThreadCount"
                                         Label='@T("Download.Tasks.AddTaskThreadCount")' PersistentHint
@@ -121,6 +131,7 @@
                     <MCardActions Class="justify-end">
                         @if (_addJobModel.Step == 2)
                         {
+                            <MButton Color="secondary" @onclick="()=> {this.autoDetect();}">@(T("Download.Tasks.AutoDetect"))</MButton>
                             <MButton Color="secondary" @onclick="()=> {showAdvancedDownloadOpt = !showAdvancedDownloadOpt;}">
                                 <MIcon>
                                     @(showAdvancedDownloadOpt ? "mdi-menu-up" : "mdi-menu-down")
@@ -175,6 +186,10 @@
     [Inject]
     public IJobManager? JobManager { get; set; }
 
+    private ICacheMetaDataProvider<PornMovie>? cacheMetaDataProvider;
+
+    private List<string> DownloadTags;
+
     bool addTaskDialog;
     bool showAdvancedDownloadOpt;
 
@@ -211,6 +226,10 @@
 
         public bool SaveMetaData { get; set;} = false;
 
+        public bool UseInternelMetaData { get; set;} = false;
+
+        public bool AllowInternelMetaData { get; set; } = false;
+
         public string MetaDataSearchName { get; set;} = string.Empty;
 
         public string MetaDataProvider { get; set;} = string.Empty;
@@ -243,6 +262,8 @@
         };
         MetaDataProviders = ProviderManager?.GetMetadataProviders<PornMovie>(null).OfType<IRemoteMetadataSearchProvider<PornMovieInfo>>()?.Select(e=>e.Name).ToList() ?? new List<string>();
         MetaDataProvidersMap = ProviderManager?.GetMetadataProviders<PornMovie>(null).OfType<IRemoteMetadataSearchProvider<PornMovieInfo>>()?.ToDictionary(e=>e.Name) ?? new Dictionary<string, IRemoteMetadataSearchProvider<PornMovieInfo>>();
+        cacheMetaDataProvider = ProviderManager?.GetMetadataProviders<PornMovie>(null).OfType<ICacheMetaDataProvider<PornMovie>>().FirstOrDefault();
+        DownloadTags = typeof(DownloadItemTags).GetAllPublicConstantValues<string>();
     }
 
     private AddJobModel _addJobModel = new();
@@ -255,13 +276,43 @@
             searchMetaData = true;
             this.ShowLoading("Download.Tasks.SearchingMetaData", false, null, _addJobModel.MetaDataSearchName!);
             var provider = MetaDataProvidersMap[_addJobModel.MetaDataProvider];
-            var searchResults = await provider.GetSearchResults(new PornMovieInfo{Name = _addJobModel.MetaDataSearchName, Valid = false}, default);
-            _searchResults = searchResults?.ToList() ?? new List<Models.Result.RemoteMetadataSearchResult>();
-            searchMetaData =false;
-            StateHasChanged();
-            this.CloseLoading();
+            try
+            {
+                var searchResults = await provider.GetSearchResults(new PornMovieInfo { Name = _addJobModel.MetaDataSearchName, Valid = false }, default);
+                _searchResults = searchResults?.ToList() ?? new List<Models.Result.RemoteMetadataSearchResult>();
+
+                this.CloseLoading();
+                searchMetaData = false;
+            }
+
+            catch(Exception e)
+            {
+                this.Error("Download.Tasks.SearchingMetaDataFailed");
+            }
+
+            finally
+            {
+
+                searchMetaData = false;
+                StateHasChanged();
+            }
+
         });
     }
+
+    private void autoDetect()
+    {
+        // TODO: ADD Script to allow user custom detect
+        var pornMovieInfo = PornMovieInfo.Parse(new PornMovie { Name = _addJobModel.PreferName! }, ConfigurationManager!.CommonConfiguration);
+        if (pornMovieInfo is not null && pornMovieInfo.Valid)
+        {
+            var newName = pornMovieInfo.Id;
+            _addJobModel.PreferName = newName;
+            _addJobModel.MetaDataSearchName = newName;
+            _addJobModel.DownloadDir = Path.Combine(_addJobModel.DownloadDir!, newName);
+        }
+    }
+
     private async Task HandleOnValidSubmit()
     {
         await InvokeAsync(async () =>
@@ -317,6 +368,17 @@
                 this.Error("Download.Tasks.Message.AddTaskFailed", _addJobModel.Url!, failedReason);
                 return;
             }
+            if (jobItem.HasMetaData && cacheMetaDataProvider is not null)
+            {
+                _addJobModel.AllowInternelMetaData = true;
+                _addJobModel.UseInternelMetaData = true;
+            }
+
+            if (jobItem.DownloadTags.IsNotEmpty())
+            {
+                _addJobModel.Tags = jobItem.DownloadTags.Intersect(this.DownloadTags).ToList();
+            }
+
             _addJobModel.PreferName = jobItem.SaveName;
             _addJobModel.MetaDataSearchName = jobItem.SaveName;
             _addJobModel.MetaDataProvider = MetaDataProviders.FirstOrDefault();
@@ -338,17 +400,28 @@
                 }
 
             }
-            var downloadJob = new DownloadAVJob();
-            if (_addJobModel.SaveMetaData && _addJobModel.SearchMetaDataResult != null)
-            {
-                var result = _addJobModel.SearchMetaDataResult;
-                downloadJob.MetaDataProviderId = result.GetPid(result.SearchProviderName).ToString();
-                downloadJob.MetaDataProviderName = result.SearchProviderName;
-            }
 
             var jobItem = DownloadableItems.FirstOrDefault(x => x.Key == _addJobModel.DownloadItemKey);
+            var downloadJob = new DownloadAVJob();
+            if (_addJobModel.SaveMetaData)
+            {
+                if (_addJobModel.UseInternelMetaData && jobItem!.HasMetaData)
+                {
+                    this.cacheMetaDataProvider!.StoreCache(jobItem.Key, jobItem);
+                    downloadJob.MetaDataProviderId = jobItem.Key;
+                    downloadJob.MetaDataProviderName = this.cacheMetaDataProvider!.Name;
+                }
+                else if (_addJobModel.SearchMetaDataResult != null)
+                {
+                    var result = _addJobModel.SearchMetaDataResult;
+                    downloadJob.MetaDataProviderId = result.GetPid(result.SearchProviderName).ToString();
+                    downloadJob.MetaDataProviderName = result.SearchProviderName;
+                }
+            }
+
+            downloadJob.Name = jobItem!.DisplayName;
             var perferName = _addJobModel.PreferName;
-            
+
             var threadCount = _addJobModel.ThreadCount ?? ConfigurationManager?.CommonConfiguration.DownloadConfig.DefaultDownloadThreadCount;
             var retryCount = _addJobModel.ThreadCount ?? ConfigurationManager?.CommonConfiguration.DownloadConfig.DefaultRetryCount;
             var retryWait = _addJobModel.ThreadCount ?? ConfigurationManager?.CommonConfiguration.DownloadConfig.DefaultRetryWait;
@@ -356,6 +429,7 @@
             downloadJob.DownloadableItem = jobItem;
             downloadJob.DownloadOpts = opt;
             downloadJob.Tags = _addJobModel.Tags;
+
             JobManager?.AddJob(downloadJob);
             await JobManager!.EnqueueJob(downloadJob);
             Navigation?.NavigateTo(GlobalVariables.DefaultRoute, true);

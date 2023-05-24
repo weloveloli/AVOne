@@ -24,6 +24,7 @@ namespace AVOne.Impl.Facade
     using AVOne.Library;
     using AVOne.Models.Info;
     using AVOne.Models.Item;
+    using AVOne.Models.Result;
     using AVOne.Providers;
     using AVOne.Providers.Metadata;
     using Furion.FriendlyException;
@@ -72,10 +73,7 @@ namespace AVOne.Impl.Facade
             if (opt != null)
             {
                 var item = items.FirstOrDefault();
-                if (item != null)
-                {
-                    item.SetProviderId(opt.ProviderName, opt.ProviderId);
-                }
+                item?.SetProviderId(opt.ProviderName, opt.ProviderId);
             }
             return await GetMovie(items, token).FirstOrDefaultAsync(token);
         }
@@ -106,17 +104,31 @@ namespace AVOne.Impl.Facade
             var movis = items.OfType<PornMovie>().Select(movieItem =>
             {
                 var m = new MoveMetaDataItem { Source = movieItem };
+
                 var providers = _providerManager
-                    .GetMetadataProviders<PornMovie>(movieItem)
-                    .Where(e => _config.ScanMetaDataProviders.Contains(e.Name));
+                    .GetMetadataProviders<PornMovie>(movieItem);
+                if (_config.ScanMetaDataProvidersFilter.IsNotEmpty())
+                {
+                    providers = providers.Where(e => !_config.ScanMetaDataProvidersFilter.Contains(e.Name));
+                }
 
-                m.LocalMetadataProvider = providers
+                m.LocalMetadataProviders = providers
                     .OfType<ILocalMetadataProvider<PornMovie>>()
-                    .FirstOrDefault();
+                    .ToList();
 
-                m.RemoteMetadataProvider = providers
+                if (movieItem.ProviderIds.Any())
+                {
+                    var provider = movieItem.ProviderIds.FirstOrDefault().Value;
+                    m.RemoteMetadataProvider = providers
                     .OfType<IRemoteMetadataProvider<PornMovie, PornMovieInfo>>()
+                    .Where(e => e.Name == provider)
                     .FirstOrDefault();
+                }
+
+                m.RemoteMetadataProvider ??= providers
+                        .OfType<IRemoteMetadataProvider<PornMovie, PornMovieInfo>>()
+                        .FirstOrDefault();
+
                 var imageProviders = _providerManager.GetImageProviders(movieItem);
 
                 m.LocalImageProvider = imageProviders
@@ -125,7 +137,7 @@ namespace AVOne.Impl.Facade
 
                 m.RemoteImageProvider = imageProviders
                     .OfType<IRemoteImageProvider>()
-                    .Where(e => _config.ImageMetaDataProviders.Contains(e.Name))
+                    .Where(e => !_config.ImageMetaDataProvidersFilter.Contains(e.Name))
                     .FirstOrDefault();
 
                 m.ImageSaverProvider = _providerManager.GetImageSaverProvider().FirstOrDefault();
@@ -153,15 +165,25 @@ namespace AVOne.Impl.Facade
                 HasMetaData = false,
                 LocalImageProvider = dataItem.LocalImageProvider,
                 RemoteImageProvider = dataItem.RemoteImageProvider,
-                LocalMetadataProvider = dataItem.LocalMetadataProvider,
+                LocalMetadataProviders = dataItem.LocalMetadataProviders,
                 RemoteMetadataProvider = dataItem.RemoteMetadataProvider,
                 ImageSaverProvider = dataItem.ImageSaverProvider,
                 MetadataFileSaverProvider = dataItem.MetadataFileSaverProvider
             };
 
-            var metaDataResult = await item.LocalMetadataProvider
-                .GetMetadata(new ItemInfo(item.Source), _directoryService, token);
-            if (metaDataResult.HasMetadata)
+            MetadataResult<PornMovie> metaDataResult = null;
+
+            // FIXME: only one can be found
+            foreach (var p in item.LocalMetadataProviders)
+            {
+                metaDataResult = await p.GetMetadata(new ItemInfo(item.Source), _directoryService, token);
+                if (metaDataResult != null && metaDataResult.HasMetadata)
+                {
+                    break;
+                }
+            }
+
+            if (metaDataResult != null && metaDataResult.HasMetadata)
             {
                 item.HasMetaData = true;
                 item.MetadataResult = metaDataResult;

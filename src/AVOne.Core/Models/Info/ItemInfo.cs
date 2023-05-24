@@ -6,10 +6,12 @@
 namespace AVOne.Models.Info
 {
     using System;
+    using System.Collections.Generic;
+    using AVOne.Abstraction;
     using AVOne.Enum;
     using AVOne.Models.Item;
 
-    public class ItemInfo
+    public class ItemInfo : IHasProviderIds
     {
         public ItemInfo(BaseItem item)
         {
@@ -22,6 +24,7 @@ namespace AVOne.Models.Info
             }
 
             ItemType = item.GetType();
+            ProviderIds = item.ProviderIds;
         }
 
         public Type ItemType { get; set; }
@@ -35,5 +38,7 @@ namespace AVOne.Models.Info
         public bool IsInMixedFolder { get; set; }
 
         public bool IsPlaceHolder { get; set; }
+
+        public Dictionary<string, string> ProviderIds { get; set; }
     }
 }

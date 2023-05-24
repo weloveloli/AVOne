@@ -5,13 +5,12 @@ namespace AVOne.Models.Item
 {
     using System;
     using System.Collections.Generic;
-    using System.Text.Json.Serialization;
     using AVOne.Helper;
     using AVOne.Models.Info;
 
-    public abstract class MetaDataItem
+    public class MetaDataItem
     {
-        protected MetaDataItem()
+        public MetaDataItem()
         {
             Tags = Array.Empty<string>();
             Genres = Array.Empty<string>();
@@ -19,6 +18,23 @@ namespace AVOne.Models.Item
             ImageInfos = Array.Empty<ItemImageInfo>();
             People = new List<PersonInfo>();
         }
+
+        /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
+        /// <value>The name.</value>
+        public virtual string Name { get; set; }
+
+        /// <summary>
+        /// Gets or sets the OriginalTitle.
+        /// </summary>
+        /// <value>The OriginalTitle.</value>
+        public string OriginalTitle { get; set; }
+
+        /// <summary>
+        /// Tagline
+        /// </summary>
+        public string Tagline { get; set; }
 
         /// <summary>
         /// Gets or sets the studios.
@@ -81,6 +97,16 @@ namespace AVOne.Models.Item
         /// </summary>
         /// <value>The production year.</value>
         public int? ProductionYear { get; set; }
+
+        public string PreferredMetadataLanguage { get; set; }
+        public string PreferredMetadataCountryCode { get; set; }
+        public string[] ProductionLocations { get; set; }
+
+        /// <summary>
+        /// Gets or sets the remote trailers.
+        /// </summary>
+        /// <value>The remote trailers.</value>
+        public IReadOnlyList<MediaUrl> RemoteTrailers { get; set; }
 
         public void AddImage(ItemImageInfo image)
         {

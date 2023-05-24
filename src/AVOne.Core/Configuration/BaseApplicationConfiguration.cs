@@ -22,8 +22,8 @@ namespace AVOne.Configuration
     {
         public string NameOptionProvider { get; set; } = "Jellyfin";
         public string NameResolveProvider { get; set; } = "Jellyfin";
-        public string[] ScanMetaDataProviders { get; set; } = new string[] { "MetaTube", "Jellyfin.Nfo" };
-        public string[] ImageMetaDataProviders { get; set; } = new string[] { "MetaTube" };
+        public string[] ScanMetaDataProvidersFilter { get; set; } = new string[] { };
+        public string[] ImageMetaDataProvidersFilter { get; set; } = new string[] { };
         public string Proxy { get; set; }
     }
 

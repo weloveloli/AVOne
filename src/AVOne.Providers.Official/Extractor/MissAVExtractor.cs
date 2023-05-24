@@ -7,10 +7,15 @@ namespace AVOne.Providers.Official.Extractor
     using System.Collections.Generic;
     using System.Net.Http;
     using System.Text.RegularExpressions;
+    using AVOne.Common.Extensions;
     using AVOne.Configuration;
+    using AVOne.Constants;
     using AVOne.Enum;
+    using AVOne.Extensions;
     using AVOne.Models.Download;
     using AVOne.Providers.Official.Extractor.Base;
+    using Fizzler.Systems.HtmlAgilityPack;
+    using HtmlAgilityPack;
     using Jint;
     using Microsoft.Extensions.Logging;
 
@@ -120,7 +125,6 @@ namespace AVOne.Providers.Official.Extractor
         public IEnumerable<BaseDownloadableItem> GetItems(string title, string html, string url)
         {
             var m3u8Sources = GetM3U8Sources(html);
-
             foreach (var source in m3u8Sources)
             {
                 if (string.IsNullOrEmpty(source))
@@ -141,9 +145,139 @@ namespace AVOne.Providers.Official.Extractor
                 {
                     quality = MediaQuality.VeryHigh;
                 }
+                var item = new M3U8Item(title, source, GetRequestHeader(html), quality, title) { OrignalLink = url, HasMetaData = false };
 
-                yield return new M3U8Item(title, source, GetRequestHeader(html), quality, title) { OrignalLink = url };
+                var hasMetaData = TryExtractMetaData(url, html, item);
+                item.HasMetaData = hasMetaData;
+                yield return item;
             }
+        }
+
+        protected override string NormalizeUrl(string url)
+        {
+            return string.Concat("https://missav.com", url.AsSpan(url.LastIndexOf('/')));
+        }
+
+        private static bool TryExtractMetaData(string url, string html, M3U8Item meta)
+        {
+            var htmlDoc = new HtmlDocument();
+            htmlDoc.LoadHtml(html);
+
+            var coverBaseUrl = htmlDoc.DocumentNode.QuerySelector("link[as='image']")?.Attributes["href"]?.Value;
+            if (coverBaseUrl == null) return false;
+
+            meta.HomePageUrl = url;
+            coverBaseUrl = coverBaseUrl.Substring(0, coverBaseUrl.LastIndexOf("?"));
+            var primaryImage = string.Concat(coverBaseUrl, "?class=normal");
+            var thumbnailImage = string.Concat(coverBaseUrl, "?class=thumbnail");
+            meta.AddImage(new Models.Info.ItemImageInfo
+            {
+                Type = ImageType.Primary,
+                Path = primaryImage,
+            });
+            meta.AddImage(new Models.Info.ItemImageInfo
+            {
+                Type = ImageType.Thumb,
+                Path = thumbnailImage,
+            });
+            var texts = htmlDoc.DocumentNode.QuerySelectorAll("div[x-show*='video_details']  div.text-secondary");
+
+            if (texts.IsEmpty())
+            {
+                return false;
+            }
+
+            var name = string.Empty;
+            var code = string.Empty;
+            foreach (var textNode in texts)
+            {
+                var text = textNode.InnerText.Trim();
+                if (string.IsNullOrEmpty(text)) continue;
+                else if (text.StartsWith("發行日期"))
+                {
+                    if (DateTime.TryParse(GetContent(text), default, out var date))
+                    {
+                        meta.ProductionYear = date.GetValidYear();
+                    }
+                }
+                else if (text.StartsWith("番號"))
+                {
+                    code = GetContent(text);
+                }
+                else if (text.StartsWith("標題"))
+                {
+                    name = GetContent(text);
+                }
+                else if (text.StartsWith("女優"))
+                {
+                    var actors = GetContent(text).Split(",").Select(GetRealActor);
+                    foreach (var actorName in actors)
+                    {
+                        meta.AddPerson(new Models.Info.PersonInfo
+                        {
+                            Name = actorName,
+                            Type = PersonType.Actor
+                        });
+                    }
+                }
+                else if (text.StartsWith("導演"))
+                {
+                    var directors = GetContent(text).Split(",").Select(GetRealActor);
+                    foreach (var directorName in directors)
+                    {
+                        meta.AddPerson(new Models.Info.PersonInfo
+                        {
+                            Name = directorName,
+                            Type = PersonType.Director
+                        });
+                    }
+                }
+                else if (text.StartsWith("類型"))
+                {
+                    meta.Genres = GetContent(text).Split(",").Select(e => e.Trim('\0', ' ', '\n', '\t')).ToArray();
+                }
+
+                else if (text.StartsWith("標籤"))
+                {
+                    meta.Tags = GetContent(text).Split(",").Select(e => e.Trim('\0', ' ', '\n', '\t')).ToArray();
+                }
+
+                else if (text.StartsWith("發行商"))
+                {
+                    meta.Studios = GetContent(text).Split(",").Select(e => e.Trim('\0', ' ', '\n', '\t')).ToArray();
+                }
+            }
+            meta.Name = $"{code} {name}";
+            meta.OriginalTitle = name;
+            var overview = htmlDoc.DocumentNode.QuerySelector("div[x-show*='video_details']  div.text-secondary.break-all");
+
+            if (overview != null)
+            {
+                meta.Overview = overview.InnerText.Trim('\0', ' ', '\n', '\t');
+            }
+            if (string.IsNullOrEmpty(meta.Name))
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private static string GetContent(string text)
+        {
+            var startIndex = text.IndexOf(":") + 1;
+            return text.Substring(startIndex).Trim('\0', ' ', '\n', '\t');
+        }
+
+        private static string GetRealActor(string text)
+        {
+            if (text.Contains("("))
+            {
+                var startIndex = text.IndexOf("(") + 1;
+                var endIndex = text.IndexOf(")");
+                return text[startIndex..endIndex].Trim('\0', ' ', '\n', '\t');
+            }
+            return text;
+
         }
     }
 }
