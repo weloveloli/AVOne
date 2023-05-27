@@ -11,6 +11,7 @@ namespace AVOne.Providers.Official.Downloader.Http
     using AVOne.Configuration;
     using AVOne.Extensions;
     using AVOne.Models.Download;
+    using Furion.FriendlyException;
 
     internal class MultiThreadDownloader
     {
@@ -46,12 +47,12 @@ namespace AVOne.Providers.Official.Downloader.Http
 
             var tmpFile = Path.Combine(workDir, Path.GetFileName(outputFile));
 
-            var fileLength = item.Size!;
+            long fileLength = item.Size!.Value;
 
             var blockSize = fileLength / threadCount;
             var tasks = new List<Task>();
             int interval = 1000;
-            var totalBytes = fileLength ?? 0L;
+            var totalBytes = fileLength;
             var downloadBytes = 0L;
             var intervalDownloadBytes = 0L;
             var stop = false;
@@ -76,7 +77,7 @@ namespace AVOne.Providers.Official.Downloader.Http
                 {
                     end = fileLength - 1;
                 }
-                var task = DownloadBlockAsync(downloadUrl, tmpFile, start, end, (d) =>
+                var task = DownloadBlockAsync(downloadUrl, tmpFile, start, end, opts, (d) =>
                 {
                     Interlocked.Add(ref intervalDownloadBytes, d);
                     Interlocked.Add(ref downloadBytes, d);
@@ -104,29 +105,31 @@ namespace AVOne.Providers.Official.Downloader.Http
             }
         }
 
-        private async Task DownloadBlockAsync(string downloadUrl, string tmpFile, long? start, long? end, Action<long> downloadBytesAction, CancellationToken token)
+        private Task DownloadBlockAsync(string downloadUrl, string tmpFile, long start, long end, DownloadOpts opts, Action<long> downloadBytesAction, CancellationToken token)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, downloadUrl);
-            if (start != null && end != null)
+            return Retry.InvokeAsync(async () =>
             {
-                request.Headers.Range = new RangeHeaderValue(start.Value, end.Value);
-            }
-            // use ResponseHeadersRead to avoid read stream to memory
-            var response = await _client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, token);
-            response.EnsureSuccessStatusCode();
-            using var fs = new FileStream(tmpFile, FileMode.OpenOrCreate, FileAccess.Write, FileShare.ReadWrite);
-            fs.Seek(start ?? 0L, SeekOrigin.Begin);
-            // use buffer to improve performance
-            var buffer = new byte[64 * 1024];
-            var stream = await response.Content.ReadAsStreamAsync();
-            var read = 0;
-            while ((read = await stream.ReadAsync(buffer, token)) > 0)
-            {
-                await fs.WriteAsync(buffer.AsMemory(0, read), token);
-                downloadBytesAction(read);
-            }
+                var request = new HttpRequestMessage(HttpMethod.Get, downloadUrl);
 
-            await fs.FlushAsync(token);
+                request.Headers.Range = new RangeHeaderValue(start, end);
+                // use ResponseHeadersRead to avoid read stream to memory
+                var response = await _client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, token);
+                response.EnsureSuccessStatusCode();
+                using var fs = new FileStream(tmpFile, FileMode.OpenOrCreate, FileAccess.Write, FileShare.ReadWrite);
+                fs.Seek(start, SeekOrigin.Begin);
+                // use buffer to improve performance
+                var buffer = new byte[64 * 1024];
+                var stream = await response.Content.ReadAsStreamAsync();
+                var read = 0;
+                while ((read = await stream.ReadAsync(buffer, token)) > 0)
+                {
+                    await fs.WriteAsync(buffer.AsMemory(0, read), token);
+                    start += read;
+                    downloadBytesAction(read);
+                }
+
+                await fs.FlushAsync(token);
+            }, opts.RetryCount ?? 1, opts.RetryWait ?? 1000);
         }
 
         private static void ProgressEvent(DownloadOpts opts, int interval, long downloadBytes, long intervalDownloadBytes, long totalBytes)

@@ -25,7 +25,7 @@ namespace AVOne.Tool.Commands
         [Option('t', "target-folder", Required = false, HelpText = nameof(Resource.HelpTextMoveToTargetFolder), ResourceType = typeof(Resource))]
         public string? TargetFolder { get; set; }
 
-        [Option('u', "container", Required = false, HelpText = nameof(Resource.HelpTextUseContainer), ResourceType = typeof(Resource))]
+        [Option('c', "container", Required = false, HelpText = nameof(Resource.HelpTextUseContainer), ResourceType = typeof(Resource))]
         public bool UseContainer { get; set; }
 
         [Option('d', "dir", Group = "target", Required = false, HelpText = nameof(Resource.HelpTextScanDir), ResourceType = typeof(Resource))]
@@ -37,6 +37,10 @@ namespace AVOne.Tool.Commands
         [Option('f', "file", Group = "target", Required = false, HelpText = nameof(Resource.HelpTextScanPath), ResourceType = typeof(Resource))]
         public string? FilePath { get; set; }
 
+        [Option('n', "provider-name", Required = false, HelpText = "ProviderName")]
+        public string? ProviderName { get; set; }
+        [Option('i', "provider-id", Required = false, HelpText = "ProviderId")]
+        public string? ProviderId { get; set; }
         [Usage(ApplicationAlias = ToolAlias)]
         public static IEnumerable<Example> Examples
         {
@@ -85,7 +89,16 @@ namespace AVOne.Tool.Commands
                 , async ctx =>
             {
                 var facade = host.Resolve<IMetaDataFacade>();
-                var item = await facade.ResolveAsMovie(FilePath, token);
+                MetadataOpt? opt = null;
+                if (!string.IsNullOrEmpty(ProviderId) && !string.IsNullOrEmpty(ProviderName))
+                {
+                    opt = new MetadataOpt()
+                    {
+                        ProviderId = ProviderId,
+                        ProviderName = ProviderName,
+                    };
+                }
+                var item = await facade.ResolveAsMovie(FilePath, token, opt);
                 if (item is null)
                 {
                     Cli.WarnLocale("Not a movie", FilePath);

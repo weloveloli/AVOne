@@ -79,19 +79,21 @@ namespace AVOne.Providers.Official.Downloader.Http
             /// Check if the downloadUrl support multithread.
             httpItem.HttpRangeSupport = CheckDownloadLink(httpItem, downloadUrl, token);
             var outputFilePath = Path.Combine(opts.OutputDir, fileName + httpItem.Extension);
-            if (!opts.Overwrite && File.Exists(outputFilePath))
+            if (File.Exists(outputFilePath))
             {
-                logger.LogWarning($"The file {outputFilePath} already exists.");
-                return Task.CompletedTask;
+                if (!opts.Overwrite)
+                {
+                    logger.LogWarning($"The file {outputFilePath} already exists.");
+                    //outputFilePath = Path.Combine(opts.OutputDir, $"{fileName}_{DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss")}{httpItem.Extension}");
+                    opts.OnStatusChanged(new DownloadFinishEventArgs { Status = "Download finished", FinalFilePath = outputFilePath, Progress = 100 });
+                    return Task.CompletedTask;
+                }
+                else
+                {
+                    File.Delete(outputFilePath);
+                }
             }
-            else if (opts.Overwrite && File.Exists(outputFilePath))
-            {
-                File.Delete(outputFilePath);
-            }
-            else
-            {
-                outputFilePath = Path.Combine(opts.OutputDir, $"{fileName}_{DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss")}{httpItem.Extension}");
-            }
+
             if (httpItem.HttpRangeSupport == HttpRangeSupport.Yes)
             {
                 /// call the multithread downloader.
