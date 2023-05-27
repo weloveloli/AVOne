@@ -37,6 +37,7 @@ internal class Program
         {
             builder.Logging.ClearProviders();
             builder.Logging.AddSerilog(Log.Logger);
+            builder.Services.AddSingleton(sp => sp.GetService<ILoggerFactory>()!.CreateLogger("Program"));
         }
         else
         {

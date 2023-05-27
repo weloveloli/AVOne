@@ -93,7 +93,8 @@ namespace AVOne.Models.Info
                     Category = category,
                     Flags = flags,
                     Name = movie.Name,
-                    Path = movie.Path
+                    Path = movie.Path,
+                    ProviderIds = movie.ProviderIds
                 };
         }
 

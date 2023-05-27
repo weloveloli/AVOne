@@ -47,8 +47,7 @@ namespace AVOne.Impl.Facade
             IProviderManager providerManager,
             IDirectoryService directoryService,
             IConfigurationManager configurationManager,
-            IApplicationPaths serverApplicationPaths
-            )
+            IApplicationPaths serverApplicationPaths)
         {
             _logger = logger;
             _libraryManager = libraryManager;
@@ -118,7 +117,7 @@ namespace AVOne.Impl.Facade
 
                 if (movieItem.ProviderIds.Any())
                 {
-                    var provider = movieItem.ProviderIds.FirstOrDefault().Value;
+                    var provider = movieItem.ProviderIds.FirstOrDefault().Key;
                     m.RemoteMetadataProvider = providers
                     .OfType<IRemoteMetadataProvider<PornMovie, PornMovieInfo>>()
                     .Where(e => e.Name == provider)

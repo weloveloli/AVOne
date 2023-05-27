@@ -131,6 +131,7 @@ namespace AVOne.Common.Helper
             // Type video
             { "video/vnd.mpeg.dash.mpd", ".mpd" },
             { "video/x-matroska", ".mkv" },
+            { "video/mp4", ".mp4" },
         };
 
         public static string GetMimeType(string path) => GetMimeType(path, "application/octet-stream");
