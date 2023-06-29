@@ -114,8 +114,8 @@ namespace AVOne.Providers.Official.Downloader.Http
             var httpRangeSupport = httpItem.HttpRangeSupport;
             if (httpRangeSupport == HttpRangeSupport.Unknown || string.IsNullOrEmpty(httpItem.Extension) || !httpItem.Size.HasValue)
             {
-                var req = new HttpRequestMessage(HttpMethod.Head, downloadUrl);
-                var resp = _client.SendAsync(req, token).Result;
+                var req = new HttpRequestMessage(HttpMethod.Get, downloadUrl);
+                var resp = _client.SendAsync(req, HttpCompletionOption.ResponseHeadersRead, token).Result;
                 resp.EnsureSuccessStatusCode();
 
                 var acceptRanges = resp.Headers.AcceptRanges;
