@@ -4,17 +4,17 @@
                     <MRow Dense>
                         @foreach (var item in Installed)
                     {
-                            <MCol key="@item.Id" Cols="3" >
-                                <MCard Class="mx-auto my-10" MaxWidth="468" Elevation=8>
+            <MCol key="@item.Id" Xl="2" Lg="3" Md="3" Sm="4">
+                <MCard Class="mx-auto my-2" MaxWidth="468" Elevation=4>
                                     @if (item.GetPluginInfo().HasImage)
                                     {
-                                        <MImage Src="@GetPluginUrl(item)" Class="white--text align-end" Height=180 Gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)">
+                                        <MImage Src="@GetPluginUrl(item)" Class="white--text align-end" MaxHeight="150" Gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)">
                                             <MCardTitle>@item.Name</MCardTitle>
                                         </MImage>
                                     }
                                     else
                                     {
-                                        <MImage Src="img/logo/material.jpg" Class="white--text align-end" Height=180 Gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)">
+                                        <MImage Src="img/logo/material.jpg" Class="white--text align-end" MaxHeight="150" Gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)">
                                             <MCardTitle>@item.Name</MCardTitle>
                                         </MImage>
                                     }

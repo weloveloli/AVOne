@@ -154,7 +154,11 @@
         }
       },
       "AvaliablePlugin": {
-        "Title": "Avaliable Plugins"
+        "Title": "Avaliable Plugins",
+        "InstallPlugins": "Install Plugin",
+        "SelectedPluginVersions": "Select versions",
+        "Install": "Install",
+        "Installed": "Installed"
       },
       "PluginRepository": {
         "Title": "Plugin Repository",

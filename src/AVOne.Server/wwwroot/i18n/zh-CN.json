@@ -163,7 +163,11 @@
         }
       },
       "AvaliablePlugin": {
-        "Title": "插件目录"
+        "Title": "插件目录",
+        "InstallPlugins": "安装插件",
+        "SelectedPluginVersions": "选择安装版本",
+        "Install": "安装",
+        "Installed": "已安装"
       },
       "PluginRepository": {
         "Title": "插件仓库",

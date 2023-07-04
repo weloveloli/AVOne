@@ -117,7 +117,8 @@ namespace AVOne.Server.Pages.App.Downloads
                     pageList = pageList.OrderBy(e => e.Name);
                 }
             }
-            else{
+            else
+            {
                 pageList = pageList.OrderByDescending(e => e.Created);
             }
 
@@ -165,7 +166,7 @@ namespace AVOne.Server.Pages.App.Downloads
             Timer?.Dispose();
         }
 
-        private static readonly Dictionary<string, string> s_tagColorMap = new Dictionary<string, string>()
+        private static readonly Dictionary<string, string> s_tagColorMap = new()
     {
         { "Censored", "purple" },
         { "Uncensored", "#05CD99" },
