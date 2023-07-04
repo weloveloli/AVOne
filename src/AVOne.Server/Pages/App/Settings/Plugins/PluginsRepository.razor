@@ -11,7 +11,7 @@
             <MButton  @attributes="@context.Attrs" Outlined Class="ml-2" Icon><MIcon Dark>mdi-plus</MIcon></MButton>
              </ActivatorContent>
         <ChildContent>
-               <MCard>
+               <MCard Elevation="4">
                  <MForm Model="_addRepoModel" EnableValidation OnValidSubmit="HandleOnValidSubmit">
                 <MCardTitle>
                     <span class="text-h5">@T("Settings.Plugin.PluginRepository.AddRepo")</span>
@@ -38,10 +38,10 @@
                     </ChildContent>
     </MDialog>
                 </div>
-                   <MList>
+<MList TwoLine
+       Subheader>
                 @foreach (var repo in PluginRepositories)
                 {
-                    <MDivider></MDivider>
                     <MListItem>
                          <ItemContent>
                         <MListItemContent>
