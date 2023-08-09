@@ -13,7 +13,7 @@ namespace AVOne.Impl.Migrations
         private readonly IStartupOptions _options;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AddMetaTubePluginRepository"/> class.
+        /// Initializes a new instance of the <see cref="AddOfficialRepository"/> class.
         /// </summary>
         /// <param name="configurationManager">The configuration manager.</param>
         public AddDefaultConfig(IConfigurationManager configurationManager, IStartupOptions options)

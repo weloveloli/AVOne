@@ -8,15 +8,15 @@ namespace AVOne.Impl.Migrations
     using AVOne.Configuration;
     using AVOne.Models.Updates;
 
-    public class AddMetaTubePluginRepository : IMigrationRoutine
+    public class AddOfficialRepository : IMigrationRoutine
     {
         private readonly IConfigurationManager _configurationManager;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AddMetaTubePluginRepository"/> class.
+        /// Initializes a new instance of the <see cref="AddOfficialRepository"/> class.
         /// </summary>
         /// <param name="configurationManager">The configuration manager.</param>
-        public AddMetaTubePluginRepository(IConfigurationManager configurationManager)
+        public AddOfficialRepository(IConfigurationManager configurationManager)
         {
             _configurationManager = configurationManager;
         }
@@ -29,7 +29,7 @@ namespace AVOne.Impl.Migrations
 
         public Guid Id => Guid.Parse("F9C6E0D8-7B4F-4E3D-A5A9-6C2B0B8F7E5A");
 
-        public string Name => nameof(AddMetaTubePluginRepository);
+        public string Name => nameof(AddOfficialRepository);
 
         public bool PerformOnNewInstall => true;
 

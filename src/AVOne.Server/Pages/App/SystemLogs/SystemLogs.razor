@@ -1,0 +1,29 @@
+﻿@page "/app/system/logs"
+@inherits ProCompontentBase
+@using AVOne.Impl.Facade;
+@using AVOne.Models.Systems;
+
+<MList >
+    @foreach (var log in LogFiles)
+    {
+        <MListItem Href=@log.Href Target="_blank">
+            <ItemContent>
+                <MListItemContent>
+                    <MListItemTitle>@log.Name</MListItemTitle>
+                    <MListItemSubtitle>@log.DateModified</MListItemSubtitle>
+                </MListItemContent>             
+            </ItemContent>
+        </MListItem>
+    }
+</MList>
+@code {
+    public IEnumerable<LogFile> LogFiles { get; set; } = Array.Empty<LogFile>();
+    [Inject]
+    public ISystemService SystemService { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        LogFiles = SystemService.GetServerLogs();
+    }
+}

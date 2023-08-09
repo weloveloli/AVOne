@@ -28,7 +28,7 @@ namespace AVOne.Providers.Official.Metadata
             }
         }
 
-        private async Task SaveImageForPornMovie(BaseItem item, Stream source, string mimeType, ImageType type, int imageIndex, CancellationToken cancellationToken)
+        private static async Task SaveImageForPornMovie(BaseItem item, Stream source, string mimeType, ImageType type, int imageIndex, CancellationToken cancellationToken)
         {
             var extension = MimeTypesHelper.ToExtension(mimeType);
             var filename = type switch

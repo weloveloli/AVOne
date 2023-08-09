@@ -112,6 +112,7 @@ namespace AVOne.Impl.Registrator
                 })
                 .AddSingleton<IJobManager, JobManager>();
             }
+            service.AddSingleton<ISystemService, SystemService>();
         }
 
         public void PostBuildService(IApplicationHost host)

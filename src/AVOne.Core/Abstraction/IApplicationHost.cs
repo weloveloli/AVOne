@@ -57,6 +57,11 @@ namespace AVOne.Abstraction
         Task Shutdown();
 
         /// <summary>
+        /// Restarts this instance.
+        /// </summary>
+        void Restart();
+
+        /// <summary>
         /// Initializes this instance.
         /// </summary>
         /// <param name="serviceCollection">Instance of the <see cref="IServiceCollection"/> interface.</param>

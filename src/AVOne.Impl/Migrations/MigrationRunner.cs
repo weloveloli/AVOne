@@ -27,7 +27,7 @@ namespace AVOne.Impl.Migrations
         /// </summary>
         private static readonly Type[] _migrationTypes =
         {
-            typeof(AddMetaTubePluginRepository)
+            typeof(AddOfficialRepository)
         };
 
         /// <summary>

@@ -31,12 +31,13 @@ namespace AVOne.Impl
     using Furion.Localization;
 #else
     using AVOne.Impl.Extensions;
+    using Jint.Parser.Ast;
 #endif
 
     public class ApplicationAppHost : IApplicationHost, IAsyncDisposable, IDisposable
     {
         private readonly IStartupOptions _option;
-        private readonly CancellationTokenSource _tokenSource;
+        public readonly CancellationTokenSource _tokenSource;
         private bool _disposed = false;
         private List<Type> _creatingInstances;
         /// <summary>
@@ -76,6 +77,9 @@ namespace AVOne.Impl
         /// </summary>
         /// <value>All concrete types.</value>
         private Type[] _allConcreteTypes;
+
+        /// <inheritdoc />
+        public bool IsShuttingDown { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ApplicationAppHost"/> class.
@@ -316,6 +320,22 @@ namespace AVOne.Impl
                 }
             });
         }
+
+        public void Restart()
+        {
+            if (IsShuttingDown)
+            {
+                return;
+            }
+
+            IsShuttingDown = true;
+
+            Task.Run(async () =>
+            {
+                await Shutdown();
+            });
+        }
+
         /// <summary>
         /// Creates the instance safe.
         /// </summary>

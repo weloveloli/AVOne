@@ -30,5 +30,18 @@
         "Href": "app/settings/plugin"
       }
     ]
+  },
+  {
+    "Id": 9,
+    "Title": "System.Title",
+    "Icon": "mdi-hexagon",
+    "Children": [
+      {
+        "Id": 6,
+        "Title": "System.Log.Title",
+        "Icon": "mdi-file-alert",
+        "Href": "app/system/logs"
+      }
+    ]
   }
 ]

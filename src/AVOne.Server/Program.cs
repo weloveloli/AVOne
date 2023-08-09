@@ -1,8 +1,8 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // See License in the project root for license information.
 
-using System.Diagnostics;
 using AVOne.Impl;
+using AVOne.Impl.Migrations;
 using AVOne.Server;
 using CommandLine;
 using Serilog;
@@ -19,7 +19,7 @@ internal class Program
         }
         var pathToContentRoot = string.Empty;
 
-        var pathToExe = Process.GetCurrentProcess().MainModule!.FileName;
+        var pathToExe = Environment.ProcessPath;
         pathToContentRoot = Path.GetDirectoryName(pathToExe!)!;
         Directory.SetCurrentDirectory(pathToContentRoot!);
         var option = parsed.Value;
@@ -70,6 +70,7 @@ internal class Program
         // Re-use the host service provider in the app host since ASP.NET doesn't allow a custom service collection.
         appHost.ServiceProvider = app.Services;
         appHost.PostBuildService();
+        MigrationRunner.Run(appHost, StartupHelpers.LoggerFactory);
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
@@ -93,7 +94,7 @@ internal class Program
         app.MapControllers();
         app.MapBlazorHub();
         app.MapFallbackToPage("/_Host");
-        app.Run();
+        app.RunAsync(StartupHelpers.TokenSource.Token).Wait();
     }
 }
 
