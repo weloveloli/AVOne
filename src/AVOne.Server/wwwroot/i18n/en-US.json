@@ -180,5 +180,12 @@
         }
       }
     }
+  },
+  "System": {
+    "Title": "Advanced",
+    "Log": {
+      "Title": "Log"
+    }
   }
+  
 }

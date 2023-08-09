@@ -9,6 +9,7 @@ namespace AVOne.Api.Controllers
     using AVOne.Api.Attributes;
     using AVOne.Configuration;
     using AVOne.Constants;
+    using AVOne.Impl.Facade;
     using AVOne.IO;
     using AVOne.Models.Systems;
     using Microsoft.AspNetCore.Http;
@@ -25,6 +26,7 @@ namespace AVOne.Api.Controllers
         private readonly IApplicationHost _appHost;
         private readonly IFileSystem _fileSystem;
         private readonly ILogger<SystemController> _logger;
+        private readonly ISystemService _systemService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SystemController"/> class.
@@ -37,12 +39,14 @@ namespace AVOne.Api.Controllers
             IConfigurationManager serverConfigurationManager,
             IApplicationHost appHost,
             IFileSystem fileSystem,
-            ILogger<SystemController> logger)
+            ILogger<SystemController> logger,
+            ISystemService systemService)
         {
             _appPaths = serverConfigurationManager.ApplicationPaths;
             _appHost = appHost;
             _fileSystem = fileSystem;
             _logger = logger;
+            _systemService = systemService;
         }
 
         /// <summary>
@@ -88,31 +92,7 @@ namespace AVOne.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<LogFile[]> GetServerLogs()
         {
-            IEnumerable<FileSystemMetadata> files;
-
-            try
-            {
-                files = _fileSystem.GetFiles(_appPaths.LogDirectoryPath, new[] { ".txt", ".log" }, true, false);
-            }
-            catch (IOException ex)
-            {
-                _logger.LogError(ex, "Error getting logs");
-                files = Enumerable.Empty<FileSystemMetadata>();
-            }
-
-            var result = files.Select(i => new LogFile
-            {
-                DateCreated = _fileSystem.GetCreationTimeUtc(i),
-                DateModified = _fileSystem.GetLastWriteTimeUtc(i),
-                Name = i.Name,
-                Size = i.Length
-            })
-                .OrderByDescending(i => i.DateModified)
-                .ThenByDescending(i => i.DateCreated)
-                .ThenBy(i => i.Name)
-                .ToArray();
-
-            return result;
+            return _systemService.GetServerLogs();
         }
 
         /// <summary>

@@ -31,5 +31,7 @@ namespace AVOne.Models.Systems
         /// </summary>
         /// <value>The name.</value>
         public string Name { get; set; }
+
+        public string Href => $"/System/Logs/Log?name={Name}";
     }
 }
