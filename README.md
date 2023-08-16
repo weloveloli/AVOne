@@ -16,7 +16,7 @@ AVOne(目前还在开发中，尽情期待)是一个集下载,整理等多功能
 
 | Name      | Nuget Package |
 | ----------- | ----------- |
-| AVOneTool | [[![AVOneTool Nuget](https://img.shields.io/nuget/v/AVOneTool)](https://www.nuget.org/packages/AVOneTool) |
+| AVOneTool | [![AVOneTool Nuget](https://img.shields.io/nuget/v/AVOneTool)](https://www.nuget.org/packages/AVOneTool) |
 | AVOne.Common | [![AVOneTool Nuget](https://img.shields.io/nuget/v/AVOne.Common)](https://www.nuget.org/packages/AVOne.Common) |
 
 ## 文档（待补充）
