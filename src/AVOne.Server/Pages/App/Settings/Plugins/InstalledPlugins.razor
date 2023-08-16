@@ -9,18 +9,17 @@
                                     @if (item.GetPluginInfo().HasImage)
                                     {
                                         <MImage Src="@GetPluginUrl(item)" Class="white--text align-end" MaxHeight="150" Gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)">
-                                            <MCardTitle>@item.Name</MCardTitle>
                                         </MImage>
                                     }
                                     else
                                     {
                                         <MImage Src="img/logo/material.jpg" Class="white--text align-end" MaxHeight="150" Gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)">
-                                            <MCardTitle>@item.Name</MCardTitle>
                                         </MImage>
                                     }
                                         <div class="d-flex flex-no-wrap justify-space-between">
                                             <div>
-                                        <Masa.Blazor.Presets.PBlockText Primary="@item.GetPluginInfo().Description" Tags="@GetPluginTags(item)" Class="pa-2" style="max-width: 300px;"></Masa.Blazor.Presets.PBlockText>
+                            <p class="pa-2">@item.Name <span class="text--secondary caption">@item.GetPluginInfo().Version</span></p>
+                            <p class="pa-2"><span>Status:</span> <span class="text--secondary caption">@item.GetPluginInfo().Status</span></p>
                                             </div>
                                             <div class="pa-2">
                                             <MMenu Bottom Right OffsetX=true CloseOnClick=true CloseOnContentClick=true>
