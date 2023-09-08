@@ -13,10 +13,11 @@ namespace AVOne.Providers.Official
         {
         }
 
-        public override string Name => "Official";
+        public override string Name => "Official Plugin";
 
         public override Guid Id => new Guid("45e3fde0-e857-4cfe-9696-fe874ec40a2f");
 
         public override string Description => "Official plugin for AVOne";
+
     }
 }

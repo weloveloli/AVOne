@@ -5,8 +5,8 @@ namespace AVOne.Common.Plugins
 {
     public interface IConfigurablePlugin
     {
-        public IEnumerable<IPluginConfigField> GetConfiguration();
+        public IEnumerable<BasePluginConfigField> GetConfiguration();
 
-        public void SetConfiguration(IEnumerable<IPluginConfigField> fields);
+        public void SetConfiguration(IEnumerable<BasePluginConfigField> fields);
     }
 }

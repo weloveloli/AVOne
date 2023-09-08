@@ -18,8 +18,8 @@
                                     }
                                         <div class="d-flex flex-no-wrap justify-space-between">
                                             <div>
-                            <p class="pa-2">@item.Name <span class="text--secondary caption">@item.GetPluginInfo().Version</span></p>
-                            <p class="pa-2"><span>Status:</span> <span class="text--secondary caption">@item.GetPluginInfo().Status</span></p>
+                            <p class="pa-2 mb-0">@item.Name <span class="text--secondary caption">@item.GetPluginInfo().Version</span></p>
+                            <p class="pa-2 mb-1"><span>Status:</span> <span class="text--secondary caption">@item.GetPluginInfo().Status</span></p>
                                             </div>
                                             <div class="pa-2">
                                             <MMenu Bottom Right OffsetX=true CloseOnClick=true CloseOnContentClick=true>
@@ -33,7 +33,7 @@
 
                     <ChildContent>
                         <MList>
-                                   @if(item.IsEnabledAndSupported && item.Manifest.Status == PluginStatus.Active){
+                                   @if(item.IsEnabledAndSupported && item.Manifest.Status == PluginStatus.Active && item.CanUninstall){
                                         <MListItem Link @onclick="@(e => DisablePlugin(item))">            
                                         <MListItemTitle>
                                              @T("Settings.Plugin.InstalledPlugin.DisablePlugins")
@@ -48,12 +48,15 @@
                                         </MListItemTitle>                                        
                                         </MListItem>
                                     }
-
-                                <MListItem Link @onclick="@(e => DeletePlugin(item))">
-                                        <MListItemTitle >
+                                    @if (item.CanUninstall)
+                                    {
+                                            <MListItem  
+                                            Link @onclick="@(e => DeletePlugin(item))">
+                                                 <MListItemTitle >
                                              @T("Settings.Plugin.InstalledPlugin.DeletePlugins")
                                         </MListItemTitle>
-                                </MListItem>                                
+                                            </MListItem>        
+                                    }
                         </MList>
                     </ChildContent>
                 </MMenu>
@@ -63,4 +66,4 @@
                             </MCol>
                     }
                 </MRow>
-                </MContainer>
+</MContainer>
