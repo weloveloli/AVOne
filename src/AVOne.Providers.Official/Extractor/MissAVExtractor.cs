@@ -204,10 +204,12 @@ namespace AVOne.Providers.Official.Extractor
                 {
                     code = GetContent(text);
                 }
+
                 else if (text.StartsWith("標題"))
                 {
                     name = GetContent(text);
                 }
+
                 else if (text.StartsWith("女優"))
                 {
                     var actors = GetContent(text).Split(",").Select(GetRealActor);
@@ -220,6 +222,7 @@ namespace AVOne.Providers.Official.Extractor
                         });
                     }
                 }
+
                 else if (text.StartsWith("導演"))
                 {
                     var directors = GetContent(text).Split(",").Select(GetRealActor);
@@ -232,14 +235,15 @@ namespace AVOne.Providers.Official.Extractor
                         });
                     }
                 }
+
                 else if (text.StartsWith("類型"))
                 {
-                    meta.Genres = GetContent(text).Split(",").Select(e => e.Trim('\0', ' ', '\n', '\t')).ToArray();
+                    meta.Tags = GetContent(text).Split(",").Select(e => e.Trim('\0', ' ', '\n', '\t')).ToArray();
                 }
 
                 else if (text.StartsWith("標籤"))
                 {
-                    meta.Tags = GetContent(text).Split(",").Select(e => e.Trim('\0', ' ', '\n', '\t')).ToArray();
+                    meta.Genres = GetContent(text).Split(",").Select(e => e.Trim('\0', ' ', '\n', '\t')).ToArray();
                 }
 
                 else if (text.StartsWith("發行商"))

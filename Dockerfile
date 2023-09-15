@@ -1,8 +1,8 @@
 ARG DOTNET_VERSION=7.0
 FROM mcr.microsoft.com/dotnet/runtime-deps:${DOTNET_VERSION}-jammy as app
 
-RUN apt update && apt install -y ffmpeg
-RUN mkdir -p /data /media /download \
+RUN apt update && apt install -y ffmpeg locales locales-all
+RUN mkdir -p /data /download \
 && chmod 777 /data
 
 
@@ -15,8 +15,9 @@ FROM app
 ENV HEALTHCHECK_URL=http://localhost:8099/health
 COPY --from=builder /avone /avone
 ENV ASPNETCORE_URLS=http://+:8099
+ENV LANG en_US.UTF-8
 EXPOSE 8099
-VOLUME /data /media /download
+VOLUME /data /download
 WORKDIR /avone
 ENTRYPOINT ["./AVOneServer", \
     "--data-dir", "/data", \

@@ -19,15 +19,14 @@ namespace AVOne.Providers.Official.Downloader.Http
     public class HttpDownloadProvider : HttpClientHelper, IDownloaderProvider
     {
         private readonly IApplicationPaths _applicationPaths;
-        private readonly HttpClient _client;
+        private HttpClient Client => GetHttpClient(HttpClientNames.Download);
         private readonly IConfigurationManager _configurationManager;
 
         private readonly ILogger<HttpDownloadProvider> logger;
-        public HttpDownloadProvider(IConfigurationManager manager, IHttpClientFactory httpClientFactory, ILogger<HttpDownloadProvider> logger, IApplicationPaths applicationPaths) : base(manager, httpClientFactory)
+        public HttpDownloadProvider(IConfigurationManager manager, IHttpClientFactory httpClientFactory, ILogger<HttpDownloadProvider> logger, IApplicationPaths applicationPaths) : base(manager, httpClientFactory, logger)
         {
             this.logger = logger;
             this._configurationManager = manager;
-            this._client = GetHttpClient(HttpClientNames.Download);
             _applicationPaths = applicationPaths;
         }
 
@@ -97,14 +96,14 @@ namespace AVOne.Providers.Official.Downloader.Http
             if (httpItem.HttpRangeSupport == HttpRangeSupport.Yes)
             {
                 /// call the multithread downloader.
-                var downloader = new MultiThreadDownloader(_configurationManager, _client, _applicationPaths);
+                var downloader = new MultiThreadDownloader(_configurationManager, Client, _applicationPaths);
                 return downloader.CreateTask(httpItem, opts, outputFilePath, token);
             }
             else
             {
                 opts.ThreadCount = 1;
                 /// call the single thread downloader.
-                var downloader = new MultiThreadDownloader(_configurationManager, _client, _applicationPaths);
+                var downloader = new MultiThreadDownloader(_configurationManager, Client, _applicationPaths);
                 return downloader.CreateTask(httpItem, opts, outputFilePath, token);
             }
         }
@@ -115,7 +114,7 @@ namespace AVOne.Providers.Official.Downloader.Http
             if (httpRangeSupport == HttpRangeSupport.Unknown || string.IsNullOrEmpty(httpItem.Extension) || !httpItem.Size.HasValue)
             {
                 var req = new HttpRequestMessage(HttpMethod.Get, downloadUrl);
-                var resp = _client.SendAsync(req, HttpCompletionOption.ResponseHeadersRead, token).Result;
+                var resp = Client.SendAsync(req, HttpCompletionOption.ResponseHeadersRead, token).Result;
                 resp.EnsureSuccessStatusCode();
 
                 var acceptRanges = resp.Headers.AcceptRanges;
