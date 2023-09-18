@@ -4,9 +4,7 @@
 @using AVOne.Configuration;
 @using AVOne.Providers.Metadata;
 @using AVOne.Models.Info;
-@using Furion.TaskQueue;
 
-@using TaskNavItem=AVOne.Server.Pages.App.Downloads.TaskNavItem;
 @inherits ProCompontentBase
 <MNavigationDrawer Permanent Class="rounded-4" Width="250" Style="overflow: visible;">
     <MDialog @bind-Value="addTaskDialog"
@@ -79,7 +77,7 @@
                              </MCol>
                              <MCol Cols="3">
                                 <MButton  XLarge
-                                Loading="searchMetaData" Disabled="searchMetaData" @onclick="()=>{HandleSearchMetaData();}">
+                                Loading="searchMetaData" Disabled="searchMetaData" @onclick="HandleSearchMetaData">
                                     <MIcon>fa fa-search</MIcon>
                                 </MButton>
                              </MCol>  
@@ -172,7 +170,7 @@
         </MList>
         </MNavigationDrawer>
 
-        @code {
+ @code {
 
     [Inject]
     private NavigationManager? Navigation { get; set; }
@@ -188,7 +186,7 @@
 
     private ICacheMetaDataProvider<PornMovie>? cacheMetaDataProvider;
 
-    private List<string> DownloadTags;
+    private List<string> DownloadTags = new List<string>();
 
     bool addTaskDialog;
     bool showAdvancedDownloadOpt;
@@ -272,9 +270,14 @@
     private async Task HandleSearchMetaData()
     {
         await InvokeAsync(async () =>
-        {
+        {   
+            if(string.IsNullOrEmpty(_addJobModel.MetaDataProvider))
+            {
+                return;
+            }
             searchMetaData = true;
             this.ShowLoading("Download.Tasks.SearchingMetaData", false, null, _addJobModel.MetaDataSearchName!);
+
             var provider = MetaDataProvidersMap[_addJobModel.MetaDataProvider];
             try
             {
@@ -285,7 +288,7 @@
                 searchMetaData = false;
             }
 
-            catch(Exception e)
+            catch (Exception)
             {
                 this.Error("Download.Tasks.SearchingMetaDataFailed");
             }
@@ -381,7 +384,7 @@
 
             _addJobModel.PreferName = jobItem.SaveName;
             _addJobModel.MetaDataSearchName = jobItem.SaveName;
-            _addJobModel.MetaDataProvider = MetaDataProviders.FirstOrDefault();
+            _addJobModel.MetaDataProvider = MetaDataProviders.FirstOrDefault() ?? string.Empty;
             _addJobModel.Step = 2;
         }
         else if(_addJobModel.Step == 2)
@@ -398,7 +401,6 @@
                     this.Error("Download.Tasks.FailedReason.CannotCreateDir", downloadDir);
                     return;
                 }
-
             }
 
             var jobItem = DownloadableItems.FirstOrDefault(x => x.Key == _addJobModel.DownloadItemKey);

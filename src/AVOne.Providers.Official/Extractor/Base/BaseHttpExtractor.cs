@@ -19,7 +19,7 @@ namespace AVOne.Providers.Official.Extractor.Base
         private readonly string[] _webPagePrefixArray;
 
         protected BaseHttpExtractor(IConfigurationManager manager, ILogger logger, IHttpClientFactory httpClientFactory, string webPagePrefix)
-            : base(manager, httpClientFactory)
+            : base(manager, httpClientFactory, logger)
         {
             _logger = logger;
             _webPagePrefixArray = webPagePrefix.Split(';').Where(e => !string.IsNullOrEmpty(e)).ToArray();

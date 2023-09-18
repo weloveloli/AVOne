@@ -35,6 +35,7 @@ namespace AVOne.Api.Controllers
         /// <param name="appHost">Instance of <see cref="IApplicationHost"/> interface.</param>
         /// <param name="fileSystem">Instance of <see cref="IFileSystem"/> interface.</param>
         /// <param name="logger">Instance of <see cref="ILogger{SystemController}"/> interface.</param>
+        /// <param name="systemService">Instance of <see cref="ISystemService"/> interface.</param>
         public SystemController(
             IConfigurationManager serverConfigurationManager,
             IApplicationHost appHost,
