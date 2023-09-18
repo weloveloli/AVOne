@@ -1,4 +1,4 @@
-// Copyright (c) 2023 Weloveloli. All rights reserved.
+﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // See License in the project root for license information.
 
 namespace AVOne.Common.Plugins
@@ -137,5 +137,7 @@ namespace AVOne.Common.Plugins
 
             return Name.Equals(other.Name, StringComparison.OrdinalIgnoreCase) && Id.Equals(other.Id) && Version.Equals(other.Version);
         }
+
+        public bool CanUninstall => Manifest.Status == PluginStatus.Active && (Instance?.CanUninstall ?? false);
     }
 }
