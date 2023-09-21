@@ -5,25 +5,31 @@ namespace AVOne.Server.Global;
 
 public class GlobalConfig
 {
-    #region Field
+    private readonly I18n _i18n;
+    private readonly CookieStorage _cookieStorage;
 
     private string? _pageMode;
     private bool _expandOnHover;
-    private bool _navigationMini;
     private string? _favorite;
-    private CookieStorage? _cookieStorage;
+    private string? _navigationStyle;
 
-    #endregion
+    public GlobalConfig(CookieStorage cookieStorage, I18n i18n)
+    {
+        _i18n = i18n;
+        _cookieStorage = cookieStorage;
+    }
 
-    #region Property
+    public static string PageModeKey => "GlobalConfig_PageMode";
 
-    public static string PageModeKey { get; set; } = "GlobalConfig_PageMode";
+    public static string NavigationStyleKey => "GlobalConfig_NavigationStyle";
 
-    public static string NavigationMiniCookieKey { get; set; } = "GlobalConfig_NavigationMini";
+    public static string ExpandOnHoverCookieKey => "GlobalConfig_ExpandOnHover";
 
-    public static string ExpandOnHoverCookieKey { get; set; } = "GlobalConfig_ExpandOnHover";
+    public static string FavoriteCookieKey => "GlobalConfig_Favorite";
 
-    public static string FavoriteCookieKey { get; set; } = "GlobalConfig_Favorite";
+    public static string LangCookieKey => "GlobalConfig_Lang";
+
+    public EventHandler? NavigationStyleChanged { get; set; }
 
     public string PageMode
     {
@@ -31,17 +37,18 @@ public class GlobalConfig
         set
         {
             _pageMode = value;
-            _cookieStorage?.SetItemAsync(PageModeKey, value);
+            _cookieStorage.SetAsync(PageModeKey, value);
         }
     }
 
-    public bool NavigationMini
+    public string NavigationStyle
     {
-        get => _navigationMini;
+        get => _navigationStyle ?? NavigationStyles.Flat;
         set
         {
-            _navigationMini = value;
-            _cookieStorage?.SetItemAsync(NavigationMiniCookieKey, value);
+            _navigationStyle = value;
+            NavigationStyleChanged?.Invoke(this, EventArgs.Empty);
+            _cookieStorage.SetAsync(NavigationStyleKey, value);
         }
     }
 
@@ -51,7 +58,7 @@ public class GlobalConfig
         set
         {
             _expandOnHover = value;
-            _cookieStorage?.SetItemAsync(ExpandOnHoverCookieKey, value);
+            _cookieStorage.SetAsync(ExpandOnHoverCookieKey, value);
         }
     }
 
@@ -61,32 +68,31 @@ public class GlobalConfig
         set
         {
             _favorite = value;
-            _cookieStorage?.SetItemAsync(FavoriteCookieKey, value);
+            _cookieStorage.SetAsync(FavoriteCookieKey, value);
         }
     }
 
-    #endregion
-
-    public GlobalConfig(CookieStorage cookieStorage, IHttpContextAccessor httpContextAccessor)
+    public CultureInfo Culture
     {
-        _cookieStorage = cookieStorage;
-        if (httpContextAccessor.HttpContext is not null) Initialization(httpContextAccessor.HttpContext.Request.Cookies);
+        get => _i18n.Culture;
+        set
+        {
+            _cookieStorage.SetAsync(LangCookieKey, value.Name);
+            _i18n.SetCulture(value);
+        }
     }
 
-    #region event
-
-    public delegate void GlobalConfigChanged();
-
-    #endregion
-
-    #region Method
-
-    public void Initialization(IRequestCookieCollection cookies)
+    public async Task InitFromStorage()
     {
-        _pageMode = cookies[PageModeKey];
-        _navigationMini = Convert.ToBoolean(cookies[NavigationMiniCookieKey]);
-        _expandOnHover = Convert.ToBoolean(cookies[ExpandOnHoverCookieKey]);
-        _favorite = cookies[FavoriteCookieKey];
+        _pageMode = await _cookieStorage.GetAsync(PageModeKey);
+        _navigationStyle = await _cookieStorage.GetAsync(NavigationStyleKey);
+        _expandOnHover = Convert.ToBoolean(await _cookieStorage.GetAsync(ExpandOnHoverCookieKey));
+        _favorite = await _cookieStorage.GetAsync(FavoriteCookieKey);
+
+        var lang = await _cookieStorage.GetAsync(LangCookieKey);
+        if (!string.IsNullOrWhiteSpace(lang))
+        {
+            _i18n.SetCulture(new CultureInfo(lang));
+        }
     }
-    #endregion
 }

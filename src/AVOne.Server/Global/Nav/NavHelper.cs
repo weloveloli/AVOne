@@ -2,11 +2,10 @@
 // See License in the project root for license information.
 
 namespace AVOne.Server.Global;
-
 public class NavHelper
 {
-    private List<NavModel> _navList;
-    private NavigationManager _navigationManager;
+    private readonly List<NavModel> _navList;
+    private readonly NavigationManager _navigationManager;
 
     public List<NavModel> Navs { get; } = new();
 
@@ -50,17 +49,13 @@ public class NavHelper
 
         SameLevelNavs.Where(nav => nav.Href is not null).ForEach(nav =>
         {
-            if (nav.Href is not null && nav.Href.StartsWith("app/downloads/tasks"))
-            {
-                nav.Target = "Self";
-            }
             // The following path will not open a new tab
             if (nav.Href is "app/user/view" or "app/user/edit" or "app/ecommerce/details")
             {
                 nav.Target = "Self";
             }
 
-            PageTabItems.Add(new PageTabItem(nav.Title, nav.Href, nav.ParentIcon, PageTabsMatch.Prefix, nav.Target == "Self" ? PageTabsTarget.Self : PageTabsTarget.Blank)); /*nav.Href != GlobalVariables.DefaultRoute*/
+            PageTabItems.Add(new(nav.Title, nav.Href!, nav.ParentIcon));
         });
     }
 
@@ -75,3 +70,4 @@ public class NavHelper
     }
 }
 
+public record PageTabItem(string Title, string Href, string Icon);

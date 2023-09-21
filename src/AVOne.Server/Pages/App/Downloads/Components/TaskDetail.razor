@@ -1,8 +1,8 @@
 ﻿@using AVOne.Impl.Data;
 @using AVOne.Impl.Job;
 @using AVOne.Models.Download
-@inherits ProCompontentBase
-<MNavigationDrawer Fixed Temporary Right Value=Value ValueChanged=ValueChanged Width="600">
+@inherits ProComponentBase
+<MNavigationDrawer Fixed Temporary Right Value=Value ValueChanged=ValueChanged Width="800">
     <MCol Md="12">
         <MCard class="pa-2 fill-height d-flex flex-column justify-space-between">
             <MCardTitle class="text-caption">
@@ -10,7 +10,7 @@
             </MCardTitle>
             <MCardText class="pl-4 pr-4">
                 <MDivider></MDivider>
-                <div class="text-subtitle-1 mt-3 mb-3">@T("Download.Detail.JobInfo")</div>
+  @*              <div class="text-subtitle-1 mt-3 mb-3">@T("Download.Detail.JobInfo")</div>
                 <MListItem ThreeLine>
                     <MListItemTitle class="text-caption">@T("Download.Detail.DisplayName")</MListItemTitle>
                     <MListItemSubtitle class="text-right text-btn neutral-lighten-1--text"> @_job?.DownloadableItem?.SaveName </MListItemSubtitle>
@@ -55,29 +55,51 @@
                         <MListItemSubtitle class="text-right text-btn neutral-lighten-1--text"> @Path.GetFileName(_job.FinalFilePath) </MListItemSubtitle>
                     </MListItem>
                     </MList>
-                }
-
+}
+*@
+<MDescriptions Title=@T("Download.Detail.JobInfo") Bordered Column="2" LabelStyle="min-width:120px" ContentClass="pa-2">
+    <MDescriptionsItem Span="2" Label=@T("Download.Detail.DisplayName")>@SelectItem.Name</MDescriptionsItem>
+    <MDescriptionsItem Span="2" Label=@T("Download.Detail.OrignalLink")><a href="@_job?.DownloadableItem?.OrignalLink" target="_blank">@_job?.DownloadableItem?.OrignalLink</a></MDescriptionsItem>
+    <MDescriptionsItem Span="2" Label="@T("Download.Detail.OutputDir")">@_job?.DownloadOpts?.OutputDir</MDescriptionsItem>
+     @if (_job is not null && !string.IsNullOrEmpty(_job.FinalFilePath)){
+        <MDescriptionsItem Span="2" Label="@T("Download.Detail.FinalFileName")">@Path.GetFileName(_job.FinalFilePath)</MDescriptionsItem>
+     }
+    <MDescriptionsItem Label="@T("Download.Detail.TotalSize")">@DownloadProgressEventArgs.FormatFileSize(_job?.TotalBytes ?? 0L)</MDescriptionsItem>
+    <MDescriptionsItem Label="@T("Download.Detail.Speed")">@DownloadProgressEventArgs.FormatFileSize(_job?.Speed??0L)/s</MDescriptionsItem>
+    <MDescriptionsItem Label="@T("Download.Detail.CreatedTime")">@_job?.Created</MDescriptionsItem>
+    <MDescriptionsItem Label="@T("Download.Detail.EndTime")">@_job?.Modified</MDescriptionsItem>
+    <MDescriptionsItem Label="@T("Download.Detail.Tags")" Span="2">
+                <MSelect Multiple @bind-Value=SelectItem!.Tags TItem="SelectData"
+                         TValue="List<string>" TItemValue="string" Items=@_tagList ItemText="i => i.Label"
+                         ItemValue="i => i.Value">
+                    <SelectionContent Context="_context">
+                        <MChip Style="height:32px;border-radius:32px;" Outlined Close CloseIcon="mdi-close" TextColor="@Tasks.GetColorForTag(_context.Item.Value)"
+                               OnCloseClick="()=>HandleCloseClick(_context.Item.Label)">@_context.Item.Label</MChip>
+                    </SelectionContent>
+                    </MSelect>
+    </MDescriptionsItem>
+</MDescriptions>
             </MCardText>
             <MCardActions class="d-flex justify-center mb-10">
                 <MButton Large Depressed class="primary text-capitalize rounded-pill"
                          OnClick="async ()=>{ await SaveTask();}">
                     @T("Download.Detail.Save")
                 </MButton>
-                </MCardActions>
-                </MCard>
-                </MCol>
-                </MNavigationDrawer>
+            </MCardActions> 
+        </MCard>
+    </MCol>
+</MNavigationDrawer>
 
-                @code {
+@code {
 
     [Parameter]
     public bool Value { get; set; }
 
     [Parameter]
-    public EventCallback<bool> ValueChanged { get; set; }
+    public EventCallback<bool?> ValueChanged { get; set; }
 
-    [Parameter]
-    public JobModel? SelectItem { get; set; }
+    [Parameter, EditorRequired]
+    public JobModel SelectItem { get; set; }
 
     private DownloadAVJob? _job;
 
@@ -106,6 +128,17 @@
         {
             _job = new DownloadAVJob();
             _job.FromModel(SelectItem);
+            if(_job is not null && (!_job.TotalBytes.HasValue || _job.TotalBytes == 0L) && !string.IsNullOrEmpty(_job.FinalFilePath))
+            {
+                if(File.Exists(_job.FinalFilePath))
+                {
+                    _job.TotalBytes = new FileInfo(_job.FinalFilePath).Length;
+                }
+                else
+                {
+                _job.TotalBytes = 0L;
+                }
+            }
         }
     }
 
@@ -122,7 +155,7 @@
         {
             await ValueChanged.InvokeAsync(false);
         }
-    }
+    } 
 }
 
 

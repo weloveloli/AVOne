@@ -1,5 +1,5 @@
 ﻿@page "/app/settings/system"
-@inherits ProCompontentBase
+@inherits ProComponentBase
 @using BlazorComponent.I18n
 @inject I18n I18n
 
@@ -140,10 +140,8 @@
                     <MList Style="width:100%">
                         <MRow Class="mt-2">
                             <MCol Md=12 Sm=12>
-                                <MCol Md=12 Sm=12>
                                     <MTextField @bind-Value="ConfigurationManager.CommonConfiguration.DownloadConfig.DefaultDownloadThreadCount"
                                             Label="@(I18n.T("Settings.System.Download.ThreadCount"))" Outlined TValue="int" />
-                                    </MCol>
                                 </MCol>
                                 <MCol Md=12 Sm=12>
                                     <MTextField @bind-Value="ConfigurationManager.CommonConfiguration.DownloadConfig.DefaultRetryCount"

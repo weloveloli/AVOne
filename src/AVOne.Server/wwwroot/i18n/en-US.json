@@ -33,7 +33,9 @@
       "FinalFileName": "File Name",
       "DisplayName": "Name",
       "OutputDir": "Target Directory",
-      "OrignalLink": "Orignal Link"
+      "OrignalLink": "Orignal Link",
+      "CreatedTime": "Created Time",
+      "ModifiedTime": "Modified Time"
     },
     "Tasks": {
       "Title": "Download Task",

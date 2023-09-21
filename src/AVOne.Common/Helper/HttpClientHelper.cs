@@ -36,7 +36,7 @@ namespace AVOne.Common.Helper
             {
                 if (_httpClientDefault == default || _httpClientDefault.version < _manager.CommonConfiguration.Verion)
                 {
-                    _logger.LogInformation($"Create new http client for {name}");
+                    _logger.LogDebug($"Create new http client for {name}");
                     _httpClientDefault = (_httpClientFactory.CreateClient(HttpClientNames.Default), _manager.CommonConfiguration.Verion);
                 }
                 return _httpClientDefault.httpClient;
@@ -44,9 +44,9 @@ namespace AVOne.Common.Helper
 
             if (name == HttpClientNames.Download)
             {
-                if (_httpClientDefault == default || _httpClientDefault.version < _manager.CommonConfiguration.Verion)
+                if (_httpClientDownload == default || _httpClientDownload.version < _manager.CommonConfiguration.Verion)
                 {
-                    _logger.LogInformation($"Create new http client for {name}");
+                    _logger.LogDebug($"Create new http client for {name}");
                     _httpClientDownload = (_httpClientFactory.CreateClient(HttpClientNames.Download), _manager.CommonConfiguration.Verion);
                 }
                 return _httpClientDownload.httpClient;

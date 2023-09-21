@@ -1,38 +1,25 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // See License in the project root for license information.
-#nullable disable
 
 namespace AVOne.Server.Shared
 {
     using Microsoft.JSInterop;
 
-    public abstract class ProCompontentBase : ComponentBase
+    public abstract class ProComponentBase : ComponentBase
     {
-        private I18n _languageProvider;
 
         [Inject]
-        public IJSRuntime JS { get; set; }
+        public IJSRuntime JS { get; set; } = default!;
 
-        [CascadingParameter]
-        public I18n LanguageProvider
-        {
-            get
-            {
-                return _languageProvider ?? throw new Exception("please Inject I18n!");
-            }
-            set
-            {
-                _languageProvider = value;
-            }
-        }
+        [Inject]
+        protected I18n I18n { get; set; } = null!;
 
-        public string T(string key)
+        [CascadingParameter(Name = "CultureName")]
+        protected string? Culture { get; set; }
+
+        protected string T(string? key, params object[] args)
         {
-            return LanguageProvider.T(key) ?? key;
-        }
-        public string T(string key, params object[] args)
-        {
-            return string.Format(T(key), args);
+            return I18n.T(key, args: args);
         }
 
         public void Success(string message, params object[] args)

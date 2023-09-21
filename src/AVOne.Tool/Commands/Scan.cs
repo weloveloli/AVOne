@@ -189,7 +189,7 @@ namespace AVOne.Tool.Commands
 
             table.AddColumn("Name");
             table.AddColumn("Value");
-            table.AddRow(new Text("Overview"), new Text(item.MovieWithMetaData.Overview));
+            table.AddRow(new Text("Overview"), new Text(item.MovieWithMetaData.Overview ?? string.Empty));
             table.AddRow(new Text("Genres"), new Text(string.Join(",", item.MovieWithMetaData.Genres)));
             return table;
         }

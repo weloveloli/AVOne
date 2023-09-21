@@ -2,14 +2,14 @@
 // See License in the project root for license information.
 #nullable disable
 
-namespace AVOne.Server.Pages.App.Settings.Plugins
+namespace AVOne.Server.Pages.App.Settings.Components
 {
     using AVOne.Models.Updates;
     using AVOne.Server.Shared;
     using AVOne.Updates;
     using Masa.Blazor.Presets;
 
-    public partial class AvaliablePlugins : ProCompontentBase
+    public partial class AvaliablePlugins : ProComponentBase
     {
         [Inject]
         private IInstallationManager InstallationManager { get; set; }
@@ -30,7 +30,14 @@ namespace AVOne.Server.Pages.App.Settings.Plugins
 
         protected override async Task OnInitializedAsync()
         {
-            this._packages = await InstallationManager.GetAvailablePackages();
+            try
+            {
+                this._packages = await InstallationManager.GetAvailablePackages();
+            }
+            catch (Exception)
+            {
+            }
+            this._packages ??= Array.Empty<PackageInfo>();
         }
         // create a function to get the plugin tags
         private IEnumerable<BlockTextTag> GetPackageTags(PackageInfo package)

@@ -2,7 +2,7 @@
 // See License in the project root for license information.
 #nullable disable
 
-namespace AVOne.Server.Pages.App.Settings.Plugins
+namespace AVOne.Server.Pages.App.Settings.Components
 {
     using AVOne.Common.Plugins;
     using AVOne.Configuration;
@@ -10,7 +10,7 @@ namespace AVOne.Server.Pages.App.Settings.Plugins
     using AVOne.Server.Shared;
     using Masa.Blazor.Presets;
 
-    public partial class InstalledPlugins : ProCompontentBase
+    public partial class InstalledPlugins : ProComponentBase
     {
         [Inject]
         private IPluginManager PluginManager { get; set; }

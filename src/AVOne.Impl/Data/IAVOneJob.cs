@@ -150,10 +150,11 @@ namespace AVOne.Impl.Data
 
         public abstract Task Execute(CancellationToken cancellationToken);
 
-        public virtual void UpdateStatus(JobStatusArgs jobStatusArgs)
+        public virtual bool UpdateStatus(JobStatusArgs jobStatusArgs)
         {
             this.JobStatus = jobStatusArgs.Status;
             this.ProgressValue = jobStatusArgs.Progress;
+            return false;
         }
     }
 }

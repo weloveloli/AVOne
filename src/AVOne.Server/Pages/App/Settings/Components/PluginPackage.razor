@@ -1,7 +1,7 @@
 ﻿@using AVOne.Common.Plugins;
 @using AVOne.Models.Updates;
 @using AVOne.Updates;
-@inherits ProCompontentBase
+@inherits ProComponentBase
 <MNavigationDrawer Fixed Temporary Right Value=Value ValueChanged=ValueChanged Width="600">
     <MCol Md="12">
             <MCard class="pa-2 fill-height d-flex flex-column justify-space-between">
@@ -35,7 +35,7 @@
     public bool Value { get; set; }
 
     [Parameter]
-    public EventCallback<bool> ValueChanged { get; set; }
+    public EventCallback ValueChanged { get; set; }
 
     [Parameter]
     public PackageInfo? SelectItem { get; set; }

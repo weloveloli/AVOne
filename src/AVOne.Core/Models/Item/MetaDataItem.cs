@@ -18,6 +18,7 @@ namespace AVOne.Models.Item
             ImageInfos = Array.Empty<ItemImageInfo>();
             People = new List<PersonInfo>();
             ProductionLocations = Array.Empty<string>();
+            RemoteTrailers = Array.Empty<MediaUrl>();
         }
 
         /// <summary>

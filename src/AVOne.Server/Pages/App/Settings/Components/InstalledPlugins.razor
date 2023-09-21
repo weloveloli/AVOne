@@ -1,4 +1,4 @@
- @inherits ProCompontentBase
+ @inherits ProComponentBase
  @using AVOne.Common.Plugins;
 <MContainer Fluid>
                     <MRow Dense>
@@ -8,7 +8,7 @@
                 <MCard Class="mx-auto my-2" MaxWidth="468" Elevation=4>
                                     @if (item.GetPluginInfo().HasImage)
                                     {
-                                        <MImage Src="@GetPluginUrl(item)" Class="white--text align-end" MaxHeight="150" Gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)">
+                                        <MImage Src="img/logo/material.jpg" LazySrc="@GetPluginUrl(item)" Class="white--text align-end" MaxHeight="150" Gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)">
                                         </MImage>
                                     }
                                     else

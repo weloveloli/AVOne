@@ -11,22 +11,21 @@ namespace AVOne.Server.Pages.App.Downloads
     using AVOne.Server.Shared;
     using Timer = System.Timers.Timer;
 
-    public partial class Tasks : ProCompontentBase, IDisposable
+    public partial class Tasks : ProComponentBase, IDisposable
     {
         [Inject]
         protected IJobManager? JobManager { get; set; }
+
         [Inject]
         protected IProviderManager? ProviderManager { get; set; }
 
         private string? _inputText;
+
         [Inject]
         protected JobRepository? JobRepository { get; set; }
+
         [Inject]
         protected ILogger<Tasks>? Logger { get; set; }
-
-        //private void InputTextChanged(string? text)
-        //{
-        //}
 
         [Parameter]
         [SupplyParameterFromQuery(Name = "Status")]
@@ -40,14 +39,6 @@ namespace AVOne.Server.Pages.App.Downloads
         [SupplyParameterFromQuery(Name = "Sort")]
         public string? Sort { get; set; }
 
-        private bool _visible = false;
-        private JobModel _selectItem = new();
-
-        private void ShowDetail(JobModel item)
-        {
-            _visible = true;
-            _selectItem = item;
-        }
         public List<JobModel> Jobs { get; set; }
 
         public Tasks()
@@ -88,8 +79,12 @@ namespace AVOne.Server.Pages.App.Downloads
         private void UpdateJobs()
         {
             Expression<Func<JobModel, bool>> statusPrecidate = (e) => true;
+
+            var limit = 1000;
+
             if (string.IsNullOrEmpty(Status) || Status == "downloading")
             {
+                limit = 100;
                 statusPrecidate = (e) => e.Status == JobStatus.Pending || e.Status == JobStatus.Running || e.Status == JobStatus.Failed;
             }
             else if (Status == "completed")
@@ -100,7 +95,8 @@ namespace AVOne.Server.Pages.App.Downloads
             {
                 statusPrecidate = (e) => e.Status == JobStatus.Canceled;
             }
-            var pageList = JobRepository!.GetJobs(0, 100,
+
+            var pageList = JobRepository!.GetJobs(0, limit,
                 (true, (e) => e.Type == "DownloadAVJob"),
                 (true, statusPrecidate),
                 (!string.IsNullOrEmpty(Tag), (e) => e.Tags.Contains(Tag)),
@@ -163,21 +159,34 @@ namespace AVOne.Server.Pages.App.Downloads
 
         public void Dispose()
         {
-            Timer?.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (Timer != null)
+                {
+                    Timer.Dispose();
+                    Timer = null;
+                }
+            }
         }
 
         private static readonly Dictionary<string, string> s_tagColorMap = new()
-    {
-        { "Censored", "purple" },
-        { "Uncensored", "#05CD99" },
-        { "Chinese", "#FFB547" },
-        { "ChineseSub", "warn" },
-        { "Taiwanese", "#FF5252" },
-        { "Japanese", "#4318FF" },
-        { "Anime", "#05CD99" },
-        { "US", "#FFB547" },
-        { "Other", "cyan" }
-    };
+        {
+            { "Censored", "purple" },
+            { "Uncensored", "#05CD99" },
+            { "Chinese", "#FFB547" },
+            { "ChineseSub", "warn" },
+            { "Taiwanese", "#FF5252" },
+            { "Japanese", "#4318FF" },
+            { "Anime", "#05CD99" },
+            { "US", "#FFB547" },
+            { "Other", "cyan" }
+        };
 
         public static string GetColorForTag(string tagStr)
         {

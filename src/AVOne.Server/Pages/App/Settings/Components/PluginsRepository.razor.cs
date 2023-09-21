@@ -2,13 +2,13 @@
 // See License in the project root for license information.
 #nullable disable
 
-namespace AVOne.Server.Pages.App.Settings.Plugins
+namespace AVOne.Server.Pages.App.Settings.Components
 {
     using AVOne.Configuration;
     using AVOne.Models.Updates;
     using AVOne.Server.Shared;
 
-    public partial class PluginsRepository : ProCompontentBase
+    public partial class PluginsRepository : ProComponentBase
     {
         [Inject]
         private IConfigurationManager ConfigurationManager { get; set; }

@@ -1,0 +1,171 @@
+﻿@using AVOne.Impl.Job;
+@using AVOne.Models.Download;
+@using AVOne.Providers;
+@using AVOne.Configuration;
+@using AVOne.Providers.Metadata;
+@using AVOne.Models.Info;
+
+@inherits ProComponentBase
+<MNavigationDrawer Permanent Class="rounded-4" Width="250" Style="overflow: visible;">
+    <MDialog @bind-Value="addTaskDialog"
+             Width="800">
+        <ActivatorContent>
+            <MButton Class="ma-6 rounded-pill" Style="width:-webkit-fill-available;" @attributes="@context.Attrs" Dark Color="primary">@T("Download.Tasks.AddTask")</MButton>
+        </ActivatorContent>
+        <ChildContent>
+            <MCard>
+                <MForm Model="_addJobModel" EnableValidation OnValidSubmit="HandleOnValidSubmit">
+                    <MCardTitle>
+                        <span class="text-h5">@T("Download.Tasks.AddTask")</span>
+                    </MCardTitle>
+                    <MCardText>
+                        <MContainer>
+                        @if (_addJobModel.Step == 0)
+                        {
+                            <MTextField Class="mt-2" @bind-Value="_addJobModel.Url"
+                                    Label='@T("Download.Tasks.AddTaskUrl")' Hint='@T("Download.Tasks.AddTaskUrlHint")' PersistentHint
+                                            Outlined></MTextField>
+                        }
+                        @if (_addJobModel.Step == 1)
+                        {
+                            <MSelect Outlined Label=@T("Download.Tasks.AddTaskDownloadItemIndex") @bind-Value=_addJobModel.DownloadItemKey TItem="BaseDownloadableItem"
+                                 TValue="string" TItemValue="string" Items=@DownloadableItems ItemText="i => i.DisplayName"
+                                 ItemValue="i => i.Key">
+                            </MSelect>                   
+                        }                        
+                        @if (_addJobModel.Step == 2)
+                        {
+                             <MTextField Class="mt-2" @bind-Value="_addJobModel.PreferName"
+                                        Label='@T("Download.Tasks.PreferName")' PersistentHint
+                                                    Outlined></MTextField>
+                             <MTextField Class="mt-2" @bind-Value="_addJobModel.DownloadDir"
+                                        Label='@T("Download.Tasks.AddTaskDownloadTarget")' PersistentHint
+                                                    Outlined></MTextField>
+                             <MSelect Outlined Label=@T("Download.Detail.Tags") Multiple @bind-Value=_addJobModel.Tags TItem="SelectData"
+                                 TValue="List<string>" TItemValue="string" Items=@_tagList ItemText="i => i.Label"
+                                 ItemValue="i => i.Value">
+                                <SelectionContent Context="_context">
+                                    <MChip Style="height:32px;border-radius:32px;" Outlined Close CloseIcon="mdi-close" TextColor="@Tasks.GetColorForTag(_context.Item.Value)"
+                                       OnCloseClick="()=>HandleCloseClick(_context.Item.Label)">@_context.Item.Label</MChip>
+                                </SelectionContent>
+                            </MSelect>
+                            <MDivider></MDivider>
+                            <div class='@(showAdvancedDownloadOpt?"":"d-none")'>
+                                <MCheckbox Class="md-2" @bind-Value="_addJobModel.SaveMetaData" @ValueChanged="(e)=>{_addJobModel.MetaDataProvider = MetaDataProviders?.FirstOrDefault() ?? string.Empty;}">
+                                <LabelContent><span>@T("Download.Tasks.SaveMetaDataAfterDownload")</span></LabelContent>
+                            </MCheckbox> 
+                            @if (_addJobModel.SaveMetaData) 
+                            {
+                                        @if (_addJobModel.AllowInternelMetaData)
+                                        {
+                                            <MCheckbox Class="md-2" @bind-Value="_addJobModel.UseInternelMetaData">
+                                                <LabelContent><span>@T("Download.Tasks.UseMetaDataFromDownloadItem")</span></LabelContent>
+                                            </MCheckbox>
+                                        }
+                                        @if (!_addJobModel.AllowInternelMetaData || !_addJobModel.UseInternelMetaData)
+                            {
+                                            
+                                        
+                                        <MTextField Class="mt-2" @bind-Value="_addJobModel.MetaDataSearchName"
+                                        Label='@T("Download.Tasks.MetaDataSearchName")' PersistentHint
+                                                    Outlined></MTextField>
+                            <MRow>
+                              <MCol Cols="9">
+                                <MSelect Outlined Label=@T("Download.Tasks.MetaDataProvider") @bind-Value=_addJobModel.MetaDataProvider TItem="String"
+                                 TValue="string" TItemValue="string" Items=@MetaDataProviders ItemText="i => i"
+                                 ItemValue="i => i">      </MSelect>
+                             </MCol>
+                             <MCol Cols="3">
+                                <MButton  XLarge
+                                Loading="searchMetaData" Disabled="searchMetaData" @onclick="HandleSearchMetaData">
+                                    <MIcon>fa fa-search</MIcon>
+                                </MButton>
+                             </MCol>  
+                             </MRow>
+                             <MRow Dense Class="mt-3">
+                           @for (var i = 0; i < _searchResults.Count; i++)
+                                {
+                                 var result = _searchResults[i];
+                                 var selected = result == _addJobModel.SearchMetaDataResult;
+                                 <MCol key="@i" Cols=6>
+                            <MCard 
+                            Color=@(selected?"success":"")
+                            
+                            Link Outlined Elevation="1" @onclick="()=>{_addJobModel.SearchMetaDataResult = result;}">
+                                    <div class="d-flex flex-no-wrap justify-space-between ">
+                            <div>
+
+                                <MCardTitle Class="font-weight-bold text-no-wrap text-body-2 overflow-hidden" style="width: 15rem;">
+                                    @result.Name
+                                </MCardTitle>
+                                <MCardSubtitle>
+                                    @result.SearchProviderName<br>
+                                    @result.ProductionYear
+                                </MCardSubtitle>
+                            </div>
+                            <MAvatar Class="ma-3" Size=75 Tile>
+                                <MImage Src="@result.ImageUrl"></MImage>
+                            </MAvatar>
+                        </div>
+                    </MCard>
+                                 </MCol>
+                                            
+                                }
+                             </MRow> 
+                               <MDivider  Class="mt-2"></MDivider>   
+                        }
+                        }  
+                                <MTextField Class="mt-4" @bind-Value="_addJobModel.ThreadCount"
+                                        Label='@T("Download.Tasks.AddTaskThreadCount")' PersistentHint
+                                                    Outlined></MTextField>
+                                <MTextField Class="mt-2" @bind-Value="_addJobModel.RetryCount"
+                                        Label='@T("Download.Tasks.AddTaskRetryCount")' PersistentHint
+                                                    Outlined></MTextField>
+                             
+                            </div>                          
+                        }
+                        </MContainer>
+                    </MCardText>
+                    <MCardActions Class="justify-end">
+                        @if (_addJobModel.Step == 2)
+                        {
+                            <MButton Color="secondary" @onclick="()=> {this.autoDetect();}">@(T("Download.Tasks.AutoDetect"))</MButton>
+                            <MButton Color="secondary" @onclick="()=> {showAdvancedDownloadOpt = !showAdvancedDownloadOpt;}">
+                                <MIcon>
+                                    @(showAdvancedDownloadOpt ? "mdi-menu-up" : "mdi-menu-down")
+                                </MIcon>@(T("Download.Tasks.AdvancedOption"))
+                            </MButton>
+                        }
+
+                        <MButton Type="reset" @onclick="()=> {addTaskDialog = false;_addJobModel = new();showAdvancedDownloadOpt = false;}">@T("Common.Cancel")</MButton>
+                        <MButton Type="submit" Color="primary">@T("Common.Next")</MButton>
+                    </MCardActions>
+                </MForm>
+            </MCard>
+
+        </ChildContent>
+
+    </MDialog>
+
+    <MList Linkage Dense Class="remover-ripple">
+        @* <TaskNavItem Icon="mdi-check-all" Title="Download.Status.All"></TaskNavItem> *@
+        @* <TaskNavItem Status=0 Icon="mdi-sync" Title="Download.Status.Pending"></TaskNavItem> *@
+        <TaskNavItem Status="downloading" Icon="mdi-play-box-outline" Default Title="Download.Status.Downloading"></TaskNavItem>
+        <TaskNavItem Status="completed" Icon="mdi-check" Title="Download.Status.Completed"></TaskNavItem>
+        <TaskNavItem Status="canceled" Icon="mdi-delete" Title="Download.Status.Canceled"></TaskNavItem>
+
+        <MRow NoGutters Justify="JustifyTypes.SpaceBetween">
+            <MSubheader Class="px-6 my-6 text-subtitle neutral-lighten-4--text">Tags</MSubheader>
+            @* <MIcon Class="px-6 my-6" Small Color="#A3AED0">fas fa-plus</MIcon> *@
+        </MRow>
+        <TaskNavItem Tag="Censored" Icon="fa:fas fa-circle" IconColor="purple" Title="Download.Tags.Censored"></TaskNavItem>
+        <TaskNavItem Tag="Uncensored" Icon="fa:fas fa-circle" IconColor="#05CD99" Title="Download.Tags.Uncensored"></TaskNavItem>
+        <TaskNavItem Tag="Chinese" Icon="fa:fas fa-circle" IconColor="#FFB547" Title="Download.Tags.Chinese"></TaskNavItem>
+        <TaskNavItem Tag="ChineseSub" Icon="fa:fas fa-circle" IconColor="warn" Title="Download.Tags.ChineseSub"></TaskNavItem>
+        <TaskNavItem Tag="Taiwanese" Icon="fa:fas fa-circle" IconColor="#FF5252" Title="Download.Tags.Taiwanese"></TaskNavItem>
+        <TaskNavItem Tag="Japanese" Icon="fa:fas fa-circle" IconColor="#4318FF" Title="Download.Tags.Japanese"></TaskNavItem>
+        <TaskNavItem Tag="Anime" Icon="fa:fas fa-circle" IconColor="#05CD99" Title="Download.Tags.Anime"></TaskNavItem>
+        <TaskNavItem Tag="US" Icon="fa:fas fa-circle" IconColor="#FFB547" Title="Download.Tags.US"></TaskNavItem>
+        <TaskNavItem Tag="Other" Icon="fa:fas fa-circle" IconColor="cyan" Title="Download.Tags.Other"></TaskNavItem>
+        </MList>
+</MNavigationDrawer>
