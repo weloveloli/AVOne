@@ -31,7 +31,7 @@ namespace AVOne.Impl
         /// <summary>
         /// The name of logging configuration file containing application defaults.
         /// </summary>
-        internal static string LoggingConfigFileDefault => (IsTool() ? "logging.console.default.json" : "logging.default.json");
+        internal static string LoggingConfigFileDefault => IsTool() ? "logging.console.default.json" : "logging.default.json";
 
         /// <summary>
         /// The name of the logging configuration file containing the system-specific override settings.
@@ -205,7 +205,7 @@ namespace AVOne.Impl
             catch (Exception ex)
             {
                 Log.Logger = new LoggerConfiguration()
-                     .WriteTo.Console(
+                    .WriteTo.Console(
                         outputTemplate: "[{Timestamp:HH:mm:ss}] [{Level:u3}] [{ThreadId}] {SourceContext}: {Message:lj}{NewLine}{Exception}",
                         formatProvider: CultureInfo.InvariantCulture)
                     .WriteTo.Async(x => x.File(

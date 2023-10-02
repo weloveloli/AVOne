@@ -241,7 +241,7 @@ namespace AVOne.Tool.Resources {
         }
         
         /// <summary>
-        ///   查找类似 Set output directory. 的本地化字符串。
+        ///   查找类似 Set output directory, current dir by default. 的本地化字符串。
         /// </summary>
         public static string HelpTextOptionSaveDir {
             get {

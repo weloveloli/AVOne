@@ -217,13 +217,10 @@ namespace AVOne.Impl.Job
             {
                 this.Speed = progressEventArgs.Speed;
                 this.Eta = progressEventArgs.Eta;
-
             }
             else if (jobStatusArgs is DownloadFinishEventArgs finishEventArgs)
             {
                 this.FinalFilePath = finishEventArgs.FinalFilePath;
-                this.TotalBytes = finishEventArgs.TotalFileBytes;
-                this.Speed = (long?)Div(finishEventArgs.TotalFileBytes, DateTime.UtcNow.Subtract(this.Created).TotalSeconds);
                 return true;
             }
             return false;

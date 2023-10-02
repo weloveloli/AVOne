@@ -41,6 +41,10 @@ namespace AVOne.Tool.Commands
         public string? ProviderName { get; set; }
         [Option('i', "provider-id", Required = false, HelpText = "ProviderId")]
         public string? ProviderId { get; set; }
+
+        [Option("clean", Required = false, HelpText = nameof(Resource.HelpTextCleanUpAfterScan), ResourceType = typeof(Resource))]
+        public bool CleanUp { get; set; }
+
         [Usage(ApplicationAlias = ToolAlias)]
         public static IEnumerable<Example> Examples
         {
@@ -118,7 +122,7 @@ namespace AVOne.Tool.Commands
 
                 var orignalName = item.Source.FileNameWithoutExtension;
                 item.StatusChanged += (object? sender, StatusChangeArgs e) => ctx.Status(Markup.Escape(e.StatusMessage));
-                var itemValid = false;
+                var itemValid = true;
                 if (!string.IsNullOrEmpty(TargetFolder))
                 {
                     itemValid = MoveFile(item);
@@ -128,6 +132,17 @@ namespace AVOne.Tool.Commands
                     ctx.Status(Markup.Escape(string.Format(L.Text["Saving metadata"], item.Source.Path)));
                     await facade.SaveMetaDataToLocal(item);
                 }
+
+                if (CleanUp && itemValid)
+                {
+                    var folder = Path.GetDirectoryName(FilePath);
+                    var cleanup = TryCleanUpFolder(folder);
+                    if (cleanup)
+                    {
+                        Cli.SuccessLocale("Clean up folder", folder!);
+                    }
+                }
+
             });
         }
 
@@ -168,6 +183,16 @@ namespace AVOne.Tool.Commands
                             await facade.SaveMetaDataToLocal(item);
                         }
                     }
+
+                    if (CleanUp)
+                    {
+                        var folder = Dir;
+                        var cleanup = TryCleanUpFolder(folder);
+                        if (cleanup)
+                        {
+                            Cli.SuccessLocale("Clean up folder", Dir);
+                        }
+                    }
                 });
         }
 
@@ -191,6 +216,7 @@ namespace AVOne.Tool.Commands
             table.AddColumn("Value");
             table.AddRow(new Text("Overview"), new Text(item.MovieWithMetaData.Overview ?? string.Empty));
             table.AddRow(new Text("Genres"), new Text(string.Join(",", item.MovieWithMetaData.Genres)));
+            table.AddRow(new Text("Path"), new Text(Markup.Escape(item.MovieWithMetaData.Path)));
             return table;
         }
 
@@ -219,7 +245,7 @@ namespace AVOne.Tool.Commands
 
             var targetPath = Path.Join(folder, newFileName);
 
-            if (File.Exists(targetPath))
+            if (File.Exists(targetPath) && targetPath != movieWithMetaData.Path)
             {
                 Cli.WarnLocale(nameof(ErrorCodes.SKIP_FILE_DUE_TO_TARGET_FILE_AREADY_EXIST), movieWithMetaData.Path, targetPath);
                 return false;
@@ -252,6 +278,21 @@ namespace AVOne.Tool.Commands
             movieWithMetaData.TargetName = newName;
             movieWithMetaData.Name = newName;
             return true;
+        }
+
+        private bool TryCleanUpFolder(string? folder)
+        {
+            // check if folder only contains files that has pattern nfo
+            if (folder != null)
+            {
+                if (Directory.GetFiles(folder).All(e => e.Equals("nfo")))
+                {
+                    Directory.Delete(folder, true);
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

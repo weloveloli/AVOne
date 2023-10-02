@@ -3,7 +3,8 @@
 
 namespace AVOne.Providers.Official.Extractor.Tests
 {
-    using AVOne.Providers.Official.Extractor;
+    using AVOne.Providers.Official.Extractors;
+    using Microsoft.Extensions.Logging;
     using Moq;
     using Xunit;
 
@@ -12,9 +13,11 @@ namespace AVOne.Providers.Official.Extractor.Tests
         [Fact()]
         public void MissAVExtractorTest()
         {
+
+            var loggerMock = new Mock<ILoggerFactory>();
             var html = File.ReadAllText(Path.Combine("websites", "missav.txt"));
 
-            var source = new MissAVExtractor(null, new Mock<IHttpClientFactory>().Object, null).GetM3U8Sources(html);
+            var source = new MissAVExtractor(null, loggerMock.Object).GetM3U8Sources(html);
 
             Assert.Equal(3, source.Count());
 

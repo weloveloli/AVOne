@@ -23,7 +23,11 @@ namespace AVOne.Providers.Official.Downloader.Http
         private readonly IConfigurationManager _configurationManager;
 
         private readonly ILogger<HttpDownloadProvider> logger;
-        public HttpDownloadProvider(IConfigurationManager manager, IHttpClientFactory httpClientFactory, ILogger<HttpDownloadProvider> logger, IApplicationPaths applicationPaths) : base(manager, httpClientFactory, logger)
+        public HttpDownloadProvider(
+            IConfigurationManager manager,
+            IHttpClientFactory httpClientFactory,
+            ILogger<HttpDownloadProvider> logger,
+            IApplicationPaths applicationPaths) : base(manager, httpClientFactory)
         {
             this.logger = logger;
             this._configurationManager = manager;

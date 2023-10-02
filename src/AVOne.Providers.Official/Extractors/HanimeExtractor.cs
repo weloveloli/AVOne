@@ -1,14 +1,13 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // See License in the project root for license information.
 
-namespace AVOne.Providers.Official.Extractor
+namespace AVOne.Providers.Official.Extractors
 {
     using System.Collections.Generic;
-    using System.Net.Http;
-    using AVOne.Configuration;
     using AVOne.Enum;
     using AVOne.Models.Download;
-    using AVOne.Providers.Official.Extractor.Base;
+    using AVOne.Providers.Official.Common;
+    using AVOne.Providers.Official.Extractors.Base;
     using Fizzler.Systems.HtmlAgilityPack;
     using HtmlAgilityPack;
     using Microsoft.Extensions.Logging;
@@ -16,7 +15,10 @@ namespace AVOne.Providers.Official.Extractor
 
     public class HanimeExtractor : BaseHttpExtractor, IDOMExtractor
     {
-        public HanimeExtractor(IConfigurationManager manager, ILogger<HanimeExtractor> logger, IHttpClientFactory httpClientFactory) : base(manager, logger, httpClientFactory, "https://hanime1.me")
+        private const string WebPagePrefix = "https://hanime1.me";
+
+        public HanimeExtractor(IHttpHelper httpHelper, ILoggerFactory loggerFactory)
+           : base(httpHelper, loggerFactory, WebPagePrefix)
         {
         }
 

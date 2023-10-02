@@ -6,11 +6,11 @@
             <MRow Dense>
                         @foreach (var package in PackageInfos)
                     {
-            <MCol key="@package.Id" Xl="2" Lg="3" Md="3" Sm="4">
+            <MCol key="@package.Id" Xl="3" Lg="3" Md="3" Sm="4">
                 <MCard Class="mx-auto my-2" MaxWidth="468" Elevation=4 OnClick="()=>ShowPackage(package)">
                                     @if (!string.IsNullOrWhiteSpace(package.ImageUrl))
                                     {
-                                        <MImage Src="img/logo/material.jpg" LazySrc=@package.ImageUrl Class="white--text align-end" MaxHeight="150" Gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)">
+                                        <MImage LazySrc="img/logo/material.jpg" Src=@package.ImageUrl Class="white--text align-end" MaxHeight="150" Gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)">
                                             <MCardTitle>@package.Name</MCardTitle>
                                         </MImage>
                                     }

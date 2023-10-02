@@ -36,8 +36,12 @@ namespace AVOne.Providers.Official.Downloader.M3U8
 
         private readonly ILogger<M3U8DownloadProvider> logger;
 
-        public M3U8DownloadProvider(ILogger<M3U8DownloadProvider> logger, IApplicationPaths applicationPaths, IStartupOptions options, IHttpClientFactory httpClientFactory, IConfigurationManager configurationManager)
-            : base(configurationManager, httpClientFactory, logger)
+        public M3U8DownloadProvider(
+            ILogger<M3U8DownloadProvider> logger,
+            IApplicationPaths applicationPaths,
+            IStartupOptions options,
+            IHttpClientFactory httpClientFactory,
+            IConfigurationManager configurationManager) : base(configurationManager, httpClientFactory)
         {
             _applicationPaths = applicationPaths;
             _options = options;
@@ -96,7 +100,8 @@ namespace AVOne.Providers.Official.Downloader.M3U8
             logger.LogDebug($"Start merging file");
             var finalPath = await MergeAsync(workingDir, saveDir, saveName, OutputFormat.MP4, token: token);
             logger.LogDebug($"Downloaded file: {finalPath}");
-            opts.OnStatusChanged(new DownloadFinishEventArgs { Status = "Download finished", FinalFilePath = finalPath, Progress = 100 });
+            var fileFileInfo = new FileInfo(finalPath);
+            opts.OnStatusChanged(new DownloadFinishEventArgs { FinalFilePath = finalPath, TotalFileBytes = fileFileInfo.Length });
             Directory.Delete(workingDir, true);
         }
 

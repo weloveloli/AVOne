@@ -1,19 +1,18 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // See License in the project root for license information.
 
-namespace AVOne.Providers.Official.Extractor
+namespace AVOne.Providers.Official.Extractors
 {
     using System;
     using System.Collections.Generic;
-    using System.Net.Http;
     using System.Text.RegularExpressions;
     using AVOne.Common.Extensions;
-    using AVOne.Configuration;
     using AVOne.Constants;
     using AVOne.Enum;
     using AVOne.Extensions;
     using AVOne.Models.Download;
-    using AVOne.Providers.Official.Extractor.Base;
+    using AVOne.Providers.Official.Common;
+    using AVOne.Providers.Official.Extractors.Base;
     using Fizzler.Systems.HtmlAgilityPack;
     using HtmlAgilityPack;
     using Jint;
@@ -22,6 +21,7 @@ namespace AVOne.Providers.Official.Extractor
     public partial class MissAVExtractor : BaseHttpExtractor, IRegexExtractor
     {
         private const string ExtraTitle = " - MissAV.com | 免費高清AV在線看";
+        private const string WebPagePrefix = "https://missav.com";
         private readonly Regex _regex;
         private readonly Regex _titleRegex;
 
@@ -34,8 +34,8 @@ namespace AVOne.Providers.Official.Extractor
 
         public override string Name => "MissAV";
 
-        public MissAVExtractor(IConfigurationManager manager, IHttpClientFactory httpClientFactory, ILogger<MissAVExtractor> logger)
-        : base(manager, logger, httpClientFactory, "https://missav.com")
+        public MissAVExtractor(IHttpHelper httpHelper, ILoggerFactory loggerFactory)
+           : base(httpHelper, loggerFactory, WebPagePrefix)
         {
             // The regex pattern to match lines starting with eval
             var pattern = @"^eval\((.*)\)$";
@@ -70,14 +70,18 @@ namespace AVOne.Providers.Official.Extractor
             engine.Execute("var value = " + script);
             var scourceStr = engine.GetValue("value").AsString();
 
+            var set = new HashSet<string>();
             foreach (var line in scourceStr.Split(";"))
             {
                 var start = line.IndexOf("'") + 1;
                 var end = line.LastIndexOf("'") - 1;
                 if (end <= start) continue;
-                yield return line.Substring(start, end - start + 1);
+                set.Add(line.Substring(start, end - start + 1));
             }
+
+            return set;
         }
+
         [GeneratedRegex("<meta property=\"og:title\" content=\"(.*?)\" />", RegexOptions.IgnoreCase, "en-US")]
         public static partial Regex TitleRegex();
         // A method to fetch the title from a HTML string

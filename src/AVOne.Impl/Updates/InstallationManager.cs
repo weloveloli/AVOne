@@ -64,7 +64,7 @@ namespace AVOne.Impl.Updates
             IApplicationPaths appPaths,
             IHttpClientFactory httpClientFactory,
             IConfigurationManager config,
-            IPluginManager pluginManager) : base(config, httpClientFactory, logger)
+            IPluginManager pluginManager) : base(config, httpClientFactory)
         {
             _currentInstallations = new List<(InstallationInfo, CancellationTokenSource)>();
             _completedInstallationsInternal = new ConcurrentBag<InstallationInfo>();

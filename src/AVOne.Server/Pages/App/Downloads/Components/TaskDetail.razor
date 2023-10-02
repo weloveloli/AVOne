@@ -57,7 +57,7 @@
                     </MList>
 }
 *@
-<MDescriptions Title=@T("Download.Detail.JobInfo") Bordered Column="2" LabelStyle="min-width:120px" ContentClass="pa-2">
+<MDescriptions Title="@T("Download.Detail.JobInfo")" Bordered Column="2" LabelStyle="min-width:120px" ContentClass="pa-2">
     <MDescriptionsItem Span="2" Label=@T("Download.Detail.DisplayName")>@SelectItem.Name</MDescriptionsItem>
     <MDescriptionsItem Span="2" Label=@T("Download.Detail.OrignalLink")><a href="@_job?.DownloadableItem?.OrignalLink" target="_blank">@_job?.DownloadableItem?.OrignalLink</a></MDescriptionsItem>
     <MDescriptionsItem Span="2" Label="@T("Download.Detail.OutputDir")">@_job?.DownloadOpts?.OutputDir</MDescriptionsItem>
@@ -65,7 +65,7 @@
         <MDescriptionsItem Span="2" Label="@T("Download.Detail.FinalFileName")">@Path.GetFileName(_job.FinalFilePath)</MDescriptionsItem>
      }
     <MDescriptionsItem Label="@T("Download.Detail.TotalSize")">@DownloadProgressEventArgs.FormatFileSize(_job?.TotalBytes ?? 0L)</MDescriptionsItem>
-    <MDescriptionsItem Label="@T("Download.Detail.Speed")">@DownloadProgressEventArgs.FormatFileSize(_job?.Speed??0L)/s</MDescriptionsItem>
+    <MDescriptionsItem Label="@T("Download.Detail.Speed")">@DownloadProgressEventArgs.FormatFileSize(_job?.Speed ?? 0L)/s</MDescriptionsItem>
     <MDescriptionsItem Label="@T("Download.Detail.CreatedTime")">@_job?.Created</MDescriptionsItem>
     <MDescriptionsItem Label="@T("Download.Detail.EndTime")">@_job?.Modified</MDescriptionsItem>
     <MDescriptionsItem Label="@T("Download.Detail.Tags")" Span="2">

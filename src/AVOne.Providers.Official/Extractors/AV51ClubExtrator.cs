@@ -1,21 +1,23 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // See License in the project root for license information.
 
-namespace AVOne.Providers.Official.Extractor
+namespace AVOne.Providers.Official.Extractors
 {
     using System.Collections.Generic;
-    using System.Net.Http;
     using System.Text.RegularExpressions;
-    using AVOne.Configuration;
     using AVOne.Enum;
     using AVOne.Models.Download;
-    using AVOne.Providers.Official.Extractor.Base;
+    using AVOne.Providers.Official.Common;
+    using AVOne.Providers.Official.Extractors.Base;
     using Furion.JsonSerialization;
     using Microsoft.Extensions.Logging;
 
     public partial class AV51ClubExtrator : BaseHttpExtractor, IRegexExtractor
     {
-        public AV51ClubExtrator(IConfigurationManager manager, ILogger<AV51ClubExtrator> logger, IHttpClientFactory httpClientFactory) : base(manager, logger, httpClientFactory, "https://51av.club")
+        private const string WebPagePrefix = "https://51av.club";
+
+        public AV51ClubExtrator(IHttpHelper httpHelper, ILoggerFactory loggerFactory)
+            : base(httpHelper, loggerFactory, WebPagePrefix)
         {
             _titleRegex = TitleRegex();
             _scriptRegex = ScriptRegex();

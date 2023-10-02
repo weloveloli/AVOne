@@ -4,7 +4,8 @@
 namespace AVOne.Providers.Official.Extractor.Tests
 {
     using System.Text.RegularExpressions;
-    using AVOne.Providers.Official.Extractor;
+    using AVOne.Providers.Official.Extractors;
+    using Microsoft.Extensions.Logging;
     using Moq;
     using Xunit;
 
@@ -15,16 +16,18 @@ namespace AVOne.Providers.Official.Extractor.Tests
             string pattern = "<script type=\"text\\/javascript\">var " + playerName + "=(\\{.+\\})<\\/script>";
             RegexOptions options = RegexOptions.Multiline | RegexOptions.IgnoreCase;
             Regex regex = new Regex(pattern, options);
-            System.Text.RegularExpressions.Match match = regex.Match(input);
+            var match = regex.Match(input);
             return match.Groups[1].Value;
         }
+
         [Fact()]
         public void AV51ClubExtratorTest()
         {
             var html = File.ReadAllText(Path.Combine("websites", "51av.txt"));
             string playerName = "player_aaaa";
             string jsonString = ExtractPlayerJsonString(html, playerName);
-            var source = new AV51ClubExtrator(null, null, new Mock<IHttpClientFactory>().Object).GetM3U8Sources(html);
+            var loggerMock = new Mock<ILoggerFactory>();
+            var source = new AV51ClubExtrator(null, loggerMock.Object).GetM3U8Sources(html);
 
             Assert.Single(source);
 

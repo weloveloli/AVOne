@@ -1,28 +1,27 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // See License in the project root for license information.
 
-namespace AVOne.Providers.Official.Extractor.Base
+namespace AVOne.Providers.Official.Extractors.Base
 {
-    using System.Net;
-    using AVOne.Common.Helper;
-    using AVOne.Configuration;
     using AVOne.Enum;
     using AVOne.Extensions;
     using AVOne.Models.Download;
     using AVOne.Providers.Extractor;
+    using AVOne.Providers.Official.Common;
     using HtmlAgilityPack;
     using Microsoft.Extensions.Logging;
 
-    public abstract class BaseHttpExtractor : HttpClientHelper, IMediaExtractorProvider
+    public abstract class BaseHttpExtractor : IMediaExtractorProvider
     {
         protected ILogger _logger;
         private readonly string[] _webPagePrefixArray;
+        private readonly IHttpHelper _httpHelper;
 
-        protected BaseHttpExtractor(IConfigurationManager manager, ILogger logger, IHttpClientFactory httpClientFactory, string webPagePrefix)
-            : base(manager, httpClientFactory, logger)
+        protected BaseHttpExtractor(IHttpHelper httpHelper, ILoggerFactory loggerFactory, string webPagePrefix)
         {
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger(GetType());
             _webPagePrefixArray = webPagePrefix.Split(';').Where(e => !string.IsNullOrEmpty(e)).ToArray();
+            _httpHelper = httpHelper;
         }
 
         public abstract string Name { get; }
@@ -33,12 +32,7 @@ namespace AVOne.Providers.Official.Extractor.Base
             var result = new List<BaseDownloadableItem>();
             try
             {
-                var req = new HttpRequestMessage(HttpMethod.Get, webPageUrl);
-
-                req.Version = HttpVersion.Version20;
-                var resp = await GetHttpClient().SendAsync(req, token);
-                resp.EnsureSuccessStatusCode();
-                var html = await resp.Content.ReadAsStringAsync(token);
+                var html = await _httpHelper.GetHtmlAsync(webPageUrl, token);
                 if (this is IRegexExtractor regex)
                 {
                     var title = regex.GetTitle(html).EscapeFileName();

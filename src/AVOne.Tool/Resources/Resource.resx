@@ -178,7 +178,7 @@
     <value>The number of retries when download segment error.</value>
   </data>
   <data name="HelpTextOptionSaveDir" xml:space="preserve">
-    <value>Set output directory.</value>
+    <value>Set output directory, current dir by default.</value>
   </data>
   <data name="HelpTextOptionThreadCount" xml:space="preserve">
     <value>Set download thread count.</value>
