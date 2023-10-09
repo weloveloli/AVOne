@@ -65,9 +65,9 @@
         <MDescriptionsItem Span="2" Label="@T("Download.Detail.FinalFileName")">@Path.GetFileName(_job.FinalFilePath)</MDescriptionsItem>
      }
     <MDescriptionsItem Label="@T("Download.Detail.TotalSize")">@DownloadProgressEventArgs.FormatFileSize(_job?.TotalBytes ?? 0L)</MDescriptionsItem>
-    <MDescriptionsItem Label="@T("Download.Detail.Speed")">@DownloadProgressEventArgs.FormatFileSize(_job?.Speed ?? 0L)/s</MDescriptionsItem>
+                    <MDescriptionsItem Label="@T("Download.Detail.Speed")">@DownloadProgressEventArgs.FormatFileSize(_job?.AverageSpeed ?? 0L)/s</MDescriptionsItem>
     <MDescriptionsItem Label="@T("Download.Detail.CreatedTime")">@_job?.Created</MDescriptionsItem>
-    <MDescriptionsItem Label="@T("Download.Detail.EndTime")">@_job?.Modified</MDescriptionsItem>
+    <MDescriptionsItem Label="@T("Download.Detail.ModifiedTime")">@_job?.Modified</MDescriptionsItem>
     <MDescriptionsItem Label="@T("Download.Detail.Tags")" Span="2">
                 <MSelect Multiple @bind-Value=SelectItem!.Tags TItem="SelectData"
                          TValue="List<string>" TItemValue="string" Items=@_tagList ItemText="i => i.Label"

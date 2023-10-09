@@ -83,6 +83,8 @@ namespace AVOne.Impl.Job
 
         public long? TotalBytes { get; set; }
 
+        public long? AverageSpeed { get; set; }
+
         public string? FinalFilePath { get; set; }
 
         public bool FinalFileExists => !string.IsNullOrEmpty(FinalFilePath) && System.IO.File.Exists(FinalFilePath);
@@ -147,6 +149,10 @@ namespace AVOne.Impl.Job
             {
                 extra.Add("Speed", Speed.Value.ToString());
             }
+            if (AverageSpeed.HasValue)
+            {
+                extra.Add("AverageSpeed", AverageSpeed.Value.ToString());
+            }
             if (Eta.HasValue)
             {
                 extra.Add("Eta", Eta.Value.ToString());
@@ -186,6 +192,10 @@ namespace AVOne.Impl.Job
             {
                 Speed = long.Parse(speed.ToString());
             }
+            if (extra.TryGetValue("AverageSpeed", out var averageSpeed))
+            {
+                AverageSpeed = long.Parse(averageSpeed.ToString());
+            }
             if (extra.TryGetValue("TotalBytes", out var totalBytes))
             {
                 TotalBytes = long.Parse(totalBytes.ToString());
@@ -221,6 +231,8 @@ namespace AVOne.Impl.Job
             else if (jobStatusArgs is DownloadFinishEventArgs finishEventArgs)
             {
                 this.FinalFilePath = finishEventArgs.FinalFilePath;
+                this.TotalBytes = new FileInfo(finishEventArgs.FinalFilePath).Length;
+                this.AverageSpeed = this.TotalBytes / DateTime.Now.Subtract(this.Created).Milliseconds;
                 return true;
             }
             return false;

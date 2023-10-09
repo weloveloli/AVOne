@@ -112,7 +112,7 @@ namespace AVOne.Providers.Official.Downloader.M3U8
             var downloadBytes = 0L;
             var intervalDownloadBytes = 0L;
             var total = mediaPlaylist.Parts.Select(e => e.Segments.Count).Sum();
-            var stop = false;
+            var stop = 0L;
             var finish = 0;
             var timer = new System.Timers.Timer(interval)
             {
@@ -120,7 +120,7 @@ namespace AVOne.Providers.Official.Downloader.M3U8
             };
             timer.Elapsed += delegate
             {
-                if (!stop)
+                if (Interlocked.Read(ref stop) == 0)
                 {
                     ProgressEvent(opts, interval, downloadBytes, intervalDownloadBytes, total, finish);
                     Interlocked.Exchange(ref intervalDownloadBytes, 0);
@@ -231,7 +231,7 @@ namespace AVOne.Providers.Official.Downloader.M3U8
                                 Thread.Sleep(opts.RetryWait ?? 1000);
                                 if (i == opts.RetryCount)
                                 {
-                                    stop = true;
+                                    Interlocked.Exchange(ref stop, 1L);
                                     timer.Enabled = false;
                                     throw;
                                 }

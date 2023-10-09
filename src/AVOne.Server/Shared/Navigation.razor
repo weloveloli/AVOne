@@ -83,7 +83,7 @@
     [Inject]
     public MasaBlazor Masa { get; set; } = default!;
 
-    public bool? Visible { get; set; } = false;
+    public bool? Visible { get; set; } = true;
 
     public string ComputedNavigationClass => (GlobalConfig.NavigationStyle == NavigationStyles.Rounded ? "rounded-r-xl" : string.Empty);
 

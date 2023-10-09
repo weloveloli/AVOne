@@ -285,7 +285,7 @@ namespace AVOne.Tool.Commands
             // check if folder only contains files that has pattern nfo
             if (folder != null)
             {
-                if (Directory.GetFiles(folder).All(e => e.Equals("nfo")))
+                if (Directory.GetFiles(folder).All(e => Path.GetExtension(e) == ".nfo"))
                 {
                     Directory.Delete(folder, true);
                     return true;
