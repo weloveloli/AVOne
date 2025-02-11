@@ -14,9 +14,11 @@ namespace AVOne.Providers.Official.Tests.Extractor
 
     public class TKtubeExtractorTests : BaseTestCase
     {
-        [Fact]
+        [SkippableFact]
+
         public async Task TKtubeExtractorTest()
         {
+            Skip.IfNot(File.Exists(Path.Combine("websites", "tktube.txt")), "File not found: tktube.txt");
             var lf = fixture.Freeze<Mock<ILoggerFactory>>();
             lf.Setup(e => e.CreateLogger(It.IsAny<string>())).Returns(new Mock<ILogger>().Object);
 
