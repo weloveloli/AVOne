@@ -44,7 +44,9 @@ namespace AVOne.Impl.Data
         /// <returns>The <see cref="bool"/>.</returns>
         public bool UpsertJob(IAVOneJob job)
         {
-            return this.Jobs.Upsert(job.ToModel());
+            var model = job.ToModel();
+            model.Modified = DateTime.UtcNow;
+            return this.UpsertJob(model);
         }
 
         /// <summary>
@@ -64,7 +66,6 @@ namespace AVOne.Impl.Data
 
         public void DeleteJob(string key)
         {
-
             var job = this.Jobs.FindOne(o => o.Key == key);
             if (job != null)
             {

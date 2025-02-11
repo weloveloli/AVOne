@@ -9,6 +9,7 @@
         <ProjectReference Include="..\AVOne.Core\AVOne.Core.csproj" />
         <ProjectReference Include="..\AVOne.Providers.Jellyfin\AVOne.Providers.Jellyfin.csproj" />
         <ProjectReference Include="..\AVOne.Providers.Official\AVOne.Providers.Official.csproj" />
+        <ProjectReference Include="..\AVOne.Plugins.MetaTube\AVOne.Plugins.MetaTube.csproj" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="LiteDB" />

@@ -7,7 +7,7 @@ namespace AVOne.Server.Pages.App.Settings
     using AVOne.Configuration;
     using AVOne.Server.Shared;
 
-    public partial class SystemSettings : ProCompontentBase
+    public partial class SystemSettings : ProComponentBase
     {
         private StringNumber _current = 0;
 

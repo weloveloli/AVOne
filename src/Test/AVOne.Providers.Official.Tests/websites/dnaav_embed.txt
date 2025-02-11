@@ -1,0 +1,47 @@
+﻿
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" /> 
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" /> 
+<meta name="referrer" content="never" /> 
+<meta name="robots" content="noindex,nofollow">
+<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+<title></title>
+<style type="text/css">body,html,.dplayer{padding:0;margin:0;width:100%;height:100%;background-color:#000}a{text-decoration:none}</style> 
+<script src="/static/hls.min.js?1738267088"></script>
+<script src="/static/dplayer.min.js?1738267088"></script>
+<script src="/static/zepto.min.js?1738267088"></script>
+</head> 
+<body> 
+<div id="dplayer"></div>
+<script>
+ const dp = new DPlayer({
+    container: document.getElementById('dplayer'),
+        autoplay:true,
+        loop:true,
+        hotkey:true,
+        preload:'auto',
+    video: {
+        url: 'https://v2024.ddcdnbf.com/20250124/zvXg0iKj/index.m3u8',
+        type: 'auto',
+		
+    },
+
+    contextmenu: [
+        {
+            text: '更多视频',
+            link: 'https://www.dnaav.com',
+        }
+    ],
+    pluginOptions: {
+        hls: {
+            // hls config
+        },
+    },
+});
+window.parent.document.getElementById("download").innerHTML = '<a href="https://v2024.ddcdnbf.com/20250124/zvXg0iKj/index.m3u8" target="_blank"><i class="icon icon-download-alt"></i><span>下载</span></a>';
+</script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'91058df19ecf25f8',t:'MTczOTI4OTY1NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"rayId":"91058df19ecf25f8","version":"2025.1.0","r":1,"token":"178b4040ff50452cbe54ad1300834ccf","serverTiming":{"name":{"cfExtPri":true,"cfL4":true,"cfSpeedBrain":true,"cfCacheStatus":true}}}' crossorigin="anonymous"></script>
+</body>
+</html>

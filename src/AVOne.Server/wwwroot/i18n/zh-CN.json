@@ -36,13 +36,15 @@
       "Tags": "任务标签",
       "DownloadSpeedInfo": "速度信息",
       "TotalSize": "文件大小",
-      "Speed": "下载平均速度",
+      "Speed": "平均速度",
       "FileInfo": "文件信息",
       "FinalDir": "文件目录",
       "FinalFileName": "文件名",
-      "DisplayName": "名称",
-      "OutputDir": "目标下载路劲",
-      "OrignalLink": "原始地址"
+      "DisplayName": "任务名称",
+      "OutputDir": "保存目录",
+      "OrignalLink": "网址记录",
+      "CreatedTime": "创建时间",
+      "ModifiedTime": "更新时间"
     },
     "Tasks": {
       "Title": "下载任务",
@@ -68,7 +70,7 @@
       "ExtractingMedia": "正在从'{0}'提取媒体信息",
       "AdvancedOption": "高级选项",
       "UseMetaDataFromDownloadItem": "使用视频网页中提取的元数据",
-      "AutoDetect": "智能识别番号",
+      "AutoDetect": "智能识别",
       "SearchingMetaDataFailed": "未能找到元数据",
       "Message": {
         "AddTaskSuccess": "添加下载任务'{0}'成功",
@@ -119,7 +121,7 @@
         "Title": "下载设置",
         "RetryCount": "默认重试次数",
         "ThreadCount": "默认线程数",
-        "DownloadDir": "默认下载路劲"
+        "DownloadDir": "默认下载路劲,多个以逗号分割"
       },
       "Paths": {
         "Title": "系统路径",

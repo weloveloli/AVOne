@@ -1,0 +1,117 @@
+﻿@using AVOne.Common.Plugins;
+@using AVOne.Models.Updates;
+@using AVOne.Updates;
+@inherits ProComponentBase
+<MNavigationDrawer Fixed Temporary Right Value=Value ValueChanged=ValueChanged Width="600">
+    <MCol Md="12">
+            <MCard class="pa-2 fill-height d-flex flex-column justify-space-between">
+                <MCardTitle class="text-caption">
+                    <div class="text-h5 mt-6">@SelectItem?.Name</div>
+                </MCardTitle>
+                <MCardSubtitle>
+                <div class="text-subtitle-1 mt-2">@SelectItem?.Overview</div>
+                </MCardSubtitle>
+                <MCardText>
+                    <MDivider></MDivider>
+                <div class="text-subtitle-1 mt-3 mb-3">@T("Settings.Plugin.AvaliablePlugin.InstallPlugins")</div>
+                <MSelect Outlined Label=@T("Settings.Plugin.AvaliablePlugin.SelectedPluginVersions") OnChange="(string value) => OnSelectVerionChanged(value)"
+                @bind-Value=selectedVersionInfo Items=@SelectItem?.Versions ItemText="i => i.Version" ItemValue="i => i.Version">
+                    </MSelect>
+                <MButton Loading="installing" Block Class="green" Disabled="@IsDisabled()" OnClick="InstallPacakge">
+                   @if(IsDisabled()){
+                        <span class="white--text">@T("Settings.Plugin.AvaliablePlugin.Installed")</span>
+                   }
+                   else{
+                        <span class="white--text">@T("Settings.Plugin.AvaliablePlugin.Install")</span>
+                   }
+                   
+                </MButton>
+                </MCardText>
+            </MCard>
+    </MCol>
+</MNavigationDrawer>
+@code{
+    [Parameter]
+    public bool Value { get; set; }
+
+    [Parameter]
+    public EventCallback ValueChanged { get; set; }
+
+    [Parameter]
+    public PackageInfo? SelectItem { get; set; }
+
+    [Inject]
+    public IInstallationManager InstallationManager { get; set; } = default!;
+
+    [Inject]
+    public IPluginManager PluginManager { get; set; } = default!;
+
+    private string? selectedVersionInfo;
+    private bool installing = false;
+    private Version? installedVersion;
+    private Version? currentVersion;
+
+    private bool IsDisabled()
+    {
+        if (SelectItem is null)
+        {
+            return false;
+        }
+        if (installedVersion is null)
+        {
+            return false;
+        }
+        if (currentVersion is null)
+        {
+            return true;
+        }
+        return currentVersion <= installedVersion;
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (SelectItem is not null)
+        {
+            selectedVersionInfo = SelectItem.Versions.FirstOrDefault()?.Version;
+            var local = PluginManager.GetPlugin(SelectItem!.Id);
+            if(local is not null)
+            {
+                installedVersion = local.Version;
+            }
+            else
+            {
+                installedVersion = null;
+            }
+        }
+    }
+    private void OnSelectVerionChanged(string version)
+    {
+        currentVersion = Version.Parse(version);
+    }
+    private void InstallPacakge()
+    {
+        var v = SelectItem?.Versions.Where(e=>e.Version==selectedVersionInfo).FirstOrDefault();
+        if (v is null)
+        {
+            return;
+        }
+        installing = true;
+        Task.Run(async () =>
+        {
+            var pkg = new InstallationInfo
+            {
+                Id = SelectItem!.Id,
+                Version = Version.Parse(selectedVersionInfo!),
+                Changelog = v.Changelog,
+                Name = SelectItem.Name,
+                SourceUrl = v.SourceUrl,
+                Checksum = v.Checksum,
+                PackageInfo = SelectItem
+            };
+            await this.InstallationManager.InstallPackage(pkg);
+            installedVersion = Version.Parse(selectedVersionInfo!);
+            installing = false;
+        });
+    }
+}

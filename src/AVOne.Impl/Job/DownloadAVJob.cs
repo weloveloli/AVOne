@@ -83,6 +83,8 @@ namespace AVOne.Impl.Job
 
         public long? TotalBytes { get; set; }
 
+        public long? AverageSpeed { get; set; }
+
         public string? FinalFilePath { get; set; }
 
         public bool FinalFileExists => !string.IsNullOrEmpty(FinalFilePath) && System.IO.File.Exists(FinalFilePath);
@@ -147,6 +149,10 @@ namespace AVOne.Impl.Job
             {
                 extra.Add("Speed", Speed.Value.ToString());
             }
+            if (AverageSpeed.HasValue)
+            {
+                extra.Add("AverageSpeed", AverageSpeed.Value.ToString());
+            }
             if (Eta.HasValue)
             {
                 extra.Add("Eta", Eta.Value.ToString());
@@ -186,6 +192,10 @@ namespace AVOne.Impl.Job
             {
                 Speed = long.Parse(speed.ToString());
             }
+            if (extra.TryGetValue("AverageSpeed", out var averageSpeed))
+            {
+                AverageSpeed = long.Parse(averageSpeed.ToString());
+            }
             if (extra.TryGetValue("TotalBytes", out var totalBytes))
             {
                 TotalBytes = long.Parse(totalBytes.ToString());
@@ -210,7 +220,7 @@ namespace AVOne.Impl.Job
             DownloadableItem = JsonSerializer.Deserialize(item, type!, JsonDefaults.Options) as BaseDownloadableItem;
         }
 
-        public override void UpdateStatus(JobStatusArgs jobStatusArgs)
+        public override bool UpdateStatus(JobStatusArgs jobStatusArgs)
         {
             base.UpdateStatus(jobStatusArgs);
             if (jobStatusArgs is DownloadProgressEventArgs progressEventArgs)
@@ -221,15 +231,68 @@ namespace AVOne.Impl.Job
             else if (jobStatusArgs is DownloadFinishEventArgs finishEventArgs)
             {
                 this.FinalFilePath = finishEventArgs.FinalFilePath;
-                this.TotalBytes = finishEventArgs.TotalFileBytes;
-                this.Speed = (long?)Div(finishEventArgs.TotalFileBytes, DateTime.UtcNow.Subtract(this.Created).TotalSeconds);
+                this.TotalBytes = new FileInfo(finishEventArgs.FinalFilePath).Length;
+                this.AverageSpeed = this.TotalBytes / DateTime.Now.Subtract(this.Created).Milliseconds;
+                return true;
             }
+            return false;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Div(double a, double b)
         {
             return b == 0 ? 0 : a / b;
+        }
+
+        public static string ToSpeed(JobModel jobModel)
+        {
+            long speed = 0;
+            if (jobModel.Extra.TryGetValue("Speed", out var speedStr))
+            {
+                speed = long.Parse(speedStr.ToString());
+            }
+            return $"{DownloadProgressEventArgs.FormatFileSize(speed)}/s";
+        }
+
+        public static string ToEta(JobModel jobModel)
+        {
+            int eta = 0;
+            if (jobModel.Extra.TryGetValue("Eta", out var etaStr))
+            {
+                eta = int.Parse(etaStr.ToString());
+            }
+            return DownloadProgressEventArgs.FormatTime(eta);
+        }
+
+        public static bool FileExists(JobModel jobModel)
+        {
+            if (jobModel.Extra.TryGetValue("FinalFilePath", out var FinalFilePath))
+            {
+                return File.Exists(FinalFilePath);
+            }
+            return false;
+        }
+
+        public static bool GetThumb(JobModel jobModel, out string? url)
+        {
+            url = null;
+            if (jobModel.Extra.TryGetValue("FinalFilePath", out var FinalFilePath))
+            {
+                var path = Path.GetFileNameWithoutExtension(FinalFilePath);
+                var thumbPath = Path.Combine(Directory.GetParent(FinalFilePath)!.FullName, $"{path}.jpg");
+                if (File.Exists(thumbPath))
+                {
+                    url = thumbPath;
+                    return true;
+                }
+                thumbPath = Path.Combine(Directory.GetParent(FinalFilePath)!.FullName, $"{path}.png");
+                if (File.Exists(thumbPath))
+                {
+                    url = thumbPath;
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

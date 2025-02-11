@@ -3,8 +3,8 @@
 
 namespace AVOne.Providers.Official.Extractor.Tests
 {
-    using AVOne.Configuration;
-    using AVOne.Providers.Official.Extractor;
+    using AVOne.Providers.Official.Common;
+    using AVOne.Providers.Official.Extractors;
     using HtmlAgilityPack;
     using Microsoft.Extensions.Logging;
     using Moq;
@@ -17,10 +17,9 @@ namespace AVOne.Providers.Official.Extractor.Tests
 
         public HanimeExtractorTests()
         {
-            var managerMock = new Mock<IConfigurationManager>();
-            var loggerMock = new Mock<ILogger<HanimeExtractor>>();
-            var httpFacotryMock = new Mock<IHttpClientFactory>();
-            this.extractor = new HanimeExtractor(managerMock.Object, loggerMock.Object, httpFacotryMock.Object);
+            var httpHelper = new Mock<IHttpHelper>();
+            var loggerMock = new Mock<ILoggerFactory>();
+            this.extractor = new HanimeExtractor(httpHelper.Object, loggerMock.Object);
             var html = File.ReadAllText(Path.Combine("websites", "hanime1.txt"));
             var dom = new HtmlDocument();
             dom.LoadHtml(html);

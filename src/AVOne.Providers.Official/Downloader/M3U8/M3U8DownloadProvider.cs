@@ -31,17 +31,20 @@ namespace AVOne.Providers.Official.Downloader.M3U8
     {
         private readonly IApplicationPaths _applicationPaths;
         private readonly IStartupOptions _options;
-        private readonly HttpClient _client;
+        private HttpClient Client => GetHttpClient(HttpClientNames.Download);
         private readonly IConfigurationManager _configurationManager;
 
         private readonly ILogger<M3U8DownloadProvider> logger;
 
-        public M3U8DownloadProvider(ILogger<M3U8DownloadProvider> logger, IApplicationPaths applicationPaths, IStartupOptions options, IHttpClientFactory httpClientFactory, IConfigurationManager configurationManager)
-            : base(configurationManager, httpClientFactory)
+        public M3U8DownloadProvider(
+            ILogger<M3U8DownloadProvider> logger,
+            IApplicationPaths applicationPaths,
+            IStartupOptions options,
+            IHttpClientFactory httpClientFactory,
+            IConfigurationManager configurationManager) : base(configurationManager, httpClientFactory)
         {
             _applicationPaths = applicationPaths;
             _options = options;
-            _client = GetHttpClient(HttpClientNames.Download);
             _configurationManager = configurationManager;
             this.logger = logger;
         }
@@ -97,20 +100,19 @@ namespace AVOne.Providers.Official.Downloader.M3U8
             logger.LogDebug($"Start merging file");
             var finalPath = await MergeAsync(workingDir, saveDir, saveName, OutputFormat.MP4, token: token);
             logger.LogDebug($"Downloaded file: {finalPath}");
-            var finalFileInfo = new FileInfo(finalPath);
-
-            opts.OnStatusChanged(new DownloadFinishEventArgs { Status = "Download finished", FinalFilePath = finalPath, Progress = 100 });
+            var fileFileInfo = new FileInfo(finalPath);
+            opts.OnStatusChanged(new DownloadFinishEventArgs { FinalFilePath = finalPath, TotalFileBytes = fileFileInfo.Length });
             Directory.Delete(workingDir, true);
         }
 
         private void DownloadParts(string workingDir, MediaPlaylist mediaPlaylist, DownloadOpts opts, M3U8Item m3U8Item, int threadCount, CancellationToken token)
         {
             logger.LogDebug($"DownloadParts");
-            int interval = 1000;
+            var interval = 1000;
             var downloadBytes = 0L;
             var intervalDownloadBytes = 0L;
             var total = mediaPlaylist.Parts.Select(e => e.Segments.Count).Sum();
-            var stop = false;
+            var stop = 0L;
             var finish = 0;
             var timer = new System.Timers.Timer(interval)
             {
@@ -118,7 +120,7 @@ namespace AVOne.Providers.Official.Downloader.M3U8
             };
             timer.Elapsed += delegate
             {
-                if (!stop)
+                if (Interlocked.Read(ref stop) == 0)
                 {
                     ProgressEvent(opts, interval, downloadBytes, intervalDownloadBytes, total, finish);
                     Interlocked.Exchange(ref intervalDownloadBytes, 0);
@@ -153,7 +155,7 @@ namespace AVOne.Providers.Official.Downloader.M3U8
                             }
                         }
 
-                        var rsp = _client.Send(request);
+                        var rsp = Client.Send(request);
                         var bytes = rsp.Content.ReadAsByteArrayAsync().GetAwaiter().GetResult();
                         keyDict[key] = bytes;
 
@@ -185,7 +187,7 @@ namespace AVOne.Providers.Official.Downloader.M3U8
                                         }
                                     }
 
-                                    var rsp = _client.Send(request);
+                                    var rsp = Client.Send(request);
                                     rsp.EnsureSuccessStatusCode();
 
                                     var stream = File.OpenWrite(tsTmpPath);
@@ -229,7 +231,7 @@ namespace AVOne.Providers.Official.Downloader.M3U8
                                 Thread.Sleep(opts.RetryWait ?? 1000);
                                 if (i == opts.RetryCount)
                                 {
-                                    stop = true;
+                                    Interlocked.Exchange(ref stop, 1L);
                                     timer.Enabled = false;
                                     throw;
                                 }
@@ -350,10 +352,14 @@ namespace AVOne.Providers.Official.Downloader.M3U8
                     request.Headers.Add(header.Key, header.Value);
                 }
             }
+            var m3u8 = string.Empty;
+            await Retry.InvokeAsync(async () =>
+            {
+                var rsp = await Client.SendAsync(request, token);
+                rsp.EnsureSuccessStatusCode();
+                m3u8 = await rsp.Content.ReadAsStringAsync(token);
+            }, 3);
 
-            var rsp = await _client.SendAsync(request, token);
-            rsp.EnsureSuccessStatusCode();
-            var m3u8 = await rsp.Content.ReadAsStringAsync(token);
             if (string.IsNullOrEmpty(m3u8) || !m3u8.IsM3U8())
             {
                 throw Oops.Oh(ErrorCodes.INVALID_DOWNLOADABLE_ITEM);
@@ -633,7 +639,7 @@ namespace AVOne.Providers.Official.Downloader.M3U8
         }
 
         // add function to escape the string to be a valid filename
-        protected string EscapeFileName(string fileName)
+        protected static string EscapeFileName(string fileName)
         {
             return string.Join("_", fileName.Split(Path.GetInvalidFileNameChars()));
         }

@@ -20,7 +20,6 @@ namespace AVOne.Models.Item
         {
             ProviderIds = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             ProductionLocations = Array.Empty<string>();
-            RemoteTrailers = Array.Empty<MediaUrl>();
         }
 
         /// <summary>

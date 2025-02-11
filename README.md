@@ -1,7 +1,7 @@
-# AVOne 
+# AVOne (WIP)
 [![banner](https://raw.githubusercontent.com/weloveloli/AVOne/main/img/avone.png)](https://raw.githubusercontent.com/weloveloli/AVOne/main/img/avone.png)
 ## 关于
-AVOne(目前还在开发中，尽情期待)是一个集下载,整理等多功能的插件化的AV管理工具。
+AVOne(WIP)是一个集下载,整理等多功能的插件化的AV管理工具。
 
 ## 为什么要有这个项目
 1. 目前的元数据抓取大部分只支持JAV，对TWAV, Hentail Anime 以及 PornHub 等视频网站没有支持
@@ -16,8 +16,8 @@ AVOne(目前还在开发中，尽情期待)是一个集下载,整理等多功能
 
 | Name      | Nuget Package |
 | ----------- | ----------- |
-| AVOneTool | [![ci](https://github.com/weloveloli/AVOne/actions/workflows/tool.yml/badge.svg)](https://github.com/weloveloli/AVOne/actions/workflows/tool.yml) [![AVOneTool Nuget](https://img.shields.io/nuget/v/AVOneTool)](https://www.nuget.org/packages/AVOneTool) |
-| AVOne.Common | [![ci](https://github.com/weloveloli/AVOne/actions/workflows/common.yml/badge.svg)](https://github.com/weloveloli/AVOne/actions/workflows/common.yml) [![AVOneTool Nuget](https://img.shields.io/nuget/v/AVOne.Common)](https://www.nuget.org/packages/AVOne.Common) |
+| AVOneTool | [![AVOneTool Nuget](https://img.shields.io/nuget/v/AVOneTool)](https://www.nuget.org/packages/AVOneTool) |
+| AVOne.Common | [![AVOneTool Nuget](https://img.shields.io/nuget/v/AVOne.Common)](https://www.nuget.org/packages/AVOne.Common) |
 
 ## 文档（待补充）
 

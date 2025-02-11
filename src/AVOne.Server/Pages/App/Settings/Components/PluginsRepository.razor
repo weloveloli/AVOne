@@ -1,0 +1,90 @@
+ @inherits ProComponentBase
+ @using AVOne.Common.Plugins;
+
+<div class="d-flex flex-row justify-start align-center pt-2 pl-6">
+                    <span class="text-h5">@T("Settings.Plugin.PluginRepository.Title")</span>                   
+                        <MDialog
+        @bind-Value="addRepoDialog"
+        Width="500">
+        <ActivatorContent>
+            <MButton @attributes="@context.Attrs" Class="ml-4" Small Outlined Color="indigo" Icon><MIcon Dark>mdi-plus</MIcon></MButton>
+             </ActivatorContent>
+        <ChildContent>
+               <MCard Elevation="4">
+                 <MForm Model="_addRepoModel" EnableValidation OnValidSubmit="HandleOnValidSubmit">
+                <MCardTitle>
+                    <span class="text-h5">@T("Settings.Plugin.PluginRepository.AddRepo")</span>
+                </MCardTitle>
+                    <MCardText>
+
+                <MTextField Class="mt-2" @bind-Value="_addRepoModel.Name"
+                Counter="20"
+                Label='@T("Settings.Plugin.PluginRepository.RepoName")' Hint='@T("Settings.Plugin.PluginRepository.RepoNameHint")' PersistentHint
+                            Outlined></MTextField>
+                <MTextField Class="mt-2" @bind-Value="_addRepoModel.RepoUrl"
+                Label='@T("Settings.Plugin.PluginRepository.RepoUrl")' Hint='@T("Settings.Plugin.PluginRepository.RepoUrlHint")' PersistentHint
+                            Outlined></MTextField>
+                          
+
+                    </MCardText>
+                    <MCardActions Class="justify-end">
+                        <MButton Type="reset" @onclick="()=> {addRepoDialog = false;}">@T("Common.Cancel")</MButton>
+                        <MButton Type="submit" Color="primary">@T("Common.Submit")</MButton>
+                    </MCardActions>
+                 </MForm>
+                </MCard>
+           
+                    </ChildContent>
+    </MDialog>
+                </div>
+<MList TwoLine 
+       Subheader class="mt-4">
+                @foreach (var repo in PluginRepositories)
+                {
+                    <MListItem Class="pl-6">
+                         <ItemContent>
+                        <MListItemContent>
+                            <MListItemTitle>@repo.Name</MListItemTitle>
+                            <MListItemSubtitle>@repo.Url</MListItemSubtitle>
+                        </MListItemContent>
+                         <MListItemAction>
+                            <div class="d-flex flex-no-wrap align-center">
+                                <MButton @onclick="() => RemovePluginRepo(repo)" Color="red" Outlined Class="ml-2 mr-4" Icon><MIcon>mdi-delete</MIcon></MButton>
+                                @if(repo.Enabled){
+                                    <MButton @onclick="() => UpdatePluginRepo(repo)" Color='error' Class="ml-2 mr-4" Elevation="2">@T("Common.Disable")</MButton>
+                                }else{
+                                    <MButton @onclick="() => UpdatePluginRepo(repo)" Color='success' Class="ml-2 mr-4" Elevation="2">@T("Common.Enable")</MButton>
+                                }
+                             </div>
+                            </MListItemAction>                   
+                         </ItemContent>
+
+                    </MListItem>
+                }
+                   </MList>
+
+                   @code {
+
+    bool addRepoDialog;
+
+
+    class AddRepoModel
+    {
+        [Required]
+        [MaxLength(20, ErrorMessage = "Name must be less than 20 characters")]
+        public string? Name { get; set; }
+        [Required]
+        [Url]
+        public string? RepoUrl { get; set; }
+    }
+
+    private AddRepoModel _addRepoModel = new();
+
+    private void HandleOnValidSubmit()
+    {
+        //valid
+
+        this.AddPluginRepo(_addRepoModel);
+        addRepoDialog = false;
+    }
+}

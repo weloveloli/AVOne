@@ -91,7 +91,7 @@ namespace AVOne.Providers.Official.Downloader.Http
                 File.Move(tmpFile, outputFile);
                 var fileFileInfo = new FileInfo(outputFile);
                 Directory.Delete(workDir);
-                opts.OnStatusChanged(new DownloadFinishEventArgs { FinalFilePath = outputFile, Progress = 100, TotalFileBytes = fileFileInfo.Length, Status = "Done" });
+                opts.OnStatusChanged(new DownloadFinishEventArgs { FinalFilePath = outputFile, TotalFileBytes = fileFileInfo.Length });
             }
             catch (Exception)
             {

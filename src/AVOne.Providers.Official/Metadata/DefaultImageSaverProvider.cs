@@ -35,8 +35,8 @@ namespace AVOne.Providers.Official.Metadata
             {
                 ImageType.Art => "-clearart",
                 ImageType.BoxRear => "-back",
-                ImageType.Thumb => "-landscape",
-                ImageType.Primary => string.Empty,
+                ImageType.Primary => "-landscape",
+                ImageType.Thumb => string.Empty,
                 ImageType.Backdrop => "-backdrop",
                 _ => "-" + type.ToString().ToLowerInvariant(),
             };

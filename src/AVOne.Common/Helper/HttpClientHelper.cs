@@ -6,7 +6,7 @@ namespace AVOne.Common.Helper
     using AVOne.Configuration;
     using AVOne.Constants;
 
-    public class HttpClientHelper
+    public abstract class HttpClientHelper
     {
         public HttpClientHelper(IConfigurationManager manager, IHttpClientFactory httpClientFactory)
         {
@@ -28,6 +28,7 @@ namespace AVOne.Common.Helper
             {
                 throw new ArgumentException($"'{nameof(name)}' cannot be {name}.", nameof(name));
             }
+
             if (name == HttpClientNames.Default)
             {
                 if (_httpClientDefault == default || _httpClientDefault.version < _manager.CommonConfiguration.Verion)
@@ -36,9 +37,10 @@ namespace AVOne.Common.Helper
                 }
                 return _httpClientDefault.httpClient;
             }
+
             if (name == HttpClientNames.Download)
             {
-                if (_httpClientDefault == default || _httpClientDefault.version < _manager.CommonConfiguration.Verion)
+                if (_httpClientDownload == default || _httpClientDownload.version < _manager.CommonConfiguration.Verion)
                 {
                     _httpClientDownload = (_httpClientFactory.CreateClient(HttpClientNames.Download), _manager.CommonConfiguration.Verion);
                 }

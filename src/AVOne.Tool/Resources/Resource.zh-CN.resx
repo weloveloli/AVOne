@@ -178,7 +178,7 @@
     <value>每个分片下载异常时的重试次数.</value>
   </data>
   <data name="HelpTextOptionSaveDir" xml:space="preserve">
-    <value>设置输出目录.</value>
+    <value>设置输出目录,默认为当前目录.</value>
   </data>
   <data name="HelpTextOptionThreadCount" xml:space="preserve">
     <value>设置下载线程数.</value>
@@ -331,6 +331,6 @@
     <value>显示版本信息.</value>
   </data>
   <data name="SuccessDownloadPlugin" xml:space="preserve">
-    <value>安装插件成功 '{0}'</value>
+    <value>安装插件成功 '{0}'.</value>
   </data>
 </root>

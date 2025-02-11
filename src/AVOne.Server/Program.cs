@@ -3,7 +3,6 @@
 
 using AVOne.Impl;
 using AVOne.Impl.Migrations;
-using AVOne.Server;
 using CommandLine;
 using Serilog;
 

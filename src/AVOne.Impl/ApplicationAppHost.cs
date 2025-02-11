@@ -31,7 +31,6 @@ namespace AVOne.Impl
     using Furion.Localization;
 #else
     using AVOne.Impl.Extensions;
-    using Jint.Parser.Ast;
 #endif
 
     public class ApplicationAppHost : IApplicationHost, IAsyncDisposable, IDisposable
@@ -215,6 +214,7 @@ namespace AVOne.Impl
             yield return typeof(MigrationsFactory).Assembly;
             yield return typeof(JellyfinNamingOptionProvider).Assembly;
             yield return typeof(DefaultImageSaverProvider).Assembly;
+            yield return typeof(AVOne.Plugins.MetaTube.Plugin).Assembly;
         }
 
         private IEnumerable<Type> GetTypes(IEnumerable<Assembly> assemblies)
