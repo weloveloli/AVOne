@@ -352,10 +352,14 @@ namespace AVOne.Providers.Official.Downloader.M3U8
                     request.Headers.Add(header.Key, header.Value);
                 }
             }
+            var m3u8 = string.Empty;
+            await Retry.InvokeAsync(async () =>
+            {
+                var rsp = await Client.SendAsync(request, token);
+                rsp.EnsureSuccessStatusCode();
+                m3u8 = await rsp.Content.ReadAsStringAsync(token);
+            }, 3);
 
-            var rsp = await Client.SendAsync(request, token);
-            rsp.EnsureSuccessStatusCode();
-            var m3u8 = await rsp.Content.ReadAsStringAsync(token);
             if (string.IsNullOrEmpty(m3u8) || !m3u8.IsM3U8())
             {
                 throw Oops.Oh(ErrorCodes.INVALID_DOWNLOADABLE_ITEM);
@@ -635,7 +639,7 @@ namespace AVOne.Providers.Official.Downloader.M3U8
         }
 
         // add function to escape the string to be a valid filename
-        protected string EscapeFileName(string fileName)
+        protected static string EscapeFileName(string fileName)
         {
             return string.Join("_", fileName.Split(Path.GetInvalidFileNameChars()));
         }

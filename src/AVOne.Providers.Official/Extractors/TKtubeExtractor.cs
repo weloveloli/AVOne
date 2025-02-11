@@ -36,6 +36,10 @@ namespace AVOne.Providers.Official.Extractors
         {
             var uri = new Uri(url);
             var path = uri.AbsolutePath;
+            if (path.StartsWith("/zh") || path.StartsWith("/en"))
+            {
+                path = path.Substring(3);
+            }
             var parts = path.Split('/');
             return parts[2];
         }

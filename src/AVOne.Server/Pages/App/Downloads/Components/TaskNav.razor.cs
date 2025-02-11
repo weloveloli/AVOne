@@ -26,7 +26,7 @@ namespace AVOne.Server.Pages.App.Downloads.Components
         private List<string> DownloadTags = new List<string>();
 
         bool addTaskDialog;
-        bool showAdvancedDownloadOpt;
+        bool showAdvancedDownloadOpt = true;
 
         bool searchMetaData;
 
@@ -59,7 +59,7 @@ namespace AVOne.Server.Pages.App.Downloads.Components
 
             public string? PreferName { get; set; }
 
-            public bool SaveMetaData { get; set; } = false;
+            public bool SaveMetaData { get; set; } = true;
 
             public bool UseInternelMetaData { get; set; } = false;
 
@@ -73,6 +73,8 @@ namespace AVOne.Server.Pages.App.Downloads.Components
         }
         private List<SelectData> _tagList = new List<SelectData>();
 
+        private List<string> _DownloadDirList = new List<string>();
+
         private List<BaseDownloadableItem> DownloadableItems { get; set; } = new List<BaseDownloadableItem>();
         private void HandleCloseClick(string lable)
         {
@@ -82,7 +84,9 @@ namespace AVOne.Server.Pages.App.Downloads.Components
         {
             defaultThreadCount = ConfigurationManager?.CommonConfiguration.DownloadConfig.DefaultDownloadThreadCount;
             defaultRetryCount = ConfigurationManager?.CommonConfiguration.DownloadConfig.DefaultRetryCount;
-            defaultOutputDir = ConfigurationManager?.CommonConfiguration.DownloadConfig.DefaultDownloadDir;
+            var downloadDirs = ConfigurationManager?.CommonConfiguration.DownloadConfig.DefaultDownloadDir.Split(";");
+            _DownloadDirList = downloadDirs?.ToList() ?? new List<string>();
+            defaultOutputDir = downloadDirs.FirstOrDefault();
             _addJobModel = new();
             _tagList = new List<SelectData>{
             new SelectData() { Label = T("Download.Tags.Censored"), Value = "Censored" },
@@ -160,7 +164,7 @@ namespace AVOne.Server.Pages.App.Downloads.Components
                 if (step == 3)
                 {
                     addTaskDialog = false;
-                    showAdvancedDownloadOpt = false;
+                    showAdvancedDownloadOpt = true;
                     _addJobModel = new AddJobModel();
                 }
             });
@@ -224,17 +228,23 @@ namespace AVOne.Server.Pages.App.Downloads.Components
             else if (_addJobModel.Step == 2)
             {
                 var downloadDir = _addJobModel.DownloadDir ?? ConfigurationManager?.CommonConfiguration.DownloadConfig.DefaultDownloadDir;
-                if (!Path.Exists(downloadDir))
+                if (downloadDir != null && !Path.Exists(downloadDir))
                 {
                     try
                     {
-                        Directory.CreateDirectory(downloadDir!);
+                        Directory.CreateDirectory(downloadDir);
                     }
                     catch (Exception)
                     {
                         this.Error("Download.Tasks.FailedReason.CannotCreateDir", downloadDir);
                         return;
                     }
+                }
+
+                if (downloadDir == null)
+                {
+                    this.Error("Download.Tasks.FailedReason.CannotCreateDir");
+                    return;
                 }
 
                 var jobItem = DownloadableItems.FirstOrDefault(x => x.Key == _addJobModel.DownloadItemKey);

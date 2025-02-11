@@ -31,16 +31,21 @@
                             <MSelect Outlined Label=@T("Download.Tasks.AddTaskDownloadItemIndex") @bind-Value=_addJobModel.DownloadItemKey TItem="BaseDownloadableItem"
                                  TValue="string" TItemValue="string" Items=@DownloadableItems ItemText="i => i.DisplayName"
                                  ItemValue="i => i.Key">
-                            </MSelect>                   
+                            </MSelect>
+                                <MSelect Outlined Label=@T("Download.Tasks.AddTaskDownloadTarget") @bind-Value=_addJobModel.DownloadDir TItem="string"
+                                         TValue="string" TItemValue="string" Items=@_DownloadDirList ItemText="i => i"
+                                         ItemValue="i => i">
+                                </MSelect>
                         }                        
                         @if (_addJobModel.Step == 2)
                         {
                              <MTextField Class="mt-2" @bind-Value="_addJobModel.PreferName"
                                         Label='@T("Download.Tasks.PreferName")' PersistentHint
                                                     Outlined></MTextField>
-                             <MTextField Class="mt-2" @bind-Value="_addJobModel.DownloadDir"
-                                        Label='@T("Download.Tasks.AddTaskDownloadTarget")' PersistentHint
-                                                    Outlined></MTextField>
+
+                              <MTextField Class="mt-2" @bind-Value="_addJobModel.DownloadDir"
+                                            Label='@T("Download.Tasks.AddTaskDownloadTarget")' PersistentHint
+                                            Outlined></MTextField>
                              <MSelect Outlined Label=@T("Download.Detail.Tags") Multiple @bind-Value=_addJobModel.Tags TItem="SelectData"
                                  TValue="List<string>" TItemValue="string" Items=@_tagList ItemText="i => i.Label"
                                  ItemValue="i => i.Value">
@@ -137,7 +142,7 @@
                             </MButton>
                         }
 
-                        <MButton Type="reset" @onclick="()=> {addTaskDialog = false;_addJobModel = new();showAdvancedDownloadOpt = false;}">@T("Common.Cancel")</MButton>
+                        <MButton Type="reset" @onclick="()=> {addTaskDialog = false;_addJobModel = new();showAdvancedDownloadOpt = true;}">@T("Common.Cancel")</MButton>
                         <MButton Type="submit" Color="primary">@T("Common.Next")</MButton>
                     </MCardActions>
                 </MForm>

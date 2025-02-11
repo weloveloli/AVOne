@@ -22,6 +22,6 @@ namespace AVOne.Plugins.MetaTube
 
         public override Guid Id => Guid.Parse("01cc53ec-c415-4108-bbd4-a684a9801a32");
 
-        public static Plugin Instance { get; private set; }
+        public static Plugin? Instance { get; private set; }
     }
 }

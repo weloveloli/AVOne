@@ -16,8 +16,12 @@ namespace AVOne.Providers.Official.Extractor.Tests
 
             var loggerMock = new Mock<ILoggerFactory>();
             var html = File.ReadAllText(Path.Combine("websites", "missav.txt"));
+            var extractor = new MissAVExtractor(null, loggerMock.Object);
+            var support = extractor.Support("https://missav.ws/ja/fc2-ppv-4525803");
 
-            var source = new MissAVExtractor(null, loggerMock.Object).GetM3U8Sources(html);
+            Assert.True(support);
+
+            var source = extractor.GetM3U8Sources(html);
 
             Assert.Equal(3, source.Count());
 

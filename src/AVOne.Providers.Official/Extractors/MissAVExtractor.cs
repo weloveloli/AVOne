@@ -21,15 +21,15 @@ namespace AVOne.Providers.Official.Extractors
     public partial class MissAVExtractor : BaseHttpExtractor, IRegexExtractor
     {
         private const string ExtraTitle = " - MissAV.com | 免費高清AV在線看";
-        private const string WebPagePrefix = "https://missav.com";
+        private const string WebPagePrefix = "https://missav.ws";
         private readonly Regex _regex;
         private readonly Regex _titleRegex;
 
         public static Dictionary<string, string> HeaderForMissAV =
             new()
             {
-                { "referer", "https://missav.com" },
-                { "origin", "https://missav.com" }
+                { "referer", "https://missav.ws" },
+                { "origin", "https://missav.ws" }
             };
 
         public override string Name => "MissAV";
@@ -159,34 +159,23 @@ namespace AVOne.Providers.Official.Extractors
 
         protected override string NormalizeUrl(string url)
         {
-            return string.Concat("https://missav.com", url.AsSpan(url.LastIndexOf('/')));
+            //return string.Concat("https://missav.com", url.AsSpan(url.LastIndexOf('/')));
+            return url;
         }
 
         private static bool TryExtractMetaData(string url, string html, M3U8Item meta)
         {
             var htmlDoc = new HtmlDocument();
             htmlDoc.LoadHtml(html);
-
-            var coverBaseUrl = htmlDoc.DocumentNode.QuerySelector("link[as='image']")?.Attributes["href"]?.Value;
-            if (coverBaseUrl == null) return false;
-
             meta.HomePageUrl = url;
-            coverBaseUrl = coverBaseUrl.Substring(0, coverBaseUrl.LastIndexOf("?"));
-            var primaryImage = string.Concat(coverBaseUrl, "?class=normal");
-            var thumbnailImage = string.Concat(coverBaseUrl, "?class=thumbnail");
-            meta.AddImage(new Models.Info.ItemImageInfo
-            {
-                Type = ImageType.Primary,
-                Path = primaryImage,
-            });
-            meta.AddImage(new Models.Info.ItemImageInfo
-            {
-                Type = ImageType.Thumb,
-                Path = thumbnailImage,
-            });
+
             var texts = htmlDoc.DocumentNode.QuerySelectorAll("div[x-show*='video_details']  div.text-secondary");
 
             if (texts.IsEmpty())
+            {
+                return false;
+            }
+            if (!GetImage(htmlDoc, meta))
             {
                 return false;
             }
@@ -197,24 +186,24 @@ namespace AVOne.Providers.Official.Extractors
             {
                 var text = textNode.InnerText.Trim();
                 if (string.IsNullOrEmpty(text)) continue;
-                else if (text.StartsWith("發行日期"))
+                else if (text.StartsWith("發行日期") || text.StartsWith("发行日期") || text.StartsWith("配信開始日"))
                 {
                     if (DateTime.TryParse(GetContent(text), default, out var date))
                     {
                         meta.ProductionYear = date.GetValidYear();
                     }
                 }
-                else if (text.StartsWith("番號"))
+                else if (text.StartsWith("番號") || text.StartsWith("品番") || text.StartsWith("番号"))
                 {
                     code = GetContent(text);
                 }
 
-                else if (text.StartsWith("標題"))
+                else if (text.StartsWith("標題") || text.StartsWith("标题"))
                 {
                     name = GetContent(text);
                 }
 
-                else if (text.StartsWith("女優"))
+                else if (text.StartsWith("女優") || text.StartsWith("女优"))
                 {
                     var actors = GetContent(text).Split(",").Select(GetRealActor);
                     foreach (var actorName in actors)
@@ -227,7 +216,7 @@ namespace AVOne.Providers.Official.Extractors
                     }
                 }
 
-                else if (text.StartsWith("導演"))
+                else if (text.StartsWith("導演") || text.StartsWith("导演") || text.StartsWith("監督"))
                 {
                     var directors = GetContent(text).Split(",").Select(GetRealActor);
                     foreach (var directorName in directors)
@@ -240,17 +229,17 @@ namespace AVOne.Providers.Official.Extractors
                     }
                 }
 
-                else if (text.StartsWith("類型"))
-                {
-                    meta.Tags = GetContent(text).Split(",").Select(e => e.Trim('\0', ' ', '\n', '\t')).ToArray();
-                }
-
-                else if (text.StartsWith("標籤"))
+                else if (text.StartsWith("類型") || text.StartsWith("ジャンル") || text.StartsWith("类型"))
                 {
                     meta.Genres = GetContent(text).Split(",").Select(e => e.Trim('\0', ' ', '\n', '\t')).ToArray();
                 }
 
-                else if (text.StartsWith("發行商"))
+                else if (text.StartsWith("標籤") || text.StartsWith("レーベル") || text.StartsWith("タグ"))
+                {
+                    meta.Tags = GetContent(text).Split(",").Select(e => e.Trim('\0', ' ', '\n', '\t')).ToArray();
+                }
+
+                else if (text.StartsWith("發行商") || text.StartsWith("メーカー") || text.StartsWith("发行商"))
                 {
                     meta.Studios = GetContent(text).Split(",").Select(e => e.Trim('\0', ' ', '\n', '\t')).ToArray();
                 }
@@ -270,6 +259,38 @@ namespace AVOne.Providers.Official.Extractors
             return true;
         }
 
+        private static bool GetImage(HtmlDocument htmlDoc, M3U8Item meta)
+        {
+            var imageUrl = htmlDoc.DocumentNode.QuerySelector("link[as='image']")?.Attributes["href"]?.Value;
+            if (string.IsNullOrEmpty(imageUrl)) return false;
+            var primaryImage = string.Empty;
+            var thumbnailImage = string.Empty;
+            if (imageUrl.Contains('?'))
+            {
+                var imageBaseUrl = imageUrl.Substring(0, imageUrl.LastIndexOf("?"));
+                primaryImage = string.Concat(imageBaseUrl, "?class=normal");
+                thumbnailImage = string.Concat(imageBaseUrl, "?class=thumbnail");
+            }
+            else if (imageUrl.EndsWith("cover-n.jpg"))
+            {
+                var imageBaseUrl = imageUrl.Substring(0, imageUrl.LastIndexOf("cover-n"));
+                primaryImage = string.Concat(imageBaseUrl, "cover-n.jpg");
+                thumbnailImage = string.Concat(imageBaseUrl, "cover-t.jpg");
+            }
+            if (string.IsNullOrEmpty(primaryImage)) return false;
+            meta.AddImage(new Models.Info.ItemImageInfo
+            {
+                Type = ImageType.Primary,
+                Path = primaryImage,
+            });
+            meta.AddImage(new Models.Info.ItemImageInfo
+            {
+                Type = ImageType.Thumb,
+                Path = thumbnailImage,
+            });
+            return true;
+        }
+
         private static string GetContent(string text)
         {
             var startIndex = text.IndexOf(":") + 1;
@@ -278,7 +299,7 @@ namespace AVOne.Providers.Official.Extractors
 
         private static string GetRealActor(string text)
         {
-            if (text.Contains("("))
+            if (text.Contains('('))
             {
                 var startIndex = text.IndexOf("(") + 1;
                 var endIndex = text.IndexOf(")");

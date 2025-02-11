@@ -121,7 +121,7 @@
         "Title": "下载设置",
         "RetryCount": "默认重试次数",
         "ThreadCount": "默认线程数",
-        "DownloadDir": "默认下载路劲"
+        "DownloadDir": "默认下载路劲,多个以逗号分割"
       },
       "Paths": {
         "Title": "系统路径",
