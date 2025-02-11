@@ -62,6 +62,11 @@ namespace AVOne.Providers.Official.Extractors.Base
             return !string.IsNullOrEmpty(webPage) && _webPagePrefixArray.Any(webPage.StartsWith);
         }
 
+        /// <summary>
+        /// Normalize the url, some website may have different url for the same page.
+        /// </summary>
+        /// <param name="webPageUrl"></param>
+        /// <returns></returns>
         protected virtual string NormalizeUrl(string webPageUrl)
         {
             return webPageUrl;

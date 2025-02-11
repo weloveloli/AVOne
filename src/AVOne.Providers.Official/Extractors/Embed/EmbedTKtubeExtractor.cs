@@ -1,10 +1,12 @@
 ﻿// Copyright (c) 2023 Weloveloli. All rights reserved.
 // See License in the project root for license information.
 
-namespace AVOne.Providers.Official.Extractors.Embeded
+namespace AVOne.Providers.Official.Extractors.Embed
 {
     using System.Collections.Generic;
     using System.Text.RegularExpressions;
+    using System.Threading;
+    using System.Threading.Tasks;
     using AVOne.Enum;
     using AVOne.Extensions;
     using AVOne.Models.Download;
@@ -12,16 +14,21 @@ namespace AVOne.Providers.Official.Extractors.Embeded
     using AVOne.Providers.Official.Extractors.Base;
     using Microsoft.Extensions.Logging;
 
-    internal class TKtubeEmbededExtractor : BaseHttpExtractor, IRegexExtractor
+    internal class EmbedTKtubeExtractor : BaseHttpExtractor, IRegexExtractor, IEmbedInnerExtractor
     {
         private const string WebPagePrefix = "https://tktube.com/embed/";
 
-        public TKtubeEmbededExtractor(IHttpHelper httpHelper, ILoggerFactory loggerFactory)
+        public EmbedTKtubeExtractor(IHttpHelper httpHelper, ILoggerFactory loggerFactory)
         : base(httpHelper, loggerFactory, WebPagePrefix)
         {
         }
 
         public override string Name => "TKtubeEmbeded";
+
+        public Task<IEnumerable<BaseDownloadableItem>> ExtractFromEmbedPageAsync(string parnentWebPageUrl, string parentHtmlContent, string embedWebPageUrl, string embedHtmlContent, CancellationToken token = default)
+        {
+            return Task.FromResult(GetItems(GetTitle(embedHtmlContent), embedHtmlContent, embedWebPageUrl));
+        }
 
         public IEnumerable<BaseDownloadableItem> GetItems(string title, string html, string url)
         {
@@ -105,6 +112,11 @@ namespace AVOne.Providers.Official.Extractors.Embeded
             var start = html.IndexOf("<title>");
             var end = html.IndexOf("</title>");
             return html.Substring(start + 7, end - start - 7);
+        }
+
+        public bool IsEmbedUrlSupported(string embedUrl)
+        {
+            return embedUrl.StartsWith(WebPagePrefix);
         }
     }
 }

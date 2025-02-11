@@ -7,8 +7,8 @@ namespace AVOne.Providers.Extractor
 
     public interface IMediaExtractorProvider : IOrderProvider
     {
-        public bool Support(string webPage);
+        public bool Support(string webPageUrl);
 
-        public Task<IEnumerable<BaseDownloadableItem>> ExtractAsync(string webPage, CancellationToken token = default);
+        public Task<IEnumerable<BaseDownloadableItem>> ExtractAsync(string webPageUrl, CancellationToken token = default);
     }
 }

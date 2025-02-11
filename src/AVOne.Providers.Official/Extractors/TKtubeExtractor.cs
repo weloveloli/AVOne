@@ -10,7 +10,7 @@ namespace AVOne.Providers.Official.Extractors
     using AVOne.Models.Download;
     using AVOne.Providers.Official.Common;
     using AVOne.Providers.Official.Extractors.Base;
-    using AVOne.Providers.Official.Extractors.Embeded;
+    using AVOne.Providers.Official.Extractors.Embed;
     using Fizzler.Systems.HtmlAgilityPack;
     using HtmlAgilityPack;
     using Microsoft.Extensions.Logging;
@@ -18,7 +18,7 @@ namespace AVOne.Providers.Official.Extractors
     public class TKtubeExtractor : BaseEmbedHttpExtractor
     {
         public TKtubeExtractor(IHttpHelper httphelper, ILoggerFactory loggerFactory)
-            : base(httphelper, loggerFactory, "https://tktube.com", new TKtubeEmbededExtractor(httphelper, loggerFactory))
+            : base(httphelper, loggerFactory, "https://tktube.com", new EmbedTKtubeExtractor(httphelper, loggerFactory))
         {
         }
 
@@ -44,7 +44,7 @@ namespace AVOne.Providers.Official.Extractors
             return parts[2];
         }
 
-        public override bool TryExtractMetaData(BaseDownloadableItem item, string html, string url)
+        public bool TryExtractMetaData(BaseDownloadableItem item, string html, string url)
         {
             try
             {

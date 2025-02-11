@@ -16,11 +16,11 @@ namespace AVOne.Providers.Official.Extractors.Base
     public abstract class BaseEmbedHttpExtractor : IMediaExtractorProvider
     {
         private readonly string[] _webPagePrefixArray;
-        private readonly List<IMediaExtractorProvider> embedExtractor;
+        private readonly List<IEmbedInnerExtractor> embedExtractor;
         protected readonly ILogger logger;
         private readonly IHttpHelper _httpHelper;
 
-        protected BaseEmbedHttpExtractor(IHttpHelper httpHelper, ILoggerFactory loggerFactory, string webPagePrefix, params IMediaExtractorProvider[] embededExtractorProviders)
+        protected BaseEmbedHttpExtractor(IHttpHelper httpHelper, ILoggerFactory loggerFactory, string webPagePrefix, params IEmbedInnerExtractor[] embededExtractorProviders)
         {
             _webPagePrefixArray = webPagePrefix.Split(';').Where(e => !string.IsNullOrEmpty(e)).ToArray();
             embedExtractor = embededExtractorProviders.ToList();
@@ -45,16 +45,9 @@ namespace AVOne.Providers.Official.Extractors.Base
                     var extractor = GetEmbededExtractor(link);
                     if (extractor != null)
                     {
-                        var items = await extractor.ExtractAsync(link, token);
-                        if (items != null)
-                        {
-                            foreach (var item in items)
-                            {
-                                item.OrignalLink = webPageUrl;
-                                item.HasMetaData = TryExtractMetaData(item, html, webPageUrl);
-                                result.Add(item);
-                            }
-                        }
+                        var embedHtml = await _httpHelper.GetHtmlAsync(link, token);
+                        var items = await extractor.ExtractFromEmbedPageAsync(webPageUrl, html, link, embedHtml, token);
+                        result.AddRange(items);
                     }
                 }
             }
@@ -66,15 +59,9 @@ namespace AVOne.Providers.Official.Extractors.Base
         }
 
         public abstract IEnumerable<string> GetEmbedPages(string url, string html);
-
-        public virtual bool TryExtractMetaData(BaseDownloadableItem item, string html, string url)
+        public virtual IEmbedInnerExtractor? GetEmbededExtractor(string url)
         {
-            return false;
-        }
-
-        public virtual IMediaExtractorProvider? GetEmbededExtractor(string url)
-        {
-            return embedExtractor.FirstOrDefault(p => p.Support(url));
+            return embedExtractor.FirstOrDefault(p => p.IsEmbedUrlSupported(url));
         }
 
         public virtual bool Support(string webPage)

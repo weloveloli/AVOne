@@ -6,7 +6,7 @@ namespace AVOne.Providers.Official.Tests.Extractor
     using AutoFixture;
     using AVOne.Providers.Official.Common;
     using AVOne.Providers.Official.Extractors;
-    using AVOne.Providers.Official.Extractors.Embeded;
+    using AVOne.Providers.Official.Extractors.Embed;
     using AVOne.Test.Base;
     using Microsoft.Extensions.Logging;
     using Moq;

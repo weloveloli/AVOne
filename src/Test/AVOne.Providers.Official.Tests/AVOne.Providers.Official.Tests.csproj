@@ -7,6 +7,12 @@
      <ProjectReference Include="..\..\AVOne.Providers.Official\AVOne.Providers.Official.csproj" />
    </ItemGroup>
    <ItemGroup>
+     <None Update="websites\dnaav.txt">
+       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+     </None>
+     <None Update="websites\dnaav_embed.txt">
+       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+     </None>
      <None Update="websites\51av.txt">
        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
      </None>
