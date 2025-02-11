@@ -1,0 +1,69 @@
+ @inherits ProComponentBase
+ @using AVOne.Common.Plugins;
+<MContainer Fluid>
+                    <MRow Dense>
+                        @foreach (var item in Installed)
+                    {
+            <MCol key="@item.Id" Xl="3" Lg="3" Md="3" Sm="4">
+                <MCard Class="mx-auto my-2" MaxWidth="468" Elevation=2>
+                                    @if (item.GetPluginInfo().HasImage)
+                                    {
+                                        <MImage LazySrc="img/logo/material.jpg" Src="@GetPluginUrl(item)" Class="white--text align-end" MaxHeight="150" Gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)">
+                                        </MImage>
+                                    }
+                                    else
+                                    {
+                                        <MImage Src="img/logo/material.jpg" Class="white--text align-end" MaxHeight="150" Gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)">
+                                        </MImage>
+                                    }
+                                        <div class="d-flex flex-no-wrap justify-space-between">
+                                            <div>
+                            <p class="pa-2 mb-0">@item.Name <span class="text--secondary caption">@item.GetPluginInfo().Version</span></p>
+                            <p class="pa-2 mb-1"><span>Status:</span> <span class="text--secondary caption">@item.GetPluginInfo().Status</span></p>
+                                            </div>
+                                            <div class="pa-2">
+                                            <MMenu Bottom Right OffsetX=true CloseOnClick=true CloseOnContentClick=true>
+                    <ActivatorContent>
+                        <MButton
+                            Icon
+                            @attributes="@context.Attrs">
+                            <MIcon>mdi-dots-vertical</MIcon>
+                        </MButton>
+                    </ActivatorContent>
+
+                    <ChildContent>
+                        <MList>
+                                   @if(item.IsEnabledAndSupported && item.Manifest.Status == PluginStatus.Active && item.CanUninstall){
+                                        <MListItem Link @onclick="@(e => DisablePlugin(item))">            
+                                        <MListItemTitle>
+                                             @T("Settings.Plugin.InstalledPlugin.DisablePlugins")
+                                        </MListItemTitle>
+                                           </MListItem>
+                                    }
+                                    else if(item.Manifest.Status == PluginStatus.Disabled)
+                                    {
+                                        <MListItem Link @onclick="@(e => EnablePlugin(item))">
+                                        <MListItemTitle >
+                                           @T("Settings.Plugin.InstalledPlugin.EnablePlugins")
+                                        </MListItemTitle>                                        
+                                        </MListItem>
+                                    }
+                                    @if (item.CanUninstall)
+                                    {
+                                            <MListItem  
+                                            Link @onclick="@(e => DeletePlugin(item))">
+                                                 <MListItemTitle >
+                                             @T("Settings.Plugin.InstalledPlugin.DeletePlugins")
+                                        </MListItemTitle>
+                                            </MListItem>        
+                                    }
+                        </MList>
+                    </ChildContent>
+                </MMenu>
+                                                </div>
+                                        </div>
+                            </MCard>
+                            </MCol>
+                    }
+                </MRow>
+</MContainer>

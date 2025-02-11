@@ -1,0 +1,31 @@
+﻿@page "/app/settings/plugin"
+@inherits ProComponentBase
+@using AVOne.Server.Pages.App.Settings.Components
+<MCard>
+    <MCardText>
+        <MTabs Color="blue accent-4" @bind-Value="tab">
+            <MTab Value="Install">@T("Settings.Plugin.InstalledPlugin.Title")</MTab>
+            <MTab Value="Avaliable">@T("Settings.Plugin.AvaliablePlugin.Title")</MTab>
+            <MTab Value="Repository">@T("Settings.Plugin.PluginRepository.Title")</MTab>
+        </MTabs>
+    </MCardText>
+       
+        <MTabsItems Value="tab">
+        <MTabItem Value="Install">
+            <InstalledPlugins></InstalledPlugins>
+        </MTabItem>
+        <MTabItem Value="Avaliable">
+            <AvaliablePlugins></AvaliablePlugins>
+        </MTabItem>
+        <MTabItem Value="Repository">
+            <PluginsRepository></PluginsRepository>
+        </MTabItem>
+        </MTabsItems>
+</MCard>
+
+@code {
+    StringNumber tab = Install;
+    const string Install = "install";
+    const string Avaliable = "avaliable";
+    const string Repository = "repository";
+}

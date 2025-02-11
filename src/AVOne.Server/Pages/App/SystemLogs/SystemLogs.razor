@@ -1,9 +1,9 @@
 ﻿@page "/app/system/logs"
-@inherits ProCompontentBase
+@inherits ProComponentBase
 @using AVOne.Impl.Facade;
 @using AVOne.Models.Systems;
 
-<MList >
+<MList Class="pl-6">
     @foreach (var log in LogFiles)
     {
         <MListItem Href=@log.Href Target="_blank">

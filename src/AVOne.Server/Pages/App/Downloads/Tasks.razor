@@ -1,7 +1,8 @@
 ﻿@page "/app/downloads/tasks"
 @using AVOne.Impl.Data
 @using AVOne.Models.Download
-@inherits ProCompontentBase
+@using AVOne.Server.Pages.App.Downloads.Components
+@inherits ProComponentBase
 
 <CascadingValue Value="this">
     <div>
@@ -9,7 +10,7 @@
             <div style="height:calc(100vh - 112px );">
                 <TaskNav />
             </div>
-            <div class="pl-6 rounded-2" style="height:calc(100vh - 112px ); width: calc(100% - 300px); overflow: hidden; display:block;">
+            <div class="pl-6 rounded-2" style="height:calc(100vh - 112px ); width: calc(100% - 250px); overflow: hidden; display:block;">
                 <div>
                     <MToolbar Dense Elevation="0" Class="rounded-2" Height="60">
                         <MTextField TValue="string"
@@ -53,127 +54,32 @@
                         </MMenu>
                     </MToolbar>
 
-                                <MList Subheader ThreeLine 
-               TwoLine Class="rounded-4 mt-6" Style="height: calc(100vh - 196px ); overflow-y:auto;">
+                    <MList Subheader=true ThreeLine TwoLine Class="rounded-4 mt-6" Style="height: calc(100vh - 196px ); overflow-y:auto;">
                        @foreach (var job in Jobs)
                         {
-                    <MListItem key="@job.Id" Link OnClick="()=>ShowDetail(job)">
-                        <ItemContent>
-                            <MListItemAvatar>
-                                <MIcon Class="blue lighten-1"
-                                        Dark>mdi-movie</MIcon>
-                    </MListItemAvatar>
-                        <MListItemContent>
-                            <MListItemTitle>
-                            @if((job.Status == JobStatus.Completed || job.Status==JobStatus.Canceled) && !FileExists(job))
-                            {
-                                <span class="grey--text">@job.Name</span>
-                            }
-                            else
-                            {
-                                @job.Name
-                            }                              
-                            </MListItemTitle>
-                            @if(job.Status == JobStatus.Running)
-                            {
-                                <MListItemSubtitle>
-                                    <div class="d-flex mb-2 justify-space-between">
-                                        <strong>@Speed(job)</strong>
-                                        <strong>@Eta(job)</strong>
-                                    </div>
-                                 
-                                <MProgressLinear Value="@(job.Progress)" Height="10" Color="light-blue"></MProgressLinear>
-                                </MListItemSubtitle>
-                            }
-                            @if(job.Status == JobStatus.Completed || job.Status==JobStatus.Canceled)
-                            {
-                                <MListItemSubtitle>
-                                    <span class="grey--text">@job.Modified</span>
-                                    @if(!FileExists(job)){
-                                        <strong class="ml-8 grey--text">@T("Download.Tasks.Message.FileHasBeenMovedOrRemoved")</strong>
-                                    }
-                                </MListItemSubtitle>
-                            }
-                           @if(job.Status == JobStatus.Failed)
-                            {
-                                <MListItemSubtitle>
-                                    <strong class="red--text text--lighten-1">@T("Download.Tasks.Failed")</strong>
-                                </MListItemSubtitle>
-                            }
-                            </MListItemContent>
-                            <MListItemAction>
-                                    @foreach (var tag in job.Tags)
-                                    {
-                                        <MChip Class="mx-1 text-btn" Small Style="height:32px;border-radius:32px;" Outlined Color="@GetColorForTag(tag)">@T("Download.Tags."+tag)</MChip>
-                                    }
-                                    @if(job.Status == JobStatus.Running){
-                                        <MButton Icon @onclick="() => StopJob(job)" StopPropagation>
-                                            <MIcon Color="red lighten-1">mdi-stop</MIcon>
-                                        </MButton>
-                                    }
-                                    @if(job.Status != JobStatus.Running){
-                                    <MTooltip Top>
-                                        <ActivatorContent Context="tooltip">
-                                            <MButton Icon @attributes="@tooltip.Attrs" @onclick="() => DeleteJob(job)" StopPropagation>
-                                                <MIcon Color="red lighten-1">mdi-delete</MIcon>
-                                            </MButton>
-                                        </ActivatorContent>
-                                        <ChildContent>
-                                            <span>@T("Download.Tasks.DeleteTask")</span>
-                                        </ChildContent>
-                                    </MTooltip>
-                                    }
-                           
-                                    <MTooltip Top>
-                                        <ActivatorContent Context="tooltip">
-                                            <MButton Icon @attributes="@tooltip.Attrs" @onclick="() => ShowDetail(job)" StopPropagation>
-                                                <MIcon Color="grey lighten-1">mdi-information</MIcon>
-                                            </MButton>
-                                        </ActivatorContent>
-                                        <ChildContent>
-                                            <span>@T("Download.Tasks.ViewDetail")</span>
-                                        </ChildContent>
-                                    </MTooltip>      
-                        </MListItemAction>
-                    </ItemContent>
-                </MListItem>
-                <MDivider></MDivider>
+                            <TaskItem Job="job" OnShowJobDetail="()=>ShowDetail(job)" OnDeleteJob="()=>DeleteJob(job)" OnStopJob="()=>StopJob(job)"/>
                         }
                     </MList>
                 </div>
             </div>
         </MRow>
     </div>
-    <TaskDetail Value="_visible" ValueChanged="val=>_visible = val" SelectItem=_selectItem></TaskDetail>
+    @if(_selectItem is not null){
+        <TaskDetail Value=_visible ValueChanged="ChangeVisible" SelectItem=_selectItem></TaskDetail>
+    }
 </CascadingValue>
+@code{
+    private bool _visible = false;
+    private JobModel _selectItem = new();
 
-@code {
-    public string Speed(JobModel jobModel)
+    private void ShowDetail(JobModel item)
     {
-        long speed = 0;
-        if (jobModel.Extra.TryGetValue("Speed", out var speedStr))
-        {
-            speed = long.Parse(speedStr.ToString());
-        }
-        return $"{DownloadProgressEventArgs.FormatFileSize(speed)}/s";
+        _visible = true;
+        _selectItem = item;
     }
 
-    public string Eta(JobModel jobModel)
+    public void ChangeVisible(bool? value)
     {
-        int eta = 0;
-        if (jobModel.Extra.TryGetValue("Eta", out var etaStr))
-        {
-            eta = int.Parse(etaStr.ToString());
-        }
-        return DownloadProgressEventArgs.FormatTime(eta);
-    }
-
-    public bool FileExists(JobModel jobModel)
-    {
-        if (jobModel.Extra.TryGetValue("FinalFilePath", out var FinalFilePath))
-        {
-            return File.Exists(FinalFilePath);
-        }
-        return false;
+        _visible = value ?? false;
     }
 }

@@ -1,0 +1,139 @@
+﻿@using AVOne.Impl.Data;
+@inherits ProComponentBase
+@using static AVOne.Impl.Job.DownloadAVJob
+<MListItem key="@Job.Id" Link>
+    <ItemContent>
+        <MListItemAvatar>
+            @if (Job.Status == JobStatus.Running)
+            {
+                <MIcon Class="light-blue lighten-1"
+                      Dark>mdi-download</MIcon>
+            }
+            else if (Job.Status == JobStatus.Canceled)
+            {
+                <MIcon Class="light-blue lighten-1"
+                  Dark>mdi-cancel</MIcon>
+            }
+            else
+            {
+                if (ShouldDisable)
+                {
+                    <MIcon Class="grey lighten-1"
+                          Dark>mdi-movie</MIcon>
+                }
+                else if (HasThumb)
+                {
+                    <MImage Src=@GetThumbUrl(Job)></MImage>
+                }
+                else
+                {
+                    <MIcon Class="light-blue lighten-1"
+                          Dark>mdi-movie</MIcon>
+                }
+            }
+        </MListItemAvatar>
+        <MListItemContent>
+            <MListItemTitle>
+                @if (ShouldDisable)
+                {
+                    <span class="grey--text">@Job.Name</span>
+                }
+                else
+                {
+                    @Job.Name
+                }
+            </MListItemTitle>
+            @if (Job.Status == JobStatus.Running)
+            {
+                <MListItemSubtitle>
+                    <div class="d-flex mb-2 justify-space-between">
+                        <strong>@ToSpeed(Job)</strong>
+                        <strong>@ToEta(Job)</strong>
+                    </div>
+
+                    <MProgressLinear Value="@(Job.Progress)" Height="10" Color="light-blue"></MProgressLinear>
+                </MListItemSubtitle>
+            }
+            @if (Job.Status == JobStatus.Completed || Job.Status == JobStatus.Canceled)
+            {
+                <MListItemSubtitle>
+                    <span class="grey--text">@Job.Modified</span>
+                    @if (!FileExists(Job))
+                    {
+                        <strong class="ml-8 grey--text">@T("Download.Tasks.Message.FileHasBeenMovedOrRemoved")</strong>
+                    }
+                </MListItemSubtitle>
+            }
+            @if (Job.Status == JobStatus.Failed)
+            {
+                <MListItemSubtitle>
+                    <strong class="red--text text--lighten-1">@T("Download.Tasks.Failed")</strong>
+                </MListItemSubtitle>
+            }
+        </MListItemContent>
+        <MListItemAction>
+            @foreach (var tag in Job.Tags)
+            {
+                <MChip Class="mx-1 text-btn" Small Style="height:32px;border-radius:32px;" Outlined Color="@Tasks.GetColorForTag(tag)">@T("Download.Tags."+tag)</MChip>
+            }
+            @if (Job.Status == JobStatus.Running)
+            {
+                <MButton Icon @onclick="OnStopJob" StopPropagation>
+                <MIcon Color="red lighten-1">mdi-stop</MIcon>
+            </MButton>
+            }
+            @if (Job.Status != JobStatus.Running)
+            {
+                <MTooltip Top>
+                <ActivatorContent Context="tooltip">
+                    <MButton Icon @attributes="@tooltip.Attrs" @onclick="OnDeleteJob" StopPropagation>
+                        <MIcon Color="red lighten-1">mdi-delete</MIcon>
+                    </MButton>
+                </ActivatorContent>
+                <ChildContent>
+                    <span>@T("Download.Tasks.DeleteTask")</span>
+                </ChildContent>
+            </MTooltip>
+            }
+            <MTooltip Top>
+                <ActivatorContent Context="tooltip">
+                    <MButton Icon @attributes="@tooltip.Attrs" @onclick="OnShowJobDetail" StopPropagation>
+                        <MIcon Color="grey lighten-1">mdi-information</MIcon>
+                    </MButton>
+                </ActivatorContent>
+                <ChildContent>
+                    <span>@T("Download.Tasks.ViewDetail")</span>
+                </ChildContent>
+            </MTooltip>
+        </MListItemAction>
+    </ItemContent>
+</MListItem>
+
+@code {
+    [Parameter, EditorRequired]
+    public JobModel Job { get; set; } = null!;
+
+    [Parameter, EditorRequired]
+    public EventCallback<MouseEventArgs> OnShowJobDetail { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public EventCallback<MouseEventArgs> OnStopJob { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public EventCallback<MouseEventArgs> OnDeleteJob { get; set; } = default!;
+
+    private bool ShouldDisable { get; set; } = false;
+    private bool HasThumb { get; set; } = false;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        ShouldDisable = (Job.Status == JobStatus.Completed || Job.Status == JobStatus.Canceled) && !FileExists(Job);
+        HasThumb = GetThumb(Job, out var _);
+    }
+
+    private static string GetThumbUrl(JobModel Job)
+    {
+        return $"downloadJobs/{Job.Key}/Thumb";
+    }
+}

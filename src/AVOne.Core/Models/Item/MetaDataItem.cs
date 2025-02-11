@@ -17,24 +17,26 @@ namespace AVOne.Models.Item
             Studios = Array.Empty<string>();
             ImageInfos = Array.Empty<ItemImageInfo>();
             People = new List<PersonInfo>();
+            ProductionLocations = Array.Empty<string>();
+            RemoteTrailers = Array.Empty<MediaUrl>();
         }
 
         /// <summary>
         /// Gets or sets the name.
         /// </summary>
         /// <value>The name.</value>
-        public virtual string Name { get; set; }
+        public virtual string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the OriginalTitle.
         /// </summary>
         /// <value>The OriginalTitle.</value>
-        public string OriginalTitle { get; set; }
+        public string OriginalTitle { get; set; } = string.Empty;
 
         /// <summary>
         /// Tagline
         /// </summary>
-        public string Tagline { get; set; }
+        public string Tagline { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the studios.
@@ -98,8 +100,8 @@ namespace AVOne.Models.Item
         /// <value>The production year.</value>
         public int? ProductionYear { get; set; }
 
-        public string PreferredMetadataLanguage { get; set; }
-        public string PreferredMetadataCountryCode { get; set; }
+        public string PreferredMetadataLanguage { get; set; } = string.Empty;
+        public string PreferredMetadataCountryCode { get; set; } = string.Empty;
         public string[] ProductionLocations { get; set; }
 
         /// <summary>

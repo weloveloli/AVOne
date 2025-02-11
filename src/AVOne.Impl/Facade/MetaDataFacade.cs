@@ -56,7 +56,7 @@ namespace AVOne.Impl.Facade
             _configurationManager = configurationManager;
             _serverApplicationPaths = serverApplicationPaths;
         }
-        public async Task<MoveMetaDataItem> ResolveAsMovie(string path, CancellationToken token = default, MetadataOpt? opt = default)
+        public async Task<MoveMetaDataItem> ResolveAsMovie(string path, CancellationToken token = default, MetadataOpt opt = default)
         {
             if (!File.Exists(path))
             {

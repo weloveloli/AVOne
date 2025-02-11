@@ -1,0 +1,161 @@
+﻿@using AVOne.Impl.Data;
+@using AVOne.Impl.Job;
+@using AVOne.Models.Download
+@inherits ProComponentBase
+<MNavigationDrawer Fixed Temporary Right Value=Value ValueChanged=ValueChanged Width="800">
+    <MCol Md="12">
+        <MCard class="pa-2 fill-height d-flex flex-column justify-space-between">
+            <MCardTitle class="text-caption">
+                <div class="text-h5 mt-6">@T("Download.Detail.Info")</div>
+            </MCardTitle>
+            <MCardText class="pl-4 pr-4">
+                <MDivider></MDivider>
+  @*              <div class="text-subtitle-1 mt-3 mb-3">@T("Download.Detail.JobInfo")</div>
+                <MListItem ThreeLine>
+                    <MListItemTitle class="text-caption">@T("Download.Detail.DisplayName")</MListItemTitle>
+                    <MListItemSubtitle class="text-right text-btn neutral-lighten-1--text"> @_job?.DownloadableItem?.SaveName </MListItemSubtitle>
+                </MListItem>
+                <MListItem>
+                    <MListItemTitle class="text-caption">@T("Download.Detail.OutputDir")</MListItemTitle>
+                    <MListItemSubtitle class="text-right text-btn neutral-lighten-1--text"> @_job?.DownloadOpts?.OutputDir </MListItemSubtitle>
+                </MListItem>
+                <MListItem ThreeLine>
+                    <MListItemTitle class="text-caption">@T("Download.Detail.OrignalLink")</MListItemTitle>
+                    <MListItemSubtitle class="text-right text-btn neutral-lighten-1--text"> @_job?.DownloadableItem?.OrignalLink </MListItemSubtitle>
+                </MListItem>
+                <MSelect Outlined Label=@T("Download.Detail.Tags") Multiple @bind-Value=SelectItem!.Tags TItem="SelectData"
+                         TValue="List<string>" TItemValue="string" Items=@_tagList ItemText="i => i.Label"
+                         ItemValue="i => i.Value">
+                    <SelectionContent Context="_context">
+                        <MChip Style="height:32px;border-radius:32px;" Outlined Close CloseIcon="mdi-close" TextColor="@Tasks.GetColorForTag(_context.Item.Value)"
+                               OnCloseClick="()=>HandleCloseClick(_context.Item.Label)">@_context.Item.Label</MChip>
+                    </SelectionContent>
+                    </MSelect>
+                    <div class="text-subtitle-1 mt-3 mb-3">@T("Download.Detail.DownloadSpeedInfo")</div>
+                    <MList Dense class="pointer-events-none ml-n4 mr-n4">
+                    <MListItem>
+                        <MListItemTitle class="text-caption">@T("Download.Detail.TotalSize")</MListItemTitle>
+                        <MListItemTitle class="text-right text-btn neutral-lighten-1--text"> @DownloadProgressEventArgs.FormatFileSize(_job?.TotalBytes??0L) </MListItemTitle>
+                    </MListItem>
+                    <MListItem>
+                        <MListItemTitle class="text-caption">@T("Download.Detail.Speed")</MListItemTitle>
+                        <MListItemTitle class="text-right text-btn neutral-lighten-1--text">@DownloadProgressEventArgs.FormatFileSize(_job?.Speed??0L)/s </MListItemTitle>
+                    </MListItem>
+                </MList>
+                @if (_job is not null && !string.IsNullOrEmpty(_job.FinalFilePath))
+                {
+                    <div class="text-subtitle-1 mt-3 mb-3">@T("Download.Detail.FileInfo")</div>
+                    <MList Dense class="pointer-events-none ml-n4 mr-n4">
+                    <MListItem>
+                        <MListItemTitle class="text-caption">@T("Download.Detail.FinalDir")</MListItemTitle>
+                        <MListItemTitle class="text-right text-btn neutral-lighten-1--text"> @Directory.GetParent(_job.FinalFilePath)!.FullName </MListItemTitle>
+                    </MListItem>
+                    <MListItem ThreeLine>
+                        <MListItemTitle class="text-caption">@T("Download.Detail.FinalFileName")</MListItemTitle>
+                        <MListItemSubtitle class="text-right text-btn neutral-lighten-1--text"> @Path.GetFileName(_job.FinalFilePath) </MListItemSubtitle>
+                    </MListItem>
+                    </MList>
+}
+*@
+<MDescriptions Title="@T("Download.Detail.JobInfo")" Bordered Column="2" LabelStyle="min-width:120px" ContentClass="pa-2">
+    <MDescriptionsItem Span="2" Label=@T("Download.Detail.DisplayName")>@SelectItem.Name</MDescriptionsItem>
+    <MDescriptionsItem Span="2" Label=@T("Download.Detail.OrignalLink")><a href="@_job?.DownloadableItem?.OrignalLink" target="_blank">@_job?.DownloadableItem?.OrignalLink</a></MDescriptionsItem>
+    <MDescriptionsItem Span="2" Label="@T("Download.Detail.OutputDir")">@_job?.DownloadOpts?.OutputDir</MDescriptionsItem>
+     @if (_job is not null && !string.IsNullOrEmpty(_job.FinalFilePath)){
+        <MDescriptionsItem Span="2" Label="@T("Download.Detail.FinalFileName")">@Path.GetFileName(_job.FinalFilePath)</MDescriptionsItem>
+     }
+    <MDescriptionsItem Label="@T("Download.Detail.TotalSize")">@DownloadProgressEventArgs.FormatFileSize(_job?.TotalBytes ?? 0L)</MDescriptionsItem>
+                    <MDescriptionsItem Label="@T("Download.Detail.Speed")">@DownloadProgressEventArgs.FormatFileSize(_job?.AverageSpeed ?? 0L)/s</MDescriptionsItem>
+    <MDescriptionsItem Label="@T("Download.Detail.CreatedTime")">@_job?.Created</MDescriptionsItem>
+    <MDescriptionsItem Label="@T("Download.Detail.ModifiedTime")">@_job?.Modified</MDescriptionsItem>
+    <MDescriptionsItem Label="@T("Download.Detail.Tags")" Span="2">
+                <MSelect Multiple @bind-Value=SelectItem!.Tags TItem="SelectData"
+                         TValue="List<string>" TItemValue="string" Items=@_tagList ItemText="i => i.Label"
+                         ItemValue="i => i.Value">
+                    <SelectionContent Context="_context">
+                        <MChip Style="height:32px;border-radius:32px;" Outlined Close CloseIcon="mdi-close" TextColor="@Tasks.GetColorForTag(_context.Item.Value)"
+                               OnCloseClick="()=>HandleCloseClick(_context.Item.Label)">@_context.Item.Label</MChip>
+                    </SelectionContent>
+                    </MSelect>
+    </MDescriptionsItem>
+</MDescriptions>
+            </MCardText>
+            <MCardActions class="d-flex justify-center mb-10">
+                <MButton Large Depressed class="primary text-capitalize rounded-pill"
+                         OnClick="async ()=>{ await SaveTask();}">
+                    @T("Download.Detail.Save")
+                </MButton>
+            </MCardActions> 
+        </MCard>
+    </MCol>
+</MNavigationDrawer>
+
+@code {
+
+    [Parameter]
+    public bool Value { get; set; }
+
+    [Parameter]
+    public EventCallback<bool?> ValueChanged { get; set; }
+
+    [Parameter, EditorRequired]
+    public JobModel? SelectItem { get; set; }
+
+    private DownloadAVJob? _job;
+
+    [Inject]
+    public JobRepository? JobRepository { get; set; }
+
+    protected override void OnInitialized()
+    {
+        _tagList = new List<SelectData>{
+            new SelectData() { Label = T("Download.Tags.Censored"), Value = "Censored" },
+            new SelectData() { Label = T("Download.Tags.Uncensored"), Value = "Uncensored" },
+            new SelectData() { Label = T("Download.Tags.Chinese"), Value = "Chinese" },
+            new SelectData() { Label = T("Download.Tags.ChineseSub"), Value = "ChineseSub" },
+            new SelectData() { Label = T("Download.Tags.Taiwanese"), Value = "Taiwanese" },
+            new SelectData() { Label = T("Download.Tags.Japanese"), Value = "Japanese" },
+            new SelectData() { Label = T("Download.Tags.Anime"), Value = "Anime" },
+            new SelectData() { Label = T("Download.Tags.US"), Value = "US" },
+            new SelectData() { Label = T("Download.Tags.Other"), Value = "Other" },
+        };
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (SelectItem is not null && SelectItem.Extra != null)
+        {
+            _job = new DownloadAVJob();
+            _job.FromModel(SelectItem);
+            if(_job is not null && (!_job.TotalBytes.HasValue || _job.TotalBytes == 0L) && !string.IsNullOrEmpty(_job.FinalFilePath))
+            {
+                if(File.Exists(_job.FinalFilePath))
+                {
+                    _job.TotalBytes = new FileInfo(_job.FinalFilePath).Length;
+                }
+                else
+                {
+                _job.TotalBytes = 0L;
+                }
+            }
+        }
+    }
+
+    private List<SelectData> _tagList = new List<SelectData>();
+    private void HandleCloseClick(string lable)
+    {
+        SelectItem!.Tags.Remove(lable);
+    }
+
+    private async Task SaveTask()
+    {
+        JobRepository!.UpsertJob(SelectItem!);
+        if (ValueChanged.HasDelegate)
+        {
+            await ValueChanged.InvokeAsync(false);
+        }
+    } 
+}
+
+

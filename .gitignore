@@ -352,3 +352,4 @@ MigrationBackup/
 /src/AVOne.Tool/Properties/launchSettings.json
 artifacts-dotnet-releaser
 
+scripts/publishToWin.ps1

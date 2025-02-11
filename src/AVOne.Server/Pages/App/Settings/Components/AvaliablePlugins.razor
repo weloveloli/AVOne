@@ -1,0 +1,42 @@
+ @inherits ProComponentBase
+ @using AVOne.Common.Plugins;
+@using AVOne.Models.Updates;
+
+ <MContainer Fluid>
+            <MRow Dense>
+                        @foreach (var package in PackageInfos)
+                    {
+            <MCol key="@package.Id" Xl="3" Lg="3" Md="3" Sm="4">
+                <MCard Class="mx-auto my-2" MaxWidth="468" Elevation=4 OnClick="()=>ShowPackage(package)">
+                                    @if (!string.IsNullOrWhiteSpace(package.ImageUrl))
+                                    {
+                                        <MImage LazySrc="img/logo/material.jpg" Src=@package.ImageUrl Class="white--text align-end" MaxHeight="150" Gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)">
+                                            <MCardTitle>@package.Name</MCardTitle>
+                                        </MImage>
+                                    }
+                                    else
+                                    {
+                                        <MImage Src="img/logo/material.jpg" Class="white--text align-end" MaxHeight="150" Gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)">
+                                            <MCardTitle>@package.Name</MCardTitle>
+                                        </MImage>
+                                    }
+
+                                        <Masa.Blazor.Presets.PBlockText Primary="@package.Description" Tags="@GetPackageTags(package)" Class="pa-2" style="max-width: 400px;"></Masa.Blazor.Presets.PBlockText>
+                                </MCard>
+                            </MCol>
+                    }
+                </MRow>
+                @if(selectedPackage is not null){
+                    <PluginPackage SelectItem="selectedPackage" Value="_PackageDetailvisible" ValueChanged="val=>_PackageDetailvisible = !_PackageDetailvisible" />
+                }              
+</MContainer>
+
+@code {
+    private bool _PackageDetailvisible = false;
+    private PackageInfo? selectedPackage = null;
+    private void ShowPackage(PackageInfo package)
+    {
+        selectedPackage = package;
+        _PackageDetailvisible = true;
+    }
+}

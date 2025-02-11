@@ -156,12 +156,12 @@ namespace AVOne.Impl.Job
         public void Report(JobStatusArgs args)
         {
             var value = args.Progress;
-            job.UpdateStatus(args);
-            if (_progress < value)
+            var forceUpdate = job.UpdateStatus(args);
+            if (forceUpdate || _progress < value)
             {
                 var now = DateTime.UtcNow;
                 _progress = value;
-                if (value >= 100 || now.Subtract(_lastEventTime).TotalMilliseconds >= 500)
+                if (forceUpdate || value >= 100 || now.Subtract(_lastEventTime).TotalMilliseconds >= 500)
                 {
                     this._jobRepository.UpsertJob(job);
                     _lastEventTime = now;

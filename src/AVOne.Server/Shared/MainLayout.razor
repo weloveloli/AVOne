@@ -1,35 +1,94 @@
 ﻿@inherits LayoutComponentBase
-@inject I18n I18n
-
+@inject GlobalConfig GlobalConfig
 <MApp>
-    <CascadingValue Value="I18n">
-        <MAppBar Elevation=0 App MaxHeight=60
-            Class="mx-6">
-@*            <Favorite />*@
-            <MSpacer />
-            <Search />
-            <Language OnLanguageChanged="OnLanguageChanged" />
-            <div class="text-center border-left-solid" style="width:88px;">
-                <MAvatar Size=40>
-                    <MImage Src="/img/avatar/2.svg"></MImage>
-                </MAvatar>
-            </div>
-        </MAppBar>
+    <PPageTabsProvider>
+        <CascadingValue Value="GlobalConfig.Culture.Name" Name="CultureName">
+            <MAppBar Elevation=0 App Height="100" Class="default-app-bar mx-6">
+                <div class="default-app-bar__actions @PageModeClass">
+                    <MSpacer />
+                    @* <Search /> *@
 
-        <Navigation />
+                    @* <MIcon Size=20 Class="ml-5" Color="neutral-lighten-3">mdi-message-processing-outline</MIcon> *@
+                    @* TODO: Add more style to enable dark theme *@
+                    @* <MIcon Size=20 Class="ml-5" Color="neutral-lighten-3" OnClick="()=> IsDarkChanged(_isDark)">@(_isDark ? "mdi-weather-sunny" : "mdi-weather-night")</MIcon> *@
+                    @* <MIcon Size=20 Class="ml-5" Color="neutral-lighten-3" OnClick="() => _showSetting = true">mdi-cog-outline</MIcon> *@
+                    <Language OnLanguageChanged="OnLanguageChanged" />
+                </div>
+                <div class="default-app-bar__nav @PageModeClass">
+                    @if (_pageTab == PageModes.PageTab)
+                    {
+                        <PageTabs @ref="_pageTabs" SelfPatterns="@s_selfPatterns" />
+                    }
+                    else
+                    {
+                        <Breadcrumb />
+                    }
+                </div>
+            </MAppBar>
 
-        <MMain Class="fill-lighten-1" Style="padding-top:60px">
-                <PageTabs>
-                    @Body
-                </PageTabs>
-        </MMain>
-    </CascadingValue>
+            <Navigation />
+
+            <MMain Class="fill-lighten-1">
+                <div class="pa-6">
+                    @if (_pageTab == PageModes.PageTab)
+                    {
+                        <PPageContainer PageTabs="@_pageTabs?.PPageTabs" SelfPatterns="@s_selfPatterns">
+                            @Body
+                        </PPageContainer>
+                    }
+                    else
+                    {
+                        @Body
+                    }
+                </div>
+            </MMain>
+            <Settings @bind-PageModel="_pageTab" @bind-Show=_showSetting />
+        </CascadingValue>
+    </PPageTabsProvider>
 </MApp>
 
 @code {
+    @inject MasaBlazor MasaBlazor
+    private static readonly string[] s_selfPatterns =
+    {
+
+    };
+
+    private bool? _showSetting;
+
+    private string? _pageTab;
+
+    private PageTabs? _pageTabs;
+
+    private string PageModeClass => _pageTab == PageModes.PageTab ? "page-mode--tab" : "page-mode--breadcrumb";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if (firstRender)
+        {
+            await GlobalConfig.InitFromStorage();
+        }
+    }
+
     void OnLanguageChanged(CultureInfo culture)
     {
-        I18n.SetCulture(culture);
+        GlobalConfig.Culture = culture;
+    }
+
+    bool _isDark;
+
+    protected override Task OnInitializedAsync()
+    {
+        _isDark = MasaBlazor?.Theme?.Dark ?? false;
+        return base.OnInitializedAsync();
+    }
+
+    private void IsDarkChanged(bool isDark)
+    {
+        _isDark = isDark;
+        MasaBlazor.ToggleTheme();
     }
 
 }

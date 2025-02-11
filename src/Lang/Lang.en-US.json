@@ -13,6 +13,8 @@
   "Searching Metadata": "Searching metadata for files ...",
   "Moving file": "Moving file {0} ...",
   "Saving metadata": "Saving file metadata for {0} ...",
+  "Saving metadata successfully": "Saving file metadata for {0} successfully.",
+  "Clean up folder": "Clean up folder {0}.",
   "Moving file successfully": "Moving file {0} successfully to {1}",
   "Moving additional part successfully": "Moving  additional part {0} successfully to {1}",
   "Downloading Remote Image": "Downloading images for '{0}'",
