@@ -81,7 +81,7 @@ namespace AVOne.Providers.Official.Extractors
 
             foreach (var source in m3u8Sources)
             {
-                yield return new M3U8Item(title, source, GetRequestHeader(html), MediaQuality.None, title) { OrignalLink = url };
+                yield return new M3U8Item(title, source, GetRequestHeader(html, url), MediaQuality.None, title) { OrignalLink = url };
             }
         }
     }

@@ -58,7 +58,7 @@
 }
 *@
 <MDescriptions Title="@T("Download.Detail.JobInfo")" Bordered Column="2" LabelStyle="min-width:120px" ContentClass="pa-2">
-    <MDescriptionsItem Span="2" Label=@T("Download.Detail.DisplayName")>@SelectItem.Name</MDescriptionsItem>
+    <MDescriptionsItem Span="2" Label=@T("Download.Detail.DisplayName")>@SelectItem?.Name</MDescriptionsItem>
     <MDescriptionsItem Span="2" Label=@T("Download.Detail.OrignalLink")><a href="@_job?.DownloadableItem?.OrignalLink" target="_blank">@_job?.DownloadableItem?.OrignalLink</a></MDescriptionsItem>
     <MDescriptionsItem Span="2" Label="@T("Download.Detail.OutputDir")">@_job?.DownloadOpts?.OutputDir</MDescriptionsItem>
      @if (_job is not null && !string.IsNullOrEmpty(_job.FinalFilePath)){

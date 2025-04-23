@@ -15,7 +15,7 @@ namespace AVOne.Providers.Official.Extractors.Base
     {
         protected ILogger _logger;
         private readonly string[] _webPagePrefixArray;
-        private readonly IHttpHelper _httpHelper;
+        protected readonly IHttpHelper _httpHelper;
 
         protected BaseHttpExtractor(IHttpHelper httpHelper, ILoggerFactory loggerFactory, string webPagePrefix)
         {
@@ -55,7 +55,7 @@ namespace AVOne.Providers.Official.Extractors.Base
 
         }
 
-        protected virtual Dictionary<string, string>? GetRequestHeader(string html) => null;
+        protected virtual Dictionary<string, string>? GetRequestHeader(string html, string url) => null;
 
         public virtual bool Support(string webPage)
         {

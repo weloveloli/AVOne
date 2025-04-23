@@ -74,7 +74,7 @@ namespace AVOne.Providers.Official.Extractors.Embed
                 var l = k;
                 var m = k;
                 for (; m < code.Length; m++)
-                    l += parseInt(code[m]).Value;
+                    l += parseInt(code[m]) ?? 0;
                 for (; l >= h.Length;)
                     l -= h.Length;
                 var n = "";

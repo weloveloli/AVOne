@@ -26,6 +26,26 @@ namespace AVOne.Providers.Official.Extractor.Tests
             Assert.Equal(3, source.Count());
 
             Assert.Equal("CUS-1468 變態boss捆綁調教新人女員工", MissAVExtractor.GetTitleFromHtml(html, MissAVExtractor.TitleRegex()));
+
+        }
+
+        [Fact()]
+        public void MissAVExtractorTest2()
+        {
+
+            var loggerMock = new Mock<ILoggerFactory>();
+            var html = File.ReadAllText(Path.Combine("websites", "missav2.txt"));
+            var extractor = new MissAVExtractor(null, loggerMock.Object);
+            var support = extractor.Support("https://missav.ai/ja/search/XVSR450");
+
+            Assert.True(support);
+
+            var source = extractor.GetM3U8Sources(html);
+
+            Assert.Equal(2, source.Count());
+
+            Assert.Equal("XVSR-450 処女 有花もえ", MissAVExtractor.GetTitleFromHtml(html, MissAVExtractor.TitleRegex()));
+
         }
     }
 }

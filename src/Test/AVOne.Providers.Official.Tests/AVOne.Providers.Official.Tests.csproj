@@ -25,5 +25,17 @@
      <None Update="websites\missav.txt">
        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
      </None>
+     <None Update="websites\missav2.txt">
+       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+     </None>
+     <None Update="websites\taimadou.txt">
+       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+     </None>
+     <None Update="websites\taimadou_api.txt">
+       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+     </None>
+     <None Update="websites\xchina.txt">
+       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+     </None>
    </ItemGroup>
 </Project>

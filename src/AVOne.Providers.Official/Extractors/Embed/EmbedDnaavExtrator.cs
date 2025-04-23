@@ -26,7 +26,7 @@ namespace AVOne.Providers.Official.Extractor.Embeded
             var htmlDoc = new HtmlDocument();
             htmlDoc.LoadHtml(parentHtmlContent);
             var titleNode = htmlDoc.DocumentNode.SelectSingleNode("//title");
-            var title = titleNode?.InnerText;
+            var title = titleNode?.InnerText ?? "";
             // find the video url
             var embedHtmlDoc = new HtmlDocument();
             embedHtmlDoc.LoadHtml(embedHtmlContent);
@@ -40,6 +40,9 @@ namespace AVOne.Providers.Official.Extractor.Embeded
                 Url = videoUrl,
                 Quality = MediaQuality.None,
                 SaveName = title,
+                HomePageUrl = parnentWebPageUrl,
+                OrignalLink = parnentWebPageUrl,
+                OriginalTitle = title
             };
             // Get the video quality from the meta tag
             // meta property og:video:height

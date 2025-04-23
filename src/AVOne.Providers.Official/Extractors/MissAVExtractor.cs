@@ -21,7 +21,7 @@ namespace AVOne.Providers.Official.Extractors
     public partial class MissAVExtractor : BaseHttpExtractor, IRegexExtractor
     {
         private const string ExtraTitle = " - MissAV.com | 免費高清AV在線看";
-        private const string WebPagePrefix = "https://missav.ws";
+        private const string WebPagePrefix = "https://missav.ws;https://missav.ai";
         private readonly Regex _regex;
         private readonly Regex _titleRegex;
 
@@ -30,6 +30,13 @@ namespace AVOne.Providers.Official.Extractors
             {
                 { "referer", "https://missav.ws" },
                 { "origin", "https://missav.ws" }
+            };
+
+        public static Dictionary<string, string> HeaderForMissAV2 =
+            new()
+            {
+                { "referer", "https://missav.ai" },
+                { "origin", "https://missav.ai" }
             };
 
         public override string Name => "MissAV";
@@ -50,14 +57,15 @@ namespace AVOne.Providers.Official.Extractors
         {
             var lines = html.Split('\n');
             var script = string.Empty;
-            foreach (var item in lines)
+            foreach (var line in lines)
             {
-                if (item.Trim().StartsWith("eval"))
+                if (line.Trim().StartsWith("eval"))
                 {
-                    var match = _regex.Match(item.Trim());
+                    var match = _regex.Match(line.Trim());
                     if (match.Success)
                     {
                         script = match.Groups[1].Value;
+                        break;
                     }
                 }
             }
@@ -121,8 +129,16 @@ namespace AVOne.Providers.Official.Extractors
             return GetTitleFromHtml(html, _titleRegex);
         }
 
-        protected override Dictionary<string, string> GetRequestHeader(string html)
+        protected override Dictionary<string, string> GetRequestHeader(string html, string url)
         {
+            if (url.Contains("missav.ws"))
+            {
+                return HeaderForMissAV;
+            }
+            else if (url.Contains("missav.ai"))
+            {
+                return HeaderForMissAV2;
+            }
             return HeaderForMissAV;
         }
 
@@ -149,7 +165,7 @@ namespace AVOne.Providers.Official.Extractors
                 {
                     quality = MediaQuality.VeryHigh;
                 }
-                var item = new M3U8Item(title, source, GetRequestHeader(html), quality, title) { OrignalLink = url, HasMetaData = false };
+                var item = new M3U8Item(title, source, GetRequestHeader(html, url), quality, title) { OrignalLink = url, HasMetaData = false };
 
                 var hasMetaData = TryExtractMetaData(url, html, item);
                 item.HasMetaData = hasMetaData;

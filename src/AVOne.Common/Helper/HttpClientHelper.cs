@@ -15,8 +15,8 @@ namespace AVOne.Common.Helper
         }
         private (HttpClient httpClient, long version) _httpClientDefault;
         private (HttpClient httpClient, long version) _httpClientDownload;
-        private readonly IConfigurationManager _manager;
-        private readonly IHttpClientFactory _httpClientFactory;
+        protected readonly IConfigurationManager _manager;
+        protected readonly IHttpClientFactory _httpClientFactory;
 
         public virtual HttpClient GetHttpClient(string name = HttpClientNames.Default)
         {
